@@ -3,8 +3,8 @@ import pako from 'pako';
 import slugid from 'slugid';
 
 /**
- * @template T
- * @typedef {import('../types').AbstractDataFetcher<T>} AbstractDataFetcher
+ * @template T, B
+ * @typedef {import('../types').AbstractDataFetcher<T, B>} AbstractDataFetcher
  */
 
 /** @typedef {{ start: number, end: number, type: 'filler', strand: "+" | "-" }} FillerSegment */
@@ -227,7 +227,7 @@ async function extractResponse(response, { gzipped }) {
  * @typedef {Array<GeneAnnotation> & { tilePositionId?: string }} GenbankTile
  */
 
-/** @implements {AbstractDataFetcher<GenbankTile>} */
+/** @implements {AbstractDataFetcher<GenbankTile, GenbankDataConfig>} */
 class GBKDataFetcher {
   /** @param {GenbankDataConfig} dataConfig */
   constructor(dataConfig) {

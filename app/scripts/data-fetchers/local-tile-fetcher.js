@@ -2,8 +2,8 @@ import { tileResponseToData } from '../services';
 
 /** @typedef {import('../types').TilesetInfo} TilesetInfo */
 /**
- * @template T
- * @typedef {import('../types').AbstractDataFetcher<T>} AbstractDataFetcher
+ * @template T, B
+ * @typedef {import('../types').AbstractDataFetcher<T, B>} AbstractDataFetcher
  */
 
 // TODO: Add type for LocalTile
@@ -15,7 +15,7 @@ import { tileResponseToData } from '../services';
  * @property {Record<string, TilesetInfo>} tilesetInfo
  */
 
-/** @implements {AbstractDataFetcher<LocalTile>} */
+/** @implements {AbstractDataFetcher<LocalTile, LocalTileDataConfig>} */
 class LocalTileDataFetcher {
   /** @param {LocalTileDataConfig} dataConfig */
   constructor(dataConfig) {

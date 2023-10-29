@@ -1,4 +1,5 @@
 import type { THEME_DARK, THEME_LIGHT } from './configs';
+import type { ResolvedDataConfig } from './data-fetchers/DataFetcher';
 
 export type Scale = import('d3-scale').ScaleContinuousNumeric<number, number>;
 
@@ -129,7 +130,7 @@ export type HandleTilesetInfoFinished = {
   (error: { error: string }): void;
 };
 
-export interface AbstractDataFetcher<TileType> {
+export interface AbstractDataFetcher<TileType, DataConfig> {
   tilesetInfo(
     callback?: HandleTilesetInfoFinished,
   ): Promise<TilesetInfo | undefined>;
@@ -137,6 +138,7 @@ export interface AbstractDataFetcher<TileType> {
     receivedTiles: (tiles: Record<string, TileType>) => void,
     tileIds: string[],
   ): Promise<Record<string, TileType>>;
+  dataConfig: DataConfig;
 }
 
 // Tileset API

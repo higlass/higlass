@@ -14,6 +14,7 @@ import * as tileProxy from '../services/tile-proxy';
 
 /** @import { DataConfig, TilesetInfo, AbstractDataFetcher, TileSource } from '../types' */
 /** @import { CompletedTileData, TileResponse } from '../services/worker' */
+/**
 
 /**
  * @typedef Tile
@@ -87,7 +88,7 @@ function createDefaultTileSource(pubSub) {
   };
 }
 
-/** @implements {AbstractDataFetcher<Tile | DividedTile>} */
+/** @implements {AbstractDataFetcher<Tile | DividedTile, ResolvedDataConfig>} */
 export default class DataFetcher {
   /**
    * @param {import('../types').DataConfig} dataConfig
