@@ -1,6 +1,5 @@
 /**
  * Export a PIXI text to an SVG element
- *
  * @param {import('pixi.js').Text} pixiText A PIXI.Text object that we want to create an SVG element for
  * @returns { HTMLElement } A DOM SVG Element with all of the attributes set as to display the given text.
  */
