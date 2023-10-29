@@ -107,11 +107,28 @@ function getWidthBasedResolutionText(
  * @property {string=} dataTransform
  */
 
-/** @extends {Track<PixiTrackOptions>} */
+/**
+ * @typedef {import('./Track').ExtendedTrackContext<{ scene: import('pixi.js').Container}>} PixiTrackContext
+ */
+
+/**
+ * @template T
+ * @typedef {T & PixiTrackContext} ExtendedPixiContext
+ */
+
+/**
+ * @template T
+ * @typedef {T & PixiTrackOptions} ExtendedPixiOptions
+ */
+
+
+/** 
+ * @template {ExtendedPixiOptions<{[key: string]: any}>} Options
+ * @extends {Track<Options>} */
 class PixiTrack extends Track {
   /**
-   * @param {import('./Track').ExtendedTrackContext<{ scene: import('pixi.js').Container}>} context - Includes the PIXI.js scene to draw to.
-   * @param {PixiTrackOptions} options - The options for this track.
+   * @param {PixiTrackContext} context - Includes the PIXI.js scene to draw to.
+   * @param {Options} options - The options for this track.
    */
   constructor(context, options) {
     super(context, options);
@@ -655,7 +672,7 @@ class PixiTrack extends Track {
     }
   }
 
-  /** @param {PixiTrackOptions} options */
+  /** @param {Options} options */
   rerender(options) {
     this.options = options;
 

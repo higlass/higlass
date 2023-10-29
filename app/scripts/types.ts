@@ -1,5 +1,5 @@
 import type { THEME_DARK, THEME_LIGHT } from './configs';
-import type { ResolvedDataConfig } from './data-fetchers/DataFetcher';
+import type { ChromsizeRow } from './utils/parse-chromsizes-rows';
 
 export type Scale = import('d3-scale').ScaleContinuousNumeric<number, number>;
 
@@ -99,6 +99,8 @@ export type TilesetInfoShared = {
   tile_size?: number;
   max_tile_width?: number;
   transforms?: { name: string; value: string }[];
+  chromsizes?: ArrayLike<ChromsizeRow>;
+  error?: string;
 };
 
 export type LegacyTilesetInfo = TilesetInfoShared & {
