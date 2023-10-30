@@ -4,11 +4,6 @@ import { version } from './package.json';
 
 export default defineConfig(({ mode }) => ({
   plugins: [react()],
-  build: {
-    'rollupOptions': {
-      external: ["react", "react-dom", "pixi.js"],
-    }
-  },
   resolve: {
     alias: {
       lodash: 'lodash-es',
