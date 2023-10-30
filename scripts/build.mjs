@@ -147,30 +147,31 @@ async function generateHTML(importHTML) {
  */
 async function main({ outDir }) {
   const bundle = await build();
-  await fs.promises.mkdir(outDir, { recursive: true });
-  // CSS
-  await fs.promises.writeFile(path.resolve(outDir, 'hglib.css'), bundle.css);
-  // UMD
-  await fs.promises.writeFile(path.resolve(outDir, 'hglib.js'), bundle.umd);
-  await fs.promises.writeFile(
-    path.resolve(outDir, 'hglib.min.js'),
-    bundle.minifiedUmd,
-  );
-  await fs.promises.writeFile(
-    path.resolve(outDir, 'index.html'),
-    await generateHTML(`\
+  await Promise.all([
+    fs.promises.mkdir(outDir, { recursive: true }),
+    // CSS
+    fs.promises.writeFile(path.resolve(outDir, 'hglib.css'), bundle.css),
+    // UMD
+    fs.promises.writeFile(path.resolve(outDir, 'hglib.js'), bundle.umd),
+    fs.promises.writeFile(
+      path.resolve(outDir, 'hglib.min.js'),
+      bundle.minifiedUmd,
+    ),
+    fs.promises.writeFile(
+      path.resolve(outDir, 'index.html'),
+      await generateHTML(`\
     <link rel="stylesheet" href="./hglib.css">
     <script src="https://unpkg.com/react@${REACT_VERSION}/umd/react.production.min.js"></script>
     <script src="https://unpkg.com/react-dom@${REACT_VERSION}/umd/react-dom.production.min.js"></script>
     <script src="https://unpkg.com/pixi.js@${PIXI_VERSION}/dist/browser/pixi.min.js"></script>
     <script src="./hglib.min.js"></script>
   `),
-  );
-  // ESM
-  await fs.promises.writeFile(path.resolve(outDir, 'higlass.mjs'), bundle.esm);
-  await fs.promises.writeFile(
-    path.resolve(outDir, 'esm.html'),
-    await generateHTML(`\
+    ),
+    // ESM
+    fs.promises.writeFile(path.resolve(outDir, 'higlass.mjs'), bundle.esm),
+    fs.promises.writeFile(
+      path.resolve(outDir, 'esm.html'),
+      await generateHTML(`\
     <link rel="stylesheet" href="./hglib.css">
     <script type="importmap">
       {
@@ -186,7 +187,8 @@ async function main({ outDir }) {
       globalThis.hglib = hglib;
     </script>
   `),
-  );
+    ),
+  ]);
 }
 
 main({ outDir: path.resolve(__dirname, '../dist') });
