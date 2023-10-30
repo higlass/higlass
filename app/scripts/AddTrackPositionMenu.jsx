@@ -20,14 +20,20 @@ function AddTrackPositionMenu(props) {
       >
         <tbody>
           <tr style={{ height: '30px' }}>
-            <td aria-hidden='true' className={classes['add-track-position-other']} />
+            <td
+              aria-hidden="true"
+              className={classes['add-track-position-other']}
+            />
             <td
               className={classes['add-track-position-top-center']}
               onClick={() => props.onTrackPositionChosen('top')}
             >
               top
             </td>
-            <td aria-hidden='true' className={classes['add-track-position-other']} />
+            <td
+              aria-hidden="true"
+              className={classes['add-track-position-other']}
+            />
           </tr>
           <tr style={{ height: '80px' }}>
             <td
@@ -50,14 +56,20 @@ function AddTrackPositionMenu(props) {
             </td>
           </tr>
           <tr style={{ height: '30px' }}>
-            <td aria-hidden='true' className={classes['add-track-position-other']} />
+            <td
+              aria-hidden="true"
+              className={classes['add-track-position-other']}
+            />
             <td
               className={classes['add-track-position-bottom-middle']}
               onClick={() => props.onTrackPositionChosen('bottom')}
             >
               bottom
             </td>
-            <td aria-hidden='true' className={classes['add-track-position-other']} />
+            <td
+              aria-hidden="true"
+              className={classes['add-track-position-other']}
+            />
           </tr>
         </tbody>
       </table>
