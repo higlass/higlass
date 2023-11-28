@@ -22,6 +22,7 @@ import * as url from 'node:url';
 import * as esbuild from 'esbuild';
 import * as vite from 'vite';
 import babel from 'vite-plugin-babel';
+import injectCssByJs from 'vite-plugin-css-injected-by-js';
 
 import * as React from 'react';
 import * as PIXI from 'pixi.js';
@@ -64,7 +65,7 @@ function collectExpectedViteBuildOutputs(buildResult, filenames) {
 /**
  * Generates the UMD and ESM builds library code.
  *
- * @returns {Promise<{ umd: string, minifiedUmd: string, esm: string, css: string }>}
+ * @returns {Promise<{ umd: string, minifiedUmd: string, esm: string }>}
  */
 async function build() {
   const viteBuildResult = await vite.build({
@@ -72,6 +73,7 @@ async function build() {
     build: {
       write: false,
       minify: false,
+      cssMinify: true,
       lib: {
         entry: path.resolve(__dirname, '../app/scripts/hglib.jsx'),
         name: 'hglib',
@@ -101,13 +103,13 @@ async function build() {
           plugins: ['@babel/plugin-transform-classes'],
         },
       }),
+      injectCssByJs(),
     ],
   });
 
   const expected = collectExpectedViteBuildOutputs(viteBuildResult, [
     'higlass.umd.js',
     'higlass.mjs',
-    'style.css',
   ]);
 
   const minifiedUmd = await esbuild.transform(expected['higlass.umd.js'], {
@@ -118,7 +120,6 @@ async function build() {
     umd: expected['higlass.umd.js'],
     minifiedUmd: minifiedUmd.code,
     esm: expected['higlass.mjs'],
-    css: expected['style.css'],
   };
 }
 
@@ -152,7 +153,12 @@ async function main({ outDir }) {
   await Promise.all([
     fs.promises.mkdir(outDir, { recursive: true }),
     // CSS
-    fs.promises.writeFile(path.resolve(outDir, 'hglib.css'), bundle.css),
+    fs.promises.writeFile(
+      path.resolve(outDir, 'hglib.css'),
+      `\
+/* Since, v1.13.3 HiGlass styles are now injected via JS. No need to separately load this file. */
+`,
+    ),
     // UMD
     fs.promises.writeFile(path.resolve(outDir, 'hglib.js'), bundle.umd),
     fs.promises.writeFile(
@@ -162,7 +168,6 @@ async function main({ outDir }) {
     fs.promises.writeFile(
       path.resolve(outDir, 'index.html'),
       await generateHTML(`\
-    <link rel="stylesheet" href="./hglib.css">
     <script src="https://unpkg.com/react@${REACT_VERSION}/umd/react.production.min.js"></script>
     <script src="https://unpkg.com/react-dom@${REACT_VERSION}/umd/react-dom.production.min.js"></script>
     <script src="https://unpkg.com/pixi.js@${PIXI_VERSION}/dist/browser/pixi.min.js"></script>
@@ -174,7 +179,6 @@ async function main({ outDir }) {
     fs.promises.writeFile(
       path.resolve(outDir, 'esm.html'),
       await generateHTML(`\
-    <link rel="stylesheet" href="./hglib.css">
     <script type="importmap">
       {
         "imports": {
