@@ -21,7 +21,7 @@ import * as url from 'node:url';
 
 import * as esbuild from 'esbuild';
 import * as vite from 'vite';
-import * as babel from '@babel/core';
+import babel from 'vite-plugin-babel';
 
 import * as React from 'react';
 import * as PIXI from 'pixi.js';
@@ -88,6 +88,20 @@ async function build() {
         },
       },
     },
+    plugins: [
+      // TODO(2023-11-28): Need to transpile all classes to ES5 for plugins.
+      // Can remove (i.e., upgrade to native ES6) when we decide to make a
+      // upgrade to ES6 classes (requiring plugins to do the same).
+      // See PR: https://github.com/higlass/higlass/pull/1141
+      babel({
+        babelConfig: {
+          babelrc: false,
+          configFile: false,
+          presets: ['@babel/preset-react'],
+          plugins: ['@babel/plugin-transform-classes'],
+        },
+      }),
+    ],
   });
 
   const expected = collectExpectedViteBuildOutputs(viteBuildResult, [
@@ -96,26 +110,14 @@ async function build() {
     'style.css',
   ]);
 
-  const transpiledUmd = await babel.transformAsync(expected['higlass.umd.js'], {
-    plugins: ['@babel/plugin-transform-classes'],
-  });
-
-  const transpiledEsm = await babel.transformAsync(expected['higlass.mjs'], {
-    plugins: ['@babel/plugin-transform-classes'],
-  });
-
-  if (!transpiledUmd?.code || !transpiledEsm?.code) {
-    throw new Error('Could not transpile UMD or ESM');
-  }
-
-  const minifiedTranspiledUmd = await esbuild.transform(transpiledUmd.code, {
+  const minifiedUmd = await esbuild.transform(expected['higlass.umd.js'], {
     minify: true,
   });
 
   return {
-    umd: transpiledUmd.code,
-    minifiedUmd: minifiedTranspiledUmd.code,
-    esm: transpiledEsm.code,
+    umd: expected['higlass.umd.js'],
+    minifiedUmd: minifiedUmd.code,
+    esm: expected['higlass.mjs'],
     css: expected['style.css'],
   };
 }
