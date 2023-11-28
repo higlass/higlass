@@ -73,6 +73,7 @@ async function build() {
     build: {
       write: false,
       minify: false,
+      cssMinify: true,
       lib: {
         entry: path.resolve(__dirname, '../app/scripts/hglib.jsx'),
         name: 'hglib',
