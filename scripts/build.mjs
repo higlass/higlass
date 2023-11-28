@@ -100,7 +100,7 @@ async function build() {
           presets: ['@babel/preset-react'],
           plugins: ['@babel/plugin-transform-classes'],
         },
-      })
+      }),
     ],
   });
 
