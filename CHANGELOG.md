@@ -1,6 +1,6 @@
 # Release notes
 
-## In Progress
+## v1.13.3
 
 - Inject HiGlass CSS via JS, removing the need to include `hglib.css` in HTML templates.
 
