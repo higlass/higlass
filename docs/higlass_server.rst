@@ -75,21 +75,21 @@ Retrieving a list of available tilesets:
 
 .. code-block:: bash
 
-  curl localhost:8000/api/v1/tilesets
+  curl localhost:8000/api/v1/tilesets/
 
 To filter by a specific filetype, use the `t=filetype` parameter:
 
 .. code-block:: bash
 
-  curl localhost:8000/api/v1/tilesets?t=cooler
+  curl localhost:8000/api/v1/tilesets/?t=cooler
 
 To filter by datatype, use the `dt=datatype` parameter:
 
 .. code-block:: bash
 
-  curl localhost:8000/api/v1/tilesets?dt=matrix
-  curl localhost:8000/api/v1/tilesets?dt=gene-annotation
-  curl localhost:8000/api/v1/tilesets?dt=chromsizes
+  curl localhost:8000/api/v1/tilesets/?dt=matrix
+  curl localhost:8000/api/v1/tilesets/?dt=gene-annotation
+  curl localhost:8000/api/v1/tilesets/?dt=chromsizes
 
 Retrieving properties of a tileset, for a specific `uuid`:
 
