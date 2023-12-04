@@ -1630,6 +1630,14 @@ class TiledPlot extends React.Component {
    */
   getIdealizedTrackPositionsOverlay() {
     const evtJson = this.props.draggingHappening;
+
+    // For whatever reason, evtJson is sometimes a boolean. This rest of
+    // this code block assumes it's an object, so we return undefined if
+    // it's not.
+    if (typeof evtJson === 'boolean') {
+      return undefined;
+    }
+
     const datatype = evtJson.datatype;
 
     if (!(datatype in DEFAULT_TRACKS_FOR_DATATYPE) && !evtJson.defaultTracks) {
