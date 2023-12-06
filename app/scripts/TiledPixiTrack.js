@@ -1,12 +1,12 @@
-import { median, range, ticks } from 'd3-array';
 import { scaleLinear, scaleLog, scaleQuantile } from 'd3-scale';
+import { median, range, ticks } from 'd3-array';
 import slugid from 'slugid';
 
-import PixiTrack from './PixiTrack';
 import { DataFetcher } from './data-fetchers';
+import PixiTrack from './PixiTrack';
 
 // Utils
-import { parseChromsizesRows, throttleAndDebounce } from './utils';
+import { throttleAndDebounce, parseChromsizesRows } from './utils';
 import backgroundTaskScheduler from './utils/background-task-scheduler';
 
 // Configs
@@ -244,7 +244,7 @@ class TiledPixiTrack extends PixiTrack {
           tilesetInfo.error,
         );
 
-        this.setError(tilesetInfo.error ?? '');
+        this.setError(tilesetInfo.error);
         // Fritz: Not sure why it's reset
         // this.trackNotFoundText = '';
         this.tilesetInfo = undefined;
