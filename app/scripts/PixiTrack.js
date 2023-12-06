@@ -121,8 +121,7 @@ function getWidthBasedResolutionText(
  * @typedef {T & PixiTrackOptions} ExtendedPixiOptions
  */
 
-
-/** 
+/**
  * @template {ExtendedPixiOptions<{[key: string]: any}>} Options
  * @extends {Track<Options>} */
 class PixiTrack extends Track {
