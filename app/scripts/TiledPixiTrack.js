@@ -149,13 +149,10 @@ class TiledPixiTrack extends PixiTrack {
     // rerendering all rendering in the same version will have the same
     // scaling so tiles rendered in the same version will have the same
     // output. Mostly useful for heatmap tiles.
-    /** @type {number} */
     this.renderVersion = 1;
 
     // the tiles which should be visible (although they're not necessarily fetched)
-    /** @type {Array<Pick<Tile, 'tileId' |'remoteId' | 'mirrored'>>} */
-    this.visibleTiles = [];
-    /** @type {Set<string>} */
+    this.visibleTiles = new Set();
     this.visibleTileIds = new Set();
 
     // keep track of tiles that are currently being rendered
@@ -163,18 +160,14 @@ class TiledPixiTrack extends PixiTrack {
 
     // the tiles we already have requests out for
     this.fetching = new Set();
-    /** @type {Scale} */
     this.scale = {};
 
     // tiles we have fetched and ready to be rendered
-    /** @type {{[id: string]: Tile}} */
     this.fetchedTiles = {};
 
     // the graphics that have already been drawn for this track
-    /** @type {Object.<string, import('pixi.js').DisplayObject>} */
     this.tileGraphics = {};
 
-    /** @type {number} */
     this.maxZoom = 0;
     this.medianVisibleValue = null;
 
@@ -189,11 +182,8 @@ class TiledPixiTrack extends PixiTrack {
     this.valueScaleMax = null;
     this.fixedValueScaleMax = null;
 
-    /** @type {Object.<string, Array<Function>>} */
     this.listeners = {};
 
-    /** @type {import('pub-sub-es').PubSub & { __fake__?: boolean }} */
-    // @ts-expect-error This is always defined in Track.js
     this.pubSub = pubSub;
     this.animate = animate;
     this.onValueScaleChanged = onValueScaleChanged;
@@ -209,8 +199,6 @@ class TiledPixiTrack extends PixiTrack {
     }
 
     // To indicate that this track is requiring a tileset info
-    /** @type {TilesetInfo} */
-    // @ts-expect-error This has to be initialized to null
     this.tilesetInfo = null;
     this.uuid = slugid.nice();
 
@@ -234,23 +222,7 @@ class TiledPixiTrack extends PixiTrack {
     this.dataFetcher.tilesetInfo((tilesetInfo, tilesetUid) => {
       if (!tilesetInfo) return;
 
-      if (isTileSetInfo(tilesetInfo)) {
-        this.tilesetInfo = tilesetInfo;
-      } else {
-        // no tileset info for this track
-        console.warn(
-          'Error retrieving tilesetInfo:',
-          dataConfig,
-          tilesetInfo.error,
-        );
-
-        this.setError(tilesetInfo.error);
-        // Fritz: Not sure why it's reset
-        // this.trackNotFoundText = '';
-        this.tilesetInfo = undefined;
-        return;
-      }
-
+      this.tilesetInfo = tilesetInfo;
       // If the dataConfig contained a fileUrl, then
       // we need to update the tilesetUid based
       // on the registration of the fileUrl.
@@ -265,7 +237,23 @@ class TiledPixiTrack extends PixiTrack {
         this.chromInfo = parseChromsizesRows(this.tilesetInfo.chromsizes);
       }
 
-      if (isResolutionsTilesetInfo(this.tilesetInfo)) {
+      if ('error' in this.tilesetInfo) {
+        // no tileset info for this track
+        console.warn(
+          'Error retrieving tilesetInfo:',
+          dataConfig,
+          this.tilesetInfo.error,
+        );
+
+        // Fritz: Not sure why it's reset
+        // this.trackNotFoundText = '';
+        this.tilesetInfo = null;
+
+        this.setError(this.tilesetInfo.error);
+        return;
+      }
+
+      if (this.tilesetInfo.resolutions) {
         this.maxZoom = this.tilesetInfo.resolutions.length;
       } else {
         this.maxZoom = +this.tilesetInfo.max_zoom;
@@ -283,7 +271,6 @@ class TiledPixiTrack extends PixiTrack {
 
       if (handleTilesetInfoReceived) handleTilesetInfoReceived(tilesetInfo);
 
-      // @ts-expect-error This should never happen since options is set in Track
       if (!this.options) this.options = {};
 
       this.options.name = this.options.name || tilesetInfo.name;
