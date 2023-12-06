@@ -31,9 +31,16 @@ export function isLegacyTilesetInfo(info) {
 }
 
 /**
- * @param {import('../types').TilesetInfo | undefined} info
+ * @param {import('../types').TilesetInfo | undefined | {error: string}} info
  * @returns {info is import('../types').ResolutionsTilesetInfo}
  */
 export function isResolutionsTilesetInfo(info) {
   return isObject(info) && 'resolutions' in info;
+}
+/**
+ * @param {import('../types').TilesetInfo | undefined | {error: string}} info
+ * @returns {info is import('../types').TilesetInfo}
+ */
+export function isTileSetInfo(info) {
+  return isObject(info) && !('error' in info);
 }
