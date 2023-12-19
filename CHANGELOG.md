@@ -1,5 +1,9 @@
 # Release notes
 
+## In progress
+
+- fix: Disable logging unknown data types in console
+
 ## v1.13.3
 
 - Inject HiGlass CSS via JS, removing the need to include `hglib.css` in HTML templates.
