@@ -1,4 +1,5 @@
-// @ts-nocheck
+// @ts-check
+
 import { scaleLinear, scaleLog, scaleQuantile } from 'd3-scale';
 import { median, range, ticks } from 'd3-array';
 import slugid from 'slugid';
@@ -12,6 +13,7 @@ import backgroundTaskScheduler from './utils/background-task-scheduler';
 
 // Configs
 import { GLOBALS, ZOOM_DEBOUNCE } from './configs';
+import { isResolutionsTilesetInfo, isTileSetInfo } from './utils/type-guards';
 
 /**
  * Get a valueScale for a heatmap.
@@ -20,13 +22,13 @@ import { GLOBALS, ZOOM_DEBOUNCE } from './configs';
  *
  * @param {string} scalingType: The type of the (e.g. 'linear', or 'log')
  * @param {number} minValue: The minimum data value to which this scale will apply
- * @param {number} pseudocount: A value to add to all numbers to prevent taking the log of 0
+ * @param {number} pseudocountIn: A value to add to all numbers to prevent taking the log of 0
  * @param {number} maxValue: The maximum data value to which this scale will apply
  * @param {string} defaultScaling: The default scaling type to use in case
  * 'scalingType' is null (e.g. 'linear' or 'log')
  *
- * @returns {array} An array of [string, scale] containin the scale type
- *  and a scale with an appropriately set domain and range
+ * @returns {[string, import('d3-scale').ScaleLogarithmic<number, number> | import('d3-scale').ScaleLinear<number, number>]}
+ * An array of [string, scale] containing the scale type and a scale with an appropriately set domain and range
  */
 export function getValueScale(
   scalingType,
@@ -58,22 +60,83 @@ export function getValueScale(
   return ['linear', scaleLinear().range([254, 0]).domain([minValue, maxValue])];
 }
 
+/** @typedef {import('./types').TilesetInfo} TilesetInfo */
+
+/**
+ * @typedef Scale
+ * @property {number | null} [minValue]
+ * @property {number | null} [maxValue]
+ * @property {number | null} [maxRawValue]
+ * @property {number | null} [minRawValue]
+ */
+
+/**
+ * An alternative to Tile. Perhaps the worst data type. An array of numbers with some extra properties.
+ * @typedef {Array<number> & Pick<Tile, 'mirrored' | 'tilePositionId'>} TilePositionArrayObject
+ */
+
+/**
+ * @typedef Tile
+ * @property {string} tileId
+ * @property {TileData} tileData
+ * @property {string} remoteId
+ * @property {unknown} mirrored
+ * @property {string} tilePositionId
+ * @property {import("pixi.js").Graphics} graphics
+ */
+
+/**
+ * @typedef TileData
+ * @property {string} tilesetUid
+ * @property {number} zoomLevel
+ * @property {Array<number>} tilePos
+ * @property {string} error
+ * @property {Float32Array} dense
+ * @property {number} minNonZero
+ * @property {number} maxNonZero
+ */
+
+/**
+ * @typedef TiledPixiTrackContextBase
+ * @property {DataFetcher} dataFetcher
+ * @property {import('./types').DataConfig} dataConfig
+ * @property {function} animate A function to redraw this track. Typically called when an
+ *  asynchronous event occurs (i.e. tiles loaded)
+ * @property {() => void} onValueScaleChanged The range of values has changed so we need to inform
+ *  the higher ups that the value scale has changed. Only occurs on tracks with ``dense`` data.
+ * @property {function} handleTilesetInfoReceived A callback to do something once once the tileset
+ *  info is received. Usually it registers some information about the tileset with its definition
+ */
+/**
+ * @typedef {import('./PixiTrack').ExtendedPixiContext<TiledPixiTrackContextBase>} TiledPixiTrackContext
+ */
+
+/**
+ * @typedef TiledPixiTrackOptions
+ * @property {string} labelPosition - If the label is to be drawn, where should it be drawn?
+ * @property {string} labelText - What should be drawn in the label.
+ * @property {number} maxZoom
+ * @property {string} name
+ */
+
+/**
+ * @template T
+ * @typedef {T & TiledPixiTrackOptions} ExtendedTiledPixiTrackOptions
+ */
+
+/**
+ * The TiledPixiTrack requires an options parameter, which should be an object containing properties specified in
+ * TiledPixiTrackOptions. It is capable of accepting any property defined in any of its superclasses.
+ * @template {ExtendedTiledPixiTrackOptions<{[key: string]: any}>} Options
+ * @extends {PixiTrack<Options>}
+ * */
 class TiledPixiTrack extends PixiTrack {
   /**
-   * A track that must pull remote tiles
    *
-   * @param (PIXI.scene) scene A PIXI.js scene to draw everything to.
-   * @param (Object) dataConfig: A data source. Usually a
-   *  ``{{server: 'x/api/v1/', tilesetUuid: 'y'}}`` Object.
-   * @param {Object} handleTilesetInfoReceived: A callback to do something once once the tileset
-   *  info is received. Usually it registers some information about the tileset with its
-   * definition
-   * @param {Object} options The track's options
-   * @param {function} animate A function to redraw this track. Typically called when an
-   *  asynchronous event occurs (i.e. tiles loaded)
-   * @param {function} onValueScaleChanged The range of values has changed so we need to inform
-   *  the higher ups that the value scale has changed. Only occurs on tracks with ``dense`` data.
+   * @param {TiledPixiTrackContext} context
+   * @param {Options} options
    */
+
   constructor(context, options) {
     super(context, options);
     const {
@@ -88,10 +151,13 @@ class TiledPixiTrack extends PixiTrack {
     // rerendering all rendering in the same version will have the same
     // scaling so tiles rendered in the same version will have the same
     // output. Mostly useful for heatmap tiles.
+    /** @type {number} */
     this.renderVersion = 1;
 
     // the tiles which should be visible (although they're not necessarily fetched)
-    this.visibleTiles = new Set();
+    /** @type {Array<Pick<Tile, 'tileId' |'remoteId' | 'mirrored'>>} */
+    this.visibleTiles = [];
+    /** @type {Set<string>} */
     this.visibleTileIds = new Set();
 
     // keep track of tiles that are currently being rendered
@@ -99,14 +165,18 @@ class TiledPixiTrack extends PixiTrack {
 
     // the tiles we already have requests out for
     this.fetching = new Set();
+    /** @type {Scale} */
     this.scale = {};
 
     // tiles we have fetched and ready to be rendered
+    /** @type {{[id: string]: Tile}} */
     this.fetchedTiles = {};
 
     // the graphics that have already been drawn for this track
+    /** @type {Object.<string, import('pixi.js').DisplayObject>} */
     this.tileGraphics = {};
 
+    /** @type {number} */
     this.maxZoom = 0;
     this.medianVisibleValue = null;
 
@@ -121,8 +191,11 @@ class TiledPixiTrack extends PixiTrack {
     this.valueScaleMax = null;
     this.fixedValueScaleMax = null;
 
+    /** @type {Object.<string, Array<Function>>} */
     this.listeners = {};
 
+    /** @type {import('pub-sub-es').PubSub & { __fake__?: boolean }} */
+    // @ts-expect-error This is always defined in Track.js
     this.pubSub = pubSub;
     this.animate = animate;
     this.onValueScaleChanged = onValueScaleChanged;
@@ -138,6 +211,8 @@ class TiledPixiTrack extends PixiTrack {
     }
 
     // To indicate that this track is requiring a tileset info
+    /** @type {TilesetInfo} */
+    // @ts-expect-error This has to be initialized to null
     this.tilesetInfo = null;
     this.uuid = slugid.nice();
 
@@ -161,7 +236,23 @@ class TiledPixiTrack extends PixiTrack {
     this.dataFetcher.tilesetInfo((tilesetInfo, tilesetUid) => {
       if (!tilesetInfo) return;
 
-      this.tilesetInfo = tilesetInfo;
+      if (isTileSetInfo(tilesetInfo)) {
+        this.tilesetInfo = tilesetInfo;
+      } else {
+        // no tileset info for this track
+        console.warn(
+          'Error retrieving tilesetInfo:',
+          dataConfig,
+          tilesetInfo.error,
+        );
+
+        this.setError(tilesetInfo.error);
+        // Fritz: Not sure why it's reset
+        // this.trackNotFoundText = '';
+        this.tilesetInfo = undefined;
+        return;
+      }
+
       // If the dataConfig contained a fileUrl, then
       // we need to update the tilesetUid based
       // on the registration of the fileUrl.
@@ -176,23 +267,7 @@ class TiledPixiTrack extends PixiTrack {
         this.chromInfo = parseChromsizesRows(this.tilesetInfo.chromsizes);
       }
 
-      if ('error' in this.tilesetInfo) {
-        // no tileset info for this track
-        console.warn(
-          'Error retrieving tilesetInfo:',
-          dataConfig,
-          this.tilesetInfo.error,
-        );
-
-        // Fritz: Not sure why it's reset
-        // this.trackNotFoundText = '';
-        this.tilesetInfo = null;
-
-        this.setError(this.tilesetInfo.error);
-        return;
-      }
-
-      if (this.tilesetInfo.resolutions) {
+      if (isResolutionsTilesetInfo(this.tilesetInfo)) {
         this.maxZoom = this.tilesetInfo.resolutions.length;
       } else {
         this.maxZoom = +this.tilesetInfo.max_zoom;
@@ -210,6 +285,7 @@ class TiledPixiTrack extends PixiTrack {
 
       if (handleTilesetInfoReceived) handleTilesetInfoReceived(tilesetInfo);
 
+      // @ts-expect-error This should never happen since options is set in Track
       if (!this.options) this.options = {};
 
       this.options.name = this.options.name || tilesetInfo.name;
@@ -222,17 +298,20 @@ class TiledPixiTrack extends PixiTrack {
     });
   }
 
+  /** @param {string} error */
   setError(error) {
     this.errorTextText = error;
     this.draw();
     this.animate();
   }
 
+  /** @param {number | string} value */
   setFixedValueScaleMin(value) {
     if (!Number.isNaN(+value)) this.fixedValueScaleMin = +value;
     else this.fixedValueScaleMin = null;
   }
 
+  /** @param {number | string} value */
   setFixedValueScaleMax(value) {
     if (!Number.isNaN(+value)) this.fixedValueScaleMax = +value;
     else this.fixedValueScaleMax = null;
@@ -279,6 +358,11 @@ class TiledPixiTrack extends PixiTrack {
 
     this.listeners[event].push(callback);
   }
+  /**
+   * @param {string} event The event to listen for
+   * @param {function} callback The callback to call when the event occurs. The
+   *  parameters for the event depend on the event called.
+   */
 
   off(event, callback) {
     const id = this.listeners[event].indexOf(callback);
@@ -287,6 +371,7 @@ class TiledPixiTrack extends PixiTrack {
     this.listeners[event].splice(id, 1);
   }
 
+  /** @param {Options} options */
   rerender(options) {
     super.rerender(options);
 
@@ -298,7 +383,7 @@ class TiledPixiTrack extends PixiTrack {
 
     this.checkValueScaleLimits();
 
-    if (this.tilesetInfo.resolutions) {
+    if (isResolutionsTilesetInfo(this.tilesetInfo)) {
       this.maxZoom = this.tilesetInfo.resolutions.length;
     } else {
       this.maxZoom = +this.tilesetInfo.max_zoom;
@@ -329,12 +414,13 @@ class TiledPixiTrack extends PixiTrack {
   /**
    * Set which tiles are visible right now.
    *
-   * @param tiles: A set of tiles which will be considered the currently visible
-   * tile positions.
+   * @param {Array<TilePositionArrayObject>} tilePositions
    */
   setVisibleTiles(tilePositions) {
     this.visibleTiles = tilePositions.map((x) => ({
+      // @ts-expect-error Classes which extend TiledPixiTrack have this
       tileId: this.tileToLocalId(x),
+      // @ts-expect-error Classes which extend TiledPixiTrack have this
       remoteId: this.tileToRemoteId(x),
       mirrored: x.mirrored,
     }));
@@ -343,6 +429,7 @@ class TiledPixiTrack extends PixiTrack {
   }
 
   removeOldTiles() {
+    // @ts-expect-error Classes which extend TiledPixiTrack have this
     this.calculateVisibleTiles();
 
     // tiles that are fetched
@@ -361,7 +448,7 @@ class TiledPixiTrack extends PixiTrack {
     if (!this.tilesetInfo) {
       return;
     }
-
+    // @ts-expect-error Classes which extend TiledPixiTrack have this
     this.calculateVisibleTiles();
 
     // tiles that are fetched
@@ -381,6 +468,7 @@ class TiledPixiTrack extends PixiTrack {
     this.fetchNewTiles(toFetch);
   }
 
+  /** @param {Tile} tile */
   parentInFetched(tile) {
     const uid = tile.tileData.tilesetUid;
     let zl = tile.tileData.zoomLevel;
@@ -399,6 +487,7 @@ class TiledPixiTrack extends PixiTrack {
     return false;
   }
 
+  /** @param {Tile} tile */
   parentTileId(tile) {
     const parentZoomLevel = tile.tileData.zoomLevel - 1;
     const parentPos = tile.tileData.tilePos.map((x) => Math.floor(x / 2));
@@ -410,7 +499,7 @@ class TiledPixiTrack extends PixiTrack {
   /**
    * Remove obsolete tiles
    *
-   * @param toRemoveIds: An array of tile ids to remove from the list of fetched tiles.
+   * @param {Array<string>} toRemoveIds: An array of tile ids to remove from the list of fetched tiles.
    */
   removeTiles(toRemoveIds) {
     // if there's nothing to remove, don't bother doing anything
@@ -438,10 +527,15 @@ class TiledPixiTrack extends PixiTrack {
     this.draw();
   }
 
+  /**
+   * @param {import('./types').Scale} newXScale
+   * @param {import('./types').Scale} newYScale
+   */
   zoomed(newXScale, newYScale, k = 1, tx = 0, ty = 0) {
     this.xScale(newXScale);
     this.yScale(newYScale);
 
+    // @ts-expect-error Not sure why this is called without an argument
     this.refreshTilesDebounced();
 
     this.pMobile.position.x = tx;
@@ -451,12 +545,14 @@ class TiledPixiTrack extends PixiTrack {
     this.pMobile.scale.y = 1;
   }
 
+  /** @param {[number, number]} newPosition */
   setPosition(newPosition) {
     super.setPosition(newPosition);
 
     // this.draw();
   }
 
+  /** @param {[number, number]} newDimensions */
   setDimensions(newDimensions) {
     super.setDimensions(newDimensions);
 
@@ -489,6 +585,7 @@ class TiledPixiTrack extends PixiTrack {
    */
   allTilesLoaded() {}
 
+  /** @param {number} _ */
   minValue(_) {
     if (_) {
       this.scale.minValue = _;
@@ -499,6 +596,7 @@ class TiledPixiTrack extends PixiTrack {
       : this.scale.minValue;
   }
 
+  /** @param {number} _ */
   maxValue(_) {
     if (_) {
       this.scale.maxValue = _;
@@ -521,7 +619,8 @@ class TiledPixiTrack extends PixiTrack {
     return this.scale.maxRawValue;
   }
 
-  initTile(/* tile */) {
+  /** @param {Tile} tile */
+  initTile(tile) {
     // create the tile
     // should be overwritten by child classes
     this.scale.minRawValue = this.continuousScaling
@@ -535,9 +634,11 @@ class TiledPixiTrack extends PixiTrack {
     this.scale.maxValue = this.scale.maxRawValue;
   }
 
-  updateTile(/* tile */) {}
+  /** @param {Tile} tile */
+  updateTile(tile) {}
 
-  destroyTile(/* tile */) {
+  /** @param {Tile} tile */
+  destroyTile(tile) {
     // remove all data structures needed to draw this tile
   }
 
@@ -600,6 +701,20 @@ class TiledPixiTrack extends PixiTrack {
     }
   }
 
+  /**
+   * @typedef TiledAreaTile
+   * @property {string} tileId
+   * @property {string} type
+   * @property {unknown} data
+   */
+
+  /**
+   *
+   * @param {TiledAreaTile} tile A tile returned by a TiledArea.
+   * @param {function} dataLoader A function for extracting drawable data from a tile. This
+   * usually means differentiating the between dense and sparse tiles and putting the data into an array.
+   * @returns
+   */
   loadTileData(tile, dataLoader) {
     /**
      * Extract drawable data from a tile loaded by a generic tile loader
@@ -611,17 +726,20 @@ class TiledPixiTrack extends PixiTrack {
      */
 
     // see if the data is already cached
+    // @ts-expect-error this.lruCache exists in classes that extend this one
     let loadedTileData = this.lruCache.get(tile.tileId);
 
     // if not, load it and put it in the cache
     if (!loadedTileData) {
       loadedTileData = dataLoader(tile.data, tile.type);
+      // @ts-expect-error this.lruCache exists in classes that extend this one
       this.lruCache.put(tile.tileId, loadedTileData);
     }
 
     return loadedTileData;
   }
 
+  /** @param {Pick<Tile,'remoteId'>[]} toFetch */
   fetchNewTiles(toFetch) {
     if (toFetch.length > 0) {
       const toFetchList = [...new Set(toFetch.map((x) => x.remoteId))];
@@ -637,6 +755,7 @@ class TiledPixiTrack extends PixiTrack {
    * We've gotten a bunch of tiles from the server in
    * response to a request from fetchTiles.
    */
+  /** @param {Object<string, import('./data-fetchers/DataFetcher').DividedTile | Tile | TilePositionArrayObject>} loadedTiles */
   receivedTiles(loadedTiles) {
     for (let i = 0; i < this.visibleTiles.length; i++) {
       const { tileId } = this.visibleTiles[i];
@@ -646,6 +765,7 @@ class TiledPixiTrack extends PixiTrack {
       if (this.visibleTiles[i].remoteId in loadedTiles) {
         if (!(tileId in this.fetchedTiles)) {
           // this tile may have graphics associated with it
+          // @ts-expect-error more properties will be added to this.fetchedTiles[tileId] later (such as by synchronizeTilesAndGraphics())
           this.fetchedTiles[tileId] = this.visibleTiles[i];
         }
 
@@ -655,14 +775,17 @@ class TiledPixiTrack extends PixiTrack {
         // object but an object array...
         if (Array.isArray(loadedTiles[this.visibleTiles[i].remoteId])) {
           const tileData = loadedTiles[this.visibleTiles[i].remoteId];
+          // @ts-expect-error this.fetchedTiles[tileId].tileData will get more defined in the next lines
           this.fetchedTiles[tileId].tileData = [...tileData];
           // Fritz: this is sooo hacky... we should really not use object arrays
           Object.keys(tileData)
             .filter((key) => Number.isNaN(+key))
             .forEach((key) => {
+              // @ts-expect-error Since tileData is an array, the properties have to be copied over manually
               this.fetchedTiles[tileId].tileData[key] = tileData[key];
             });
         } else {
+          // @ts-expect-error The object doesn't at this point have all of the properties that it will have later
           this.fetchedTiles[tileId].tileData = {
             ...loadedTiles[this.visibleTiles[i].remoteId],
           };
@@ -701,12 +824,15 @@ class TiledPixiTrack extends PixiTrack {
 
     // Let HiGlass know we need to re-render
     // check if the value scale has changed
+    // @ts-expect-error This is defined by classes which extend this one
     if (this.valueScale) {
       if (
         !this.prevValueScale ||
+        // @ts-expect-error This is defined by classes which extend this one
         JSON.stringify(this.valueScale.domain()) !==
           JSON.stringify(this.prevValueScale.domain())
       ) {
+        // @ts-expect-error This is defined by classes which extend this one
         this.prevValueScale = this.valueScale.copy();
 
         if (this.onValueScaleChanged) {
@@ -781,8 +907,9 @@ class TiledPixiTrack extends PixiTrack {
 
   /**
    * Draw a tile on some graphics
+   * @param {Tile} tile
    */
-  drawTile(/* tileData, graphics */) {}
+  drawTile(tile) {}
 
   calculateMedianVisibleValue() {
     if (this.areAllVisibleTilesLoaded()) {
@@ -795,7 +922,11 @@ class TiledPixiTrack extends PixiTrack {
       visibleAndFetchedIds = Object.keys(this.fetchedTiles);
     }
 
-    const values = []
+    // Get all of the dense values in the currently visible tiles
+    /** @type {number[]} */
+    let values = [];
+
+    values = values
       .concat(
         ...visibleAndFetchedIds
           .filter((x) => this.fetchedTiles[x].tileData.dense)
@@ -808,7 +939,10 @@ class TiledPixiTrack extends PixiTrack {
   }
 
   allVisibleValues() {
-    return [].concat(
+    /** @type {number[]} */
+    const values = [];
+
+    return values.concat(
       ...this.visibleAndFetchedIds().map((x) =>
         Array.from(this.fetchedTiles[x].tileData.dense),
       ),
@@ -829,6 +963,7 @@ class TiledPixiTrack extends PixiTrack {
       visibleAndFetchedIds = Object.keys(this.fetchedTiles);
     }
 
+    /** @type {number | null} */
     let min = Math.min(
       ...visibleAndFetchedIds.map(
         (x) => this.fetchedTiles[x].tileData.minNonZero,
@@ -858,7 +993,7 @@ class TiledPixiTrack extends PixiTrack {
     if (visibleAndFetchedIds.length === 0) {
       visibleAndFetchedIds = Object.keys(this.fetchedTiles);
     }
-
+    /** @type {number | null} */
     let max = Math.max(
       ...visibleAndFetchedIds.map(
         (x) => this.fetchedTiles[x].tileData.maxNonZero,
@@ -875,25 +1010,19 @@ class TiledPixiTrack extends PixiTrack {
     return this.valueScaleMax !== null ? this.valueScaleMax : max;
   }
 
+  /**
+   * Create a value scale that will be used to position values
+   * along the y axis.
+   * @param {number} minValue The minimum value of the data
+   * @param {number} medianValue The median value of the data. Potentially used for adding a pseudocount
+   * @param {number} maxValue The maximum value of the data
+   * @param {number} inMargin A number of pixels to be left free on the top and bottom
+   *    of the track. For example if the glyphs have a certain
+   *    width and we want all of them to fit into the space
+   * @returns
+   */
   makeValueScale(minValue, medianValue, maxValue, inMargin) {
     /*
-     * Create a value scale that will be used to position values
-     * along the y axis.
-     *
-     * Parameters
-     * ----------
-     *  minValue: number
-     *    The minimum value of the data
-     *  medianValue: number
-     *    The median value of the data. Potentially used for adding
-     *    a pseudocount
-     *  maxValue: number
-     *    The maximum value of the data
-     *  margin: number
-     *    A number of pixels to be left free on the top and bottom
-     *    of the track. For example if the glyphs have a certain
-     *    width and we want all of them to fit into the space.
-     *
      * Returns
      * -------
      *  valueScale: d3.scale
@@ -935,6 +1064,7 @@ class TiledPixiTrack extends PixiTrack {
     } else if (this.options.valueScaling === 'quantile') {
       const start = this.dimensions[1] - margin;
       const end = margin;
+      /** @type {import('d3-scale').ScaleQuantile<number, never> & { ticks?: (count: number) => number[] }} */
       const quantScale = scaleQuantile()
         .domain(this.allVisibleValues())
         .range(range(start, end, (end - start) / 256));
@@ -945,6 +1075,7 @@ class TiledPixiTrack extends PixiTrack {
       const start = this.dimensions[1] - margin;
       const end = margin;
       const s = new Set(this.allVisibleValues());
+      /** @type {import('d3-scale').ScaleQuantile<number, never> & { ticks?: (count: number) => number[] }} */
       const quantScale = scaleQuantile()
         .domain([...s])
         .range(range(start, end, (end - start) / 256));

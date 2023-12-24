@@ -15,8 +15,8 @@ import { tileProxy } from '../services';
 /** @typedef {import('../types').DataConfig} DataConfig */
 /** @typedef {import('../types').TilesetInfo} TilesetInfo */
 /**
- * @template T
- * @typedef {import('../types').AbstractDataFetcher<T>} AbstractDataFetcher
+ * @template T, B
+ * @typedef {import('../types').AbstractDataFetcher<T, B>} AbstractDataFetcher
  */
 
 /**
@@ -49,7 +49,7 @@ function isTuple(x) {
   return x.length === 2;
 }
 
-/** @implements {AbstractDataFetcher<Tile | DividedTile>} */
+/** @implements {AbstractDataFetcher<Tile | DividedTile, ResolvedDataConfig>} */
 export default class DataFetcher {
   /**
    * @param {import('../types').DataConfig} dataConfig
