@@ -1,6 +1,6 @@
 # Release notes
 
-## In progress
+## v.1.13.4
 
 - fix: Disable logging unknown data types in console
 
