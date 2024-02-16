@@ -697,7 +697,6 @@ async function json(url, callback, pubSub) {
 /**
  * Request a tilesetInfo for a track
  *
- * @param options: The options for the request
  * @param {string} server: The server where the data resides
  * @param {string} tilesetUid: The identifier for the dataset
  * @param {func} doneCb: A callback that gets called when the data is retrieved
