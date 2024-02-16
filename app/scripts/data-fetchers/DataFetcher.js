@@ -18,6 +18,10 @@ import {
   calculateTileAndPosInTile,
 } from '../services/tile-proxy';
 
+/** 
+ * @template T
+ * @typedef {import('../types').Fetcher<T>} Fetcher
+ */
 /** @typedef {import('../types').DataConfig} DataConfig */
 /** @typedef {import('../types').TilesetInfo} TilesetInfo */
 /**
@@ -55,15 +59,50 @@ function isTuple(x) {
   return x.length === 2;
 }
 
+/** @type {Fetcher<Tile>} */
+let DEFAULT_FETCHER = {
+  tiles({ request, pubSub }) {
+    return new Promise((done) => {
+      tileProxy.fetchTilesDebounced({ ...request, done }, pubSub, true);
+    });
+  },
+  info({ server, tilesetUid, pubSub }) {
+    return new Promise((resolve, reject) => {
+      return tileProxy.trackInfo(server, tilesetUid, resolve, reject, pubSub);
+    })
+  },
+  register({ server, url, filetype, coordSystem }) {
+    const serverUrl = `${tts(server)}/register_url/`;
+    const payload = {
+      fileurl: url,
+      filetype,
+      coordSystem,
+    };
+    return fetch(serverUrl, {
+      method: 'POST',
+      body: JSON.stringify(payload),
+      headers: {
+        'Content-Type': 'application/json; charset=utf-8',
+      },
+    });
+  }
+}
+
 /** @implements {AbstractDataFetcher<Tile | DividedTile>} */
 export default class DataFetcher {
+  /** @type {Fetcher<Tile>} */
+  #fetcher;
+
   /**
    * @param {import('../types').DataConfig} dataConfig
    * @param {import('pub-sub-es').PubSub} pubSub
+   * @param {Fetcher<Tile>} fetcher
    */
-  constructor(dataConfig, pubSub) {
+  constructor(dataConfig, pubSub, fetcher = DEFAULT_FETCHER) {
     /** @type {boolean} */
     this.tilesetInfoLoading = true;
+
+    this.#fetcher = fetcher;
 
     if (!dataConfig) {
       // Trevor: This should probably throw?
@@ -101,21 +140,7 @@ export default class DataFetcher {
    * @param {string=} opts.coordSystem - The coordinate system being served (e.g. 'hg38')
    */
   async registerFileUrl({ server, url, filetype, coordSystem }) {
-    const serverUrl = `${tts(server)}/register_url/`;
-
-    const payload = {
-      fileurl: url,
-      filetype,
-      coordSystem,
-    };
-
-    return fetch(serverUrl, {
-      method: 'POST',
-      body: JSON.stringify(payload),
-      headers: {
-        'Content-Type': 'application/json; charset=utf-8',
-      },
-    });
+    return this.#fetcher.register({ server, url, filetype, coordSystem });
   }
 
   /**
@@ -166,22 +191,17 @@ export default class DataFetcher {
         );
         finished(null);
       } else {
-        // pass in the callback
-        trackInfo(
-          server,
-          tilesetUid,
-          (/** @type {Record<string, TilesetInfo>} */ tilesetInfo) => {
+        this.#fetcher.info({ server, tilesetUid, pubSub: this.pubSub })
+          .then((tilesetInfo) => {
             // tileset infos are indxed by by tilesetUids, we can just resolve
             // that here before passing it back to the track
             this.dataConfig.tilesetInfo = tilesetInfo[tilesetUid];
             finished(tilesetInfo[tilesetUid], tilesetUid);
-          },
-          (/** @type {string} */ error) => {
+          })
+          .catch((error) => {
             this.tilesetInfoLoading = false;
             finished({ error });
-          },
-          this.pubSub,
-        );
+          });
       }
     } else {
       // this data source has children, so we need to wait to get
@@ -238,18 +258,14 @@ export default class DataFetcher {
     if (!this.dataConfig.children && this.dataConfig.tilesetUid) {
       // no children, just return the fetched tiles as is
       /** @type {Promise<Record<string, Tile>>} */
-      const promise = new Promise((resolve) => {
-        fetchTilesDebounced(
-          {
+      const promise = this.#fetcher.tiles({
+        request: {
             id: slugid.nice(),
             server: this.dataConfig.server,
-            done: resolve,
             ids: tileIds.map((x) => `${this.dataConfig.tilesetUid}.${x}`),
             options: this.dataConfig.options,
-          },
-          this.pubSub,
-          true,
-        );
+        },
+        pubSub: this.pubSub,
       });
 
       return promise.then((returnedTiles) => {
