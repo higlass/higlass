@@ -141,15 +141,31 @@ export interface AbstractDataFetcher<TileType> {
   ): Promise<Record<string, TileType>>;
 }
 
-type TileRequest = {
+// Tileset API
+
+type TilesRequest = {
   id: string;
   server?: string;
-  ids: string[];
-  options: unknown;
-}
+  tileIds: string[];
+  options?: unknown;
+};
 
-export type Fetcher<T> = {
-  tiles: (opts: { request: TileRequest, pubSub: import("pub-sub-es").PubSub }) => Promise<Record<string, T>>;
-  info: (opts: { server: string; tilesetUid: string, pubSub?: import("pub-sub-es").PubSub }) => Promise<Record<string, TilesetInfo>>;
-  register: (opts: { server: string, url: string, filetype: string, coordSystem?: string }) => Promise<Response>;
-}
+type TilesetInfoRequest = {
+  server: string;
+  tilesetUid: string;
+};
+
+type RegisterTilesetRequest = {
+  server: string;
+  url: string;
+  filetype: string;
+  coordSystem?: string;
+};
+
+export type TileSource<T> = {
+  fetchTiles: (request: TilesRequest) => Promise<Record<string, T>>;
+  fetchTilesetInfo: (
+    request: TilesetInfoRequest,
+  ) => Promise<Record<string, TilesetInfo>>;
+  registerTileset: (request: RegisterTilesetRequest) => Promise<Response>;
+};

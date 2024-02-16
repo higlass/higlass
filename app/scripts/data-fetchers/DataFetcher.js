@@ -18,15 +18,15 @@ import {
   calculateTileAndPosInTile,
 } from '../services/tile-proxy';
 
-/** 
- * @template T
- * @typedef {import('../types').Fetcher<T>} Fetcher
- */
 /** @typedef {import('../types').DataConfig} DataConfig */
 /** @typedef {import('../types').TilesetInfo} TilesetInfo */
 /**
  * @template T
  * @typedef {import('../types').AbstractDataFetcher<T>} AbstractDataFetcher
+ */
+/**
+ * @template T
+ * @typedef {import('../types').TileSource<T>} TileSource
  */
 
 /**
@@ -59,50 +59,55 @@ function isTuple(x) {
   return x.length === 2;
 }
 
-/** @type {Fetcher<Tile>} */
-let DEFAULT_FETCHER = {
-  tiles({ request, pubSub }) {
-    return new Promise((done) => {
-      tileProxy.fetchTilesDebounced({ ...request, done }, pubSub, true);
-    });
-  },
-  info({ server, tilesetUid, pubSub }) {
-    return new Promise((resolve, reject) => {
-      return tileProxy.trackInfo(server, tilesetUid, resolve, reject, pubSub);
-    })
-  },
-  register({ server, url, filetype, coordSystem }) {
-    const serverUrl = `${tts(server)}/register_url/`;
-    const payload = {
-      fileurl: url,
-      filetype,
-      coordSystem,
-    };
-    return fetch(serverUrl, {
-      method: 'POST',
-      body: JSON.stringify(payload),
-      headers: {
-        'Content-Type': 'application/json; charset=utf-8',
-      },
-    });
-  }
+/**
+ * @param {import("pub-sub-es").PubSub} pubSub
+ * @returns {TileSource<Tile>}
+ */
+function createDefaultTileSource(pubSub) {
+  return {
+    fetchTiles(request) {
+      let ids = request.tileIds;
+      return new Promise((done, _reject) => {
+        tileProxy.fetchTilesDebounced({ ...request, ids, done }, pubSub, true);
+      });
+    },
+    fetchTilesetInfo({ server, tilesetUid }) {
+      return new Promise((resolve, reject) => {
+        return tileProxy.trackInfo(server, tilesetUid, resolve, reject, pubSub);
+      });
+    },
+    registerTileset({ server, url, filetype, coordSystem }) {
+      const serverUrl = `${tts(server)}/register_url/`;
+      const payload = {
+        fileurl: url,
+        filetype,
+        coordSystem,
+      };
+      return fetch(serverUrl, {
+        method: 'POST',
+        body: JSON.stringify(payload),
+        headers: {
+          'Content-Type': 'application/json; charset=utf-8',
+        },
+      });
+    },
+  };
 }
 
 /** @implements {AbstractDataFetcher<Tile | DividedTile>} */
 export default class DataFetcher {
-  /** @type {Fetcher<Tile>} */
-  #fetcher;
+  /** @type {TileSource<Tile>} */
+  #tileSource;
 
   /**
    * @param {import('../types').DataConfig} dataConfig
    * @param {import('pub-sub-es').PubSub} pubSub
-   * @param {Fetcher<Tile>} fetcher
+   * @param {TileSource<Tile>} [tileSource]
    */
-  constructor(dataConfig, pubSub, fetcher = DEFAULT_FETCHER) {
+  constructor(dataConfig, pubSub, tileSource) {
+    this.#tileSource = tileSource || createDefaultTileSource(pubSub);
     /** @type {boolean} */
     this.tilesetInfoLoading = true;
-
-    this.#fetcher = fetcher;
 
     if (!dataConfig) {
       // Trevor: This should probably throw?
@@ -140,7 +145,12 @@ export default class DataFetcher {
    * @param {string=} opts.coordSystem - The coordinate system being served (e.g. 'hg38')
    */
   async registerFileUrl({ server, url, filetype, coordSystem }) {
-    return this.#fetcher.register({ server, url, filetype, coordSystem });
+    return this.#tileSource.registerTileset({
+      server,
+      url,
+      filetype,
+      coordSystem,
+    });
   }
 
   /**
@@ -191,7 +201,8 @@ export default class DataFetcher {
         );
         finished(null);
       } else {
-        this.#fetcher.info({ server, tilesetUid, pubSub: this.pubSub })
+        this.#tileSource
+          .fetchTilesetInfo({ server, tilesetUid })
           .then((tilesetInfo) => {
             // tileset infos are indxed by by tilesetUids, we can just resolve
             // that here before passing it back to the track
@@ -257,31 +268,28 @@ export default class DataFetcher {
 
     if (!this.dataConfig.children && this.dataConfig.tilesetUid) {
       // no children, just return the fetched tiles as is
-      /** @type {Promise<Record<string, Tile>>} */
-      const promise = this.#fetcher.tiles({
-        request: {
-            id: slugid.nice(),
-            server: this.dataConfig.server,
-            ids: tileIds.map((x) => `${this.dataConfig.tilesetUid}.${x}`),
-            options: this.dataConfig.options,
+      const promise = this.#tileSource.fetchTiles({
+        id: slugid.nice(),
+        server: this.dataConfig.server,
+        tileIds: tileIds.map((x) => `${this.dataConfig.tilesetUid}.${x}`),
+        options: this.dataConfig.options,
+      });
+      return /** @type {Promise<Record<string, Tile>>} */ (promise).then(
+        (returnedTiles) => {
+          const tilesetUid = dictValues(returnedTiles)[0].tilesetUid;
+          /** @type {Record<string, Tile>} */
+          const newTiles = {};
+
+          for (let i = 0; i < tileIds.length; i++) {
+            const fullTileId = this.fullTileId(tilesetUid, tileIds[i]);
+
+            returnedTiles[fullTileId].tilePositionId = tileIds[i];
+            newTiles[tileIds[i]] = returnedTiles[fullTileId];
+          }
+          receivedTiles(newTiles);
+          return newTiles;
         },
-        pubSub: this.pubSub,
-      });
-
-      return promise.then((returnedTiles) => {
-        const tilesetUid = dictValues(returnedTiles)[0].tilesetUid;
-        /** @type {Record<string, Tile>} */
-        const newTiles = {};
-
-        for (let i = 0; i < tileIds.length; i++) {
-          const fullTileId = this.fullTileId(tilesetUid, tileIds[i]);
-
-          returnedTiles[fullTileId].tilePositionId = tileIds[i];
-          newTiles[tileIds[i]] = returnedTiles[fullTileId];
-        }
-        receivedTiles(newTiles);
-        return newTiles;
-      });
+      );
     }
 
     // multiple child tracks, need to wait for all of them to
@@ -347,12 +355,12 @@ export default class DataFetcher {
   /**
    * Extract a slice from a matrix at a given position.
    *
-   * @param {Array<number>} inputData - An array containing a matrix stored row-wise
+   * @param {Array<number> | Float32Array} inputData - An array containing a matrix stored row-wise
    * @param {Array<number>} arrayShape - The shape of the array, should be a
    *  two element array e.g. [256,256].
    * @param {number} sliceIndex - The index across which to take the slice
    * @param {number=} axis - The axis along which to take the slice
-   * @returns {Array<number>} an array corresponding to a slice of this matrix
+   * @returns {Array<number> | Float32Array} an array corresponding to a slice of this matrix
    */
   extractDataSlice(inputData, arrayShape, sliceIndex, axis) {
     if (!axis) {
@@ -441,18 +449,12 @@ export default class DataFetcher {
     }
 
     // actually fetch the new tileIds
-    const promise = new Promise((resolve) => {
-      fetchTilesDebounced(
-        {
-          id: slugid.nice(),
-          server: this.dataConfig.server,
-          done: resolve,
-          ids: newTileIds.map((x) => `${this.dataConfig.tilesetUid}.${x}`),
-        },
-        this.pubSub,
-        true,
-      );
+    const promise = this.#tileSource.fetchTiles({
+      id: slugid.nice(),
+      server: this.dataConfig.server,
+      tileIds: newTileIds.map((x) => `${this.dataConfig.tilesetUid}.${x}`),
     });
+
     return promise.then((returnedTiles) => {
       // we've received some new tiles, but they're 2D
       // we need to extract the row corresponding to the data we need
@@ -511,8 +513,8 @@ export default class DataFetcher {
         }
 
         const newTile = {
-          min_value: Math.min.apply(null, dataSlice),
-          max_value: Math.max.apply(null, dataSlice),
+          min_value: Math.min(...dataSlice),
+          max_value: Math.max(...dataSlice),
           denseDataExtrema: new DenseDataExtrema1D(dataSlice),
           minNonZero: minNonZero(dataSlice),
           maxNonZero: maxNonZero(dataSlice),
