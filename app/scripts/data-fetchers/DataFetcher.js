@@ -66,14 +66,14 @@ function isTuple(x) {
 function createDefaultTileSource(pubSub) {
   return {
     fetchTiles(request) {
-      let ids = request.tileIds;
+      const ids = request.tileIds;
       return new Promise((done, _reject) => {
         tileProxy.fetchTilesDebounced({ ...request, ids, done }, pubSub, true);
       });
     },
     fetchTilesetInfo({ server, tilesetUid }) {
       return new Promise((resolve, reject) => {
-        return tileProxy.trackInfo(server, tilesetUid, resolve, reject, pubSub);
+        tileProxy.trackInfo(server, tilesetUid, resolve, reject, pubSub);
       });
     },
     registerTileset({ server, url, filetype, coordSystem }) {
