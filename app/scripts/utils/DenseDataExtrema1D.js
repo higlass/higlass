@@ -1,4 +1,4 @@
-import { NUM_PRECOMP_SUBSETS_PER_1D_TTILE } from '../configs';
+import { NUM_PRECOMP_SUBSETS_PER_1D_TTILE } from '../configs/dense-data-extrema-config';
 
 class DenseDataExtrema1D {
   /**

@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { toVoid } from '../utils';
+import toVoid from '../utils/to-void';
 
 const fake = {
   __fake__: true,

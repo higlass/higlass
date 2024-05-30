@@ -1,16 +1,16 @@
 import slugid from 'slugid';
 import { scaleLinear } from 'd3-scale';
-import {
-  trimTrailingSlash as tts,
-  dictValues,
-  minNonZero,
-  maxNonZero,
-  DenseDataExtrema1D,
-  DenseDataExtrema2D,
-} from '../utils';
+
+// Utils
+import tts from '../utils/trim-trailing-slash';
+import dictValues from '../utils/dict-values';
+import minNonZero from '../utils/min-non-zero';
+import maxNonZero from '../utils/max-non-zero';
+import DenseDataExtrema1D from '../utils/DenseDataExtrema1D';
+import DenseDataExtrema2D from '../utils/DenseDataExtrema2D';
 
 // Services
-import { tileProxy } from '../services';
+import tileProxy from '../services/tile-proxy';
 
 export default class DataFetcher {
   constructor(dataConfig, pubSub) {

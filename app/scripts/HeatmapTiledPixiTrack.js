@@ -4,30 +4,28 @@ import { format } from 'd3-format';
 import { scaleLinear } from 'd3-scale';
 import { select } from 'd3-selection';
 import slugid from 'slugid';
-import {
-  colorToRgba,
-  absToChr,
-  colorDomainToRgbaArray,
-  colorToHex,
-  download,
-  ndarrayAssign,
-  ndarrayFlatten,
-  objVals,
-  showMousePosition,
-  valueToColor,
-} from './utils';
+
+// Utils
+import colorToRgba from './utils/color-to-rgba';
+import absToChr from './utils/abs-to-chr';
+import colorDomainToRgbaArray from './utils/color-domain-to-rgba-array';
+import colorToHex from './utils/color-to-hex';
+import { download } from './utils/download';
+import ndarrayAssign from './utils/ndarray-assign';
+import ndarrayFlatten from './utils/ndarray-flatten';
+import objVals from './utils/obj-vals';
+import showMousePosition from './utils/show-mouse-position';
+import valueToColor from './utils/value-to-color';
 
 import TiledPixiTrack, { getValueScale } from './TiledPixiTrack';
 import AxisPixi from './AxisPixi';
 
 // Services
-import { tileProxy } from './services';
+import tileProxy from './services/tile-proxy';
 
-import {
-  GLOBALS,
-  HEATED_OBJECT_MAP,
-  NUM_PRECOMP_SUBSETS_PER_2D_TTILE,
-} from './configs';
+import GLOBALS from './configs/globals';
+import { NUM_PRECOMP_SUBSETS_PER_2D_TTILE } from './configs/dense-data-extrema-config';
+import { HEATED_OBJECT_MAP } from './configs/colormaps';
 
 const COLORBAR_MAX_HEIGHT = 200;
 const COLORBAR_WIDTH = 10;

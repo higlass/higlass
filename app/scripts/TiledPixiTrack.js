@@ -2,15 +2,17 @@ import { scaleLinear, scaleLog, scaleQuantile } from 'd3-scale';
 import { median, range, ticks } from 'd3-array';
 import slugid from 'slugid';
 
-import { DataFetcher } from './data-fetchers';
+import DataFetcher from './data-fetchers/DataFetcher';
 import PixiTrack from './PixiTrack';
 
 // Utils
-import { throttleAndDebounce, parseChromsizesRows } from './utils';
+import throttleAndDebounce from './utils/throttle-and-debounce';
+import parseChromsizesRows from './utils/parse-chromsizes-rows';
 import backgroundTaskScheduler from './utils/background-task-scheduler';
 
 // Configs
-import { GLOBALS, ZOOM_DEBOUNCE } from './configs';
+import GLOBALS from './configs/globals';
+import { ZOOM_DEBOUNCE } from './configs/primitives';
 
 /**
  * Get a valueScale for a heatmap.
