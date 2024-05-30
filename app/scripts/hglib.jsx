@@ -113,3 +113,5 @@ export const viewer = (element, viewConfig, options) => {
   const hg = launch(element, viewConfig, options);
   return hg.api;
 };
+
+export * as hggos from './gosling-exports';
