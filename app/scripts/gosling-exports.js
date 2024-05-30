@@ -1,7 +1,7 @@
-// These are all exports that are 
+// These are all exports that are
 
 /**
- * Tracks 
+ * Tracks
  */
 export { default as Track } from './Track';
 export { default as PixiTrack } from './PixiTrack';
@@ -17,6 +17,14 @@ export { DataFetcher } from './data-fetchers';
  * Utils
  */
 export { fake as fakePubSub } from './hocs/with-pub-sub';
-export { tileProxy } from "./services";
-export { DenseDataExtrema1D } from "./utils";
-export { absToChr, chrToAbs, colorToHex, chromInfoBisector, pixiTextToSvg, svgLine, showMousePosition } from "./utils";
+export { tileProxy } from './services';
+export { DenseDataExtrema1D } from './utils';
+export {
+  absToChr,
+  chrToAbs,
+  colorToHex,
+  chromInfoBisector,
+  pixiTextToSvg,
+  svgLine,
+  showMousePosition,
+} from './utils';
