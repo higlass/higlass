@@ -1,8 +1,10 @@
 import { tsvParseRows } from 'd3-dsv';
 import { tileProxy } from './services';
-import { absToChr, chrToAbs, parseChromsizesRows } from './utils';
 
-import { fake as fakePubSub } from './hocs/with-pub-sub';
+import absToChr from './utils/abs-to-chr';
+import chrToAbs from './utils/chr-to-abs';
+import parseChromsizesRows from './utils/parse-chromsizes-rows';
+import fakePubSub  from './utils/fake-pub-sub';
 
 function ChromosomeInfo(filepath, success, pubSub = fakePubSub) {
   const ret = {};

@@ -1,15 +1,8 @@
 import React from 'react';
 
-import toVoid from '../utils/to-void';
+import fakePubSub from '../utils/fake-pub-sub';
 
-const fake = {
-  __fake__: true,
-  publish: toVoid,
-  subscribe: toVoid,
-  unsubscribe: toVoid,
-};
-
-const { Provider, Consumer } = React.createContext(fake);
+const { Provider, Consumer } = React.createContext(fakePubSub);
 
 // Written without JSX to make it so we don't need JSX-transformation to load this file
 function withPubSub(Component) {
@@ -22,4 +15,4 @@ function withPubSub(Component) {
 
 export default withPubSub;
 
-export { fake, Provider };
+export { Provider };

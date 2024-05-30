@@ -17,8 +17,8 @@ export { default as DataFetcher } from './data-fetchers/DataFetcher';
 /**
  * Utils
  */
-export { fake as fakePubSub } from './hocs/with-pub-sub';
 export { default as tileProxy } from './services/tile-proxy';
+export { default as fakePubSub } from './utils/fake-pub-sub';
 export { default as DenseDataExtrema1D } from './utils/DenseDataExtrema1D';
 export { default as absToChr } from './utils/abs-to-chr';
 export { default as chrToAbs } from './utils/chr-to-abs';
