@@ -1,5 +1,6 @@
 import ndarray from 'ndarray';
-import { NUM_PRECOMP_SUBSETS_PER_2D_TTILE } from '../configs';
+
+import { NUM_PRECOMP_SUBSETS_PER_2D_TTILE } from '../configs/dense-data-extrema-config';
 
 /**
  * @typedef View2D

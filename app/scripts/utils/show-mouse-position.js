@@ -3,7 +3,7 @@ import { globalPubSub } from 'pub-sub-es';
 import hexStrToInt from './hex-string-to-int';
 
 // Configs
-import { GLOBALS } from '../configs';
+import GLOBALS from '../configs/globals';
 
 const COLOR = 0xaaaaaa;
 const ALPHA = 1.0;

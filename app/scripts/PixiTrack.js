@@ -3,10 +3,10 @@ import slugid from 'slugid';
 
 import Track from './Track';
 
-import { colorToHex } from './utils';
+import colorToHex from './utils/color-to-hex';
 
 // Configs
-import { GLOBALS } from './configs';
+import GLOBALS from './configs/globals';
 import {
   isResolutionsTilesetInfo,
   isLegacyTilesetInfo,

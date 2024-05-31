@@ -2,9 +2,11 @@
 import { format } from 'd3-format';
 
 // Configs
-import { GLOBALS, THEME_DARK } from './configs';
+import GLOBALS from './configs/globals';
+import { THEME_DARK } from './configs/themes';
 
-import { colorToHex } from './utils';
+// Utils
+import colorToHex from './utils/color-to-hex';
 
 const TICK_HEIGHT = 40;
 const TICK_MARGIN = 0;

@@ -4,10 +4,11 @@ import slugid from 'slugid';
 
 import { workerGetTiles, workerSetPix } from './worker';
 
-import { trimTrailingSlash as tts, timeout as sleep } from '../utils';
+import tts from '../utils/trim-trailing-slash';
+import sleep from '../utils/timeout';
 
 // Config
-import { TILE_FETCH_DEBOUNCE } from '../configs';
+import { TILE_FETCH_DEBOUNCE } from '../configs/primitives';
 
 const MAX_FETCH_TILES = 15;
 
