@@ -22,7 +22,15 @@ import TiledPixiTrack, { getValueScale } from './TiledPixiTrack';
 import AxisPixi from './AxisPixi';
 
 // Services
-import tileProxy from './services/tile-proxy';
+import {
+  tileDataToPixData,
+  calculateTileWidth,
+  calculateTilesFromResolution,
+  calculateTiles,
+  calculateResolution,
+  calculateZoomLevelFromResolutions,
+  calculateZoomLevel,
+} from './services/tile-proxy';
 
 import GLOBALS from './configs/globals';
 import { NUM_PRECOMP_SUBSETS_PER_2D_TTILE } from './configs/dense-data-extrema-config';
@@ -971,7 +979,7 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
       ? Math.min(this.tilesetInfo.max_zoom, zoomLevel)
       : zoomLevel;
 
-    const calculatedWidth = tileProxy.calculateTileWidth(
+    const calculatedWidth = calculateTileWidth(
       this.tilesetInfo,
       zoomLevel,
       this.binsPerTile(),
@@ -1228,7 +1236,7 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
       }
     }
 
-    tileProxy.tileDataToPixData(
+    tileDataToPixData(
       tile,
       scaleType,
       this.limitedValueScale.domain(),
@@ -1623,20 +1631,20 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
         .map((x) => +x)
         .sort((a, b) => b - a);
 
-      this.xTiles = tileProxy.calculateTilesFromResolution(
+      this.xTiles = calculateTilesFromResolution(
         sortedResolutions[this.zoomLevel],
         this._xScale,
         this.tilesetInfo.min_pos[0],
         this.tilesetInfo.max_pos[0],
       );
-      this.yTiles = tileProxy.calculateTilesFromResolution(
+      this.yTiles = calculateTilesFromResolution(
         sortedResolutions[this.zoomLevel],
         this._yScale,
         this.tilesetInfo.min_pos[0],
         this.tilesetInfo.max_pos[0],
       );
     } else {
-      this.xTiles = tileProxy.calculateTiles(
+      this.xTiles = calculateTiles(
         this.zoomLevel,
         this._xScale,
         this.tilesetInfo.min_pos[0],
@@ -1645,7 +1653,7 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
         this.tilesetInfo.max_width,
       );
 
-      this.yTiles = tileProxy.calculateTiles(
+      this.yTiles = calculateTiles(
         this.zoomLevel,
         this._yScale,
         this.options.reverseYAxis
@@ -1681,7 +1689,7 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
       return '';
     }
 
-    const currentResolution = tileProxy.calculateResolution(
+    const currentResolution = calculateResolution(
       this.tilesetInfo,
       this.zoomLevel,
     );
@@ -1801,13 +1809,13 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
     let zoomLevel = null;
 
     if (this.tilesetInfo.resolutions) {
-      const zoomIndexX = tileProxy.calculateZoomLevelFromResolutions(
+      const zoomIndexX = calculateZoomLevelFromResolutions(
         this.tilesetInfo.resolutions,
         this._xScale,
         minX,
         maxX,
       );
-      const zoomIndexY = tileProxy.calculateZoomLevelFromResolutions(
+      const zoomIndexY = calculateZoomLevelFromResolutions(
         this.tilesetInfo.resolutions,
         this._yScale,
         minY,
@@ -1816,14 +1824,14 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
 
       zoomLevel = Math.min(zoomIndexX, zoomIndexY);
     } else {
-      const xZoomLevel = tileProxy.calculateZoomLevel(
+      const xZoomLevel = calculateZoomLevel(
         this._xScale,
         this.tilesetInfo.min_pos[0],
         this.tilesetInfo.max_pos[0],
         this.binsPerTile(),
       );
 
-      const yZoomLevel = tileProxy.calculateZoomLevel(
+      const yZoomLevel = calculateZoomLevel(
         this._xScale,
         this.tilesetInfo.min_pos[1],
         this.tilesetInfo.max_pos[1],
