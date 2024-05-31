@@ -1,8 +1,8 @@
 const fakePubSub = {
   __fake__: true,
-  publish: () => { },
-  subscribe: () => { },
-  unsubscribe: () => { },
-}
+  publish: () => {},
+  subscribe: () => {},
+  unsubscribe: () => {},
+};
 
 export default fakePubSub;
