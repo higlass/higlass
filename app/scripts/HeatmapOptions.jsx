@@ -216,7 +216,10 @@ class HeatmapOptions extends React.Component {
                       <td className="td-track-options">Preview</td>
                     </tr>
                     <tr>
-                      <td className="td-track-options">
+                      <td
+                        className="td-track-options"
+                        aria-label="Track options"
+                      >
                         <div style={{ width: 200 }}>
                           <HiGlassComponent
                             options={{ bounded: false }}

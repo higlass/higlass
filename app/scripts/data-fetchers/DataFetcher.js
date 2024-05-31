@@ -10,7 +10,13 @@ import DenseDataExtrema1D from '../utils/DenseDataExtrema1D';
 import DenseDataExtrema2D from '../utils/DenseDataExtrema2D';
 
 // Services
-import tileProxy from '../services/tile-proxy';
+import {
+  trackInfo,
+  fetchTilesDebounced,
+  calculateTilesFromResolution,
+  calculateTiles,
+  calculateTileAndPosInTile,
+} from '../services/tile-proxy';
 
 /** @typedef {import('../types').DataConfig} DataConfig */
 /** @typedef {import('../types').TilesetInfo} TilesetInfo */
@@ -161,7 +167,7 @@ export default class DataFetcher {
         finished(null);
       } else {
         // pass in the callback
-        tileProxy.trackInfo(
+        trackInfo(
           server,
           tilesetUid,
           (/** @type {Record<string, TilesetInfo>} */ tilesetInfo) => {
@@ -233,7 +239,7 @@ export default class DataFetcher {
       // no children, just return the fetched tiles as is
       /** @type {Promise<Record<string, Tile>>} */
       const promise = new Promise((resolve) => {
-        tileProxy.fetchTilesDebounced(
+        fetchTilesDebounced(
           {
             id: slugid.nice(),
             server: this.dataConfig.server,
@@ -388,14 +394,14 @@ export default class DataFetcher {
           .map((x) => +x)
           .sort((a, b) => b - a);
 
-        yTiles = tileProxy.calculateTilesFromResolution(
+        yTiles = calculateTilesFromResolution(
           sortedResolutions[zoomLevel],
           scale,
           tilesetInfo.min_pos[vertical ? 1 : 0],
           tilesetInfo.max_pos[vertical ? 1 : 0],
         );
       } else {
-        yTiles = tileProxy.calculateTiles(
+        yTiles = calculateTiles(
           zoomLevel,
           scale,
           tilesetInfo.min_pos[vertical ? 1 : 0],
@@ -420,7 +426,7 @@ export default class DataFetcher {
 
     // actually fetch the new tileIds
     const promise = new Promise((resolve) => {
-      tileProxy.fetchTilesDebounced(
+      fetchTilesDebounced(
         {
           id: slugid.nice(),
           server: this.dataConfig.server,
@@ -446,7 +452,7 @@ export default class DataFetcher {
         const xTilePos = +parts[1];
         const yTilePos = +parts[2];
 
-        const sliceIndex = tileProxy.calculateTileAndPosInTile(
+        const sliceIndex = calculateTileAndPosInTile(
           tilesetInfo,
           // @ts-expect-error - This is undefined for legacy tilesets, but
           // `calculateTileAndPosInTile` ignores this argument with `resolutions`.

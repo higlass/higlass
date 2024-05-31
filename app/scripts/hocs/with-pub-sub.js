@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React from 'react';
 
 import fakePubSub from '../utils/fake-pub-sub';

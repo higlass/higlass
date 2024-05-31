@@ -1,8 +1,12 @@
 const fakePubSub = {
   __fake__: true,
-  publish: () => { },
-  subscribe: () => { },
-  unsubscribe: () => { },
-}
+  publish: () => {},
+  subscribe: () => ({
+    event: '',
+    handler: () => {},
+  }),
+  unsubscribe: () => {},
+  clear: () => {},
+};
 
 export default fakePubSub;
