@@ -1,4 +1,4 @@
-// These are all exports that are
+// These are all exports that are used is Gosling.js
 
 /**
  * Tracks
