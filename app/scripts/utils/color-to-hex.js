@@ -1,7 +1,7 @@
 import { color } from 'd3-color';
 
 // Configs
-import { GLOBALS } from '../configs';
+import GLOBALS from '../configs/globals';
 
 /**
  * Convert a regular color value (e.g. 'red', '#FF0000', 'rgb(255,0,0)') to a

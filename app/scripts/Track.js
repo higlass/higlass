@@ -1,8 +1,8 @@
 import { scaleLinear } from 'd3-scale';
-import { fake as fakePubSub } from './hocs/with-pub-sub';
 
 // Services
-import { isWithin } from './utils';
+import isWithin from './utils/is-within';
+import fakePubSub from './utils/fake-pub-sub';
 
 class Track {
   constructor(context) {
