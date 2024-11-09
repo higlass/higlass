@@ -507,8 +507,10 @@ export default class DataFetcher {
         }
 
         const newTile = {
-          min_value: Math.min(...dataSlice),
-          max_value: Math.max(...dataSlice),
+          // @ts-expect-error - this is ok because float32 array can be spread as number[]
+          min_value: Math.min.apply(null, dataSlice),
+          // @ts-expect-error - this is ok because float32 array can be spread as number[]
+          max_value: Math.max.apply(null, dataSlice),
           denseDataExtrema: new DenseDataExtrema1D(dataSlice),
           minNonZero: minNonZero(dataSlice),
           maxNonZero: maxNonZero(dataSlice),
