@@ -10,13 +10,7 @@ import DenseDataExtrema1D from '../utils/DenseDataExtrema1D';
 import DenseDataExtrema2D from '../utils/DenseDataExtrema2D';
 
 // Services
-import {
-  trackInfo,
-  fetchTilesDebounced,
-  calculateTilesFromResolution,
-  calculateTiles,
-  calculateTileAndPosInTile,
-} from '../services/tile-proxy';
+import * as tileProxy from '../services/tile-proxy';
 
 /** @typedef {import('../types').DataConfig} DataConfig */
 /** @typedef {import('../types').TilesetInfo} TilesetInfo */
@@ -418,14 +412,14 @@ export default class DataFetcher {
           .map((x) => +x)
           .sort((a, b) => b - a);
 
-        yTiles = calculateTilesFromResolution(
+        yTiles = tileProxy.calculateTilesFromResolution(
           sortedResolutions[zoomLevel],
           scale,
           tilesetInfo.min_pos[vertical ? 1 : 0],
           tilesetInfo.max_pos[vertical ? 1 : 0],
         );
       } else {
-        yTiles = calculateTiles(
+        yTiles = tileProxy.calculateTiles(
           zoomLevel,
           scale,
           tilesetInfo.min_pos[vertical ? 1 : 0],
@@ -470,7 +464,7 @@ export default class DataFetcher {
         const xTilePos = +parts[1];
         const yTilePos = +parts[2];
 
-        const sliceIndex = calculateTileAndPosInTile(
+        const sliceIndex = tileProxy.calculateTileAndPosInTile(
           tilesetInfo,
           // @ts-expect-error - This is undefined for legacy tilesets, but
           // `calculateTileAndPosInTile` ignores this argument with `resolutions`.
