@@ -1336,8 +1336,8 @@ class HorizontalGeneBED12AnnotationsTrack extends HorizontalTiled1DPixiTrack {
   //   </div>`;
   // }
 
-  getMouseOverHtml(trackX, trackY) {
-    if (!this.tilesetInfo) return '';
+  getMouseOverHtml(trackX, trackY, isShiftDown) {
+    if (!this.tilesetInfo || (!this.options.showTooltip && !isShiftDown)) return '';
 
     const tilePos = this.getTilePosAtPosition(trackX, trackY);
     const zoomLevel = tilePos[0];
