@@ -180,8 +180,9 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
     // remove texts
     this.removeTileRects(tile);
 
-    tile.graphics.removeChild(tile.textGraphics);
-    tile.graphics.removeChild(tile.rectGraphics);
+    tile.graphics.destroy(true);
+    // tile.graphics.removeChild(tile.textGraphics);
+    // tile.graphics.removeChild(tile.rectGraphics);
   }
 
   removeTiles(toRemoveIds) {
@@ -202,6 +203,12 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
     }
   }
 
+  remove() {
+    if (this.visibleTileIds) {
+      this.removeTiles([...this.visibleTileIds]);
+    }
+  }
+
   rerender(options, force) {
     super.rerender(options, force);
 
@@ -215,11 +222,11 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
       this.colorScale = HEATED_OBJECT_MAP;
     }
 
-    for (const tile of this.visibleAndFetchedTiles()) {
-      this.destroyTile(tile);
-      this.initTile(tile);
-      this.renderTile(tile);
-    }
+    // for (const tile of this.visibleAndFetchedTiles()) {
+      // this.destroyTile(tile);
+      // this.initTile(tile);
+      // this.renderTile(tile);
+    // }
   }
 
   updateTile(tile) {
@@ -455,7 +462,7 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
     const rowScale = scaleBand()
       .domain(range(maxRows))
       .range([startY, endY])
-      .paddingInner(0.3);
+      .paddingInner(0.1);
 
     this.allVisibleRects();
     let allRects = null;
@@ -946,6 +953,7 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
       }
 
       tile.tileData.forEach((td) => {
+        console.log(`exportSVG tile ${tile.tileId}`)
         const zoomLevel = +tile.tileId.split('.')[0];
 
         const gTile = document.createElement('g');
@@ -1077,8 +1085,17 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
     this.animate();
   }
 
-  getMouseOverHtml(trackX, trackY) {
+  getMouseOverHtml(trackX, trackY, isShiftDown) {
     if (!this.tilesetInfo) {
+      return '';
+    }
+
+    if (!this.drawnRects) {
+      return '';
+    }
+
+    if (!this.options.showTooltip && !isShiftDown) {
+      this.animate();
       return '';
     }
 
@@ -1110,7 +1127,50 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
         if (pc === -1) {
           const parts = visibleRects[i][1].value.fields;
 
-          return parts.join(' ');
+          let output = `<div class="track-mouseover-menu-table">`;
+
+          const identifierText = (parts.length >= 4) ? parts[3] : null;
+
+          if (identifierText) {
+            output += `
+            <div class="track-mouseover-menu-table-item">
+              <label for="identifier" class="track-mouseover-menu-table-item-label">Identifier</label>
+              <div name="identifier" class="track-mouseover-menu-table-item-value">${identifierText}</div>
+            </div>
+            `;
+          }
+
+          const intervalText = ((parts.length >= 5) && (typeof parts[5] !== 'undefined')) ? `${parts[0]}:${+parts[1]}-${+parts[2]} (${parts[5]})` : `${parts[0]}:${+parts[1]}-${+parts[2]}`;
+
+          if ((intervalText) && (intervalText !== identifierText)) {
+            output += `
+            <div class="track-mouseover-menu-table-item">
+              <label for="interval" class="track-mouseover-menu-table-item-label">Interval</label>
+              <div name="interval" class="track-mouseover-menu-table-item-value">${intervalText}</div>
+            </div>
+            `;
+          }
+
+          function isNumber(value) {
+            return typeof value === 'number';
+          }
+
+          const scoreText = (parts.length >= 5) ? ((isNumber(Number(parts[4]))) ? Number(parts[4]).toExponential(3) : null) : null;
+
+          if (scoreText) {
+            output += `
+            <div class="track-mouseover-menu-table-item">
+              <label for="score" class="track-mouseover-menu-table-item-label">Score</label>
+              <div name="score" class="track-mouseover-menu-table-item-value">${scoreText}</div>
+            </div>
+            `;
+          }
+
+          output += `</div>`;
+
+          return output;
+
+          // return parts.join(' ');
         }
       }
     }

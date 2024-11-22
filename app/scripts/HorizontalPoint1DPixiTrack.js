@@ -192,7 +192,8 @@ class HorizontalPoint1DPixiTrack extends HorizontalLine1DPixiTrack {
     }
 
     const gAxis = document.createElement('g');
-    gAxis.setAttribute('id', 'axis');
+    const gAxisUniqueId = Math.random().toString(36).substring(7);
+    gAxis.setAttribute('id', `axis-${gAxisUniqueId}`);
 
     // append the axis to base so that it's not clipped
     base.appendChild(gAxis);

@@ -4,6 +4,7 @@ import { format } from 'd3-format';
 import HeatmapTiledPixiTrack from './HeatmapTiledPixiTrack';
 
 import { tileProxy } from './services';
+import absToChr from './utils/abs-to-chr';
 import selectedItemsToSize from './utils/selected-items-to-size';
 import selectedItemsToCumWeights from './utils/selected-items-to-cum-weights';
 import getAggregationFunction from './utils/get-aggregation-function';
@@ -404,12 +405,15 @@ export default class HorizontalMultivecTrack extends HeatmapTiledPixiTrack {
    * @return {string}: A HTML string containing the information to display
    *
    */
-  getMouseOverHtml(trackX, trackY) {
-    if (!this.tilesetInfo) return '';
+  getMouseOverHtml(trackX, trackY, isShiftDown) {
+    if (!this.tilesetInfo || (!this.options.showTooltip && !isShiftDown)) return '';
 
     const tilePos = this.getTilePosAtPosition(trackX, trackY);
 
     let output = '';
+
+    const visibleData = this.getVisibleData(trackX, trackY);
+    const elements = visibleData.split('<br/>');
 
     if (
       this.options &&
@@ -417,20 +421,140 @@ export default class HorizontalMultivecTrack extends HeatmapTiledPixiTrack {
       this.options.heatmapValueScaling === 'categorical' &&
       this.options.colorRange
     ) {
-      const visibleData = this.getVisibleData(trackX, trackY);
-      const elements = visibleData.split('<br/>');
       const color = this.options.colorRange[parseInt(elements[0], 10) - 1];
-      const label = elements[1];
       if (
         Number.isNaN(color) ||
         color === 'NaN' ||
         typeof color === 'undefined' ||
         color === 'undefined'
-      )
+      ) {
         return '';
-      output = `<svg width="10" height="10" style="position:relative;bottom:1px"><rect width="10" height="10" rx="2" ry="2"
-                 style="fill:${color};stroke:black;stroke-width:2;"></svg> ${label}`;
-    } else {
+      }
+      let label = elements[1];
+      const colorIndex = parseInt(elements[0], 10);
+      if (!label || label === "undefined" || typeof label === "undefined") return '';
+      let colorLabel = 'NA';
+      if (this.options.colorLabels) {
+        // colorLabel = (this.options.colorLabels[colorIndex - 1]) ? this.options.colorLabels[colorIndex - 1][0] : null;
+        colorLabel = (this.options.colorLabels[colorIndex]) ? this.options.colorLabels[colorIndex][0] : null;
+        if (!colorLabel || colorLabel === "undefined" || typeof colorLabel === "undefined") colorLabel = 'NA';
+        label += ` | ${colorLabel}`;
+      }
+
+      const dataX = this._xScale.invert(trackX);
+      let positionText = null;
+      if (this.options.chromInfo && this.options.binSize) {
+        const atcX = absToChr(dataX, this.options.chromInfo);
+        const chrom = atcX[0];
+        const position = Math.ceil(atcX[1] / this.options.binSize) * this.options.binSize - this.options.binSize;
+        positionText = `${chrom}:${position}`;
+      }
+
+      const metadataElements = elements[1].split('|').map(d => d.trim());
+      output = `<div class="track-mouseover-menu-table">`;
+      
+      if (positionText) {
+        output += `
+        <div class="track-mouseover-menu-table-item">
+          <label for="position" class="track-mouseover-menu-table-item-label">Position</label>
+          <div name="position" class="track-mouseover-menu-table-item-value">${positionText}</div>
+        </div>
+        `;
+      }
+
+      function capitalize(text) {
+        return text[0].toUpperCase() + text.substring(1)
+      }
+
+      const sampleName = capitalize(metadataElements[1]);
+      const specificSampleName = (metadataElements.length === 3 && metadataElements[1] !== metadataElements[2]) ? `(${metadataElements[2]})` : "";
+      output += `<div class="track-mouseover-menu-table-item">
+        <label for="sampleName" class="track-mouseover-menu-table-item-label">Biosample</label>
+        <div name="sampleName" class="track-mouseover-menu-table-item-value">${sampleName} ${specificSampleName}</div>
+      </div>`;
+
+      const sampleId = metadataElements[0];
+      output += `<div class="track-mouseover-menu-table-item">
+        <label for="sampleId" class="track-mouseover-menu-table-item-label">Identifier</label>
+        <div name="sampleId" class="track-mouseover-menu-table-item-value">${sampleId}</div>
+      </div>`;
+      
+      const stateColor = color;
+      const stateName = colorLabel; // metadataElements[2];
+      const stateRGBMarkup = `<svg width="10" height="10" style="position:relative; top:-2px;"><rect width="10" height="10" rx="2" ry="2" style="fill:${stateColor};stroke:black;stroke-width:2;"></svg> ${stateName}`;
+      output += `
+        <div class="track-mouseover-menu-table-item">
+          <label for="stateName" class="track-mouseover-menu-table-item-label">Chromatin state</label>
+          <div name="stateName" class="track-mouseover-menu-table-item-value">${stateRGBMarkup}</div>
+        </div>`;
+      output += `</div>`;
+    }
+    else if (
+      this.options &&
+      this.options.heatmapType && 
+      this.options.heatmapType === 'genericIndexDHS'
+    ) {
+      let componentLongNameToColor = null;
+      if (this.options.heatmapComponents) {
+        componentLongNameToColor = {};
+        for (const [key, value] of Object.entries(this.options.heatmapComponents)) {
+          componentLongNameToColor[value.longName] = value.color;
+        }
+      }
+      const normalizedDensity = elements[0];
+      const biosampleMetadataElements = elements[1].split('|').map(d => d.trim());
+      const biosampleMetadata = {
+        normalizedDensity: elements[0],
+        taxonomyName: biosampleMetadataElements[0],
+        componentName: biosampleMetadataElements[1],
+      };
+      const dataX = this._xScale.invert(trackX);
+      let positionText = null;
+      if (this.options.chromInfo && this.options.binSize) {
+        const atcX = absToChr(dataX, this.options.chromInfo);
+        const chrom = atcX[0];
+        const position = Math.ceil(atcX[1] / this.options.binSize) * this.options.binSize - this.options.binSize;
+        positionText = `${chrom}:${position}`;
+      }
+      output += `<div class="track-mouseover-menu-table">`;
+      if (positionText) {
+        output += `
+        <div class="track-mouseover-menu-table-item">
+          <label for="position" class="track-mouseover-menu-table-item-label">Position</label>
+          <div name="position" class="track-mouseover-menu-table-item-value">${positionText}</div>
+        </div>
+        `;
+      }
+      output += `
+        <div class="track-mouseover-menu-table-item">
+          <label for="normalizedDensity" class="track-mouseover-menu-table-item-label">Normalized density</label>
+          <div name="normalizedDensity" class="track-mouseover-menu-table-item-value">${biosampleMetadata.normalizedDensity}</div>
+        </div>
+        <div class="track-mouseover-menu-table-item">
+          <label for="taxonomyName" class="track-mouseover-menu-table-item-label">Taxonomy name</label>
+          <div name="taxonomyName" class="track-mouseover-menu-table-item-value">${biosampleMetadata.taxonomyName}</div>
+        </div>`;
+      if (componentLongNameToColor) {
+        const componentColor = componentLongNameToColor[biosampleMetadata.componentName];
+        const componentName = biosampleMetadata.componentName;
+        const componentRGBMarkup = `<svg width="10" height="10"><rect width="10" height="10" rx="2" ry="2" style="fill:${componentColor};stroke:black;stroke-width:2;"></svg> ${componentName}`;
+        output += `
+          <div class="track-mouseover-menu-table-item">
+            <label for="componentName" class="track-mouseover-menu-table-item-label">Component</label>
+            <div name="componentName" class="track-mouseover-menu-table-item-value">${componentRGBMarkup}</div>
+          </div>`;
+      }
+      else {
+        output += `
+          <div class="track-mouseover-menu-table-item">
+            <label for="componentName" class="track-mouseover-menu-table-item-label">Component</label>
+            <div name="componentName" class="track-mouseover-menu-table-item-value">${biosampleMetadata.componentName}</div>
+          </div>`;
+      }
+        
+      output += `</div>`
+    }
+    else {
       output += `Data value: ${this.getVisibleData(trackX, trackY)}</br>`;
       output += `Zoom level: ${tilePos[0]} tile position: ${tilePos[1]}`;
     }

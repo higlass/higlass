@@ -238,10 +238,11 @@ class AxisPixi {
     if (this.track.getTheme() === THEME_DARK) stroke = '#cccccc';
 
     const line = document.createElement('path');
+    const lineVerticalAxisUniqueId = Math.random().toString(36).substring(7);
 
     line.setAttribute('fill', 'transparent');
     line.setAttribute('stroke', stroke);
-    line.setAttribute('id', 'axis-line');
+    line.setAttribute('id', `axis-line-${lineVerticalAxisUniqueId}`);
 
     line.setAttribute('d', `M0,0 L0,${axisHeight}`);
 
@@ -261,7 +262,8 @@ class AxisPixi {
     if (this.track.getTheme() === THEME_DARK) stroke = '#cccccc';
 
     const line = document.createElement('path');
-    line.setAttribute('id', 'tick-mark');
+    const lineAxisSVGUniqueId = Math.random().toString(36).substring(7);
+    line.setAttribute('id', `tick-mark-${lineAxisSVGUniqueId}`);
     line.setAttribute('fill', 'transparent');
     line.setAttribute('stroke', stroke);
 
@@ -271,9 +273,10 @@ class AxisPixi {
   createAxisSVGText(text) {
     // factor out the creation of axis texts
     const t = document.createElement('text');
+    const textAxisSVGUniqueId = Math.random().toString(36).substring(7);
 
     t.innerHTML = text;
-    t.setAttribute('id', 'axis-text');
+    t.setAttribute('id', `axis-text-${textAxisSVGUniqueId}`);
     t.setAttribute('text-anchor', 'middle');
     t.setAttribute('font-family', this.axisTextFontFamily);
     t.setAttribute('font-size', this.axisTextFontSize);

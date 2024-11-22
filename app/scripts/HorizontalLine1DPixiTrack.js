@@ -4,7 +4,7 @@ import { scaleLinear } from 'd3-scale';
 
 import HorizontalTiled1DPixiTrack from './HorizontalTiled1DPixiTrack';
 
-import { colorToHex } from './utils';
+import { colorDomainToRgbaArray, colorToHex, absToChr } from './utils';
 
 class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
   stopHover() {
@@ -12,11 +12,11 @@ class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
     this.animate();
   }
 
-  getMouseOverHtml(trackX) {
+  getMouseOverHtml(trackX, trackY, isShiftDown) {
     // if we're not supposed to show the tooltip, don't show it
     // we return here so that the mark isn't drawn in the code
     // below
-    if (!this.tilesetInfo || !this.options.showTooltip || !this.valueScale)
+    if (!this.tilesetInfo || !this.valueScale)
       return '';
 
     const value = this.getDataAtPos(trackX);
@@ -29,6 +29,12 @@ class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
     const yPos = this.valueScale(value);
 
     graphics.clear();
+
+    if (!this.options.showTooltip && !isShiftDown) {
+      this.animate();
+      return '';
+    }
+
     graphics.beginFill(colorHex, 0.5);
     graphics.lineStyle(1, colorHex, 1);
     const markerWidth = 4;
@@ -42,7 +48,55 @@ class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
 
     this.animate();
 
-    return `${textValue}`;
+    // return `${textValue}`;
+
+    if (!textValue || textValue.length === 0) return '';
+
+    let output = '';
+
+    if (!this.options.isCombined) {
+      output = `<div class="track-mouseover-menu-table">`;
+
+      output += `
+        <div class="track-mouseover-menu-table-item">
+          <label for="value" class="track-mouseover-menu-table-item-label">Value</label>
+          <div name="value" class="track-mouseover-menu-table-item-value">${textValue}</div>
+        </div>
+        `;
+
+      output += `</div>`;
+    }
+    else {
+      output = (this.options.isFirst) ? `<div class="track-mouseover-menu-table">` : '';
+
+      if (this.options.isFirst && this.options.chromInfo) {
+        const dataX = this._xScale.invert(trackX);
+        const atcX = absToChr(dataX, this.options.chromInfo);
+        const chrom = atcX[0];
+        const position = Math.ceil(atcX[1]);
+        const positionText = `${chrom}:${position}`;
+        output += `
+          <div class="track-mouseover-menu-table-item">
+            <label for="position" class="track-mouseover-menu-table-item-label">Position</label>
+            <div name="position" class="track-mouseover-menu-table-item-value">${positionText}</div>
+          </div>
+          `;
+      }
+
+      const colorLabelBox = (this.options.barFillColor) ? `<div style="border:1px solid black;background-color:${this.options.barFillColor};width:10px;height:10px;display:inline-block;margin-right:5px;margin-left:2px;"></div>` : '';
+      const itemLabel = (this.options.name) ? `${colorLabelBox}${this.options.name}` : 'Value';
+
+      output += `
+        <div class="track-mouseover-menu-table-item">
+          <label for="value" class="track-mouseover-menu-table-item-label">${itemLabel}</label>
+          <div name="value" class="track-mouseover-menu-table-item-value">${textValue}</div>
+        </div>
+        `;
+
+      output += (this.options.isLast) ? `</div>` : '';
+    }
+
+    return output;
   }
 
   /**
@@ -297,26 +351,122 @@ class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
       : 'blue';
 
     this.visibleAndFetchedTiles().forEach((tile) => {
-      const g = document.createElement('path');
-      g.setAttribute('fill', 'transparent');
-      g.setAttribute('stroke', stroke);
-      let d = '';
 
-      for (const segment of tile.segments) {
-        const first = segment[0];
-        const rest = segment.slice(1);
-        d += `M${first[0]} ${first[1]}`;
-        for (const point of rest) {
-          d += `L${point[0]} ${point[1]}`;
+      // const tileProps = Object.getOwnPropertyNames(tile);
+      // console.log(`tileProps ${tileProps}`);
+
+      //
+      // when the track is used as a 1D heatmap, segments do not work as they
+      // are not a property contained within the tile in this track mode.
+      // instead, we use code similar to the BarTrack to render SVG rect elements
+      // in order to simulate the heatmap presentation
+      //
+
+      if (tile.hasOwnProperty('segments')) {
+        const p = document.createElement('path');
+        p.setAttribute('fill', 'transparent');
+        p.setAttribute('stroke', stroke);
+        let d = '';
+        for (const segment of tile.segments) {
+          const first = segment[0];
+          const rest = segment.slice(1);
+          d += `M${first[0]} ${first[1]}`;
+          for (const point of rest) {
+            d += `L${point[0]} ${point[1]}`;
+          }
+        }
+        p.setAttribute('d', d);
+        output.appendChild(p);
+      }
+      else if (tile.hasOwnProperty('tileData')) {
+        const { tileX, tileWidth } = this.getTilePosAndDimensions(
+          tile.tileData.zoomLevel,
+          tile.tileData.tilePos,
+          this.tilesetInfo.bins_per_dimension || this.tilesetInfo.tile_size,
+        );
+        const tileValues = tile.tileData.dense;
+        // console.log(`tileValues ${JSON.stringify(tileValues)}`);
+        if (tileValues.length !== 0) {
+          tile.svgData = undefined;
+
+          // this.colorScale = this.colorScale.map((rgb) =>
+          //   rgb.map((channel) => channel / 255.0),
+          // );
+          const tileXScale = scaleLinear()
+            .domain([
+              0,
+              this.tilesetInfo.tile_size || this.tilesetInfo.bins_per_dimension,
+            ])
+            .range([tileX, tileX + tileWidth]);
+
+          let xPos;
+          let width;
+          let yPos;
+          let height;
+          let color = this.options.barFillColor || 'none';
+
+          const [valueScale, pseudocount] = this.makeValueScale(
+            this.minValue(),
+            0,
+            this.maxValue(),
+            0,
+          );
+          this.valueScale = valueScale;
+          this.colorScale = colorDomainToRgbaArray(this.options.colorRange);
+          const colorScale = valueScale.copy();
+          colorScale.range([254, 0]).clamp(true);
+          for (let i = 0; i < tileValues.length; i++) {
+            xPos = this._xScale(tileXScale(i));
+            yPos = this.valueScale(this.maxValue() + pseudocount);
+            width = this._xScale(tileXScale(i + 1)) - xPos;
+            height = this.dimensions[1];
+            if (this.colorScale && !this.options.colorRangeGradient) {
+              try {
+                const v = Math.round(colorScale(tileValues[i] + pseudocount));
+                color = '#' + this.colorScale[v].map(e => e.toString(16).padStart(2, 0)).join("");
+                if (Number.isNaN(tileValues[i]) || height < 0 || yPos < 0) {
+                  height = this.dimensions[1];
+                  color = '#ffffff';
+                }
+                this.addSVGInfo(tile, xPos, yPos, width, height, color);
+              }
+              catch (err) {}
+            }
+          }
+
+          const data = tile.svgData;
+          for (let j = 0; j < data.barXValues.length; j++) {
+            // hex colors with transparency cannot be directly used in SVG opened in Adobe Illustrator
+            // so alpha values are generated from the last two characters of the color string
+            const barColor = data.barColors[j];
+            const barColorFull = barColor.substring(0, barColor.length - 2);
+            const barColorAlpha = parseFloat(parseInt(barColor.substring(barColor.length - 2), 16)) / 255.0;
+            const rect = document.createElement('rect');
+            rect.setAttribute('fill', barColorFull);
+            rect.setAttribute('fill-opacity', barColorAlpha);
+            // rect.setAttribute('stroke', data.barColors[j]);
+            rect.setAttribute('x', data.barXValues[j]);
+            rect.setAttribute('y', data.barYValues[j]);
+            rect.setAttribute('height', data.barHeights[j]);
+            rect.setAttribute('width', data.barWidths[j]);
+            if (tile.barBorders) {
+              rect.setAttribute('stroke-width', '0.1');
+              rect.setAttribute('stroke', 'black');
+            }
+            else {
+              // rect.setAttribute('stroke-width', '0');
+              // rect.setAttribute('stroke', data.barColors[j]);
+            }
+            output.appendChild(rect);
+          }
         }
       }
 
-      g.setAttribute('d', d);
-      output.appendChild(g);
     });
 
     const gAxis = document.createElement('g');
-    gAxis.setAttribute('id', 'axis');
+    const gAxisUniqueId = Math.random().toString(36).substring(7);
+    gAxis.setAttribute('id', `axis-${gAxisUniqueId}`);
 
     // append the axis to base so that it's not clipped
     base.appendChild(gAxis);

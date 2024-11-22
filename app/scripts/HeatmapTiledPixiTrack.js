@@ -1265,6 +1265,8 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
    * Remove this track from the view
    */
   remove() {
+    this.visibleAndFetchedTiles().forEach(tile => this.destroyTile(tile));
+    
     this.gMain.remove();
     this.gMain = null;
 
@@ -1680,8 +1682,8 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
     );
   }
 
-  getMouseOverHtml(trackX, trackY) {
-    if (!this.options || !this.options.showTooltip) {
+  getMouseOverHtml(trackX, trackY, isShiftDown) {
+    if (!this.options || (!this.options.showTooltip && !isShiftDown)) {
       return '';
     }
 
