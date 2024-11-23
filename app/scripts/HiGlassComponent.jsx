@@ -510,7 +510,7 @@ class HiGlassComponent extends React.Component {
       height: this.state.height,
       view: this.canvasElement,
       antialias: true,
-      transparent: true,
+      backgroundAlpha: 0,
       resolution: 2,
       autoResize: true,
     };
