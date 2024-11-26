@@ -8,7 +8,9 @@ import { colorDomainToRgbaArray, colorToHex, absToChr } from './utils';
 
 class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
   stopHover() {
-    this.pMouseOver.clear();
+    try {
+      this.pMouseOver.clear();
+    } catch (e) {}
     this.animate();
   }
 
