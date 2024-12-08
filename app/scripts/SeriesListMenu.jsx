@@ -13,6 +13,52 @@ import OPTIONS_INFO from './options-info';
 // Styles
 import classes from '../styles/ContextMenu.module.scss';
 
+/**
+ *  We're going to get the track object to see if it has a
+ *  context menu handler that will give use context menu items
+ *  to display
+ *
+ * @param (Dict) track The config for the track we're getting context menu
+ *  items for
+ *
+ * @param (TrackRenderer) trackRenderer The track renderer for the view
+ *  containing this track. We'll use it to get the track's object
+ *
+ * @param (Dict) position The position of the track. Relevant are the canvasLeft,
+ *  canvasRight positions which mark where the track starts relative to the
+ *  canvas. This is important because all coordinates within a track are relative
+ *  to left and top coordinates.
+ */
+
+function findTrackContextMenuItems(track, trackRenderer, position) {
+  let trackObj = trackRenderer.getTrackObject(track.uid);
+
+  // The track may be a LeftTrackModifier track
+  trackObj = trackObj.originalTrack || trackObj;
+
+  // See if the track will provide us with context menu items
+  if (trackObj.contextMenuItems) {
+    let trackLeft = position.canvasLeft - trackObj.position[0];
+    let trackTop = position.canvasTop - trackObj.position[1];
+
+    if (trackObj.flipText) {
+      // This is a left track modifier track so we need to swap the
+      // left and right values
+      const temp = trackLeft;
+      trackLeft = trackTop;
+      trackTop = temp;
+    }
+
+    const items = trackObj.contextMenuItems(trackLeft, trackTop);
+
+    return items || [];
+  }
+
+  // The track doesn't have a contextMenuItems function so we it's
+  // obviously not providing any items.
+  return [];
+}
+
 export default class SeriesListMenu extends ContextMenuContainer {
   getConfigureSeriesMenu(position, bbox, track) {
     const menuItems = {};
@@ -283,6 +329,12 @@ export default class SeriesListMenu extends ContextMenuContainer {
   render() {
     let exportDataMenuItem = null;
 
+    const trackContextMenuItems = findTrackContextMenuItems(
+      this.props.track,
+      this.props.trackRenderer,
+      this.props.position,
+    );
+
     if (
       TRACKS_INFO_BY_TYPE[this.props.series.type] &&
       TRACKS_INFO_BY_TYPE[this.props.series.type].exportable
@@ -333,6 +385,29 @@ export default class SeriesListMenu extends ContextMenuContainer {
           top: this.state.top,
         }}
       >
+        {trackContextMenuItems.map((x) => (
+          <ContextMenuItem
+            key={x.label}
+            onClick={(evt) => {
+              x.onClick(evt, (newOptions) => {
+                // We're going to pass in a handler to that the track
+                // can use to change its options
+                this.props.onTrackOptionsChanged(this.props.track.uid, {
+                  ...this.props.track.options,
+                  ...newOptions,
+                });
+              });
+              this.props.closeMenu();
+            }}
+            onMouseEnter={(e) => this.handleOtherMouseEnter(e)}
+            className={classes['context-menu-item']}
+          >
+            <span className={classes['context-menu-span']}>{x.label}</span>
+          </ContextMenuItem>
+        ))}
+        {trackContextMenuItems.length > 0 && (
+          <hr className={classes['context-menu-hr']} />
+        )}
         <ContextMenuItem
           onClick={() => {}}
           onMouseEnter={(e) =>

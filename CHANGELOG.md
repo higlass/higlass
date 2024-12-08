@@ -1,6 +1,10 @@
 # Release notes
 
-## v.1.13.4
+## v1.13.5
+
+- Allow tracks to pass in custom context menu items
+
+## v1.13.4
 
 - fix: Disable logging unknown data types in console
 
