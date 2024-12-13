@@ -28,6 +28,9 @@ const SeriesListSubmenuMixin = Mixin(
             };
           }
 
+          position.canvasLeft = this.props.position.canvasLeft;
+          position.canvasTop = this.props.position.canvasTop;
+
           const series = getAllTracksAndSubtracks(this.props.tracks);
           const selectedTrack = series.filter(
             (t) => t.uid === this.state.submenuShown.uid,
@@ -65,6 +68,7 @@ const SeriesListSubmenuMixin = Mixin(
               theme={this.props.theme}
               track={selectedTrack}
               trackOrientation={this.props.trackOrientation}
+              trackRenderer={this.props.trackRenderer}
               trackSourceServers={this.props.trackSourceServers}
             />
           );

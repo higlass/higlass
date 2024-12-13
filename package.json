@@ -61,6 +61,7 @@
     "d3-transition": "^3.0.1",
     "d3-zoom": "^3.0.0",
     "dom-scroll-into-view": "^1.2.1",
+    "enzyme-adapter-react-16": "^1.15.8",
     "genbank-parser": "^1.0.0",
     "ndarray": "^1.0.18",
     "pako": "^1.0.10",

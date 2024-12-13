@@ -1615,6 +1615,7 @@ class TiledPlot extends React.Component {
             position={this.state.contextMenuPosition}
             theme={this.props.theme}
             tracks={relevantTracks}
+            trackRenderer={this.trackRenderer}
             trackSourceServers={this.props.trackSourceServers}
           />
         </PopupMenu>
@@ -2228,6 +2229,7 @@ class TiledPlot extends React.Component {
               this.props.tracks,
               this.state.configTrackMenuId,
             )}
+            trackRenderer={this.trackRenderer}
             tracks={[
               getTrackByUid(this.props.tracks, this.state.configTrackMenuId),
             ]}

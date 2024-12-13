@@ -1680,6 +1680,28 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
     );
   }
 
+  contextMenuItems(trackX, trackY) {
+    /* Get a list of context menu items to display and the actions
+         to take */
+
+    // This should return items like this:
+
+    // return [
+    //   {
+    //     label: 'Change background color to black',
+    //     onClick: (evt, onTrackOptionsChanged) => {
+    //       // The onTrackOptionsChanged handler will handle any changes
+    //       // to the track's options that are triggered in this event.
+    //       // The only thing that needs to be passed is the new option being
+    //       // passed
+    //       onTrackOptionsChanged({ backgroundColor: 'black' });
+    //     },
+    //   },
+    // ];
+
+    return [];
+  }
+
   getMouseOverHtml(trackX, trackY) {
     if (!this.options || !this.options.showTooltip) {
       return '';
