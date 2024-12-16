@@ -90,16 +90,13 @@ function createDefaultTileSource(pubSub) {
 
 /** @implements {AbstractDataFetcher<Tile | DividedTile>} */
 export default class DataFetcher {
-  /** @type {TileSource<Tile>} */
-  #tileSource;
-
   /**
    * @param {import('../types').DataConfig} dataConfig
    * @param {import('pub-sub-es').PubSub} pubSub
    * @param {TileSource<Tile>} [tileSource]
    */
   constructor(dataConfig, pubSub, tileSource) {
-    this.#tileSource = tileSource || createDefaultTileSource(pubSub);
+    this._tileSource = tileSource || createDefaultTileSource(pubSub);
     /** @type {boolean} */
     this.tilesetInfoLoading = true;
 
@@ -139,7 +136,7 @@ export default class DataFetcher {
    * @param {string=} opts.coordSystem - The coordinate system being served (e.g. 'hg38')
    */
   async registerFileUrl({ server, url, filetype, coordSystem }) {
-    return this.#tileSource.registerTileset({
+    return this._tileSource.registerTileset({
       server,
       url,
       filetype,
@@ -195,7 +192,7 @@ export default class DataFetcher {
         );
         finished(null);
       } else {
-        this.#tileSource
+        this._tileSource
           .fetchTilesetInfo({ server, tilesetUid })
           .then((tilesetInfo) => {
             // tileset infos are indxed by by tilesetUids, we can just resolve
@@ -262,7 +259,7 @@ export default class DataFetcher {
 
     if (!this.dataConfig.children && this.dataConfig.tilesetUid) {
       // no children, just return the fetched tiles as is
-      const promise = this.#tileSource.fetchTiles({
+      const promise = this._tileSource.fetchTiles({
         id: slugid.nice(),
         server: this.dataConfig.server,
         tileIds: tileIds.map((x) => `${this.dataConfig.tilesetUid}.${x}`),
@@ -443,7 +440,7 @@ export default class DataFetcher {
     }
 
     // actually fetch the new tileIds
-    const promise = this.#tileSource.fetchTiles({
+    const promise = this._tileSource.fetchTiles({
       id: slugid.nice(),
       server: this.dataConfig.server,
       tileIds: newTileIds.map((x) => `${this.dataConfig.tilesetUid}.${x}`),
