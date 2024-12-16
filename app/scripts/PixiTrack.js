@@ -208,12 +208,14 @@ class PixiTrack extends Track {
     this.errorText.anchor.x = 0.5;
     this.errorText.anchor.y = 0.5;
     this.pLabel.addChild(this.errorText);
-    /** @type {string} */
-    this.errorTextText = '';
+
     /** @type {boolean} */
     this.flipText = false;
     /** @type {import('./types').TilesetInfo | undefined} */
     this.tilesetInfo = undefined;
+
+    /** @type {{ [key: string]: string }} */
+    this.errorTexts = {};
   }
 
   setLabelText() {
@@ -294,15 +296,43 @@ class PixiTrack extends Track {
     );
   }
 
+  /** Set an error for this track.
+   *
+   * The error can be associated with a source so that multiple
+   * components within the track can set their own independent errors
+   * that will be displayed to the user without overlapping.
+   *
+   * @param {string} error The error text
+   * @param {string} source The source of the error
+   */
+  setError(error, source) {
+    this.errorTexts[source] = error;
+
+    this.drawError();
+  }
+
   drawError() {
     this.errorText.x = this.position[0] + this.dimensions[0] / 2;
     this.errorText.y = this.position[1] + this.dimensions[1] / 2;
 
-    this.errorText.text = this.errorTextText;
+    let errorTextText = '';
+    Object.values(this.errorTexts).forEach((x) => {
+      // Go through all the errors and render them.
+      if (x && x.length) {
+        if (errorTextText.length) {
+          errorTextText += '\n';
+        }
+        errorTextText += x;
+      }
+    });
 
-    if (this.errorTextText && this.errorTextText.length) {
+    this.errorText.text = errorTextText;
+    this.errorText.alpha = 0.8;
+
+    if (errorTextText && errorTextText.length) {
       // draw a red border around the track to bring attention to its
       // error
+
       const graphics = this.pBorder;
       graphics.clear();
       graphics.lineStyle(1, colorToHex('red'));
@@ -313,6 +343,8 @@ class PixiTrack extends Track {
         this.dimensions[0],
         this.dimensions[1],
       );
+    } else {
+      this.pBorder.clear();
     }
   }
 
