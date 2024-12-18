@@ -315,16 +315,11 @@ class PixiTrack extends Track {
     this.errorText.x = this.position[0] + this.dimensions[0] / 2;
     this.errorText.y = this.position[1] + this.dimensions[1] / 2;
 
-    let errorTextText = '';
-    Object.values(this.errorTexts).forEach((x) => {
-      // Go through all the errors and render them.
-      if (x && x.length) {
-        if (errorTextText.length) {
-          errorTextText += '\n';
-        }
-        errorTextText += x;
-      }
-    });
+    // Collect all the error texts, filter out the ones that are empty
+    // and put the non-empty ones separate lines
+    const errorTextText = Object.values(this.errorTexts)
+      .filter((x) => x && x.length)
+      .reduce((acc, x) => (acc ? `${acc}\n${x}` : x), '');
 
     this.errorText.text = errorTextText;
     this.errorText.alpha = 0.8;
