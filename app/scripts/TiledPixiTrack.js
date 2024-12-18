@@ -224,12 +224,6 @@ class TiledPixiTrack extends PixiTrack {
     });
   }
 
-  setError(error) {
-    this.errorTextText = error;
-    this.draw();
-    this.animate();
-  }
-
   setFixedValueScaleMin(value) {
     if (!Number.isNaN(+value)) this.fixedValueScaleMin = +value;
     else this.fixedValueScaleMin = null;
@@ -625,6 +619,9 @@ class TiledPixiTrack extends PixiTrack {
   }
 
   fetchNewTiles(toFetch) {
+    this._checkForErrors();
+    this.draw();
+
     if (toFetch.length > 0) {
       const toFetchList = [...new Set(toFetch.map((x) => x.remoteId))];
 
@@ -729,6 +726,29 @@ class TiledPixiTrack extends PixiTrack {
     }
   }
 
+  _checkForErrors() {
+    const errors = Object.values(this.fetchedTiles)
+      .map(
+        (x) =>
+          x.tileData && x.tileData.error && `${x.tileId}: ${x.tileData.error}`,
+      )
+      .filter((x) => x);
+
+    if (errors.length) {
+      this.errorTexts.TiledPixiTrack = errors.join('\n');
+    } else {
+      this.errorTexts.TiledPixiTrack = '';
+    }
+
+    if (this.tilesetInfoError) {
+      this.errorTexts.TiledPixiTrack = this.tilesetInfoError;
+
+      errors.push(this.tilesetInfoError);
+    }
+
+    return errors;
+  }
+
   draw() {
     if (this.delayDrawing) return;
 
@@ -756,18 +776,8 @@ class TiledPixiTrack extends PixiTrack {
         uuid: this.uuid,
       });
     }
-    const errors = Object.values(this.fetchedTiles)
-      .map(
-        (x) =>
-          x.tileData && x.tileData.error && `${x.tileId}: ${x.tileData.error}`,
-      )
-      .filter((x) => x);
 
-    if (errors.length) {
-      this.errorTextText = errors.join('\n');
-    } else {
-      this.errorTextText = '';
-    }
+    this._checkForErrors();
 
     super.draw();
 

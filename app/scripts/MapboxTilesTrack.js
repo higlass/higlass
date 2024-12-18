@@ -17,9 +17,10 @@ class MapboxTilesTrack extends OSMTilesTrack {
     this.style = options.style;
 
     if (!this.options.accessToken) {
-      this.errorTextText =
+      this.setError(
         "No access token provided in the viewconf's track options " +
-        "('accessToken' option).";
+          "('accessToken' option).",
+      );
       this.drawError();
     }
   }

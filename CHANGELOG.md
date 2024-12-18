@@ -3,6 +3,7 @@
 ## v1.13.5
 
 - Allow tracks to pass in custom context menu items
+- Let tracks set errors with a source using setError
 
 ## v1.13.4
 

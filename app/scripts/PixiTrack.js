@@ -208,12 +208,14 @@ class PixiTrack extends Track {
     this.errorText.anchor.x = 0.5;
     this.errorText.anchor.y = 0.5;
     this.pLabel.addChild(this.errorText);
-    /** @type {string} */
-    this.errorTextText = '';
+
     /** @type {boolean} */
     this.flipText = false;
     /** @type {import('./types').TilesetInfo | undefined} */
     this.tilesetInfo = undefined;
+
+    /** @type {{ [key: string]: string }} */
+    this.errorTexts = {};
   }
 
   setLabelText() {
@@ -294,15 +296,38 @@ class PixiTrack extends Track {
     );
   }
 
+  /** Set an error for this track.
+   *
+   * The error can be associated with a source so that multiple
+   * components within the track can set their own independent errors
+   * that will be displayed to the user without overlapping.
+   *
+   * @param {string} error The error text
+   * @param {string} source The source of the error
+   */
+  setError(error, source) {
+    this.errorTexts[source] = error;
+
+    this.drawError();
+  }
+
   drawError() {
     this.errorText.x = this.position[0] + this.dimensions[0] / 2;
     this.errorText.y = this.position[1] + this.dimensions[1] / 2;
 
-    this.errorText.text = this.errorTextText;
+    // Collect all the error texts, filter out the ones that are empty
+    // and put the non-empty ones separate lines
+    const errorTextText = Object.values(this.errorTexts)
+      .filter((x) => x && x.length)
+      .reduce((acc, x) => (acc ? `${acc}\n${x}` : x), '');
 
-    if (this.errorTextText && this.errorTextText.length) {
+    this.errorText.text = errorTextText;
+    this.errorText.alpha = 0.8;
+
+    if (errorTextText && errorTextText.length) {
       // draw a red border around the track to bring attention to its
       // error
+
       const graphics = this.pBorder;
       graphics.clear();
       graphics.lineStyle(1, colorToHex('red'));
@@ -313,6 +338,8 @@ class PixiTrack extends Track {
         this.dimensions[0],
         this.dimensions[1],
       );
+    } else {
+      this.pBorder.clear();
     }
   }
 
