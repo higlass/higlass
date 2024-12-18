@@ -619,6 +619,9 @@ class TiledPixiTrack extends PixiTrack {
   }
 
   fetchNewTiles(toFetch) {
+    this._checkForErrors();
+    this.draw();
+
     if (toFetch.length > 0) {
       const toFetchList = [...new Set(toFetch.map((x) => x.remoteId))];
 
@@ -723,7 +726,7 @@ class TiledPixiTrack extends PixiTrack {
     }
   }
 
-  checkForErrors() {
+  _checkForErrors() {
     const errors = Object.values(this.fetchedTiles)
       .map(
         (x) =>
@@ -774,7 +777,7 @@ class TiledPixiTrack extends PixiTrack {
       });
     }
 
-    this.checkForErrors();
+    this._checkForErrors();
 
     super.draw();
 
