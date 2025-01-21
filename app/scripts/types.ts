@@ -55,21 +55,20 @@ export type CombinedTrackConfig = {
 
 export type TrackConfig = UnknownTrackConfig | CombinedTrackConfig;
 
-export type TrackVisitor = {
-  (track: TrackConfig, position: null | TrackPosition): void;
-};
+export type TrackVisitor = (
+  track: TrackConfig,
+  position: null | TrackPosition,
+) => void;
 
-type ZoomedFunction = {
-  (
-    xScale: Scale,
-    yScale: Scale,
-    k?: number,
-    x?: number,
-    y?: number,
-    xPosition?: number,
-    yPosition?: number,
-  ): void;
-};
+type ZoomedFunction = (
+  xScale: Scale,
+  yScale: Scale,
+  k?: number,
+  x?: number,
+  y?: number,
+  xPosition?: number,
+  yPosition?: number,
+) => void;
 
 export interface TrackObject {
   draw(): void;

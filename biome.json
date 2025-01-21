@@ -27,8 +27,7 @@
       },
       "style": {
         "noArguments": "off",
-        "noParameterAssign": "off",
-        "useShorthandFunctionType": "off"
+        "noParameterAssign": "off"
       },
       "suspicious": {
         "noConsole": {
