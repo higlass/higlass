@@ -1,32 +1,31 @@
 // @ts-nocheck
-
-import {
-  configure,
-  // render,
-} from 'enzyme';
+import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 
 import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
-
-import { expect } from 'chai';
+import Enzyme from 'enzyme';
 
 // Utils
 import {
-  mountHGComponent,
+  mountHGComponentAsync,
   removeHGComponent,
 } from '../app/scripts/test-helpers';
 import { getTrackObjectFromHGC } from '../app/scripts/utils';
 
-configure({ adapter: new Adapter() });
+Enzyme.configure({ adapter: new Adapter() });
 
 describe('Horizontal heatmaps', () => {
   let hgc = null;
   let div = null;
 
-  before((done) => {
-    [div, hgc] = mountHGComponent(div, hgc, zoomLimitViewConf, done, {
+  beforeAll(async () => {
+    [div, hgc] = await mountHGComponentAsync(div, hgc, zoomLimitViewConf, {
       style: 'width:800px; height:400px; background-color: lightgreen',
       bounded: true,
     });
+  });
+
+  afterAll(() => {
+    removeHGComponent(div);
   });
 
   it('should respect zoom limits', () => {
@@ -35,10 +34,6 @@ describe('Horizontal heatmaps', () => {
 
     const trackObj = getTrackObjectFromHGC(hgc.instance(), 'vv', 'tt');
     expect(trackObj.calculateZoomLevel()).to.eql(1);
-  });
-
-  after(() => {
-    removeHGComponent(div);
   });
 });
 
