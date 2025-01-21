@@ -48,8 +48,7 @@
           "options": { "allow": ["warn", "error"] }
         },
         "noPrototypeBuiltins": "off",
-        "noEmptyBlock": "off",
-        "noShadowRestrictedNames": "off"
+        "noEmptyBlock": "off"
       },
       "complexity": {
         "noForEach": "off"

@@ -244,6 +244,7 @@ function toJSON() {
 }
 
 /** Returns a String representation */
+// biome-ignore lint/suspicious/noShadowRestrictedNames: Scoped to this module
 function toString() {
   let s = '';
   let entry = this.head;
