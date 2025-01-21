@@ -234,7 +234,7 @@ class OverlayTrack extends PixiTrack {
     graphics,
     position,
     extent,
-    /* eslint-disable-next-line default-param-last */
+    // biome-ignore lint/style/useDefaultParameterLast:
     minWidth = 0,
     fill,
     stroke,
@@ -272,7 +272,7 @@ class OverlayTrack extends PixiTrack {
     graphics,
     position,
     extent,
-    /* eslint-disable-next-line default-param-last */
+    // biome-ignore lint/style/useDefaultParameterLast:
     minHeight = 0,
     fill,
     stroke,

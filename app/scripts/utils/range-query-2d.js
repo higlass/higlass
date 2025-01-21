@@ -24,9 +24,9 @@ const rangeQuery2d = (
   xRange,
   yRange,
   mirrored,
-  /* eslint-disable-next-line default-param-last */
+  // biome-ignore lint/style/useDefaultParameterLast:
   xOff = 0,
-  /* eslint-disable-next-line default-param-last */
+  // biome-ignore lint/style/useDefaultParameterLast:
   yOff = 0,
   outList,
 ) => {

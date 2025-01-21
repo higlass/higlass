@@ -72,7 +72,7 @@ function contextMenu(menu, optsIn) {
   return function onContextMenu(
     data,
     index,
-    /* eslint-disable-next-line default-param-last */
+    // biome-ignore lint/style/useDefaultParameterLast:
     pMouseUp = false,
     clickAwayFunc,
     useMouse = false,
