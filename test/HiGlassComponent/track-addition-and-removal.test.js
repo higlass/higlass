@@ -1,11 +1,12 @@
 // @ts-nocheck
+import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 
 import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
-import { expect } from 'chai';
 import Enzyme from 'enzyme';
 
 import {
   mountHGComponent,
+  mountHGComponentAsync,
   removeHGComponent,
   waitForTilesLoaded,
 } from '../../app/scripts/test-helpers';
@@ -19,8 +20,8 @@ describe('Track addition and removal', () => {
   let hgc = null;
   let div = null;
 
-  before((done) => {
-    [div, hgc] = mountHGComponent(div, hgc, testViewConfX2, done, {
+  beforeAll(async () => {
+    [div, hgc] = await mountHGComponentAsync(div, hgc, testViewConfX2, {
       style: 'width:800px; height:400px; background-color: lightgreen',
       bounded: false,
     });
@@ -28,7 +29,7 @@ describe('Track addition and removal', () => {
     // to the left
   });
 
-  after(async () => {
+  afterAll(() => {
     removeHGComponent(div);
   });
 
@@ -40,7 +41,7 @@ describe('Track addition and removal', () => {
     expect(hgc.instance().state.views.aa.layout.h).to.equal(6);
   });
 
-  it('should change the opacity of the first text label to 20%', (done) => {
+  it('should change the opacity of the first text label to 20%', async () => {
     const newOptions = JSON.parse(
       JSON.stringify(testViewConfX2.views[0].tracks.top[0].options),
     );
@@ -53,10 +54,10 @@ describe('Track addition and removal', () => {
       getTrackObjectFromHGC(hgc.instance(), 'aa', 'line1').labelText.alpha,
     ).to.be.lessThan(0.21);
 
-    waitForTilesLoaded(hgc.instance(), done);
+    await new Promise((done) => waitForTilesLoaded(hgc.instance(), done));
   });
 
-  it('should change the stroke width of the second line to 5', (done) => {
+  it('should change the stroke width of the second line to 5', async () => {
     const newOptions = JSON.parse(
       JSON.stringify(testViewConfX2.views[0].tracks.top[1].options),
     );
@@ -69,10 +70,10 @@ describe('Track addition and removal', () => {
       getTrackObjectFromHGC(hgc.instance(), 'aa', 'line1').labelText.alpha,
     ).to.be.lessThan(0.21);
 
-    waitForTilesLoaded(hgc.instance(), done);
+    await new Promise((done) => waitForTilesLoaded(hgc.instance(), done));
   });
 
-  it('should do something else', (done) => {
-    waitForTilesLoaded(hgc.instance(), done);
+  it('should do something else', async () => {
+    await new Promise((done) => waitForTilesLoaded(hgc.instance(), done));
   });
 });
