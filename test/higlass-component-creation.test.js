@@ -1,12 +1,12 @@
 // @ts-nocheck
+import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 
 import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
-import { expect } from 'chai';
 import Enzyme from 'enzyme';
 
 // Utils
 import {
-  mountHGComponent,
+  mountHGComponentAsync,
   removeHGComponent,
 } from '../app/scripts/test-helpers';
 
@@ -17,21 +17,20 @@ describe('HiGlass component creation tests', () => {
   let div = null;
 
   describe('API tests', () => {
-    before((done) => {
-      [div, hgc] = mountHGComponent(
+    beforeAll(async () => {
+      [div, hgc] = await mountHGComponentAsync(
         div,
         hgc,
         'http://higlass.io/api/v1/viewconfs/?d=default',
-        done,
       );
+    });
+
+    afterAll(() => {
+      removeHGComponent(div);
     });
 
     it('Ensures that the viewconf state is editable', () => {
       expect(hgc.instance().state.viewConfig.editable).to.eql(true);
-    });
-
-    after(() => {
-      removeHGComponent(div);
     });
   });
 });
