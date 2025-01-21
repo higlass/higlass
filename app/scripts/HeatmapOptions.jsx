@@ -121,15 +121,16 @@ class HeatmapOptions extends React.Component {
                   height: 10,
                 }}
               >
+                <title>Remove</title>
                 <use xlinkHref="#cross" />
               </svg>
             </div>
           ) : null; // removeButton
 
         return (
-          /* eslint-disable react/no-array-index-key */
           // Colors may be repeated, so the array index is the best choice here.
           <div
+            // biome-ignore lint/suspicious/noArrayIndexKey:
             key={`l${i}`}
             style={{
               borderRadius: '1px',
@@ -140,6 +141,7 @@ class HeatmapOptions extends React.Component {
           >
             {removeButton}
             <SketchInlinePicker
+              // biome-ignore lint/suspicious/noArrayIndexKey:
               key={i}
               color={this.state.colors[i]}
               onChange={(c) => {
@@ -156,7 +158,6 @@ class HeatmapOptions extends React.Component {
               }}
             />
           </div>
-          /* eslint-enable react/no-array-index-key */
         );
       })
       .reverse();
@@ -192,6 +193,7 @@ class HeatmapOptions extends React.Component {
               }}
               width="10px"
             >
+              <title>Add</title>
               <use xlinkHref="#plus" />
             </svg>
           </div>

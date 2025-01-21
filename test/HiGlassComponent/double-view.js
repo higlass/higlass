@@ -1,20 +1,20 @@
 // @ts-nocheck
-/* eslint-env mocha */
-import Enzyme from 'enzyme';
+
 import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
 import { expect } from 'chai';
+import Enzyme from 'enzyme';
 
-import ReactDOM from 'react-dom';
 import { select } from 'd3-selection';
+import ReactDOM from 'react-dom';
 
 import {
+  mountHGComponentAsync,
   removeHGComponent,
   waitForTilesLoaded,
-  mountHGComponentAsync,
 } from '../../app/scripts/test-helpers';
 import { getTrackByUid, getTrackObjectFromHGC } from '../../app/scripts/utils';
 
-import { twoViewConfig, chromInfoTrack } from '../view-configs';
+import { chromInfoTrack, twoViewConfig } from '../view-configs';
 
 Enzyme.configure({ adapter: new Adapter() });
 
@@ -56,7 +56,6 @@ describe('Double view', () => {
 
     hgc.instance().setState({ views });
 
-    // eslint-disable-next-line react/no-find-dom-node
     const selection = select(ReactDOM.findDOMNode(hgc.instance())).selectAll(
       '.selection',
     );

@@ -1,9 +1,9 @@
 // @ts-nocheck
-/* eslint-env mocha */
-import * as React from 'react';
-import Enzyme from 'enzyme';
+
 import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
 import { expect } from 'chai';
+import Enzyme from 'enzyme';
+import * as React from 'react';
 
 import {
   mountHGComponentAsync,
@@ -13,7 +13,7 @@ import {
 
 import HiGlassComponent from '../../app/scripts/HiGlassComponent';
 
-import { testViewConfX1, project1D } from '../view-configs';
+import { project1D, testViewConfX1 } from '../view-configs';
 
 Enzyme.configure({ adapter: new Adapter() });
 

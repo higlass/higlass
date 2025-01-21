@@ -1,6 +1,6 @@
 // @ts-nocheck
-import slugid from 'slugid';
 import { brush } from 'd3-brush';
+import slugid from 'slugid';
 
 import SVGTrack from './SVGTrack';
 

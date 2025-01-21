@@ -10,6 +10,7 @@ export default function dictValues(dictionary) {
   const values = [];
 
   for (const key in dictionary) {
+    // biome-ignore lint/suspicious/noPrototypeBuiltins:
     if (dictionary.hasOwnProperty(key)) {
       values.push(dictionary[key]);
     }

@@ -1,6 +1,6 @@
 // @ts-nocheck
-import { colorToHex } from './utils';
 import { mix } from './mixwith';
+import { colorToHex } from './utils';
 
 import PixiTrack from './PixiTrack';
 import RuleMixin from './RuleMixin';

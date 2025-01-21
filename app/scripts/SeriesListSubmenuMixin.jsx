@@ -2,8 +2,8 @@
 import React from 'react';
 import { Mixin } from './mixwith';
 
-import SeriesListMenu from './SeriesListMenu';
 import { getAllTracksAndSubtracks } from './SeriesListItems';
+import SeriesListMenu from './SeriesListMenu';
 
 const SeriesListSubmenuMixin = Mixin(
   (superclass) =>

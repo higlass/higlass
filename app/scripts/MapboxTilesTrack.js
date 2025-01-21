@@ -40,8 +40,7 @@ class MapboxTilesTrack extends OSMTilesTrack {
    * Get the url used to fetch the tile data
    */
   getTileUrl(tileZxy) {
-    const mapStyle =
-      this.options && this.options.style ? this.options.style : 'streets-v10';
+    const mapStyle = this.options?.style ? this.options.style : 'streets-v10';
 
     const tileSize =
       this.options && +this.options.tileSize ? +this.options.tileSize : 256;

@@ -65,7 +65,7 @@ export const getSeriesItems = (
     const imgTag = thumbnail ? (
       <div
         className={classes['context-menu-icon']}
-        // eslint-disable-next-line react/no-danger
+        // biome-ignore lint/security/noDangerouslySetInnerHtml: Defined by plugins
         dangerouslySetInnerHTML={{ __html: thumbnail.outerHTML }}
       />
     ) : (
@@ -90,11 +90,10 @@ export const getSeriesItems = (
       >
         {imgTag}
         <span className={classes['context-menu-span']}>
-          {x.options && x.options.name && x.options.name.length
-            ? x.options.name
-            : x.type}
+          {x.options?.name?.length ? x.options.name : x.type}
           {onItemMouseEnter && onItemMouseLeave ? (
             <svg className={classes['play-icon']}>
+              <title>Play</title>
               <use xlinkHref="#play" />
             </svg>
           ) : null}

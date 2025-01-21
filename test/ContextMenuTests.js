@@ -1,15 +1,15 @@
 // @ts-nocheck
-/* eslint-env mocha */
-import { spyOn } from 'tinyspy';
+
 import { expect } from 'chai';
+import { spyOn } from 'tinyspy';
 
 // Utils
 import { getTrackRenderer } from '../app/scripts/utils';
 
 import createElementAndApi from './utils/create-element-and-api';
+import waitForElementWithText from './utils/dom';
 import removeDiv from './utils/remove-div';
 import viewConfig from './view-configs/two-bars-and-a-heatmap.json';
-import waitForElementWithText from './utils/dom';
 
 describe('Context menu tests', () => {
   let api;
@@ -20,7 +20,6 @@ describe('Context menu tests', () => {
   });
 
   it('Tries to open a context menu', (done) => {
-    // eslint-disable-next-line no-unused-vars
     const contextmenu = new MouseEvent('contextmenu', {
       clientX: 348,
       clientY: 315,

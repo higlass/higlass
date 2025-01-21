@@ -1,6 +1,6 @@
-import slugid from 'slugid';
-import pako from 'pako';
 import genbankParser from 'genbank-parser';
+import pako from 'pako';
+import slugid from 'slugid';
 
 /**
  * @template T
@@ -313,8 +313,8 @@ class GBKDataFetcher {
 
     for (const tileId of tileIds) {
       const parts = tileId.split('.');
-      const z = parseInt(parts[0], 10);
-      const x = parseInt(parts[1], 10);
+      const z = Number.parseInt(parts[0], 10);
+      const x = Number.parseInt(parts[1], 10);
 
       if (Number.isNaN(x) || Number.isNaN(z)) {
         console.warn('Invalid tile zoom or position:', z, x);

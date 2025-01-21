@@ -50,7 +50,7 @@ class Horizontal2DDomainsTrack extends TiledPixiTrack {
     let zoomLevel = Math.max(xZoomLevel, yZoomLevel);
     zoomLevel = Math.min(zoomLevel, this.maxZoom);
 
-    if (this.options && this.options.maxZoom) {
+    if (this.options?.maxZoom) {
       if (this.options.maxZoom >= 0) {
         zoomLevel = Math.min(this.options.maxZoom, zoomLevel);
       } else {

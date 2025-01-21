@@ -1,13 +1,13 @@
-import slugid from 'slugid';
 import { scaleLinear } from 'd3-scale';
+import slugid from 'slugid';
 
-// Utils
-import tts from '../utils/trim-trailing-slash';
-import dictValues from '../utils/dict-values';
-import minNonZero from '../utils/min-non-zero';
-import maxNonZero from '../utils/max-non-zero';
 import DenseDataExtrema1D from '../utils/DenseDataExtrema1D';
 import DenseDataExtrema2D from '../utils/DenseDataExtrema2D';
+import dictValues from '../utils/dict-values';
+import maxNonZero from '../utils/max-non-zero';
+import minNonZero from '../utils/min-non-zero';
+// Utils
+import tts from '../utils/trim-trailing-slash';
 
 // Services
 import * as tileProxy from '../services/tile-proxy';
@@ -325,7 +325,7 @@ export default class DataFetcher {
     const result = new Float32Array(numeratorData.length);
 
     for (let i = 0; i < result.length; i++) {
-      if (denominatorData[i] === 0.0) result[i] = NaN;
+      if (denominatorData[i] === 0.0) result[i] = Number.NaN;
       else result[i] = numeratorData[i] / denominatorData[i];
     }
 

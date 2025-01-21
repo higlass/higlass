@@ -1,6 +1,6 @@
 // @ts-nocheck
-import React from 'react';
 import clsx from 'clsx';
+import React from 'react';
 
 import ContextMenuContainer from './ContextMenuContainer';
 import ContextMenuItem from './ContextMenuItem';
@@ -67,8 +67,7 @@ export default class SeriesListMenu extends ContextMenuContainer {
     // if they clash with the default higlass options
     // they will override them
     const pluginOptionsInfo =
-      window.higlassTracksByType &&
-      window.higlassTracksByType[track.type] &&
+      window.higlassTracksByType?.[track.type] &&
       window.higlassTracksByType[track.type].config &&
       window.higlassTracksByType[track.type].config.optionsInfo;
 
@@ -137,10 +136,7 @@ export default class SeriesListMenu extends ContextMenuContainer {
 
             // is there a custom component available for picking this
             // option type value (e.g. 'custom' color scale)
-            if (
-              inlineOption.componentPickers &&
-              inlineOption.componentPickers[track.type]
-            ) {
+            if (inlineOption.componentPickers?.[track.type]) {
               optionSelectorSettings.handler = () => {
                 this.props.onConfigureTrack(
                   track,
@@ -161,10 +157,7 @@ export default class SeriesListMenu extends ContextMenuContainer {
             menuItems[optionType].children[inlineOptionKey] =
               optionSelectorSettings;
           }
-        } else if (
-          OPTIONS_INFO[optionType].componentPickers &&
-          OPTIONS_INFO[optionType].componentPickers[track.type]
-        ) {
+        } else if (OPTIONS_INFO[optionType].componentPickers?.[track.type]) {
           // there's an option picker registered
           menuItems[optionType].handler = () => {
             this.props.onConfigureTrack(
@@ -420,6 +413,7 @@ export default class SeriesListMenu extends ContextMenuContainer {
         >
           Configure Series
           <svg className={classes['play-icon']}>
+            <title>Play</title>
             <use xlinkHref="#play" />
           </svg>
         </ContextMenuItem>
@@ -438,6 +432,7 @@ export default class SeriesListMenu extends ContextMenuContainer {
           <span className={classes['context-menu-span']}>
             Track Type
             <svg className={classes['play-icon']}>
+              <title>Play</title>
               <use xlinkHref="#play" />
             </svg>
           </span>

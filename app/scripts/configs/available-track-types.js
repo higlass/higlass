@@ -23,7 +23,7 @@ import { DATATYPE_TO_TRACK_TYPE } from './datatype-to-track-type';
 export const AVAILABLE_TRACK_TYPES = (datatypes, orientation) => {
   const datatypesToTrackTypes = DATATYPE_TO_TRACK_TYPE(orientation);
   let availableTrackTypes = new Set(
-    Object.values(datatypesToTrackTypes).flatMap((x) => x),
+    Object.values(datatypesToTrackTypes).flat(),
   );
 
   for (const datatype of datatypes) {

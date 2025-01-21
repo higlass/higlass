@@ -1,10 +1,10 @@
 // @ts-nocheck
-import React from 'react';
 import PropTypes from 'prop-types';
+import React from 'react';
 
 import Dialog from './Dialog';
-import TilesetFinder from './TilesetFinder';
 import PlotTypeChooser from './PlotTypeChooser';
+import TilesetFinder from './TilesetFinder';
 
 // Configs
 import { AVAILABLE_TRACK_TYPES } from './configs';

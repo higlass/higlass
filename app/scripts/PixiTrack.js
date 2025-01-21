@@ -8,8 +8,8 @@ import colorToHex from './utils/color-to-hex';
 // Configs
 import GLOBALS from './configs/globals';
 import {
-  isResolutionsTilesetInfo,
   isLegacyTilesetInfo,
+  isResolutionsTilesetInfo,
 } from './utils/type-guards';
 
 /**
@@ -318,13 +318,13 @@ class PixiTrack extends Track {
     // Collect all the error texts, filter out the ones that are empty
     // and put the non-empty ones separate lines
     const errorTextText = Object.values(this.errorTexts)
-      .filter((x) => x && x.length)
+      .filter((x) => x?.length)
       .reduce((acc, x) => (acc ? `${acc}\n${x}` : x), '');
 
     this.errorText.text = errorTextText;
     this.errorText.alpha = 0.8;
 
-    if (errorTextText && errorTextText.length) {
+    if (errorTextText?.length) {
       // draw a red border around the track to bring attention to its
       // error
 
@@ -388,9 +388,7 @@ class PixiTrack extends Track {
   }
 
   getName() {
-    return this.options.name
-      ? this.options.name
-      : (this.tilesetInfo && this.tilesetInfo.name) || '';
+    return this.options.name ? this.options.name : this.tilesetInfo?.name || '';
   }
 
   drawLabel() {
@@ -461,10 +459,10 @@ class PixiTrack extends Track {
       labelTextText += `\n[Current data resolution: ${formattedResolution}]`;
     }
 
-    if (this.options && this.options.dataTransform) {
+    if (this.options?.dataTransform) {
       let chosenTransform = null;
 
-      if (this.tilesetInfo && this.tilesetInfo.transforms) {
+      if (this.tilesetInfo?.transforms) {
         for (const transform of this.tilesetInfo.transforms) {
           if (transform.value === this.options.dataTransform) {
             chosenTransform = transform;
@@ -695,7 +693,7 @@ class PixiTrack extends Track {
     rectBackground.setAttribute('width', `${this.dimensions[0]}`);
     rectBackground.setAttribute('height', `${this.dimensions[1]}`);
 
-    if (this.options && this.options.backgroundColor) {
+    if (this.options?.backgroundColor) {
       rectBackground.setAttribute('fill', this.options.backgroundColor);
     } else {
       rectBackground.setAttribute('fill-opacity', '0');

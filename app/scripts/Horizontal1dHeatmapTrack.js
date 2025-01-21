@@ -28,7 +28,7 @@ class Horizontal1dHeatmapTrack extends HorizontalLine1DPixiTrack {
   }
 
   rerender(options) {
-    if (options && options.colorRange) {
+    if (options?.colorRange) {
       this.setColorScale(options.colorRange);
     }
 

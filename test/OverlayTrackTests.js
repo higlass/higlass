@@ -1,5 +1,5 @@
 // @ts-nocheck
-/* eslint-env mocha */
+
 import { expect } from 'chai';
 
 import createElementAndApi from './utils/create-element-and-api';
@@ -58,7 +58,7 @@ describe('Overlay Track:', () => {
     });
 
     afterEach(() => {
-      if (api && api.destroy) api.destroy();
+      if (api?.destroy) api.destroy();
       if (div) removeDiv(div);
       api = undefined;
       div = undefined;
@@ -95,7 +95,7 @@ describe('Overlay Track:', () => {
     });
 
     afterEach(() => {
-      if (api && api.destroy) api.destroy();
+      if (api?.destroy) api.destroy();
       if (div) removeDiv(div);
       api = undefined;
       div = undefined;

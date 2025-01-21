@@ -1,11 +1,11 @@
 // @ts-nocheck
-/* eslint-env mocha */
-import Enzyme from 'enzyme';
+
 import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
 import { expect } from 'chai';
+import Enzyme from 'enzyme';
 
-import { geneAnnotationsOnly } from './view-configs';
 import createElementAndApi from './utils/create-element-and-api';
+import { geneAnnotationsOnly } from './view-configs';
 
 // Utils
 import { waitForTilesLoaded } from '../app/scripts/test-helpers';

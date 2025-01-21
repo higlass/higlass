@@ -1,10 +1,10 @@
 // @ts-nocheck
 import boxIntersect from 'box-intersect';
+import { format, formatPrefix, precisionPrefix } from 'd3-format';
 import { scaleLinear } from 'd3-scale';
-import { format, precisionPrefix, formatPrefix } from 'd3-format';
 
-import PixiTrack from './PixiTrack';
 import ChromosomeInfo from './ChromosomeInfo';
+import PixiTrack from './PixiTrack';
 import SearchField from './SearchField';
 
 import {

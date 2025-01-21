@@ -4,9 +4,9 @@ import React from 'react';
 
 // Configs
 import {
-  TRACKS_INFO,
-  DATATYPE_TO_TRACK_TYPE,
   AVAILABLE_TRACK_TYPES,
+  DATATYPE_TO_TRACK_TYPE,
+  TRACKS_INFO,
 } from './configs';
 
 // Utils
@@ -32,7 +32,6 @@ class PlotTypeChooser extends React.Component {
     };
   }
 
-  // eslint-disable-next-line camelcase
   UNSAFE_componentWillReceiveProps(newProps) {
     this.AVAILABLE_TRACK_TYPES = AVAILABLE_TRACK_TYPES(
       newProps.datatypes,
@@ -92,7 +91,7 @@ class PlotTypeChooser extends React.Component {
         const imgTag = trackTypeToInfo[x.type].thumbnail ? (
           <div
             className="track-thumbnail"
-            // eslint-disable-next-line react/no-danger
+            // biome-ignore lint/security/noDangerouslySetInnerHtml: Required for plugins
             dangerouslySetInnerHTML={{ __html: thumbnail.outerHTML }}
           />
         ) : (

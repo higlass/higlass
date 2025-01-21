@@ -1,16 +1,16 @@
 // @ts-nocheck
-/* eslint-env mocha */
+
 import { expect } from 'chai';
 
 import tileProxy, {
   tileDataToPixData,
 } from '../app/scripts/services/tile-proxy';
 import fakePubSub from '../app/scripts/utils/fake-pub-sub';
+import { defaultColorScale } from './testdata/colorscale-data';
 import {
   multivecTileData,
   multivecTileDataWithServerAggregation,
 } from './testdata/multivec-data';
-import { defaultColorScale } from './testdata/colorscale-data';
 
 describe('tileProxy.json()', () => {
   it('is a function', () => {

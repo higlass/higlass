@@ -20,7 +20,7 @@ class BarTrack extends HorizontalLine1DPixiTrack {
     this.pMain.addChild(this.zeroLine);
     this.valueScaleTransform = zoomIdentity;
 
-    if (this.options && this.options.colorRange) {
+    if (this.options?.colorRange) {
       if (this.options.colorRangeGradient) {
         this.setColorGradient(this.options.colorRange);
       } else {
@@ -226,7 +226,7 @@ class BarTrack extends HorizontalLine1DPixiTrack {
   }
 
   rerender(options, force) {
-    if (options && options.colorRange) {
+    if (options?.colorRange) {
       if (options.colorRangeGradient) {
         this.setColorGradient(options.colorRange);
       } else {
@@ -430,7 +430,7 @@ class BarTrack extends HorizontalLine1DPixiTrack {
     if (this.options.zeroLine) this.drawZeroLineSvg(output);
 
     this.visibleAndFetchedTiles()
-      .filter((tile) => tile.svgData && tile.svgData.barXValues)
+      .filter((tile) => tile.svgData?.barXValues)
       .forEach((tile) => {
         // const [xScale, xPos] = this.getXScaleAndOffset(tile.drawnAtScale);
         const data = tile.svgData;

@@ -1,12 +1,12 @@
 // @ts-nocheck
-import React from 'react';
-import PropTypes from 'prop-types';
 import clsx from 'clsx';
+import PropTypes from 'prop-types';
+import React from 'react';
 
-import PopupMenu from './PopupMenu';
-import ContextMenuContainer from './ContextMenuContainer';
-import ConfigViewMenu from './ConfigViewMenu';
 import AddTrackPositionMenu from './AddTrackPositionMenu';
+import ConfigViewMenu from './ConfigViewMenu';
+import ContextMenuContainer from './ContextMenuContainer';
+import PopupMenu from './PopupMenu';
 
 // HOCS
 import withTheme from './hocs/with-theme';
@@ -43,7 +43,6 @@ class ViewHeader extends React.Component {
   }
 
   componentDidMount() {
-    // eslint-disable-next-line react/no-did-mount-set-state
     this.setState({ width: this.el.clientWidth });
   }
 
@@ -243,8 +242,8 @@ class ViewHeader extends React.Component {
           {this.props.mouseTool === MOUSE_TOOL_SELECT && (
             <svg
               className={clsx(classes['mouse-tool-selection'], classNameIcon)}
-              title="Selection tool active"
             >
+              <title>Selection tool active</title>
               <use xlinkHref="#select" />
             </svg>
           )}

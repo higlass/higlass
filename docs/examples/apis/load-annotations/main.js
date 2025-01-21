@@ -1,5 +1,4 @@
 // @ts-nocheck
-/* eslint-disable */
 
 function main() {
   hglib

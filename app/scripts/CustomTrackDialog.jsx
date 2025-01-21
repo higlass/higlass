@@ -1,6 +1,6 @@
 // @ts-nocheck
-import React from 'react';
 import PropTypes from 'prop-types';
+import React from 'react';
 
 import Dialog from './Dialog';
 
@@ -12,7 +12,7 @@ class CustomTrackDialog extends React.PureComponent {
     const childrenWithProp = [];
     this.props.children.forEach((Child, i) => {
       const key = `customTrackDialog_${i}`;
-      // eslint-disable-next-line react/jsx-props-no-spreading
+
       childrenWithProp.push(<Child key={key} {...this.props.bodyProps[i]} />);
     });
 

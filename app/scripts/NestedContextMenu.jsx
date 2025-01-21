@@ -1,6 +1,6 @@
 // @ts-nocheck
-import React from 'react';
 import clsx from 'clsx';
+import React from 'react';
 
 import ContextMenuContainer from './ContextMenuContainer';
 import ContextMenuItem from './ContextMenuItem';
@@ -66,6 +66,7 @@ class NestedContextMenu extends ContextMenuContainer {
           {menuItem.name}
           {menuItem.children && (
             <svg className={classes['play-icon']}>
+              <title>Play</title>
               <use xlinkHref="#play" />
             </svg>
           )}

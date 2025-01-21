@@ -1,15 +1,15 @@
 // @ts-nocheck
-/* eslint-env mocha */
-import Enzyme from 'enzyme';
+
 import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
 import { expect } from 'chai';
+import Enzyme from 'enzyme';
 
 // Utils
 import {
   mountHGComponent,
   removeHGComponent,
-  waitForTransitionsFinished,
   waitForTilesLoaded,
+  waitForTransitionsFinished,
 } from '../app/scripts/test-helpers';
 import { getTrackObjectFromHGC } from '../app/scripts/utils';
 
@@ -19,8 +19,8 @@ import viewConf2D from './view-configs/continuous-scaling-2D.json';
 
 import DenseDataExtrema1D from '../app/scripts/utils/DenseDataExtrema1D';
 import DenseDataExtrema2D from '../app/scripts/utils/DenseDataExtrema2D';
-import { vecToy, vecRealistic } from './testdata/vector-data';
-import { matToy, matRealistic } from './testdata/matrix-data';
+import { matRealistic, matToy } from './testdata/matrix-data';
+import { vecRealistic, vecToy } from './testdata/vector-data';
 
 Enzyme.configure({ adapter: new Adapter() });
 

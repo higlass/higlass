@@ -54,7 +54,7 @@ class Annotations1dTrack extends PixiTrack {
         : 0;
 
     let strokePos;
-    if (this.options.strokePos && this.options.strokePos.length) {
+    if (this.options.strokePos?.length) {
       strokePos = Array.isArray(this.options.strokePos)
         ? this.options.strokePos
         : [this.options.strokePos];

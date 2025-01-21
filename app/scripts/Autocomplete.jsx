@@ -1,9 +1,9 @@
 // @ts-nocheck
-/* eslint-disable react/jsx-props-no-spreading */
-import React from 'react';
-import { findDOMNode } from 'react-dom';
+
 import scrollIntoView from 'dom-scroll-into-view';
 import PropTypes from 'prop-types';
+import React from 'react';
+import { findDOMNode } from 'react-dom';
 
 const _debugStates = [];
 
@@ -102,14 +102,12 @@ class Autocomplete extends React.Component {
     };
   }
 
-  // eslint-disable-next-line camelcase
   UNSAFE_componentWillMount() {
     this._ignoreBlur = false;
     this._performAutoCompleteOnUpdate = false;
     this._performAutoCompleteOnKeyUp = false;
   }
 
-  // eslint-disable-next-line camelcase
   UNSAFE_componentWillReceiveProps(nextProps) {
     this._performAutoCompleteOnUpdate = true;
     // If `items` has changed we want to reset `highlightedIndex`
@@ -143,9 +141,8 @@ class Autocomplete extends React.Component {
 
   maybeScrollItemIntoView() {
     if (this.state.isOpen === true && this.state.highlightedIndex !== null) {
-      // eslint-disable-next-line react/no-string-refs
       const itemNode = this.refs[`item-${this.state.highlightedIndex}`];
-      // eslint-disable-next-line react/no-string-refs
+
       const menuNode = this.refs.menu;
       if (itemNode) {
         scrollIntoView(findDOMNode(itemNode), findDOMNode(menuNode), {
@@ -217,9 +214,9 @@ class Autocomplete extends React.Component {
     const node = this.inputEl;
     const rect = node.getBoundingClientRect();
     const computedStyle = global.window.getComputedStyle(node);
-    const marginBottom = parseInt(computedStyle.marginBottom, 10) || 0;
-    const marginLeft = parseInt(computedStyle.marginLeft, 10) || 0;
-    const marginRight = parseInt(computedStyle.marginRight, 10) || 0;
+    const marginBottom = Number.parseInt(computedStyle.marginBottom, 10) || 0;
+    const marginLeft = Number.parseInt(computedStyle.marginLeft, 10) || 0;
+    const marginRight = Number.parseInt(computedStyle.marginRight, 10) || 0;
     this.setState({
       menuTop: rect.bottom + marginBottom,
       menuLeft: rect.left + marginLeft,
@@ -354,26 +351,26 @@ class Autocomplete extends React.Component {
           autoComplete="off"
           onBlur={this.composeEventHandlers(
             this.handleInputBlur.bind(this),
-            inputProps.onBlur && inputProps.onBlur.bind(this),
+            inputProps.onBlur?.bind(this),
           )}
           onChange={this.handleChange.bind(this)}
           onClick={this.composeEventHandlers(
             this.handleInputClick.bind(this),
-            inputProps.onClick && inputProps.onClick.bind(this),
+            inputProps.onClick?.bind(this),
           )}
           onFocus={this.composeEventHandlers(
             this.handleInputFocus.bind(this),
-            inputProps.onFocus && inputProps.onFocus.bind(this),
+            inputProps.onFocus?.bind(this),
           )}
           onKeyDown={this.composeEventHandlers(
             this.handleKeyDown.bind(this),
-            inputProps.onKeyDown && inputProps.onKeyDown.bind(this),
+            inputProps.onKeyDown?.bind(this),
           )}
           onKeyUp={this.composeEventHandlers(
             this.handleKeyUp.bind(this),
-            inputProps.onKeyUp && inputProps.onKeyUp.bind(this),
+            inputProps.onKeyUp?.bind(this),
           )}
-          // eslint-disable-next-line jsx-a11y/role-has-required-aria-props
+          // biome-ignore lint/a11y/useAriaPropsForRole:
           role="combobox"
           value={this.props.value}
         />
@@ -403,11 +400,7 @@ Autocomplete.defaultProps = {
   onChange() {},
   onSelect() {},
   renderMenu(items, value, style) {
-    return (
-      /* eslint-disable react/no-this-in-sfc */
-      <div style={{ ...style, ...this.menuStyle }}>{items}</div>
-      /* eslint-enable react/no-this-in-sfc */
-    );
+    return <div style={{ ...style, ...this.menuStyle }}>{items}</div>;
   },
   shouldItemRender() {
     return true;

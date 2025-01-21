@@ -1,7 +1,7 @@
 // @ts-nocheck
-import ReactDOM from 'react-dom';
-import createPubSub from 'pub-sub-es';
 import Ajv from 'ajv';
+import createPubSub from 'pub-sub-es';
+import ReactDOM from 'react-dom';
 
 import schema from '../schema.json';
 
@@ -193,7 +193,7 @@ const createApi = function api(context, pubSub) {
        * hgv.activateTool('select'); // Activate select tool
        * hgv.setRangeSelection1dSize(5000, 10000); // Force selections to be between 5 and 10 Kb
        */
-      setRangeSelection1dSize(minSize = 0, maxSize = Infinity) {
+      setRangeSelection1dSize(minSize = 0, maxSize = Number.POSITIVE_INFINITY) {
         self.setState({
           rangeSelection1dSize: [minSize, maxSize],
         });
@@ -659,8 +659,7 @@ const createApi = function api(context, pubSub) {
       getLocation(viewId) {
         const wurstId = viewId
           ? self.xScales[viewId] && self.yScales[viewId] && viewId
-          : Object.values(self.tiledPlots)[0] &&
-            Object.values(self.tiledPlots)[0].props.uid;
+          : Object.values(self.tiledPlots)[0]?.props.uid;
 
         if (!wurstId) {
           return 'Please provide a valid view UUID sweetheart 😙';

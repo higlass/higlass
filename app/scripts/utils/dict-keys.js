@@ -13,6 +13,7 @@ export default function dictKeys(dictionary) {
 
   for (const key in dictionary) {
     // @ts-expect-error - TS inference not good enough to infer the correct type
+    // biome-ignore lint/suspicious/noPrototypeBuiltins:
     if (dictionary.hasOwnProperty(key)) {
       keys.push(key);
     }
