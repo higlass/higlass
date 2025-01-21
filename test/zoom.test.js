@@ -1,7 +1,5 @@
 // @ts-nocheck
-
-import { expect } from 'chai';
-import { spyOn } from 'tinyspy';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 // Utils
 import { getTrackRenderer } from '../app/scripts/utils';
@@ -16,6 +14,14 @@ describe('Zoom tests', () => {
 
   beforeEach(() => {
     [div, api] = createElementAndApi(viewConfig);
+  });
+
+  afterEach(() => {
+    api.destroy();
+    removeDiv(div);
+    api = undefined;
+    div = undefined;
+    vi.resetAllMocks();
   });
 
   const doMouseMove = (startX, startY, valueScaleZooming) => {
@@ -42,7 +48,7 @@ describe('Zoom tests', () => {
     const trackRenderer = getTrackRenderer(api.getComponent(), 'aa');
     trackRenderer.valueScaleZooming = valueScaleZooming;
 
-    const spiedTrackRenderer = spyOn(trackRenderer, 'valueScaleMove');
+    const spy = vi.spyOn(trackRenderer, 'valueScaleMove');
     const prevTransform = trackRenderer.zoomTransform;
 
     trackRenderer.element.dispatchEvent(evtDown);
@@ -54,49 +60,35 @@ describe('Zoom tests', () => {
     const dx = newTransform.x - prevTransform.x;
     const dy = newTransform.y - prevTransform.y;
 
-    return [dx, dy, spiedTrackRenderer];
+    return [dx, dy, spy];
   };
 
-  it('Dispatches a mousewheel event on the horizontal track', (done) => {
+  it('Dispatches a mousewheel event on the horizontal track', () => {
     const [dx, dy, _] = doMouseMove(345, 221);
 
     expect(dy).to.equal(0);
     expect(dx).to.equal(2);
-
-    done();
   });
 
-  it('Dispatches a mousewheel event on the horizontal track while vauleScaleZooming', (done) => {
-    const [dx, dy, spiedTrackRenderer] = doMouseMove(345, 221, true);
+  it('Dispatches a mousewheel event on the horizontal track while vauleScaleZooming', () => {
+    const [dx, dy, spy] = doMouseMove(345, 221, true);
 
     expect(dy).to.equal(0);
     expect(dx).to.equal(2);
-    expect(spiedTrackRenderer.called).to.be.true;
-    done();
+    expect(spy).toHaveBeenCalled();
   });
 
-  it('Dispatches a mousewheel event on the center', (done) => {
+  it('Dispatches a mousewheel event on the center', () => {
     const [dx, dy, _] = doMouseMove(348, 315);
 
     expect(dy).to.equal(2);
     expect(dx).to.equal(2);
-
-    done();
   });
 
-  it('Dispatches a mousewheel event on the left track', (done) => {
+  it('Dispatches a mousewheel event on the left track', () => {
     const [dx, dy, _] = doMouseMove(56, 315);
 
     expect(dy).to.equal(2);
     expect(dx).to.equal(0);
-
-    done();
-  });
-
-  afterEach(() => {
-    api.destroy();
-    removeDiv(div);
-    api = undefined;
-    div = undefined;
   });
 });
