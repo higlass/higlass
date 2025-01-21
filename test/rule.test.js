@@ -1,13 +1,13 @@
 // @ts-nocheck
+import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 
 import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
-import { expect } from 'chai';
 import Enzyme from 'enzyme';
 
 // Utils
 import {
   changeOptions,
-  mountHGComponent,
+  mountHGComponentAsync,
   removeHGComponent,
 } from '../app/scripts/test-helpers';
 import { getTrackObjectFromHGC } from '../app/scripts/utils';
@@ -43,8 +43,13 @@ describe('Rule tests', () => {
     };
     let hgc = null;
     let div = null;
-    before((done) => {
-      [div, hgc] = mountHGComponent(div, hgc, viewconf, done);
+
+    beforeAll(async () => {
+      [div, hgc] = await mountHGComponentAsync(div, hgc, viewconf);
+    });
+
+    afterAll(() => {
+      removeHGComponent(div);
     });
 
     it('can load and unload', () => {
@@ -90,10 +95,6 @@ describe('Rule tests', () => {
       // a viewconf with pre-configured rules didn't properly set the
       // range and led to the rules moving about
       expect(obj1Width).to.equal(obj2Width);
-    });
-
-    after(() => {
-      removeHGComponent(div);
     });
   });
 });
