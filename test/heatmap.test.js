@@ -1,12 +1,12 @@
 // @ts-nocheck
+import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 
 import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
-import { expect } from 'chai';
 import Enzyme from 'enzyme';
 
 // Utils
 import {
-  mountHGComponent,
+  mountHGComponentAsync,
   removeHGComponent,
   waitForTilesLoaded,
 } from '../app/scripts/test-helpers';
@@ -21,11 +21,15 @@ describe('Heatmaps', () => {
     let hgc = null;
     let div = null;
 
-    before((done) => {
-      [div, hgc] = mountHGComponent(div, hgc, noDataTransform, done, {
+    beforeAll(async () => {
+      [div, hgc] = await mountHGComponentAsync(div, hgc, noDataTransform, {
         style: 'width:800px; height:400px; background-color: lightgreen',
         bounded: true,
       });
+    });
+
+    afterAll(() => {
+      removeHGComponent(div);
     });
 
     it('should respect zoom limits', () => {
@@ -36,21 +40,20 @@ describe('Heatmaps', () => {
 
       expect(Number.isNaN(rectData.data[0])).to.eql(false);
     });
-
-    after(() => {
-      removeHGComponent(div);
-    });
   });
 
   describe('Export heatmap data', () => {
     let hgc = null;
     let div = null;
 
-    before((done) => {
-      [div, hgc] = mountHGComponent(div, hgc, exportDataConfig, done, {
+    beforeAll(async () => {
+      [div, hgc] = await mountHGComponentAsync(div, hgc, exportDataConfig, {
         style: 'width:600px;height:1200px;background-color: lightgreen',
         bounded: true,
       });
+    });
+    afterAll(() => {
+      removeHGComponent(div);
     });
 
     it('once', () => {
@@ -73,21 +76,21 @@ describe('Heatmaps', () => {
 
       // tp.exportData();
     });
-
-    after(() => {
-      removeHGComponent(div);
-    });
   });
 
   describe('Visualization', () => {
     let hgc = null;
     let div = null;
 
-    before((done) => {
-      [div, hgc] = mountHGComponent(div, hgc, viewconf, done, {
+    beforeAll(async () => {
+      [div, hgc] = await mountHGComponentAsync(div, hgc, viewconf, {
         style: 'width:800px; height:400px; background-color: lightgreen',
         bounded: true,
       });
+    });
+
+    afterAll(() => {
+      removeHGComponent(div);
     });
 
     it('should respect zoom limits', () => {
@@ -99,18 +102,18 @@ describe('Heatmaps', () => {
       expect(rectData.shape[0]).to.eql(0);
       expect(rectData.shape[1]).to.eql(0);
     });
-
-    after(() => {
-      removeHGComponent(div);
-    });
   });
 
   describe('Triangular-split heatmaps', () => {
     let hgc = null;
     let div = null;
 
-    before((done) => {
-      [div, hgc] = mountHGComponent(div, hgc, baseConf, done);
+    beforeAll(async () => {
+      [div, hgc] = await mountHGComponentAsync(div, hgc, baseConf);
+    });
+
+    afterAll(() => {
+      removeHGComponent(div);
     });
 
     it('should adjust options when new heatmap is added', () => {
@@ -150,26 +153,24 @@ describe('Heatmaps', () => {
       expect(options1.colorbarPosition).to.eql('topRight');
     });
 
-    it('tiles on the diagonal should be independent', (done) => {
+    it('tiles on the diagonal should be independent', async () => {
       const trackObj0 = getTrackObjectFromHGC(hgc.instance(), 'v', 'heatmap0');
       const trackObj1 = getTrackObjectFromHGC(hgc.instance(), 'v', 'heatmap1');
 
-      waitForTilesLoaded(hgc.instance(), () => {
-        // hgc.instance().api.zoomToDataExtent('v');
-        expect(trackObj0.fetchedTiles['2.1.1.false'].tileData).to.not.eql(
-          trackObj1.fetchedTiles['2.1.1.true'].tileData,
-        );
+      await new Promise((done) => {
+        waitForTilesLoaded(hgc.instance(), () => {
+          // hgc.instance().api.zoomToDataExtent('v');
+          expect(trackObj0.fetchedTiles['2.1.1.false'].tileData).to.not.eql(
+            trackObj1.fetchedTiles['2.1.1.true'].tileData,
+          );
 
-        expect(trackObj0.fetchedTiles['2.1.1.false'].tileData.dense).to.not.eql(
-          trackObj1.fetchedTiles['2.1.1.true'].tileData.dense,
-        );
+          expect(
+            trackObj0.fetchedTiles['2.1.1.false'].tileData.dense,
+          ).to.not.eql(trackObj1.fetchedTiles['2.1.1.true'].tileData.dense);
 
-        done();
+          done(null);
+        });
       });
-    });
-
-    after(() => {
-      removeHGComponent(div);
     });
   });
 });
