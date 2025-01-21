@@ -1,6 +1,5 @@
 // @ts-nocheck
-
-import { expect } from 'chai';
+import { describe, expect, it } from 'vitest';
 
 // Utils
 import { visitPositionedTracks } from '../app/scripts/utils';
