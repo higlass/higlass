@@ -1,12 +1,13 @@
 // @ts-nocheck
+import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 
 import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
-import { expect } from 'chai';
 import Enzyme from 'enzyme';
 
 // Utils
 import {
   mountHGComponent,
+  mountHGComponentAsync,
   removeHGComponent,
   waitForTilesLoaded,
   waitForTransitionsFinished,
@@ -83,10 +84,14 @@ describe('Dense data extrema tests', () => {
     let hgc = null;
     let div = null;
 
-    before((done) => {
-      [div, hgc] = mountHGComponent(div, hgc, viewConf1DHorizontal, done, {
+    beforeAll(async () => {
+      [div, hgc] = await mountHGComponentAsync(div, hgc, viewConf1DHorizontal, {
         extendedDelay: 1000, // additional delay in ms
       });
+    });
+
+    afterAll(() => {
+      removeHGComponent(div);
     });
 
     it('Ensures HorizontalPoint1DPixiTrack has correct scale', () => {
@@ -167,12 +172,14 @@ describe('Dense data extrema tests', () => {
       expect(vs2[1]).to.be.eql(0.15536139905452728);
     });
 
-    it('Zooms and pan to the right', (done) => {
+    it('Zooms and pan to the right', async () => {
       hgc.instance().zoomTo('aa', 2619000000, 2620000000);
 
-      waitForTransitionsFinished(hgc.instance(), () => {
-        waitForTilesLoaded(hgc.instance(), () => {
-          done();
+      await new Promise((done) => {
+        waitForTransitionsFinished(hgc.instance(), () => {
+          waitForTilesLoaded(hgc.instance(), () => {
+            done(null);
+          });
         });
       });
     });
@@ -213,33 +220,36 @@ describe('Dense data extrema tests', () => {
       expect(vs[0]).to.be.eql(180);
       expect(vs[1]).to.be.eql(91032);
     });
-
-    after(() => {
-      removeHGComponent(div);
-    });
   });
 
   describe('Precise scaling of vertical 1D tracks', () => {
     let hgc = null;
     let div = null;
 
-    before((done) => {
-      [div, hgc] = mountHGComponent(div, hgc, viewConf1DVertical, done, {
+    beforeAll(async () => {
+      [div, hgc] = await mountHGComponentAsync(div, hgc, viewConf1DVertical, {
         extendedDelay: 1000, // additional delay in ms
       });
     });
 
-    it('Ensures leftmodified HorizontalPoint1DPixiTrack has correct scale', () => {
+    afterAll(() => {
+      removeHGComponent(div);
+    });
+
+    it('Ensures leftmodified HorizontalPoint1DPixiTrack has correct scale', async () => {
       const trackObj = getTrackObjectFromHGC(
         hgc.instance(),
         viewConf1DVertical.views[0].uid,
         viewConf1DVertical.views[0].tracks.left[0].uid,
       ).originalTrack;
 
-      waitForTilesLoaded(hgc.instance(), () => {
-        const vs = trackObj.valueScale.domain();
-        expect(vs[0]).to.be.eql(4308);
-        expect(vs[1]).to.be.eql(33920);
+      await new Promise((done) => {
+        waitForTilesLoaded(hgc.instance(), () => {
+          const vs = trackObj.valueScale.domain();
+          expect(vs[0]).to.be.eql(4308);
+          expect(vs[1]).to.be.eql(33920);
+          done(null);
+        });
       });
     });
 
@@ -264,45 +274,47 @@ describe('Dense data extrema tests', () => {
       expect(vs2[0]).to.be.eql(0.0009598731994628906);
       expect(vs2[1]).to.be.eql(1.5029296875);
     });
-
-    after(() => {
-      removeHGComponent(div);
-    });
   });
 
   describe('Correct scaling of 2D tracks', () => {
     let hgc = null;
     let div = null;
 
-    before((done) => {
-      [div, hgc] = mountHGComponent(div, hgc, viewConf2D, done, {
+    beforeAll(async () => {
+      [div, hgc] = await mountHGComponentAsync(div, hgc, viewConf2D, {
         style: 'width:600px; height:600px; background-color: lightgreen',
         bounded: true,
         extendedDelay: 1000,
       });
     });
+    afterAll(() => {
+      removeHGComponent(div);
+    });
 
-    it('Ensures Heatmap track has correct scale', () => {
+    it('Ensures Heatmap track has correct scale', async () => {
       const trackObj = getTrackObjectFromHGC(
         hgc.instance(),
         viewConf2D.views[0].uid,
         viewConf2D.views[0].tracks.center[0].uid,
       ).childTracks[0];
 
-      waitForTilesLoaded(hgc.instance(), () => {
-        const vs = trackObj.valueScale.domain();
-
-        expect(vs[0]).to.be.eql(0.0014894568594172597);
-        expect(vs[1]).to.be.eql(0.9345257878303528);
+      await new Promise((done) => {
+        waitForTilesLoaded(hgc.instance(), () => {
+          const vs = trackObj.valueScale.domain();
+          expect(vs[0]).to.be.eql(0.0014894568594172597);
+          expect(vs[1]).to.be.eql(0.9345257878303528);
+          done(null);
+        });
       });
     });
 
-    it('Pan to the right', (done) => {
+    it('Pan to the right', async () => {
       hgc.instance().zoomTo('aa', 1000000, 1250000, 0, 250000, 1000);
-
-      waitForTransitionsFinished(hgc.instance(), () => {
-        waitForTilesLoaded(hgc.instance(), () => {
-          done();
+      await new Promise((done) => {
+        waitForTransitionsFinished(hgc.instance(), () => {
+          waitForTilesLoaded(hgc.instance(), () => {
+            done(null);
+          });
         });
       });
     });
@@ -322,9 +334,5 @@ describe('Dense data extrema tests', () => {
     //     expect(vs[1]).to.be.eql(0.01572374626994133);
     //   });
     // });
-
-    after(() => {
-      removeHGComponent(div);
-    });
   });
 });
