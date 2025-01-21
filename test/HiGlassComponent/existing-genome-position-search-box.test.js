@@ -1,11 +1,11 @@
 // @ts-nocheck
+import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 
 import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
-import { expect } from 'chai';
 import Enzyme from 'enzyme';
 
 import {
-  mountHGComponent,
+  mountHGComponentAsync,
   removeHGComponent,
   waitForJsonComplete,
 } from '../../app/scripts/test-helpers';
@@ -18,8 +18,8 @@ describe('Exising genome position search box', () => {
   let hgc = null;
   let div = null;
 
-  before((done) => {
-    [div, hgc] = mountHGComponent(div, hgc, onlyGPSB, done, {
+  beforeAll(async () => {
+    [div, hgc] = await mountHGComponentAsync(div, hgc, onlyGPSB, {
       style: 'width:800px; height:400px; background-color: lightgreen',
       bounded: true,
     });
@@ -27,20 +27,18 @@ describe('Exising genome position search box', () => {
     // to the left
   });
 
-  after(async () => {
+  afterAll(async () => {
     removeHGComponent(div);
   });
 
-  it('Makes the search box invisible', (done) => {
+  it('Makes the search box invisible', async () => {
     hgc.instance().handleTogglePositionSearchBox('aa');
-
-    waitForJsonComplete(done);
+    await new Promise((done) => waitForJsonComplete(done));
   });
 
-  it('Makes the search box visible again', (done) => {
+  it('Makes the search box visible again', async () => {
     hgc.instance().handleTogglePositionSearchBox('aa');
-
-    waitForJsonComplete(done);
+    await new Promise((done) => waitForJsonComplete(done));
   });
 
   it('Searches for strings with spaces at the beginning', () => {
@@ -72,13 +70,12 @@ describe('Exising genome position search box', () => {
     ).to.be.greaterThanOrEqual(0);
   });
 
-  it('Selects mm9', (done) => {
+  it('Selects mm9', async () => {
     hgc.instance().genomePositionSearchBoxes.aa.handleAssemblySelect('mm9');
-
-    waitForJsonComplete(done);
+    await new Promise((done) => waitForJsonComplete(done));
   });
 
-  it('Checks that mm9 was properly set and switches back to hg19', (done) => {
+  it('Checks that mm9 was properly set and switches back to hg19', async () => {
     hgc.update();
     const button =
       hgc.instance().genomePositionSearchBoxes.aa.assemblyPickButton;
@@ -86,17 +83,14 @@ describe('Exising genome position search box', () => {
     expect(button.value).to.equal('mm9');
 
     hgc.instance().genomePositionSearchBoxes.aa.handleAssemblySelect('hg19');
-
-    waitForJsonComplete(done);
+    await new Promise((done) => waitForJsonComplete(done));
   });
 
-  it('Checks that hg19 was properly', (done) => {
+  it('Checks that hg19 was properly', async () => {
     hgc.update();
     const button =
       hgc.instance().genomePositionSearchBoxes.aa.assemblyPickButton;
-
     expect(button.value).to.equal('hg19');
-
-    waitForJsonComplete(done);
+    await new Promise((done) => waitForJsonComplete(done));
   });
 });
