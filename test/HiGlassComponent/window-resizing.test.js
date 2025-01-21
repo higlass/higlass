@@ -1,11 +1,11 @@
 // @ts-nocheck
+import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 
 import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
-import { expect } from 'chai';
 import Enzyme from 'enzyme';
 
 import {
-  mountHGComponent,
+  mountHGComponentAsync,
   removeHGComponent,
   waitForTilesLoaded,
 } from '../../app/scripts/test-helpers';
@@ -18,7 +18,7 @@ describe('Window resizing', () => {
   let hgc = null;
   let div = null;
 
-  before((done) => {
+  beforeAll(async () => {
     const newViewConf = JSON.parse(JSON.stringify(project1D));
 
     const center1 = JSON.parse(JSON.stringify(heatmapTrack));
@@ -30,27 +30,25 @@ describe('Window resizing', () => {
     newViewConf.views[0].layout.h = 10;
     newViewConf.views[1].layout.h = 10;
 
-    [div, hgc] = mountHGComponent(div, hgc, newViewConf, done, {
+    [div, hgc] = await mountHGComponentAsync(div, hgc, newViewConf, {
       style: 'width:800px; height:400px; background-color: lightgreen',
       bounded: true,
     });
-    // visual check that the heatmap track config menu is moved
-    // to the left
   });
 
-  after(async () => {
+  afterAll(() => {
     removeHGComponent(div);
   });
 
-  it('Sends a resize event to fit the current view into the window', (done) => {
+  it('Sends a resize event to fit the current view into the window', async () => {
     const resizeEvent = new Event('resize');
 
     window.dispatchEvent(resizeEvent);
 
-    waitForTilesLoaded(hgc.instance(), done);
+    await new Promise((done) => waitForTilesLoaded(hgc.instance(), done));
   });
 
-  it('Resize the view', (done) => {
+  it('Resize the view', async () => {
     div.setAttribute(
       'style',
       'width: 600px; height: 600px; background-color: lightgreen',
@@ -59,12 +57,12 @@ describe('Window resizing', () => {
 
     window.dispatchEvent(resizeEvent);
 
-    waitForTilesLoaded(hgc.instance(), done);
+    await new Promise((done) => waitForTilesLoaded(hgc.instance(), done));
   });
 
-  it('Expect the the chosen rowHeight to be less than 24', (done) => {
+  it('Expect the the chosen rowHeight to be less than 24', async () => {
     expect(hgc.instance().state.rowHeight).to.be.lessThan(24);
 
-    waitForTilesLoaded(hgc.instance(), done);
+    await new Promise((done) => waitForTilesLoaded(hgc.instance(), done));
   });
 });
