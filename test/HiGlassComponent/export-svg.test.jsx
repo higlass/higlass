@@ -1,7 +1,7 @@
 // @ts-nocheck
+import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 
 import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
-import { expect } from 'chai';
 import Enzyme from 'enzyme';
 import * as React from 'react';
 
@@ -19,14 +19,14 @@ Enzyme.configure({ adapter: new Adapter() });
 
 const waitForTilesLoadedAsync = (hgcInstance) =>
   new Promise((resolve) => {
-    waitForTilesLoaded(hgcInstance, () => resolve());
+    waitForTilesLoaded(hgcInstance, resolve);
   });
 
 describe('SVG Export', () => {
   let hgc = null;
   let div = null;
 
-  before(async () => {
+  beforeAll(async () => {
     [div, hgc] = await mountHGComponentAsync(div, hgc, testViewConfX1, {
       style: 'width:800px; height:400px; background-color: lightgreen',
       bounded: false,
@@ -35,7 +35,7 @@ describe('SVG Export', () => {
     // to the left
   });
 
-  after(async () => {
+  afterAll(() => {
     removeHGComponent(div);
   });
 
@@ -72,23 +72,13 @@ describe('SVG Export', () => {
     await waitForTilesLoadedAsync(hgc.instance());
   });
 
-  // it('Exports to SVG', (done) => {
-  //   // const svg = hgc.instance().createSVG();
-  //   // const svgText = new XMLSerializer().serializeToString(svg);
-  //
-  //   // expect(svgText.indexOf('dy="-17"')).to.be.greaterThan(0);
-  //   // hgc.instance().handleExportSVG();
-  //
-  //   done();
-  // });
-
   it('Replaces one of the views and tries to export again', () => {
     let { views } = hgc.instance().state;
 
     const newView = JSON.parse(JSON.stringify(views.aa));
 
     hgc.instance().handleCloseView('aa');
-    ({ views } = hgc.instance().state);
+    views = hgc.instance().state.views;
 
     newView.uid = 'a2';
     newView.layout.i = 'a2';
