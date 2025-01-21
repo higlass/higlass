@@ -9,12 +9,22 @@
     "ignoreUnknown": false,
     "ignore": ["test/mocked-responses/*"]
   },
-  "formatter": {
-    "enabled": false,
-    "indentStyle": "space"
-  },
   "organizeImports": {
     "enabled": false
+  },
+  "formatter": {
+    "enabled": true,
+    "ignore": ["**/*.css", "docs"],
+    "indentStyle": "space",
+    "lineWidth": 80
+  },
+  "javascript": {
+    "formatter": {
+      "trailingCommas": "all",
+      "semicolons": "always",
+      "arrowParentheses": "always",
+      "quoteStyle": "single"
+    }
   },
   "linter": {
     "enabled": true,

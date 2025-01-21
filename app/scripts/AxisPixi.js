@@ -306,9 +306,7 @@ class AxisPixi {
 
       tickLine.setAttribute(
         'd',
-        `M${+TICK_MARGIN},${valueScale(tick)} L${+(
-          TICK_MARGIN + TICK_LENGTH
-        )},${valueScale(tick)}`,
+        `M${+TICK_MARGIN},${valueScale(tick)} L${+(TICK_MARGIN + TICK_LENGTH)},${valueScale(tick)}`,
       );
 
       const g = document.createElement('g');
@@ -352,9 +350,7 @@ class AxisPixi {
 
       tickLine.setAttribute(
         'd',
-        `M${-TICK_MARGIN},${valueScale(tick)} L${-(
-          TICK_MARGIN + TICK_LENGTH
-        )},${valueScale(tick)}`,
+        `M${-TICK_MARGIN},${valueScale(tick)} L${-(TICK_MARGIN + TICK_LENGTH)},${valueScale(tick)}`,
       );
 
       const g = document.createElement('g');
