@@ -1,11 +1,12 @@
 // @ts-nocheck
+import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 
 import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
-import { expect } from 'chai';
 import Enzyme from 'enzyme';
+
 // Utils
 import {
-  mountHGComponent,
+  mountHGComponentAsync,
   removeHGComponent,
 } from '../app/scripts/test-helpers';
 
@@ -44,18 +45,18 @@ describe('Track Labels Test', () => {
     };
     let hgc = null;
     let div = null;
-    before((done) => {
-      [div, hgc] = mountHGComponent(div, hgc, viewconf, done);
+    beforeAll(async () => {
+      [div, hgc] = await mountHGComponentAsync(div, hgc, viewconf);
+    });
+
+    afterAll(() => {
+      removeHGComponent(div);
     });
 
     it('sets the label to the color of the bars', () => {
       const obj = hgc.instance().getTrackObject('aa', 'a');
 
       expect(obj.labelText._style._fill).to.eql('#ff0000');
-    });
-
-    after(() => {
-      removeHGComponent(div);
     });
   });
 });
