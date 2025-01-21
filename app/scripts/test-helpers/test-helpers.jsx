@@ -138,7 +138,7 @@ export const isWaitingOnTiles = (hgc) => {
         return true;
       }
 
-      if (trackObj.fetching && trackObj.fetching.size) {
+      if (trackObj.fetching?.size) {
         return true;
       }
     } else {

@@ -659,8 +659,7 @@ const createApi = function api(context, pubSub) {
       getLocation(viewId) {
         const wurstId = viewId
           ? self.xScales[viewId] && self.yScales[viewId] && viewId
-          : Object.values(self.tiledPlots)[0] &&
-            Object.values(self.tiledPlots)[0].props.uid;
+          : Object.values(self.tiledPlots)[0]?.props.uid;
 
         if (!wurstId) {
           return 'Please provide a valid view UUID sweetheart 😙';

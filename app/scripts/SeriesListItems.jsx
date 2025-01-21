@@ -90,9 +90,7 @@ export const getSeriesItems = (
       >
         {imgTag}
         <span className={classes['context-menu-span']}>
-          {x.options && x.options.name && x.options.name.length
-            ? x.options.name
-            : x.type}
+          {x.options?.name?.length ? x.options.name : x.type}
           {onItemMouseEnter && onItemMouseLeave ? (
             <svg className={classes['play-icon']}>
               <title>Play</title>

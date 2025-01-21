@@ -19,7 +19,7 @@ const STYLES = {
 };
 
 function sourceEvent(event) {
-  return event && event.sourceEvent;
+  return event?.sourceEvent;
 }
 
 class CenterTrack extends React.Component {

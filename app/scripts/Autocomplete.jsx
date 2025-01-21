@@ -354,24 +354,24 @@ class Autocomplete extends React.Component {
           autoComplete="off"
           onBlur={this.composeEventHandlers(
             this.handleInputBlur.bind(this),
-            inputProps.onBlur && inputProps.onBlur.bind(this),
+            inputProps.onBlur?.bind(this),
           )}
           onChange={this.handleChange.bind(this)}
           onClick={this.composeEventHandlers(
             this.handleInputClick.bind(this),
-            inputProps.onClick && inputProps.onClick.bind(this),
+            inputProps.onClick?.bind(this),
           )}
           onFocus={this.composeEventHandlers(
             this.handleInputFocus.bind(this),
-            inputProps.onFocus && inputProps.onFocus.bind(this),
+            inputProps.onFocus?.bind(this),
           )}
           onKeyDown={this.composeEventHandlers(
             this.handleKeyDown.bind(this),
-            inputProps.onKeyDown && inputProps.onKeyDown.bind(this),
+            inputProps.onKeyDown?.bind(this),
           )}
           onKeyUp={this.composeEventHandlers(
             this.handleKeyUp.bind(this),
-            inputProps.onKeyUp && inputProps.onKeyUp.bind(this),
+            inputProps.onKeyUp?.bind(this),
           )}
           // eslint-disable-next-line jsx-a11y/role-has-required-aria-props
           role="combobox"

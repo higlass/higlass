@@ -160,7 +160,7 @@ class HiGlassComponent extends React.Component {
 
     // allow a different PIXI to be passed in case the
     // caller wants to use a different version
-    GLOBALS.PIXI = (props.options && props.options.PIXI) || PIXI;
+    GLOBALS.PIXI = props.options?.PIXI || PIXI;
 
     this.viewMarginTop =
       +props.options.viewMarginTop >= 0
@@ -804,10 +804,7 @@ class HiGlassComponent extends React.Component {
     const trackOptions = track.options ? track.options : {};
 
     if (this.props.options.defaultTrackOptions) {
-      if (
-        this.props.options.defaultTrackOptions.trackSpecific &&
-        this.props.options.defaultTrackOptions.trackSpecific[track.type]
-      ) {
+      if (this.props.options.defaultTrackOptions.trackSpecific?.[track.type]) {
         // track specific options take precedence over all options
 
         const options =
@@ -834,11 +831,9 @@ class HiGlassComponent extends React.Component {
     }
 
     if (trackInfo.defaultOptions) {
-      const defaultThemeOptions =
-        trackInfo.defaultOptionsByTheme &&
-        trackInfo.defaultOptionsByTheme[this.theme]
-          ? trackInfo.defaultOptionsByTheme[this.theme]
-          : {};
+      const defaultThemeOptions = trackInfo.defaultOptionsByTheme?.[this.theme]
+        ? trackInfo.defaultOptionsByTheme[this.theme]
+        : {};
 
       const defaultOptions = {
         ...trackInfo.defaultOptions,
@@ -2299,11 +2294,11 @@ class HiGlassComponent extends React.Component {
       return TRACKS_INFO_BY_TYPE[trackType];
     }
 
-    if (this.pluginTracks && this.pluginTracks[trackType]) {
+    if (this.pluginTracks?.[trackType]) {
       return this.pluginTracks[trackType].config;
     }
 
-    if (window.higlassTracksByType && window.higlassTracksByType[trackType]) {
+    if (window.higlassTracksByType?.[trackType]) {
       return window.higlassTracksByType[trackType].config;
     }
 
@@ -2840,11 +2835,11 @@ class HiGlassComponent extends React.Component {
 
     newTrack.width =
       trackInfo.defaultWidth ||
-      (trackInfo.defaultOptions && trackInfo.defaultOptions.minWidth) ||
+      trackInfo.defaultOptions?.minWidth ||
       this.minVerticalWidth;
     newTrack.height =
       trackInfo.defaultHeight ||
-      (trackInfo.defaultOptions && trackInfo.defaultOptions.minHeight) ||
+      trackInfo.defaultOptions?.minHeight ||
       this.minHorizontalHeight;
 
     const { tracks } = this.state.views[viewId];
@@ -3203,7 +3198,7 @@ class HiGlassComponent extends React.Component {
       track.type === 'viewport-projection-center' ||
       track.type === 'viewport-projection-horizontal' ||
       track.type === 'viewport-projection-vertical' ||
-      (trackInfo && trackInfo.projection)
+      trackInfo?.projection
     ) {
       const fromView = track.fromViewUid;
 
@@ -3399,7 +3394,7 @@ class HiGlassComponent extends React.Component {
     const locksByViewUid = {};
 
     for (const viewUid of dictKeys(locks)) {
-      let lockUid = locks[viewUid] && locks[viewUid].uid;
+      let lockUid = locks[viewUid]?.uid;
 
       if (!lockUid) {
         // otherwise, assign this locationLock its own uid
@@ -4025,7 +4020,7 @@ class HiGlassComponent extends React.Component {
         'right',
         'bottom',
       ]) {
-        if (v.tracks && v.tracks.hasOwnProperty(trackOrientation)) {
+        if (v.tracks?.hasOwnProperty(trackOrientation)) {
           // filter out invalid tracks
           v.tracks[trackOrientation] = v.tracks[trackOrientation].filter((t) =>
             this.isTrackValid(t, viewUidsSet),
@@ -4450,15 +4445,13 @@ class HiGlassComponent extends React.Component {
     const evt = {
       x: relPos[0],
       y: relPos[1],
-      relTrackX:
-        hoveredTrack && hoveredTrack.flipText ? relTrackPos[1] : relTrackPos[0],
-      relTrackY:
-        hoveredTrack && hoveredTrack.flipText ? relTrackPos[0] : relTrackPos[1],
+      relTrackX: hoveredTrack?.flipText ? relTrackPos[1] : relTrackPos[0],
+      relTrackY: hoveredTrack?.flipText ? relTrackPos[0] : relTrackPos[1],
       dataX,
       dataY,
       // See below why we need these derived boolean values
-      isFrom2dTrack: !!(hoveredTrack && hoveredTrack.is2d),
-      isFromVerticalTrack: !!(hoveredTrack && hoveredTrack.flipText),
+      isFrom2dTrack: !!hoveredTrack?.is2d,
+      isFromVerticalTrack: !!hoveredTrack?.flipText,
       track: hoveredTrack,
       origEvt: e,
       sourceUid: this.uid,
@@ -4536,13 +4529,12 @@ class HiGlassComponent extends React.Component {
   showHoverMenu(evt) {
     // each track should have a function that returns an HTML representation
     // of the data at a give position
-    const mouseOverHtml =
-      evt.track && evt.track.getMouseOverHtml
-        ? evt.track.getMouseOverHtml(evt.relTrackX, evt.relTrackY)
-        : '';
+    const mouseOverHtml = evt.track?.getMouseOverHtml
+      ? evt.track.getMouseOverHtml(evt.relTrackX, evt.relTrackY)
+      : '';
 
     if (evt.track !== this.prevMouseHoverTrack) {
-      if (this.prevMouseHoverTrack && this.prevMouseHoverTrack.stopHover) {
+      if (this.prevMouseHoverTrack?.stopHover) {
         this.prevMouseHoverTrack.stopHover();
       }
     }
@@ -4551,7 +4543,7 @@ class HiGlassComponent extends React.Component {
 
     if (this.zooming) return;
 
-    const data = mouseOverHtml && mouseOverHtml.length ? [1] : [];
+    const data = mouseOverHtml?.length ? [1] : [];
 
     // try to select the mouseover div
     let mouseOverDiv = select('body')
@@ -4663,10 +4655,8 @@ class HiGlassComponent extends React.Component {
         ]
       : relPos;
 
-    const relTrackX =
-      hoveredTrack && hoveredTrack.flipText ? relTrackPos[1] : relTrackPos[0];
-    const relTrackY =
-      hoveredTrack && hoveredTrack.flipText ? relTrackPos[0] : relTrackPos[1];
+    const relTrackX = hoveredTrack?.flipText ? relTrackPos[1] : relTrackPos[0];
+    const relTrackY = hoveredTrack?.flipText ? relTrackPos[0] : relTrackPos[1];
 
     for (const track of this.iterateOverTracks()) {
       const trackObj = getTrackObjById(
@@ -4818,7 +4808,7 @@ class HiGlassComponent extends React.Component {
       this.props.options.zoomFixed ||
       this.state.viewConfig.zoomFixed ||
       this.props.options.sizeMode === SIZE_MODE_SCROLL ||
-      (view && view.zoomFixed)
+      view?.zoomFixed
     );
   }
 
@@ -4900,14 +4890,8 @@ class HiGlassComponent extends React.Component {
       const evtToPublish = {
         x: relPos[0],
         y: relPos[1],
-        relTrackX:
-          hoveredTrack && hoveredTrack.flipText
-            ? relTrackPos[1]
-            : relTrackPos[0],
-        relTrackY:
-          hoveredTrack && hoveredTrack.flipText
-            ? relTrackPos[0]
-            : relTrackPos[1],
+        relTrackX: hoveredTrack?.flipText ? relTrackPos[1] : relTrackPos[0],
+        relTrackY: hoveredTrack?.flipText ? relTrackPos[0] : relTrackPos[1],
         track: hoveredTrack,
         origEvt: nativeEvent,
         sourceUid: this.uid,
@@ -5152,8 +5136,7 @@ class HiGlassComponent extends React.Component {
               }}
               getGenomePositionSearchBox={getGenomePositionSearchBox}
               isGenomePositionSearchBoxVisible={
-                view.genomePositionSearchBox &&
-                view.genomePositionSearchBox.visible
+                view.genomePositionSearchBox?.visible
               }
               mouseTool={this.state.mouseTool}
               onAddView={() => this.handleAddView(view)}

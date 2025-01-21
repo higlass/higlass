@@ -1569,7 +1569,7 @@ class TrackRenderer extends React.Component {
   zoomStarted(event) {
     this.zooming = true;
 
-    if (event && event.sourceEvent) {
+    if (event?.sourceEvent) {
       this.zoomStartPos = pointer(event.sourceEvent, this.props.canvasElement);
 
       if (event.sourceEvent.shiftKey) {

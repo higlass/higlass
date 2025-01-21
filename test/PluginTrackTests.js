@@ -137,7 +137,7 @@ describe('Plugin track tests', () => {
   });
 
   afterEach(() => {
-    if (api && api.destroy) api.destroy();
+    if (api?.destroy) api.destroy();
     if (div) removeDiv(div);
     api = undefined;
     div = undefined;

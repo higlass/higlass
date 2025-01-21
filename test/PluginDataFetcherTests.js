@@ -39,7 +39,7 @@ describe('Plugin data fetchers:', () => {
     });
 
     afterEach(() => {
-      if (api && api.destroy) api.destroy();
+      if (api?.destroy) api.destroy();
       if (div) removeDiv(div);
       api = undefined;
       div = undefined;

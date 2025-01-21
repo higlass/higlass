@@ -179,7 +179,7 @@ export const DeDupe = (mixin) =>
  * @return {MixinFunction} the given mixin function
  */
 export const HasInstance = (mixin) => {
-  if (Symbol && Symbol.hasInstance && !mixin[Symbol.hasInstance]) {
+  if (Symbol?.hasInstance && !mixin[Symbol.hasInstance]) {
     Object.defineProperty(mixin, Symbol.hasInstance, {
       value(o) {
         return hasMixin(o, mixin);

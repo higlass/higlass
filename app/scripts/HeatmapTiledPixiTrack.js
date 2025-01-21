@@ -99,7 +99,7 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
     // not a d3 color scale for speed
     this.colorScale = HEATED_OBJECT_MAP;
 
-    if (options && options.colorRange) {
+    if (options?.colorRange) {
       this.colorScale = colorDomainToRgbaArray(options.colorRange);
     }
 
@@ -131,11 +131,7 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
       );
     }
 
-    if (
-      this.options &&
-      this.options.showMousePosition &&
-      !this.hideMousePosition
-    ) {
+    if (this.options?.showMousePosition && !this.hideMousePosition) {
       this.hideMousePosition = showMousePosition(
         this,
         this.is2d,
@@ -313,7 +309,7 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
     }
 
     const [scaleType, valueScale] = getValueScale(
-      (this.options && this.options.heatmapValueScaling) || 'log',
+      this.options?.heatmapValueScaling || 'log',
       minValue,
       this.medianVisibleValue,
       maxValue,
@@ -363,7 +359,7 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
     // the normalization method may have changed
     this.calculateVisibleTiles();
 
-    if (options && options.colorRange) {
+    if (options?.colorRange) {
       this.colorScale = colorDomainToRgbaArray(options.colorRange);
     }
 
@@ -377,11 +373,7 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
       this.hideMousePosition = undefined;
     }
 
-    if (
-      this.options &&
-      this.options.showMousePosition &&
-      !this.hideMousePosition
-    ) {
+    if (this.options?.showMousePosition && !this.hideMousePosition) {
       this.hideMousePosition = showMousePosition(
         this,
         this.is2d,
@@ -1575,8 +1567,7 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
   tilesToId(xTiles, yTiles, zoomLevel) {
     const rows = xTiles;
     const cols = yTiles;
-    const dataTransform =
-      (this.options && this.options.dataTransform) || 'default';
+    const dataTransform = this.options?.dataTransform || 'default';
 
     // if we're mirroring tiles, then we only need tiles along the diagonal
     const tiles = [];
@@ -1864,7 +1855,7 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
       zoomLevel = Math.min(zoomLevel, this.maxZoom);
     }
 
-    if (this.options && this.options.maxZoom) {
+    if (this.options?.maxZoom) {
       if (this.options.maxZoom >= 0) {
         zoomLevel = Math.min(this.options.maxZoom, zoomLevel);
       } else {

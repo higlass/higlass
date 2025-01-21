@@ -77,7 +77,7 @@ const drawRectWithPositionedBorder = (
     strokeWidth: 1,
   };
 
-  if (outline.positions && outline.positions.length) {
+  if (outline.positions?.length) {
     graphics.lineStyle(1, 0x000000, 0);
     graphics.beginFill(outline.color, outline.opacity);
 
@@ -153,7 +153,7 @@ const drawRectWithPositionedBorder = (
     );
   }
 
-  if (stroke.positions && stroke.positions.length) {
+  if (stroke.positions?.length) {
     graphics.lineStyle(1, 0x000000, 0);
     graphics.beginFill(stroke.color, stroke.opacity);
 

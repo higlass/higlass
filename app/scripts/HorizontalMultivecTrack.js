@@ -21,8 +21,7 @@ export default class HorizontalMultivecTrack extends HeatmapTiledPixiTrack {
 
   updateDataFetcher(options) {
     if (
-      options &&
-      options.selectRows &&
+      options?.selectRows &&
       options.selectRowsAggregationMethod === 'server'
     ) {
       const { pubSub, dataFetcher: prevDataFetcher } = this;
@@ -412,8 +411,7 @@ export default class HorizontalMultivecTrack extends HeatmapTiledPixiTrack {
     let output = '';
 
     if (
-      this.options &&
-      this.options.heatmapValueScaling &&
+      this.options?.heatmapValueScaling &&
       this.options.heatmapValueScaling === 'categorical' &&
       this.options.colorRange
     ) {

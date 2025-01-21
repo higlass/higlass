@@ -265,7 +265,7 @@ class TiledPlot extends React.Component {
 
       if (
         this.state.defaultChromSizes &&
-        this.state.rangeSelection.every((range) => range && range.length)
+        this.state.rangeSelection.every((range) => range?.length)
       ) {
         // Convert data into genomic loci
         genomicRange = this.state.rangeSelection.map((range) =>
@@ -1030,10 +1030,7 @@ class TiledPlot extends React.Component {
      */
     if (this.props.overlays) {
       const overlayDefs = this.props.overlays
-        .filter(
-          (overlayTrack) =>
-            overlayTrack.includes && overlayTrack.includes.length,
-        )
+        .filter((overlayTrack) => overlayTrack.includes?.length)
         .map((overlayTrack) => {
           const type = overlayTrack.type
             ? `overlay-${overlayTrack.type}-track`
@@ -1228,8 +1225,7 @@ class TiledPlot extends React.Component {
                 }
               }
             } else if (
-              this.props.tracks.center &&
-              this.props.tracks.center.length &&
+              this.props.tracks.center?.length &&
               this.props.tracks.center[0].uid === uid
             ) {
               trackObj.is2d = true;

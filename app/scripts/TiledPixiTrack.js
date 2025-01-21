@@ -174,7 +174,7 @@ class TiledPixiTrack extends PixiTrack {
       this.tilesetUid = this.dataFetcher.dataConfig.tilesetUid;
       this.server = this.dataFetcher.dataConfig.server || 'unknown';
 
-      if (this.tilesetInfo && this.tilesetInfo.chromsizes) {
+      if (this.tilesetInfo?.chromsizes) {
         this.chromInfo = parseChromsizesRows(this.tilesetInfo.chromsizes);
       }
 
@@ -200,7 +200,7 @@ class TiledPixiTrack extends PixiTrack {
         this.maxZoom = +this.tilesetInfo.max_zoom;
       }
 
-      if (this.options && this.options.maxZoom) {
+      if (this.options?.maxZoom) {
         if (this.options.maxZoom >= 0) {
           this.maxZoom = Math.min(this.options.maxZoom, this.maxZoom);
         } else {
@@ -300,7 +300,7 @@ class TiledPixiTrack extends PixiTrack {
       this.maxZoom = +this.tilesetInfo.max_zoom;
     }
 
-    if (this.options && this.options.maxZoom) {
+    if (this.options?.maxZoom) {
       if (this.options.maxZoom >= 0) {
         this.maxZoom = Math.min(this.options.maxZoom, this.maxZoom);
       } else {
@@ -728,10 +728,7 @@ class TiledPixiTrack extends PixiTrack {
 
   _checkForErrors() {
     const errors = Object.values(this.fetchedTiles)
-      .map(
-        (x) =>
-          x.tileData && x.tileData.error && `${x.tileId}: ${x.tileData.error}`,
-      )
+      .map((x) => x.tileData?.error && `${x.tileId}: ${x.tileData.error}`)
       .filter((x) => x);
 
     if (errors.length) {

@@ -19,7 +19,7 @@ import stylesPlot from '../styles/TiledPlot.module.scss'; // eslint-disable-line
 import stylesTrack from '../styles/Track.module.scss'; // eslint-disable-line no-unused-vars
 
 function sourceEvent(event) {
-  return event && event.sourceEvent;
+  return event?.sourceEvent;
 }
 
 class HorizontalTiledPlot extends React.Component {
