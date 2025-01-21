@@ -1,12 +1,12 @@
 // @ts-nocheck
+import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 
 import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
-import { expect } from 'chai';
 import Enzyme from 'enzyme';
 
 // Utils
 import {
-  mountHGComponent,
+  mountHGComponentAsync,
   removeHGComponent,
 } from '../app/scripts/test-helpers';
 import { getTrackObjectFromHGC, getTrackRenderer } from '../app/scripts/utils';
@@ -17,11 +17,15 @@ describe('Chromosome labels', () => {
   let hgc = null;
   let div = null;
 
-  before((done) => {
-    [div, hgc] = mountHGComponent(div, hgc, viewconf, done, {
+  beforeAll(async () => {
+    [div, hgc] = await mountHGComponentAsync(div, hgc, viewconf, {
       style: 'width:800px; height:400px; background-color: lightgreen',
       bounded: true,
     });
+  });
+
+  afterAll(() => {
+    removeHGComponent(div);
   });
 
   it('should have two ticks for end positions', () => {
@@ -45,10 +49,6 @@ describe('Chromosome labels', () => {
 
     const trackObj = getTrackObjectFromHGC(hgc.instance(), 'v1', 't1');
     expect(trackObj.tickTexts).to.have.property('chr17');
-  });
-
-  after(() => {
-    removeHGComponent(div);
   });
 });
 
