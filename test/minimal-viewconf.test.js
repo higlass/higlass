@@ -1,30 +1,32 @@
 // @ts-nocheck
+import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 
 import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
-import { expect } from 'chai';
 import Enzyme from 'enzyme';
 
 // Utils
 import {
-  mountHGComponent,
+  mountHGComponentAsync,
   removeHGComponent,
 } from '../app/scripts/test-helpers';
 
 Enzyme.configure({ adapter: new Adapter() });
+
+// TODO: Trevor(2025-01-21) - all these tests just assert true?
 
 describe('Minimal viewconfs', () => {
   describe('Crazy minimal', () => {
     const viewconf = {};
     let hgc = null;
     let div = null;
-    before((done) => {
-      [div, hgc] = mountHGComponent(div, hgc, viewconf, done);
+    beforeAll(async () => {
+      [div, hgc] = await mountHGComponentAsync(div, hgc, viewconf);
+    });
+    afterAll(() => {
+      removeHGComponent(div);
     });
     it('can load and unload', () => {
       expect(true).to.equal(true);
-    });
-    after(() => {
-      removeHGComponent(div);
     });
   });
   describe('Reasonably minimal', () => {
@@ -45,14 +47,14 @@ describe('Minimal viewconfs', () => {
     };
     let hgc = null;
     let div = null;
-    before((done) => {
-      [div, hgc] = mountHGComponent(div, hgc, viewconf, done);
+    beforeAll(async () => {
+      [div, hgc] = await mountHGComponentAsync(div, hgc, viewconf);
+    });
+    afterAll(() => {
+      removeHGComponent(div);
     });
     it('can load and unload', () => {
       expect(true).to.equal(true);
-    });
-    after(() => {
-      removeHGComponent(div);
     });
   });
   describe('Minimal with CrossRule', () => {
@@ -75,14 +77,14 @@ describe('Minimal viewconfs', () => {
     };
     let hgc = null;
     let div = null;
-    before((done) => {
-      [div, hgc] = mountHGComponent(div, hgc, viewconf, done);
+    beforeAll(async () => {
+      [div, hgc] = await mountHGComponentAsync(div, hgc, viewconf);
     });
-    it('can load and unload', () => {
-      expect(true).to.equal(true);
-    });
-    after(() => {
+    afterAll(() => {
       removeHGComponent(div);
+    });
+    it('can load and unload', async () => {
+      expect(true).to.equal(true);
     });
   });
 });
