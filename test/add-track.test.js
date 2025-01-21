@@ -1,8 +1,7 @@
-// @ts-nocheck
-
 import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
-import { expect } from 'chai';
 import Enzyme from 'enzyme';
+// @ts-nocheck
+import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 
 import { oneViewConfig } from './view-configs';
 
@@ -20,14 +19,17 @@ describe('Add track(s)', () => {
   let hgc = null;
   let div = null;
 
-  before((done) => {
-    [div, hgc] = mountHGComponent(div, hgc, oneViewConfig, done, {
-      style: 'width:800px; height:400px; background-color: lightgreen',
-      bounded: true,
-    });
-  });
+  beforeAll(
+    () =>
+      new Promise((resolve) => {
+        [div, hgc] = mountHGComponent(div, hgc, oneViewConfig, resolve, {
+          style: 'width:800px; height:400px; background-color: lightgreen',
+          bounded: true,
+        });
+      }),
+  );
 
-  it('should open the AddTrackDialog', (done) => {
+  it('should open the AddTrackDialog', async () => {
     // this was to test an example from the higlass-website demo page
     // where the issue was that the genome position search box was being
     // styled with a margin-bottom of 10px, fixed by setting the style of
@@ -41,10 +43,10 @@ describe('Add track(s)', () => {
       'tileset-finder-search-box',
     );
 
-    waitForJsonComplete(done);
+    await new Promise((resolve) => waitForJsonComplete(resolve));
   });
 
-  it('should select one plot type and double click', (done) => {
+  it('should select one plot type and double click', async () => {
     const { tilesetFinder } = hgc.instance().modalRef;
     tilesetFinder.handleSelectedOptions([
       'http://higlass.io/api/v1/CQMd6V_cRw6iCI_-Unl3PQ',
@@ -57,10 +59,10 @@ describe('Add track(s)', () => {
       ],
     );
 
-    waitForJsonComplete(done);
+    await new Promise((resolve) => waitForJsonComplete(resolve));
   });
 
-  it('should reopen the AddTrackModal', (done) => {
+  it('should reopen the AddTrackModal', async () => {
     // open up the add track dialog for the next tests
     const tiledPlot = hgc.instance().tiledPlots.aa;
     tiledPlot.handleAddTrack('top');
@@ -68,10 +70,10 @@ describe('Add track(s)', () => {
     expect(document.activeElement.className).to.be.eql(
       'tileset-finder-search-box',
     );
-    waitForJsonComplete(done);
+    await new Promise((resolve) => waitForJsonComplete(resolve));
   });
 
-  it('should select two different plot types', (done) => {
+  it('should select two different plot types', async () => {
     const { tilesetFinder } = hgc.instance().modalRef;
 
     tilesetFinder.handleSelectedOptions([
@@ -81,10 +83,10 @@ describe('Add track(s)', () => {
 
     hgc.update();
 
-    waitForTilesLoaded(hgc.instance(), done);
+    await new Promise((resolve) => waitForTilesLoaded(hgc.instance(), resolve));
   });
 
-  it('should add these plot types', (done) => {
+  it('should add these plot types', async () => {
     hgc.instance().modalRef.handleSubmit();
 
     const tiledPlot = hgc.instance().tiledPlots.aa;
@@ -92,7 +94,7 @@ describe('Add track(s)', () => {
 
     hgc.update();
 
-    waitForJsonComplete(done);
+    await new Promise((resolve) => waitForJsonComplete(resolve));
   });
 
   it('should select a few different tracks and check for the plot type selection', () => {
@@ -204,7 +206,7 @@ describe('Add track(s)', () => {
     });
   });
 
-  it('remove existing track & add a new hg19 track: should zoom to hg19 extent', (done) => {
+  it('remove existing track & add a new hg19 track: should zoom to hg19 extent', async () => {
     // 1. Remove all existing tracks
     const { trackRenderer } = hgc.instance().tiledPlots.aa;
 
@@ -232,25 +234,27 @@ describe('Add track(s)', () => {
     hgc.instance().modalRef.handleSubmit();
     hgc.update();
 
-    waitForTilesLoaded(hgc.instance(), () => {
-      const { tilesetInfo } = Object.values(
-        hgc.instance().tiledPlots.aa.trackRenderer.trackDefObjects,
-      )[0].trackObject.childTracks[0];
+    await new Promise((done) => {
+      waitForTilesLoaded(hgc.instance(), () => {
+        const { tilesetInfo } = Object.values(
+          hgc.instance().tiledPlots.aa.trackRenderer.trackDefObjects,
+        )[0].trackObject.childTracks[0];
 
-      const viewConf = JSON.parse(hgc.instance().getViewsAsString());
+        const viewConf = JSON.parse(hgc.instance().getViewsAsString());
 
-      expect(viewConf.views[0].initialXDomain[0]).to.eql(
-        tilesetInfo.min_pos[0],
-      );
-      expect(viewConf.views[0].initialXDomain[1]).to.eql(
-        tilesetInfo.max_pos[0],
-      );
+        expect(viewConf.views[0].initialXDomain[0]).to.eql(
+          tilesetInfo.min_pos[0],
+        );
+        expect(viewConf.views[0].initialXDomain[1]).to.eql(
+          tilesetInfo.max_pos[0],
+        );
 
-      done();
+        done(null);
+      });
     });
   });
 
-  it('zoom in, add another hg19 track: the visible domain should not have changed', (done) => {
+  it('zoom in, add another hg19 track: the visible domain should not have changed', async () => {
     // hgc.instance().zoomTo('aa', 1e6, 1e7, 1e6, 1e7, 0);
     // Zoom to `[[1e6, 1e7],[1e6, 1e7]` and notify HiGlass
     hgc.instance().setCenters.aa(5500000, 5500000, 9000000, true, 0);
@@ -277,17 +281,19 @@ describe('Add track(s)', () => {
     hgc.instance().modalRef.handleSubmit();
     hgc.update();
 
-    waitForTilesLoaded(hgc.instance(), () => {
-      const viewConf = JSON.parse(hgc.instance().getViewsAsString());
+    await new Promise((done) => {
+      waitForTilesLoaded(hgc.instance(), () => {
+        const viewConf = JSON.parse(hgc.instance().getViewsAsString());
 
-      expect(viewConf.views[0].initialXDomain[0]).to.eql(newXDomain[0]);
-      expect(viewConf.views[0].initialXDomain[1]).to.eql(newXDomain[1]);
+        expect(viewConf.views[0].initialXDomain[0]).to.eql(newXDomain[0]);
+        expect(viewConf.views[0].initialXDomain[1]).to.eql(newXDomain[1]);
 
-      done();
+        done(null);
+      });
     });
   });
 
-  after(() => {
+  afterAll(() => {
     removeHGComponent(div);
   });
 });
