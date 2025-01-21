@@ -1,11 +1,11 @@
 // @ts-nocheck
+import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 
 import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
-import { expect } from 'chai';
 import Enzyme from 'enzyme';
 
 import {
-  mountHGComponent,
+  mountHGComponentAsync,
   removeHGComponent,
   waitForTilesLoaded,
 } from '../../app/scripts/test-helpers';
@@ -19,8 +19,8 @@ describe('Color scale limiting', () => {
   let hgc = null;
   let div = null;
 
-  before((done) => {
-    [div, hgc] = mountHGComponent(div, hgc, twoViewConfig, done, {
+  beforeAll(async () => {
+    [div, hgc] = await mountHGComponentAsync(div, hgc, twoViewConfig, {
       style: 'width:800px; height:400px; background-color: lightgreen',
       bounded: true,
     });
@@ -28,7 +28,7 @@ describe('Color scale limiting', () => {
     // to the left
   });
 
-  after(async () => {
+  afterAll(async () => {
     removeHGComponent(div);
   });
 
@@ -55,7 +55,7 @@ describe('Color scale limiting', () => {
     // console.log('domain2:', domain2);
   });
 
-  it('locks the scales and recenters the page', (done) => {
+  it('locks the scales and recenters the page', async () => {
     hgc
       .instance()
       .handleValueScaleLocked('aa', 'heatmap1', 'view2', 'heatmap2');
@@ -71,7 +71,7 @@ describe('Color scale limiting', () => {
         28874.21283197403,
       );
 
-    waitForTilesLoaded(hgc.instance(), done);
+    await new Promise((done) => waitForTilesLoaded(hgc.instance(), done));
   });
 
   it('Moves the brush on one view and makes sure it moves on the other', () => {
