@@ -1,6 +1,6 @@
+// @ts-nocheck
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
-// @ts-nocheck
 import React from 'react';
 import { mix } from './mixwith';
 

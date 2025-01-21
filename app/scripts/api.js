@@ -1,6 +1,6 @@
+// @ts-nocheck
 import Ajv from 'ajv';
 import createPubSub from 'pub-sub-es';
-// @ts-nocheck
 import ReactDOM from 'react-dom';
 
 import schema from '../schema.json';

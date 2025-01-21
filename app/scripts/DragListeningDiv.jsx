@@ -1,5 +1,5 @@
-import clsx from 'clsx';
 // @ts-nocheck
+import clsx from 'clsx';
 import PropTypes from 'prop-types';
 import React from 'react';
 import slugid from 'slugid';

@@ -1,8 +1,8 @@
+// @ts-nocheck
 import { brushY } from 'd3-brush';
 import { format } from 'd3-format';
 import { scaleLinear } from 'd3-scale';
 import { select } from 'd3-selection';
-// @ts-nocheck
 import ndarray from 'ndarray';
 import slugid from 'slugid';
 

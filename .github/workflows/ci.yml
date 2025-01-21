@@ -29,8 +29,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: biomejs/setup-biome@v2 # detects version from package.json
-        run: biome ci
-
+      - run: biome ci
 
   Schema:
     runs-on: ubuntu-latest

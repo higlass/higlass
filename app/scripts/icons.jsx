@@ -1,6 +1,6 @@
+// @ts-nocheck
 import { select } from 'd3-selection';
 import PropTypes from 'prop-types';
-// @ts-nocheck
 import React from 'react';
 import classes from '../styles/ViewHeader.module.scss';
 

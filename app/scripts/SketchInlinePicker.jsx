@@ -1,5 +1,5 @@
-import { rgb as d3rgb } from 'd3-color';
 // @ts-nocheck
+import { rgb as d3rgb } from 'd3-color';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { SketchPicker } from 'react-color';

@@ -1,5 +1,5 @@
-import { median, range, ticks } from 'd3-array';
 // @ts-nocheck
+import { median, range, ticks } from 'd3-array';
 import { scaleLinear, scaleLog, scaleQuantile } from 'd3-scale';
 import slugid from 'slugid';
 

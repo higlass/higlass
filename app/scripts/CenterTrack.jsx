@@ -1,7 +1,7 @@
+// @ts-nocheck
 import clsx from 'clsx';
 import { brush, brushX, brushY } from 'd3-brush';
 import { select } from 'd3-selection';
-// @ts-nocheck
 import PropTypes from 'prop-types';
 import React from 'react';
 

@@ -1,3 +1,4 @@
+// @ts-nocheck
 import clsx from 'clsx';
 import { ElementQueries, ResizeSensor } from 'css-element-queries';
 import { scaleLinear } from 'd3-scale';
@@ -5,7 +6,6 @@ import { pointer, select } from 'd3-selection';
 import * as PIXI from 'pixi.js';
 import PropTypes from 'prop-types';
 import createPubSub, { globalPubSub } from 'pub-sub-es';
-// @ts-nocheck
 import React from 'react';
 import ReactDOM from 'react-dom';
 import ReactGridLayout from 'react-grid-layout';

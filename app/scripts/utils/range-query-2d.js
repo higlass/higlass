@@ -1,5 +1,5 @@
-import accessorTransposition from './accessor-transposition';
 // @ts-nocheck
+import accessorTransposition from './accessor-transposition';
 import addArrays from './add-arrays';
 
 /**

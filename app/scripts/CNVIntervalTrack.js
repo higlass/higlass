@@ -1,5 +1,5 @@
-import { range } from 'd3-array';
 // @ts-nocheck
+import { range } from 'd3-array';
 import { scaleBand } from 'd3-scale';
 import { segmentsToRows } from './utils';
 

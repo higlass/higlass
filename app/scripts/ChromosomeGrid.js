@@ -1,5 +1,5 @@
-import ChromosomeInfo from './ChromosomeInfo';
 // @ts-nocheck
+import ChromosomeInfo from './ChromosomeInfo';
 import PixiTrack from './PixiTrack';
 import SearchField from './SearchField';
 

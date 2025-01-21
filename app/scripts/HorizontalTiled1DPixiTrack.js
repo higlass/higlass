@@ -1,5 +1,5 @@
-import AxisPixi from './AxisPixi';
 // @ts-nocheck
+import AxisPixi from './AxisPixi';
 import Tiled1DPixiTrack from './Tiled1DPixiTrack';
 
 import { tileProxy } from './services';

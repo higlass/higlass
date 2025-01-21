@@ -1,5 +1,5 @@
-import { ElementQueries, ResizeSensor } from 'css-element-queries';
 // @ts-nocheck
+import { ElementQueries, ResizeSensor } from 'css-element-queries';
 import { pointer } from 'd3-selection';
 import PropTypes from 'prop-types';
 import React from 'react';

@@ -1,6 +1,6 @@
+// @ts-nocheck
 // TODO: we need to address this cyclic dependency
 import { AVAILABLE_FOR_PLUGINS } from '.';
-// @ts-nocheck
 import {
   DataFetcher,
   GBKDataFetcher,
