@@ -1,11 +1,12 @@
-import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
-import Enzyme from 'enzyme';
 // @ts-nocheck
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 
+import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
+import Enzyme from 'enzyme';
+
 // Utils
 import {
-  mountHGComponent,
+  mountHGComponentAsync,
   removeHGComponent,
 } from '../app/scripts/test-helpers';
 import { getTrackByUid, getTrackObjectFromHGC } from '../app/scripts/utils';
@@ -20,15 +21,12 @@ describe('2D Rectangular Domains', () => {
   /** @type {HTMLElement | null} */
   let div = null;
 
-  beforeAll(
-    () =>
-      new Promise((resolve) => {
-        [div, hgc] = mountHGComponent(div, hgc, viewconf, resolve, {
-          style: 'width:800px; height:400px; background-color: lightgreen',
-          bounded: true,
-        });
-      }),
-  );
+  beforeAll(async () => {
+    [div, hgc] = await mountHGComponentAsync(div, hgc, viewconf, {
+      style: 'width:800px; height:400px; background-color: lightgreen',
+      bounded: true,
+    });
+  });
 
   it('export rectangles in the same color that they are in the view', () => {
     const svgString = hgc.instance().createSVGString();

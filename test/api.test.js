@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { afterEach, describe, expect, it } from 'vitest';
 
 import { create, select } from 'd3-selection';

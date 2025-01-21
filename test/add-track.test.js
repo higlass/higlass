@@ -1,14 +1,14 @@
-import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
-import Enzyme from 'enzyme';
 // @ts-nocheck
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
+
+import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
+import Enzyme from 'enzyme';
 
 import { oneViewConfig } from './view-configs';
 
 // Utils
 import {
-  mountHGComponent,
-  removeHGComponent,
+  mountHGComponentAsync,
   waitForJsonComplete,
   waitForTilesLoaded,
 } from '../app/scripts/test-helpers';
@@ -19,15 +19,12 @@ describe('Add track(s)', () => {
   let hgc = null;
   let div = null;
 
-  beforeAll(
-    () =>
-      new Promise((resolve) => {
-        [div, hgc] = mountHGComponent(div, hgc, oneViewConfig, resolve, {
-          style: 'width:800px; height:400px; background-color: lightgreen',
-          bounded: true,
-        });
-      }),
-  );
+  beforeAll(async () => {
+    [div, hgc] = await mountHGComponentAsync(div, hgc, oneViewConfig, {
+      style: 'width:800px; height:400px; background-color: lightgreen',
+      bounded: true,
+    });
+  });
 
   it('should open the AddTrackDialog', async () => {
     // this was to test an example from the higlass-website demo page

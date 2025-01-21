@@ -1,12 +1,16 @@
 // @ts-nocheck
+import { afterAll, beforeAll, describe, expect, it } from 'vitest';
+
 import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
 import Enzyme from 'enzyme';
-import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 
 import { simpleCenterViewConfig } from './view-configs';
 
 // Utils
-import { removeHGComponent } from '../app/scripts/test-helpers';
+import {
+  mountHGComponentAsync,
+  removeHGComponent,
+} from '../app/scripts/test-helpers';
 
 import { viewer } from '../app/scripts/hglib';
 
@@ -24,12 +28,15 @@ describe('Add and remove viewconf', () => {
       api = viewer(div, simpleCenterViewConfig, {});
       api.setViewConfig(simpleCenterViewConfig);
 
-      // p.then(() => {
-      //   console.log('done');
-      //   done();
-      // });
+      [div, api] = mountHGComponentAsync(
+        div,
+        api,
+        'http://higlass.io/api/v1/viewconfs/?d=default',
+      );
+    });
 
-      // ([div, hgc] = mountHGComponent(div, hgc, 'http://higlass.io/api/v1/viewconfs/?d=default', done));
+    afterAll(() => {
+      removeHGComponent(div);
     });
 
     it('Ensures that setting a new viewconf changes the trackSourceServers', () => {
@@ -41,10 +48,6 @@ describe('Add and remove viewconf', () => {
       const newViewConf = JSON.parse(newApi.exportAsViewConfString());
 
       expect(newViewConf.trackSourceServers[0]).to.eql('http://blah');
-    });
-
-    afterAll(() => {
-      removeHGComponent(div);
     });
   });
 });
