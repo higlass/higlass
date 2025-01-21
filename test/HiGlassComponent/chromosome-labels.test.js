@@ -1,11 +1,12 @@
 // @ts-nocheck
+import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 
 import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
-import { expect } from 'chai';
 import Enzyme from 'enzyme';
 
 import {
   mountHGComponent,
+  mountHGComponentAsync,
   removeHGComponent,
   waitForTransitionsFinished,
 } from '../../app/scripts/test-helpers';
@@ -18,8 +19,8 @@ describe('Chromosome labels', () => {
   let hgc = null;
   let div = null;
 
-  before((done) => {
-    [div, hgc] = mountHGComponent(div, hgc, geneAnnotationsOnly, done, {
+  beforeAll(async () => {
+    [div, hgc] = await mountHGComponentAsync(div, hgc, geneAnnotationsOnly, {
       style: 'width:800px; height:400px; background-color: lightgreen',
       bounded: true,
     });
@@ -27,30 +28,23 @@ describe('Chromosome labels', () => {
     // to the left
   });
 
-  after(async () => {
+  afterAll(() => {
     removeHGComponent(div);
   });
 
-  it('Zooms to a location', (done) => {
+  it('Zooms to a location', async () => {
     hgc.instance().zoomTo('aa', 1, 1000000);
-
-    waitForTransitionsFinished(hgc.instance(), () => {
-      const svgText = hgc.instance().createSVGString();
-
-      // make sure none of the chromosome labels are left
-      // over after zooming
-      expect(svgText.indexOf('chr11')).to.equal(-1);
-
-      // hgc.instance().handleExportSVG();
-      done();
-    });
+    await new Promise((done) =>
+      waitForTransitionsFinished(hgc.instance(), done),
+    );
+    const svgText = hgc.instance().createSVGString();
+    expect(svgText.indexOf('chr11')).to.equal(-1);
   });
 
-  it('Zooms a little closer', (done) => {
+  it('Zooms a little closer', async () => {
     hgc.instance().zoomTo('aa', 165061, 945306);
-
-    waitForTransitionsFinished(hgc.instance(), () => {
-      done();
-    });
+    await new Promise((done) =>
+      waitForTransitionsFinished(hgc.instance(), done),
+    );
   });
 });
