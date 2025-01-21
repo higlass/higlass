@@ -49,8 +49,7 @@
         },
         "noPrototypeBuiltins": "off",
         "noEmptyBlock": "off",
-        "noShadowRestrictedNames": "off",
-        "noExplicitAny": "off"
+        "noShadowRestrictedNames": "off"
       },
       "complexity": {
         "noForEach": "off",
