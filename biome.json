@@ -52,8 +52,7 @@
         "noShadowRestrictedNames": "off"
       },
       "complexity": {
-        "noForEach": "off",
-        "noUselessThisAlias": "off"
+        "noForEach": "off"
       },
       "performance": {
         "noDelete": "off"

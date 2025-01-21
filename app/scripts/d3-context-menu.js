@@ -77,7 +77,6 @@ function contextMenu(menu, optsIn) {
     clickAwayFunc,
     useMouse = false,
   ) {
-    const elm = this;
     let mousePos = null;
     const currentThis = this;
 
@@ -136,7 +135,7 @@ function contextMenu(menu, optsIn) {
       .on('click', (d) => {
         if (d.disabled) return; // do nothing if disabled
         if (!d.action) return; // headers have no "action"
-        d.action(elm, data, index, mousePos);
+        d.action(this, data, index, mousePos);
 
         // close all context menus
         selectAll('.d3-context-menu').style('display', 'none');
