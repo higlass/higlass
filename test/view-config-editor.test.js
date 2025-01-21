@@ -1,11 +1,11 @@
 // @ts-nocheck
+import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 
 import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
-import { expect } from 'chai';
 import Enzyme from 'enzyme';
 
 import {
-  mountHGComponent,
+  mountHGComponentAsync,
   removeHGComponent,
   waitForJsonComplete,
   waitForTilesLoaded,
@@ -20,20 +20,24 @@ describe('View Config Editor', () => {
   let hgc = null;
   let div = null;
 
-  before((done) => {
-    [div, hgc] = mountHGComponent(div, hgc, viewConf, done, {
+  beforeAll(async () => {
+    [div, hgc] = await mountHGComponentAsync(div, hgc, viewConf, {
       style: 'width:800px; height:400px; background-color: lightgreen',
       bounded: true,
     });
   });
 
-  it('should instantiate and open', (done) => {
+  afterAll(() => {
+    removeHGComponent(div);
+  });
+
+  it('should instantiate and open', async () => {
     hgc.instance().handleEditViewConfigBound();
     hgc.update();
 
     expect(hgc.instance().modalRef).to.exist;
 
-    waitForJsonComplete(done);
+    await new Promise((done) => waitForJsonComplete(done));
   });
 
   it('should focus the textarea', () => {
@@ -79,13 +83,13 @@ describe('View Config Editor', () => {
     ).to.equal(60);
   });
 
-  it('open again', (done) => {
+  it('open again', async () => {
     hgc.instance().handleEditViewConfigBound();
     hgc.update();
 
     expect(hgc.instance().modalRef).to.be.ok;
 
-    waitForJsonComplete(done);
+    await new Promise((done) => waitForJsonComplete(done));
   });
 
   it('should save changes and close on cmd+enter', () => {
@@ -115,25 +119,27 @@ describe('View Config Editor', () => {
     ).to.equal(30);
   });
 
-  it('zoom somewhere', (done) => {
+  it('zoom somewhere', async () => {
     hgc
       .instance()
       .zoomTo('a', 1000000000, 2000000000, 1000000000, 2000000000, 1000);
 
-    waitForTransitionsFinished(hgc.instance(), () => {
-      waitForTilesLoaded(hgc.instance(), () => {
-        done();
+    await new Promise((done) => {
+      waitForTransitionsFinished(hgc.instance(), () => {
+        waitForTilesLoaded(hgc.instance(), () => {
+          done(null);
+        });
       });
     });
   });
 
-  it('open editor again, do nothing and save', (done) => {
+  it('open editor again, do nothing and save', async () => {
     hgc.instance().handleEditViewConfigBound();
     hgc.update();
 
     expect(hgc.instance().modalRef).to.be.ok;
 
-    waitForJsonComplete(done);
+    await new Promise((done) => waitForJsonComplete(done));
 
     document.dispatchEvent(
       new KeyboardEvent('keydown', { key: 'Enter', metaKey: true }),
@@ -155,9 +161,5 @@ describe('View Config Editor', () => {
     expect(
       Math.round(trackObject._xScale.domain()[1] - initialXDomain[1]),
     ).to.equal(0);
-  });
-
-  after(() => {
-    removeHGComponent(div);
   });
 });
