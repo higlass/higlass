@@ -11,6 +11,7 @@ import {
   mountHGComponentAsync,
   waitForJsonComplete,
   waitForTilesLoaded,
+  removeHGComponent,
 } from '../app/scripts/test-helpers';
 
 Enzyme.configure({ adapter: new Adapter() });
@@ -24,6 +25,9 @@ describe('Add track(s)', () => {
       style: 'width:800px; height:400px; background-color: lightgreen',
       bounded: true,
     });
+  });
+  afterAll(() => {
+    removeHGComponent(div);
   });
 
   it('should open the AddTrackDialog', async () => {
@@ -52,7 +56,7 @@ describe('Add track(s)', () => {
 
     tilesetFinder.props.onDoubleClick(
       tilesetFinder.state.options[
-        'http://higlass.io/api/v1/CQMd6V_cRw6iCI_-Unl3PQ'
+      'http://higlass.io/api/v1/CQMd6V_cRw6iCI_-Unl3PQ'
       ],
     );
 
@@ -288,9 +292,5 @@ describe('Add track(s)', () => {
         done(null);
       });
     });
-  });
-
-  afterAll(() => {
-    removeHGComponent(div);
   });
 });

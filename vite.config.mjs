@@ -17,4 +17,11 @@ export default defineConfig(({ mode }) => ({
   optimizeDeps: {
     entries: ['app/scripts/hglib.jsx', 'test/**/*'],
   },
+  test: {
+    include: ['**/*.test.js'],
+    browser: {
+      enabled: true,
+      instances: [{ browser: 'chromium' }],
+    },
+  },
 }));
