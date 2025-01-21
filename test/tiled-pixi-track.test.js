@@ -1,11 +1,12 @@
 // @ts-nocheck
+import { afterAll, beforeAll, describe, it } from 'vitest';
 
 import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
 import Enzyme from 'enzyme';
 
 // Utils
 import {
-  mountHGComponent,
+  mountHGComponentAsync,
   removeHGComponent,
   waitForTilesLoaded,
   waitForTransitionsFinished,
@@ -22,14 +23,23 @@ describe('Simple HiGlassComponent', () => {
   let div = null;
 
   describe('Tiled Pixi Track Tests', () => {
-    before((done) => {
-      [div, hgc] = mountHGComponent(div, hgc, simpleCenterViewConfig, done, {
-        style: 'width:800px; height:800px; background-color: lightgreen',
-        bounded: true,
-      });
+    beforeAll(async () => {
+      [div, hgc] = await mountHGComponentAsync(
+        div,
+        hgc,
+        simpleCenterViewConfig,
+        {
+          style: 'width:800px; height:800px; background-color: lightgreen',
+          bounded: true,
+        },
+      );
     });
 
-    it('Ensure we can set a dataChanged listener', (done) => {
+    afterAll(() => {
+      removeHGComponent(div);
+    });
+
+    it('Ensure we can set a dataChanged listener', async () => {
       const trackObject = getTrackObjectFromHGC(hgc.instance(), 'heatmap1');
 
       const dataChangedCb = () => {};
@@ -40,16 +50,14 @@ describe('Simple HiGlassComponent', () => {
         .instance()
         .zoomTo('a', 100000000, 200000000, 100000000, 200000000, 1000);
 
-      waitForTransitionsFinished(hgc.instance(), () => {
-        waitForTilesLoaded(hgc.instance(), () => {
-          trackObject.off('dataChanged', dataChangedCb);
-          done();
+      await new Promise((done) => {
+        waitForTransitionsFinished(hgc.instance(), () => {
+          waitForTilesLoaded(hgc.instance(), () => {
+            trackObject.off('dataChanged', dataChangedCb);
+            done(null);
+          });
         });
       });
-    });
-
-    after(() => {
-      removeHGComponent(div);
     });
   });
 });
