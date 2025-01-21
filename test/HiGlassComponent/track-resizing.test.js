@@ -1,11 +1,11 @@
 // @ts-nocheck
+import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 
 import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
-import { expect } from 'chai';
 import Enzyme from 'enzyme';
 
 import {
-  mountHGComponent,
+  mountHGComponentAsync,
   removeHGComponent,
   waitForTilesLoaded,
 } from '../../app/scripts/test-helpers';
@@ -19,33 +19,30 @@ describe('Track Resizing', () => {
   let hgc = null;
   let div = null;
 
-  before((done) => {
-    [div, hgc] = mountHGComponent(div, hgc, oneTrackConfig, done, {
+  beforeAll(async () => {
+    [div, hgc] = await mountHGComponentAsync(div, hgc, oneTrackConfig, {
       style: 'width:800px; height:400px; background-color: lightgreen',
       bounded: true,
     });
-    // visual check that the heatmap track config menu is moved
-    // to the left
   });
 
-  after(async () => {
+  afterAll(() => {
     removeHGComponent(div);
   });
 
-  it('Resizes one track ', (done) => {
+  it('Resizes one track ', async () => {
     const tp = getTiledPlot(hgc.instance(), 'aa');
 
     tp.handleResizeTrack('line1', 289, 49);
 
-    // tp.setState(tp.state);
-    waitForTilesLoaded(hgc.instance(), done);
+    await new Promise((done) => waitForTilesLoaded(hgc.instance(), done));
   });
 
-  it('Ensures that the track object was resized', (done) => {
+  it('Ensures that the track object was resized', async () => {
     const track = getTrackObjectFromHGC(hgc.instance(), 'aa', 'line1');
 
     expect(track.dimensions[1]).to.equal(49);
 
-    waitForTilesLoaded(hgc.instance(), done);
+    await new Promise((done) => waitForTilesLoaded(hgc.instance(), done));
   });
 });
