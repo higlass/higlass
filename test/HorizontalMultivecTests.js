@@ -1,8 +1,8 @@
 // @ts-nocheck
 
-import Enzyme from 'enzyme';
 import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
 import { expect } from 'chai';
+import Enzyme from 'enzyme';
 
 import { select } from 'd3-selection';
 import ReactDOM from 'react-dom';
@@ -14,11 +14,11 @@ import {
 } from '../app/scripts/test-helpers';
 import { getTrackObjectFromHGC } from '../app/scripts/utils';
 
+import horizontalMultivecWithAggregation from './view-configs-more/horizontalMultivecWithAggregation.json';
+import horizontalMultivecWithFilteredRows from './view-configs-more/horizontalMultivecWithFilteredRows.json';
 // View configs
 import horizontalMultivecWithSmallerDimensions from './view-configs-more/horizontalMultivecWithSmallerDimensions.json';
 import horizontalMultivecWithZeroValueColorOption from './view-configs-more/horizontalMultivecWithZeroValueColorOption.json';
-import horizontalMultivecWithFilteredRows from './view-configs-more/horizontalMultivecWithFilteredRows.json';
-import horizontalMultivecWithAggregation from './view-configs-more/horizontalMultivecWithAggregation.json';
 
 // Constants
 import {

@@ -8,8 +8,8 @@ import colorToHex from './utils/color-to-hex';
 // Configs
 import GLOBALS from './configs/globals';
 import {
-  isResolutionsTilesetInfo,
   isLegacyTilesetInfo,
+  isResolutionsTilesetInfo,
 } from './utils/type-guards';
 
 /**

@@ -1,11 +1,11 @@
+// TODO: we need to address this cyclic dependency
+import { AVAILABLE_FOR_PLUGINS } from '.';
 // @ts-nocheck
 import {
   DataFetcher,
   GBKDataFetcher,
   LocalDataFetcher,
 } from '../data-fetchers';
-// TODO: we need to address this cyclic dependency
-import { AVAILABLE_FOR_PLUGINS } from '.';
 
 const getDataFetcher = (
   dataConfig,

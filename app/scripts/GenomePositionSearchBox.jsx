@@ -1,27 +1,27 @@
+import clsx from 'clsx';
 // @ts-nocheck
 import { select } from 'd3-selection';
+import PropTypes from 'prop-types';
 import React from 'react';
 import slugid from 'slugid';
-import PropTypes from 'prop-types';
-import clsx from 'clsx';
 
 import Autocomplete from './Autocomplete';
 import ChromosomeInfo from './ChromosomeInfo';
-import SearchField from './SearchField';
 import PopupMenu from './PopupMenu';
+import SearchField from './SearchField';
 
+import withPubSub from './hocs/with-pub-sub';
 // Services
 import { tileProxy } from './services';
-import withPubSub from './hocs/with-pub-sub';
 
 // Utils
-import { scalesCenterAndK, dictKeys, toVoid } from './utils';
+import { dictKeys, scalesCenterAndK, toVoid } from './utils';
 
+// Configs
+import { THEME_DARK, ZOOM_TRANSITION_DURATION } from './configs';
 // HOCS
 import withTheme from './hocs/with-theme';
 import { SearchIcon } from './icons';
-// Configs
-import { THEME_DARK, ZOOM_TRANSITION_DURATION } from './configs';
 
 // Styles
 import styles from '../styles/GenomePositionSearchBox.module.scss';

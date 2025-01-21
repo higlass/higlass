@@ -1,14 +1,14 @@
 // @ts-nocheck
 
-import Enzyme from 'enzyme';
 import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
 import { expect } from 'chai';
+import Enzyme from 'enzyme';
 
 // Utils
 import {
-  waitForTilesLoaded,
   mountHGComponent,
   removeHGComponent,
+  waitForTilesLoaded,
 } from '../app/scripts/test-helpers';
 import { getTrackObjectFromHGC } from '../app/scripts/utils';
 

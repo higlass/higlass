@@ -1,12 +1,12 @@
+import clsx from 'clsx';
+import PropTypes from 'prop-types';
 // @ts-nocheck
 import React from 'react';
-import PropTypes from 'prop-types';
-import clsx from 'clsx';
 
-import PopupMenu from './PopupMenu';
-import ContextMenuContainer from './ContextMenuContainer';
-import ConfigViewMenu from './ConfigViewMenu';
 import AddTrackPositionMenu from './AddTrackPositionMenu';
+import ConfigViewMenu from './ConfigViewMenu';
+import ContextMenuContainer from './ContextMenuContainer';
+import PopupMenu from './PopupMenu';
 
 // HOCS
 import withTheme from './hocs/with-theme';

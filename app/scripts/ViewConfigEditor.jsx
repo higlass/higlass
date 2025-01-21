@@ -1,8 +1,8 @@
+import { highlight, languages } from 'prismjs/components/prism-core';
 // @ts-nocheck
 import PropTypes from 'prop-types';
 import React from 'react';
 import Editor from 'react-simple-code-editor';
-import { highlight, languages } from 'prismjs/components/prism-core';
 import 'prismjs/components/prism-json';
 import Ajv from 'ajv';
 import clsx from 'clsx';

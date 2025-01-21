@@ -1,7 +1,7 @@
+import clsx from 'clsx';
+import PropTypes from 'prop-types';
 // @ts-nocheck
 import React from 'react';
-import PropTypes from 'prop-types';
-import clsx from 'clsx';
 
 import ContextMenuContainer from './ContextMenuContainer';
 import ContextMenuItem from './ContextMenuItem';

@@ -1,16 +1,16 @@
 // @ts-nocheck
 
-import Enzyme from 'enzyme';
 import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
 import { expect } from 'chai';
+import Enzyme from 'enzyme';
 
-import viewconf from './view-configs-more/local-tiles-viewconf.json';
 // Utils
 import {
   mountHGComponent,
   removeHGComponent,
 } from '../app/scripts/test-helpers';
 import { getTrackObjectFromHGC } from '../app/scripts/utils';
+import viewconf from './view-configs-more/local-tiles-viewconf.json';
 
 Enzyme.configure({ adapter: new Adapter() });
 

@@ -1,15 +1,15 @@
 // @ts-nocheck
 
-import { configure } from 'enzyme';
 import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
 import { expect } from 'chai';
+import { configure } from 'enzyme';
 
 import {
   mountHGComponent,
   removeHGComponent,
   waitForTilesLoaded,
 } from '../../app/scripts/test-helpers';
-import { getTrackObjectFromHGC, getTrackByUid } from '../../app/scripts/utils';
+import { getTrackByUid, getTrackObjectFromHGC } from '../../app/scripts/utils';
 
 import { rectangleDomains } from '../view-configs';
 

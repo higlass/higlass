@@ -1,7 +1,7 @@
 // @ts-nocheck
 
-import { spyOn } from 'tinyspy';
 import { expect } from 'chai';
+import { spyOn } from 'tinyspy';
 
 // Utils
 import { getTrackRenderer } from '../app/scripts/utils';

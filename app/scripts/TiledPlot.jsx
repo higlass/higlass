@@ -1,31 +1,31 @@
+import { ElementQueries, ResizeSensor } from 'css-element-queries';
 // @ts-nocheck
 import { pointer } from 'd3-selection';
-import slugid from 'slugid';
+import PropTypes from 'prop-types';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import PropTypes from 'prop-types';
-import { ResizeSensor, ElementQueries } from 'css-element-queries';
+import slugid from 'slugid';
 
+import AddTrackDialog from './AddTrackDialog';
+import CenterTrack from './CenterTrack';
+import CloseTrackMenu from './CloseTrackMenu';
+import ConfigTrackMenu from './ConfigTrackMenu';
+import ContextMenuContainer from './ContextMenuContainer';
 // Components
 import ContextMenuItem from './ContextMenuItem';
-import CenterTrack from './CenterTrack';
+import CustomTrackDialog from './CustomTrackDialog';
 import DragListeningDiv from './DragListeningDiv';
 import GalleryTracks from './GalleryTracks';
-import TrackRenderer from './TrackRenderer';
-import AddTrackDialog from './AddTrackDialog';
-import CustomTrackDialog from './CustomTrackDialog';
-import ConfigTrackMenu from './ConfigTrackMenu';
-import CloseTrackMenu from './CloseTrackMenu';
-import PopupMenu from './PopupMenu';
-import ContextMenuContainer from './ContextMenuContainer';
 import HorizontalTiledPlot from './HorizontalTiledPlot';
+import PopupMenu from './PopupMenu';
+import TrackRenderer from './TrackRenderer';
 import VerticalTiledPlot from './VerticalTiledPlot';
 import ViewContextMenu from './ViewContextMenu';
 // import {HeatmapOptions} from './HeatmapOptions';
 
+import withModal from './hocs/with-modal';
 // Higher-order components
 import withPubSub from './hocs/with-pub-sub';
-import withModal from './hocs/with-modal';
 import withTheme from './hocs/with-theme';
 
 // Utils
@@ -46,9 +46,9 @@ import {
   TRACK_LOCATIONS,
 } from './configs';
 
+import stylesCenterTrack from '../styles/CenterTrack.module.scss';
 // Styles
 import styles from '../styles/TiledPlot.module.scss';
-import stylesCenterTrack from '../styles/CenterTrack.module.scss';
 
 class TiledPlot extends React.Component {
   constructor(props) {

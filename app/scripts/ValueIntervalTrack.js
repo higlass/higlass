@@ -1,8 +1,8 @@
 // @ts-nocheck
 import { scaleLog } from 'd3-scale';
 
-import HorizontalLine1DPixiTrack from './HorizontalLine1DPixiTrack';
 import AxisPixi from './AxisPixi';
+import HorizontalLine1DPixiTrack from './HorizontalLine1DPixiTrack';
 
 import { colorToHex } from './utils';
 

@@ -2,22 +2,22 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 
+import clsx from 'clsx';
 import { brushY } from 'd3-brush';
 import { select } from 'd3-selection';
 import slugid from 'slugid';
-import clsx from 'clsx';
 
 import ListWrapper from './ListWrapper';
-import VerticalItem from './VerticalItem';
 import SortableList from './SortableList';
+import VerticalItem from './VerticalItem';
 
 // Utils
-import { or, resetD3BrushStyle, sum, IS_TRACK_RANGE_SELECTABLE } from './utils';
+import { IS_TRACK_RANGE_SELECTABLE, or, resetD3BrushStyle, sum } from './utils';
 
-// Styles
-import styles from '../styles/VerticalTiledPlot.module.scss';
 import stylesPlot from '../styles/TiledPlot.module.scss';
 import stylesTrack from '../styles/Track.module.scss';
+// Styles
+import styles from '../styles/VerticalTiledPlot.module.scss';
 
 function sourceEvent(event) {
   return event?.sourceEvent;

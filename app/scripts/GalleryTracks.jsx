@@ -1,7 +1,7 @@
+import clsx from 'clsx';
 // @ts-nocheck
 import PropTypes from 'prop-types';
 import React from 'react';
-import clsx from 'clsx';
 
 import TrackControl from './TrackControl';
 

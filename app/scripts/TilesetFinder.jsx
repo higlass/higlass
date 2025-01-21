@@ -1,8 +1,8 @@
+import PropTypes from 'prop-types';
 // @ts-nocheck
 import React from 'react';
-import PropTypes from 'prop-types';
-import slugid from 'slugid';
 import CheckboxTree from 'react-checkbox-tree';
+import slugid from 'slugid';
 
 import { tileProxy } from './services';
 

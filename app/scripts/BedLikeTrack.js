@@ -2,8 +2,8 @@
 import boxIntersect from 'box-intersect';
 import { median, range } from 'd3-array';
 import { scaleBand, scaleLinear } from 'd3-scale';
-import classifyPoint from 'robust-point-in-polygon';
 import { zoomIdentity } from 'd3-zoom';
+import classifyPoint from 'robust-point-in-polygon';
 
 import HorizontalTiled1DPixiTrack from './HorizontalTiled1DPixiTrack';
 import trackUtils from './track-utils';

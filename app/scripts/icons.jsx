@@ -1,7 +1,7 @@
+import { select } from 'd3-selection';
+import PropTypes from 'prop-types';
 // @ts-nocheck
 import React from 'react';
-import PropTypes from 'prop-types';
-import { select } from 'd3-selection';
 import classes from '../styles/ViewHeader.module.scss';
 
 export const COG = {

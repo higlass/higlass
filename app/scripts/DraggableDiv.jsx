@@ -1,12 +1,12 @@
+import clsx from 'clsx';
 // @ts-nocheck
 import { drag } from 'd3-drag';
 import { pointer, select } from 'd3-selection';
 import PropTypes from 'prop-types';
 import React from 'react';
-import clsx from 'clsx';
 
-import withTheme from './hocs/with-theme';
 import { THEME_DARK } from './configs';
+import withTheme from './hocs/with-theme';
 
 import classes from '../styles/DraggableDiv.module.scss';
 

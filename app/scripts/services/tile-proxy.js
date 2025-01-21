@@ -4,8 +4,8 @@ import slugid from 'slugid';
 
 import { workerGetTiles, workerSetPix } from './worker';
 
-import tts from '../utils/trim-trailing-slash';
 import sleep from '../utils/timeout';
+import tts from '../utils/trim-trailing-slash';
 
 // Config
 import { TILE_FETCH_DEBOUNCE } from '../configs/primitives';

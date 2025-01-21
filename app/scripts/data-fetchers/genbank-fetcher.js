@@ -1,6 +1,6 @@
-import slugid from 'slugid';
-import pako from 'pako';
 import genbankParser from 'genbank-parser';
+import pako from 'pako';
+import slugid from 'slugid';
 
 /**
  * @template T

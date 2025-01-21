@@ -4,9 +4,9 @@ import React from 'react';
 
 // Configs
 import {
-  TRACKS_INFO,
-  DATATYPE_TO_TRACK_TYPE,
   AVAILABLE_TRACK_TYPES,
+  DATATYPE_TO_TRACK_TYPE,
+  TRACKS_INFO,
 } from './configs';
 
 // Utils

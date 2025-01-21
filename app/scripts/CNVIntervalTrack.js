@@ -1,6 +1,6 @@
+import { range } from 'd3-array';
 // @ts-nocheck
 import { scaleBand } from 'd3-scale';
-import { range } from 'd3-array';
 import { segmentsToRows } from './utils';
 
 import HorizontalTiled1DPixiTrack from './HorizontalTiled1DPixiTrack';

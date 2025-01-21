@@ -1,4 +1,4 @@
-import { mean, sum, variance, deviation } from 'd3-array';
+import { deviation, mean, sum, variance } from 'd3-array';
 
 /** @typedef {(values: number[]) => number | undefined} Aggregation */
 

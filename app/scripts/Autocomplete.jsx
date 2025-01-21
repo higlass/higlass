@@ -1,9 +1,9 @@
 // @ts-nocheck
 
-import React from 'react';
-import { findDOMNode } from 'react-dom';
 import scrollIntoView from 'dom-scroll-into-view';
 import PropTypes from 'prop-types';
+import React from 'react';
+import { findDOMNode } from 'react-dom';
 
 const _debugStates = [];
 

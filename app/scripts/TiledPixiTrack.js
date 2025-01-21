@@ -1,15 +1,15 @@
+import { median, range, ticks } from 'd3-array';
 // @ts-nocheck
 import { scaleLinear, scaleLog, scaleQuantile } from 'd3-scale';
-import { median, range, ticks } from 'd3-array';
 import slugid from 'slugid';
 
-import DataFetcher from './data-fetchers/DataFetcher';
 import PixiTrack from './PixiTrack';
+import DataFetcher from './data-fetchers/DataFetcher';
 
+import backgroundTaskScheduler from './utils/background-task-scheduler';
+import parseChromsizesRows from './utils/parse-chromsizes-rows';
 // Utils
 import throttleAndDebounce from './utils/throttle-and-debounce';
-import parseChromsizesRows from './utils/parse-chromsizes-rows';
-import backgroundTaskScheduler from './utils/background-task-scheduler';
 
 // Configs
 import GLOBALS from './configs/globals';

@@ -1,41 +1,41 @@
+import clsx from 'clsx';
+import { ElementQueries, ResizeSensor } from 'css-element-queries';
+import { scaleLinear } from 'd3-scale';
+import { pointer, select } from 'd3-selection';
+import * as PIXI from 'pixi.js';
+import PropTypes from 'prop-types';
+import createPubSub, { globalPubSub } from 'pub-sub-es';
 // @ts-nocheck
 import React from 'react';
-import PropTypes from 'prop-types';
-import { select, pointer } from 'd3-selection';
-import { scaleLinear } from 'd3-scale';
-import slugid from 'slugid';
-import * as PIXI from 'pixi.js';
 import ReactDOM from 'react-dom';
 import ReactGridLayout from 'react-grid-layout';
-import { ResizeSensor, ElementQueries } from 'css-element-queries';
-import vkbeautify from 'vkbeautify';
+import slugid from 'slugid';
 import parse from 'url-parse';
-import createPubSub, { globalPubSub } from 'pub-sub-es';
-import clsx from 'clsx';
+import vkbeautify from 'vkbeautify';
 
-import TiledPlot from './TiledPlot';
-import GenomePositionSearchBox from './GenomePositionSearchBox';
-import ExportLinkDialog from './ExportLinkDialog';
-import ViewHeader from './ViewHeader';
 import ChromosomeInfo from './ChromosomeInfo';
+import ExportLinkDialog from './ExportLinkDialog';
+import GenomePositionSearchBox from './GenomePositionSearchBox';
+import TiledPlot from './TiledPlot';
 import ViewConfigEditor from './ViewConfigEditor';
+import ViewHeader from './ViewHeader';
 
-import createSymbolIcon from './symbol';
-import { all as icons } from './icons';
 import createApi from './api';
+import { all as icons } from './icons';
+import createSymbolIcon from './symbol';
 
+import { Provider as ModalProvider } from './hocs/with-modal';
 // Higher-order components
 import { Provider as PubSubProvider } from './hocs/with-pub-sub';
-import { Provider as ModalProvider } from './hocs/with-modal';
 import { Provider as ThemeProvider } from './hocs/with-theme';
 
 // Services
 import {
   chromInfo,
   createDomEvent,
+  requestsInFlight,
   setTileProxyAuthHeader,
   tileProxy,
-  requestsInFlight,
 } from './services';
 
 // Utils
@@ -64,16 +64,16 @@ import {
 
 // Configs
 import {
-  DEFAULT_SERVER,
   DEFAULT_CONTAINER_PADDING_X,
   DEFAULT_CONTAINER_PADDING_Y,
+  DEFAULT_SERVER,
   DEFAULT_VIEW_MARGIN,
   DEFAULT_VIEW_PADDING,
   GLOBALS,
-  MOUSE_TOOL_MOVE,
-  MOUSE_TOOL_SELECT,
   LOCATION_LISTENER_PREFIX,
   LONG_DRAG_TIMEOUT,
+  MOUSE_TOOL_MOVE,
+  MOUSE_TOOL_SELECT,
   SHORT_DRAG_TIMEOUT,
   THEME_DARK,
   THEME_LIGHT,

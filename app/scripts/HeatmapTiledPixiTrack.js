@@ -1,16 +1,16 @@
-// @ts-nocheck
-import ndarray from 'ndarray';
 import { brushY } from 'd3-brush';
 import { format } from 'd3-format';
 import { scaleLinear } from 'd3-scale';
 import { select } from 'd3-selection';
+// @ts-nocheck
+import ndarray from 'ndarray';
 import slugid from 'slugid';
 
-// Utils
-import colorToRgba from './utils/color-to-rgba';
 import absToChr from './utils/abs-to-chr';
 import colorDomainToRgbaArray from './utils/color-domain-to-rgba-array';
 import colorToHex from './utils/color-to-hex';
+// Utils
+import colorToRgba from './utils/color-to-rgba';
 import { download } from './utils/download';
 import ndarrayAssign from './utils/ndarray-assign';
 import ndarrayFlatten from './utils/ndarray-flatten';
@@ -18,23 +18,23 @@ import objVals from './utils/obj-vals';
 import showMousePosition from './utils/show-mouse-position';
 import valueToColor from './utils/value-to-color';
 
-import TiledPixiTrack, { getValueScale } from './TiledPixiTrack';
 import AxisPixi from './AxisPixi';
+import TiledPixiTrack, { getValueScale } from './TiledPixiTrack';
 
 // Services
 import {
-  tileDataToPixData,
-  calculateTileWidth,
-  calculateTilesFromResolution,
-  calculateTiles,
   calculateResolution,
-  calculateZoomLevelFromResolutions,
+  calculateTileWidth,
+  calculateTiles,
+  calculateTilesFromResolution,
   calculateZoomLevel,
+  calculateZoomLevelFromResolutions,
+  tileDataToPixData,
 } from './services/tile-proxy';
 
-import GLOBALS from './configs/globals';
-import { NUM_PRECOMP_SUBSETS_PER_2D_TTILE } from './configs/dense-data-extrema-config';
 import { HEATED_OBJECT_MAP } from './configs/colormaps';
+import { NUM_PRECOMP_SUBSETS_PER_2D_TTILE } from './configs/dense-data-extrema-config';
+import GLOBALS from './configs/globals';
 
 const COLORBAR_MAX_HEIGHT = 200;
 const COLORBAR_WIDTH = 10;

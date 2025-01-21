@@ -1,15 +1,15 @@
 // @ts-nocheck
 
-import Enzyme from 'enzyme';
 import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
 import { expect } from 'chai';
+import Enzyme from 'enzyme';
 
 import {
   mountHGComponent,
   removeHGComponent,
-  waitForTransitionsFinished,
-  waitForTilesLoaded,
   waitForJsonComplete,
+  waitForTilesLoaded,
+  waitForTransitionsFinished,
 } from '../app/scripts/test-helpers';
 import { getTrackObjectFromHGC } from '../app/scripts/utils';
 import viewConf from './view-configs/simple-heatmap-gene-annotations.json';

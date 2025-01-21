@@ -1,17 +1,17 @@
+import clsx from 'clsx';
+import { brushX } from 'd3-brush';
+import { select } from 'd3-selection';
 // @ts-nocheck
 import PropTypes from 'prop-types';
 import React from 'react';
-import { brushX } from 'd3-brush';
-import { select } from 'd3-selection';
 import slugid from 'slugid';
-import clsx from 'clsx';
 
-import ListWrapper from './ListWrapper';
 import HorizontalItem from './HorizontalItem';
+import ListWrapper from './ListWrapper';
 import SortableList from './SortableList';
 
 // Utils
-import { or, resetD3BrushStyle, sum, IS_TRACK_RANGE_SELECTABLE } from './utils';
+import { IS_TRACK_RANGE_SELECTABLE, or, resetD3BrushStyle, sum } from './utils';
 
 // Styles
 import styles from '../styles/HorizontalTiledPlot.module.scss';

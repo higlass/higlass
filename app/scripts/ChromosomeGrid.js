@@ -1,6 +1,6 @@
+import ChromosomeInfo from './ChromosomeInfo';
 // @ts-nocheck
 import PixiTrack from './PixiTrack';
-import ChromosomeInfo from './ChromosomeInfo';
 import SearchField from './SearchField';
 
 import { colorToHex } from './utils';

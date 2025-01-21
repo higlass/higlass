@@ -24,8 +24,8 @@ import * as vite from 'vite';
 import babel from 'vite-plugin-babel';
 import injectCssByJs from 'vite-plugin-css-injected-by-js';
 
-import * as React from 'react';
 import * as PIXI from 'pixi.js';
+import * as React from 'react';
 
 const __dirname = path.dirname(url.fileURLToPath(import.meta.url));
 

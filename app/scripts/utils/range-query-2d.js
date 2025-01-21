@@ -1,6 +1,6 @@
+import accessorTransposition from './accessor-transposition';
 // @ts-nocheck
 import addArrays from './add-arrays';
-import accessorTransposition from './accessor-transposition';
 
 /**
  * Perform a 2D query on a 1D array

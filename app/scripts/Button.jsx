@@ -1,6 +1,6 @@
+import PropTypes from 'prop-types';
 // @ts-nocheck
 import React from 'react';
-import PropTypes from 'prop-types';
 
 import classes from '../styles/Button.module.scss';
 

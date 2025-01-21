@@ -1,6 +1,6 @@
+import clsx from 'clsx';
 // @ts-nocheck
 import React from 'react';
-import clsx from 'clsx';
 
 import ContextMenuContainer from './ContextMenuContainer';
 import ContextMenuItem from './ContextMenuItem';

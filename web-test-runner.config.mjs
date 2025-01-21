@@ -1,5 +1,5 @@
-import vite from './scripts/wtr-vite-plugin.mjs';
 import cache from './scripts/wtr-cache-plugin.mjs';
+import vite from './scripts/wtr-vite-plugin.mjs';
 
 const USE_CACHE = process.env.HIGLASS_USE_CACHE === 'true';
 const cacheFile = './response-cache.json';

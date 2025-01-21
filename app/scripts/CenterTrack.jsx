@@ -1,14 +1,14 @@
+import clsx from 'clsx';
+import { brush, brushX, brushY } from 'd3-brush';
+import { select } from 'd3-selection';
 // @ts-nocheck
 import PropTypes from 'prop-types';
 import React from 'react';
-import { brush, brushX, brushY } from 'd3-brush';
-import { select } from 'd3-selection';
-import clsx from 'clsx';
 
 import TrackControl from './TrackControl';
 
 // Utils
-import { or, resetD3BrushStyle, IS_TRACK_RANGE_SELECTABLE } from './utils';
+import { IS_TRACK_RANGE_SELECTABLE, or, resetD3BrushStyle } from './utils';
 
 // Styles
 import styles from '../styles/CenterTrack.module.scss';

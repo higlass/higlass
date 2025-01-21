@@ -1,8 +1,8 @@
 // @ts-nocheck
 
-import Enzyme from 'enzyme';
 import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
 import { expect } from 'chai';
+import Enzyme from 'enzyme';
 
 import {
   mountHGComponent,
@@ -11,7 +11,7 @@ import {
 } from '../../app/scripts/test-helpers';
 import { getTrackObjectFromHGC } from '../../app/scripts/utils';
 
-import { twoViewConfig, heatmapTrack } from '../view-configs';
+import { heatmapTrack, twoViewConfig } from '../view-configs';
 
 Enzyme.configure({ adapter: new Adapter() });
 

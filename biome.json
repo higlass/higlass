@@ -5,12 +5,12 @@
     "clientKind": "git",
     "useIgnoreFile": true
   },
+  "organizeImports": {
+    "enabled": true
+  },
   "files": {
     "ignoreUnknown": false,
     "ignore": ["test/mocked-responses/*"]
-  },
-  "organizeImports": {
-    "enabled": false
   },
   "formatter": {
     "enabled": true,

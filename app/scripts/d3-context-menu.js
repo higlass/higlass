@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { mouse, select, selectAll, event } from 'd3-selection';
+import { event, mouse, select, selectAll } from 'd3-selection';
 import slugid from 'slugid';
 
 import '../styles/d3-context-menu.css';

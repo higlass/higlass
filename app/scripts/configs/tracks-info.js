@@ -7,11 +7,11 @@ import {
   svg2DTilesIcon,
   svgArrowheadDomainsIcon,
   svgGeneAnnotationsIcon,
-  svgHorizontalLineIcon,
+  svgGeoMapIcon,
   svgHorizontal1dHeatmap,
+  svgHorizontalLineIcon,
   svgVertical1DAxisIcon,
   svgVertical1DTilesIcon,
-  svgGeoMapIcon,
 } from '../icons';
 
 /**

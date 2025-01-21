@@ -1,8 +1,8 @@
 // @ts-nocheck
 
-import Enzyme from 'enzyme';
 import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
 import { expect } from 'chai';
+import Enzyme from 'enzyme';
 
 import slugid from 'slugid';
 
@@ -13,16 +13,16 @@ import {
 } from '../../app/scripts/test-helpers';
 import {
   getTrackByUid,
-  totalTrackPixelHeight,
   getTrackObjectFromHGC,
+  totalTrackPixelHeight,
 } from '../../app/scripts/utils';
 
 import {
+  heatmapTrack,
   horizontalDiagonalTrackViewConf,
-  verticalHeatmapTrack,
   horizontalHeatmapTrack,
   largeHorizontalHeatmapTrack,
-  heatmapTrack,
+  verticalHeatmapTrack,
 } from '../view-configs';
 
 Enzyme.configure({ adapter: new Adapter() });
