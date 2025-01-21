@@ -1,11 +1,12 @@
 // @ts-nocheck
+import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 
 import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
-import { expect } from 'chai';
 import Enzyme from 'enzyme';
 
 import {
   mountHGComponent,
+  mountHGComponentAsync,
   removeHGComponent,
   waitForTilesLoaded,
 } from '../../app/scripts/test-helpers';
@@ -19,20 +20,18 @@ describe('Value scale locking', () => {
   let hgc = null;
   let div = null;
 
-  before((done) => {
-    [div, hgc] = mountHGComponent(div, hgc, twoViewConfig, done, {
+  beforeAll(async () => {
+    [div, hgc] = await mountHGComponentAsync(div, hgc, twoViewConfig, {
       style: 'width:800px; height:400px; background-color: lightgreen',
       bounded: true,
     });
-    // visual check that the heatmap track config menu is moved
-    // to the left
   });
 
-  after(async () => {
+  afterAll(async () => {
     removeHGComponent(div);
   });
 
-  it('locks the scales and recenters the page', (done) => {
+  it('locks the scales and recenters the page', async () => {
     hgc
       .instance()
       .handleValueScaleLocked('aa', 'heatmap1', 'view2', 'heatmap2');
@@ -47,8 +46,7 @@ describe('Value scale locking', () => {
         1802017603.5768778,
         28874.21283197403,
       );
-
-    waitForTilesLoaded(hgc.instance(), done);
+    await new Promise((done) => waitForTilesLoaded(hgc.instance(), done));
   });
 
   it('exports as JSON and makes sure that the scales are locked', () => {
@@ -57,7 +55,7 @@ describe('Value scale locking', () => {
     expect(data.indexOf('valueScaleLocks')).to.be.greaterThanOrEqual(0);
   });
 
-  it('Moves the brush on one view and makes sure it moves on the other', (done) => {
+  it('Moves the brush on one view and makes sure it moves on the other', async () => {
     const heatmap1Track = getTrackObjectFromHGC(
       hgc.instance(),
       'aa',
@@ -86,22 +84,8 @@ describe('Value scale locking', () => {
     expect(heatmap1Track.options.scaleEndPercent).to.equal(
       heatmap2Track.options.scaleEndPercent,
     );
-
-    waitForTilesLoaded(hgc.instance(), done);
+    await new Promise((done) => waitForTilesLoaded(hgc.instance(), done));
   });
-
-  // it('Changes the value scale', done => {
-  //   hgc
-  //     .instance()
-  //     .tiledPlots.aa.trackRenderer.setCenter(
-  //       179943234.8692136,
-  //       179901760.5768778,
-  //       2887.21283197403,
-  //       true
-  //     );
-
-  //   waitForTilesLoaded(hgc.instance(), done);
-  // });
 
   it('ensures that the new track domains are equal', () => {
     const track1 = getTrackObjectFromHGC(hgc.instance(), 'aa', 'heatmap1');
@@ -123,7 +107,7 @@ describe('Value scale locking', () => {
     expect(domain1[1]).to.equal(domain2[1]);
   });
 
-  it('unlocks the scales', (done) => {
+  it('unlocks the scales', async () => {
     hgc.instance().handleUnlockValueScale('aa', 'heatmap1');
 
     // unlock the scales and zoom out
@@ -135,10 +119,10 @@ describe('Value scale locking', () => {
         2887.21283197403,
       );
 
-    waitForTilesLoaded(hgc.instance(), done);
+    await new Promise((done) => waitForTilesLoaded(hgc.instance(), done));
   });
 
-  it('ensure that new domains are unequal and locks the combined tracks', (done) => {
+  it('ensure that new domains are unequal and locks the combined tracks', async () => {
     const track1 = getTrackObjectFromHGC(hgc.instance(), 'aa', 'heatmap1');
     const track2 = getTrackObjectFromHGC(hgc.instance(), 'view2', 'heatmap2');
 
@@ -147,10 +131,10 @@ describe('Value scale locking', () => {
 
     expect(domain1[1]).not.to.equal(domain2[1]);
 
-    waitForTilesLoaded(hgc.instance(), done);
+    await new Promise((done) => waitForTilesLoaded(hgc.instance(), done));
   });
 
-  it('Locks line and combined scales', (done) => {
+  it('Locks line and combined scales', async () => {
     hgc.instance().handleValueScaleLocked('aa', 'c1', 'view2', 'c2');
     hgc.instance().handleValueScaleLocked('aa', 'line1', 'view2', 'line2');
 
@@ -163,10 +147,10 @@ describe('Value scale locking', () => {
         15.803061962127686,
       );
 
-    waitForTilesLoaded(hgc.instance(), done);
+    await new Promise((done) => waitForTilesLoaded(hgc.instance(), done));
   });
 
-  it('ensures that the new track domains are equal and unlock the combined tracks', (done) => {
+  it('ensures that the new track domains are equal and unlock the combined tracks', async () => {
     const track1 = getTrackObjectFromHGC(hgc.instance(), 'aa', 'heatmap1');
     const track2 = getTrackObjectFromHGC(hgc.instance(), 'view2', 'heatmap2');
 
@@ -175,10 +159,10 @@ describe('Value scale locking', () => {
 
     expect(domain1[1]).to.equal(domain2[1]);
 
-    waitForTilesLoaded(hgc.instance(), done);
+    await new Promise((done) => waitForTilesLoaded(hgc.instance(), done));
   });
 
-  it('zooms out', (done) => {
+  it('zooms out', async () => {
     hgc
       .instance()
       .tiledPlots.aa.trackRenderer.setCenter(
@@ -187,10 +171,10 @@ describe('Value scale locking', () => {
         1710.4168190956116,
       );
 
-    waitForTilesLoaded(hgc.instance(), done);
+    await new Promise((done) => waitForTilesLoaded(hgc.instance(), done));
   });
 
-  it('ensures that the domain changed', (done) => {
+  it('ensures that the domain changed', async () => {
     const track1 = getTrackObjectFromHGC(hgc.instance(), 'aa', 'heatmap1');
     const track2 = getTrackObjectFromHGC(hgc.instance(), 'view2', 'heatmap2');
 
@@ -200,10 +184,10 @@ describe('Value scale locking', () => {
     expect(domain1[1]).to.be.lessThan(1);
     expect(domain1[1]).to.equal(domain2[1]);
 
-    waitForTilesLoaded(hgc.instance(), done);
+    await new Promise((done) => waitForTilesLoaded(hgc.instance(), done));
   });
 
-  it('Unlocks the scales and moves to a different location', (done) => {
+  it('Unlocks the scales and moves to a different location', async () => {
     hgc.instance().handleUnlockValueScale('aa', 'c1');
 
     // unlock the scales and zoom out
@@ -215,7 +199,7 @@ describe('Value scale locking', () => {
         2887.21283197403,
       );
 
-    waitForTilesLoaded(hgc.instance(), done);
+    await new Promise((done) => waitForTilesLoaded(hgc.instance(), done));
   });
 
   it('ensures that the new track domains are not equal', () => {
@@ -269,7 +253,7 @@ describe('Value scale locking', () => {
       );
   });
 
-  it('Replaces and displays a new track', (done) => {
+  it('Replaces and displays a new track', async () => {
     // hgc.instance().handleValueScaleLocked('aa', 'c1', 'view2', 'heatmap3');
 
     const track = getTrackObjectFromHGC(hgc.instance(), 'view2', 'heatmap3');
@@ -278,7 +262,7 @@ describe('Value scale locking', () => {
     expect(track.pMain.position.x).to.be.greaterThan(404);
     expect(track.pMain.position.x).to.be.lessThan(406);
 
-    waitForTilesLoaded(hgc.instance(), done);
+    await new Promise((done) => waitForTilesLoaded(hgc.instance(), done));
   });
 
   it('Locks the scales again (after waiting for the previous tiles to load)', () => {
