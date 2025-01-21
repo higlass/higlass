@@ -1,11 +1,11 @@
 // @ts-nocheck
+import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 
 import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
-import { expect } from 'chai';
 import Enzyme from 'enzyme';
 
 import {
-  mountHGComponent,
+  mountHGComponentAsync,
   removeHGComponent,
   waitForTilesLoaded,
 } from '../../app/scripts/test-helpers';
@@ -19,20 +19,18 @@ describe('Three views and linking', () => {
   let hgc = null;
   let div = null;
 
-  before((done) => {
-    [div, hgc] = mountHGComponent(div, hgc, threeViews, done, {
+  beforeAll(async () => {
+    [div, hgc] = await mountHGComponentAsync(div, hgc, threeViews, {
       style: 'width:800px; height:400px; background-color: lightgreen',
       bounded: true,
     });
-    // visual check that the heatmap track config menu is moved
-    // to the left
   });
 
-  after(async () => {
+  afterAll(() => {
     removeHGComponent(div);
   });
 
-  it('Links two views and moves to the side', (done) => {
+  it('Links two views and moves to the side', async () => {
     hgc.instance().handleLocationLockChosen('aa', 'bb');
     hgc.instance().handleZoomLockChosen('aa', 'bb');
 
@@ -43,7 +41,7 @@ describe('Three views and linking', () => {
         1801234331.7949603,
         17952.610495328903,
       );
-    waitForTilesLoaded(hgc.instance(), done);
+    await new Promise((done) => waitForTilesLoaded(hgc.instance(), done));
   });
 
   it('Checks to make sure that the two views have moved to the same place', () => {
@@ -60,7 +58,7 @@ describe('Three views and linking', () => {
     expect(aaCenterY - bbCenterY).to.be.lessThan(0.001);
   });
 
-  it('Links the third view', (done) => {
+  it('Links the third view', async () => {
     hgc.instance().handleLocationYanked('cc', 'aa');
     hgc.instance().handleZoomYanked('cc', 'aa');
 
@@ -75,10 +73,10 @@ describe('Three views and linking', () => {
         17952.610495328903,
       );
 
-    waitForTilesLoaded(hgc.instance(), done);
+    await new Promise((done) => waitForTilesLoaded(hgc.instance(), done));
   });
 
-  it('Makes sure that the third view moved', (done) => {
+  it('Makes sure that the third view moved', async () => {
     const aaXScale = hgc.instance().xScales.aa;
     const aaYScale = hgc.instance().yScales.aa;
 
@@ -91,6 +89,6 @@ describe('Three views and linking', () => {
     expect(aaCenterX - ccCenterX).to.be.lessThan(0.001);
     expect(aaCenterY - ccCenterY).to.be.lessThan(0.001);
 
-    waitForTilesLoaded(hgc.instance(), done);
+    await new Promise((done) => waitForTilesLoaded(hgc.instance(), done));
   });
 });
