@@ -1,12 +1,12 @@
 // @ts-nocheck
+import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 
 import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
-import { expect } from 'chai';
 import Enzyme from 'enzyme';
 
 // Utils
 import {
-  mountHGComponent,
+  mountHGComponentAsync,
   removeHGComponent,
   waitForTilesLoaded,
 } from '../app/scripts/test-helpers';
@@ -21,11 +21,11 @@ describe('BedLikeTrack |', () => {
   let div = null;
 
   describe('inline annotations', () => {
-    before((done) => {
-      [div, hgc] = mountHGComponent(div, hgc, smallViewconf, done);
+    beforeAll(async () => {
+      [div, hgc] = await mountHGComponentAsync(div, hgc, smallViewconf);
     });
 
-    it('checks that the rectangles are strand separated or not', (done) => {
+    it('checks that the rectangles are strand separated or not', () => {
       const trackObj = getTrackObjectFromHGC(hgc.instance(), 'aa', 'a');
 
       const ys = new Set();
@@ -48,11 +48,9 @@ describe('BedLikeTrack |', () => {
 
       // make sure that annotations are at the same y position
       expect(ys.size).to.eql(1);
-
-      done();
     });
 
-    after(() => {
+    afterAll(() => {
       // removeHGComponent(div);
       // div = null;
       // hgc = null;
@@ -60,19 +58,18 @@ describe('BedLikeTrack |', () => {
   });
 
   describe('Options', () => {
-    before((done) => {
-      [div, hgc] = mountHGComponent(div, hgc, coloredBarsViewConf, done);
+    beforeAll(async () => {
+      [div, hgc] = await mountHGComponentAsync(div, hgc, coloredBarsViewConf);
     });
 
-    it('checks that the rectangles are colored', (done) => {
+    it('checks that the rectangles are colored', () => {
       const svg = hgc.instance().createSVGString();
 
       // check to make sure that we have non-standard color bar
       expect(svg.indexOf('rgb(152, 251, 152)')).to.be.above(0);
-      done();
     });
 
-    after(() => {
+    afterAll(() => {
       removeHGComponent(div);
       div = null;
       hgc = null;
@@ -80,8 +77,8 @@ describe('BedLikeTrack |', () => {
   });
 
   describe('Options', () => {
-    before((done) => {
-      [div, hgc] = mountHGComponent(div, hgc, viewConf1, done);
+    beforeAll(async () => {
+      [div, hgc] = await mountHGComponentAsync(div, hgc, viewConf1);
     });
 
     it('Changes text color independent of fill', () => {
@@ -127,7 +124,7 @@ describe('BedLikeTrack |', () => {
       expect(changedIx).to.be.above(0);
     });
 
-    after(() => {
+    afterAll(() => {
       removeHGComponent(div);
       div = null;
       hgc = null;
@@ -135,11 +132,11 @@ describe('BedLikeTrack |', () => {
   });
 
   describe('vertical scaling', () => {
-    before((done) => {
-      [div, hgc] = mountHGComponent(div, hgc, viewConf1, done);
+    beforeAll(async () => {
+      [div, hgc] = await mountHGComponentAsync(div, hgc, viewConf1);
     });
 
-    it('Zooms vertically', () => {
+    it('Zooms vertically', async () => {
       const trackObj = getTrackObjectFromHGC(hgc.instance(), 'aa', 'a');
 
       // because we're loading tiles synchronously, they'll be loaded
@@ -148,13 +145,18 @@ describe('BedLikeTrack |', () => {
       // of our zoomedY function
       trackObj.rerender = () => {};
 
-      waitForTilesLoaded(hgc.instance(), () => {
-        trackObj.zoomedY(100, 0.8);
-        expect(trackObj.fetchedTiles['0.0'].rectGraphics.scale.y).to.eql(1.25);
+      await new Promise((done) => {
+        waitForTilesLoaded(hgc.instance(), () => {
+          trackObj.zoomedY(100, 0.8);
+          expect(trackObj.fetchedTiles['0.0'].rectGraphics.scale.y).to.eql(
+            1.25,
+          );
+          done(null);
+        });
       });
     });
 
-    after(() => {
+    afterAll(() => {
       removeHGComponent(div);
       div = null;
       hgc = null;
@@ -162,8 +164,8 @@ describe('BedLikeTrack |', () => {
   });
 
   describe('Normal tests', () => {
-    before((done) => {
-      [div, hgc] = mountHGComponent(div, hgc, viewConf, done);
+    beforeAll(async () => {
+      [div, hgc] = await mountHGComponentAsync(div, hgc, viewConf);
     });
 
     it('Ensures that the track was rendered', () => {
@@ -206,7 +208,7 @@ describe('BedLikeTrack |', () => {
       expect(greenIx).to.be.below(0);
     });
 
-    it('Checks minusStrandColor', (done) => {
+    it('Checks minusStrandColor', () => {
       hgc.instance().state.views.aa.tracks.top[0].options.minusStrandColor =
         'green';
 
@@ -217,10 +219,9 @@ describe('BedLikeTrack |', () => {
       const greenIx = svgText.indexOf('green');
 
       expect(greenIx).to.be.above(0);
-      done();
     });
 
-    it('Checks segment polygons', (done) => {
+    it('Checks segment polygons', () => {
       hgc.instance().state.views.aa.tracks.top[0].options.annotationStyle =
         'segment';
 
@@ -241,8 +242,6 @@ describe('BedLikeTrack |', () => {
           expect(rect[0].length).to.eql(24);
         }
       }
-
-      done();
     });
 
     it('Checks to make sure that scaled height changes the height of drawn rects', () => {
@@ -354,7 +353,7 @@ describe('BedLikeTrack |', () => {
       expect(newScaleWidth).to.be.below(scaleWidth);
     });
 
-    after(() => {
+    afterAll(() => {
       removeHGComponent(div);
     });
   });
