@@ -1,15 +1,44 @@
 // @ts-nocheck
+import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 
 import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
-import { expect } from 'chai';
 import Enzyme from 'enzyme';
 
 // Utils
 import {
-  mountHGComponent,
+  mountHGComponentAsync,
   removeHGComponent,
 } from '../app/scripts/test-helpers';
 import { getTrackObjectFromHGC } from '../app/scripts/utils';
+
+Enzyme.configure({ adapter: new Adapter() });
+
+describe('Chromsizes tests', () => {
+  let hgc = null;
+  let div = null;
+
+  describe('Chromosome Grid Tests', () => {
+    beforeAll(async () => {
+      [div, hgc] = await mountHGComponentAsync(div, hgc, viewconf, {
+        style: 'width:800px; height:800px; background-color: lightgreen',
+        bounded: true,
+      });
+    });
+
+    it("Ensure that the viewport projection's borders are grey", () => {
+      const trackObject = getTrackObjectFromHGC(
+        hgc.instance(),
+        'Mw2aWH9TTcu38t5OZlCYyA',
+      );
+
+      expect(trackObject.options.lineStrokeColor).to.eql('grey');
+    });
+
+    afterAll(() => {
+      removeHGComponent(div);
+    });
+  });
+});
 
 const viewconf = {
   editable: true,
@@ -138,32 +167,3 @@ const viewconf = {
     },
   },
 };
-
-Enzyme.configure({ adapter: new Adapter() });
-
-describe('Chromsizes tests', () => {
-  let hgc = null;
-  let div = null;
-
-  describe('Chromosome Grid Tests', () => {
-    before((done) => {
-      [div, hgc] = mountHGComponent(div, hgc, viewconf, done, {
-        style: 'width:800px; height:800px; background-color: lightgreen',
-        bounded: true,
-      });
-    });
-
-    it("Ensure that the viewport projection's borders are grey", () => {
-      const trackObject = getTrackObjectFromHGC(
-        hgc.instance(),
-        'Mw2aWH9TTcu38t5OZlCYyA',
-      );
-
-      expect(trackObject.options.lineStrokeColor).to.eql('grey');
-    });
-
-    after(() => {
-      removeHGComponent(div);
-    });
-  });
-});
