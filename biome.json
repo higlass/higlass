@@ -50,7 +50,6 @@
         "noPrototypeBuiltins": "off",
         "noEmptyBlock": "off",
         "noShadowRestrictedNames": "off",
-        "noArrayIndexKey": "off",
         "noExplicitAny": "off"
       },
       "complexity": {
