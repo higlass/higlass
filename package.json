@@ -30,7 +30,7 @@
     "compile": "npm run build && zip -r dist.zip dist",
     "typecheck": "tsc",
     "format": "prettier --ignore-path=.gitignore --write \"**/*.{mjs,js,jsx,ts}\"",
-    "lint": "prettier --ignore-path=.gitignore --check \"**/*.{mjs,js,jsx,ts}\" && eslint --ignore-path=.gitignore \"**/*.{mjs,js,jsx}\""
+    "lint": "biome lint"
   },
   "repository": {
     "type": "git",
@@ -88,6 +88,7 @@
     "@babel/core": "^7.23.3",
     "@babel/plugin-transform-classes": "^7.23.3",
     "@babel/preset-react": "^7.23.3",
+    "@biomejs/biome": "^1.9.4",
     "@types/d3-array": "^2.7.1",
     "@types/d3-axis": "^2.0.0",
     "@types/d3-brush": "^2.1.0",
@@ -115,13 +116,6 @@
     "chai": "^4.3.4",
     "enzyme": "^3.4.1",
     "esbuild": "^0.19.8",
-    "eslint": "^8.23.0",
-    "eslint-config-airbnb": "^19.0.4",
-    "eslint-config-prettier": "^8.5.0",
-    "eslint-plugin-import": "^2.26.0",
-    "eslint-plugin-jsx-a11y": "^6.6.1",
-    "eslint-plugin-react": "^7.31.8",
-    "eslint-plugin-react-hooks": "^4.6.0",
     "pixi.js": "^6.5.2",
     "prettier": "^2.5.1",
     "react": "^17.0.2",

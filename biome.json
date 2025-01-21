@@ -1,0 +1,71 @@
+{
+  "$schema": "https://biomejs.dev/schemas/1.9.4/schema.json",
+  "vcs": {
+    "enabled": true,
+    "clientKind": "git",
+    "useIgnoreFile": true
+  },
+  "files": {
+    "ignoreUnknown": false,
+    "ignore": ["test/mocked-responses/*"]
+  },
+  "formatter": {
+    "enabled": false,
+    "indentStyle": "space"
+  },
+  "organizeImports": {
+    "enabled": false
+  },
+  "linter": {
+    "enabled": true,
+    "rules": {
+      "recommended": true,
+      "a11y": {
+        "noSvgWithoutTitle": "off",
+        "useKeyWithClickEvents": "off",
+        "useSemanticElements": "off",
+        "useAriaPropsForRole": "off"
+      },
+      "correctness": {
+        "noUnusedVariables": "off",
+        "noUnreachable": "off",
+        "noFlatMapIdentity": "off",
+        "noChildrenProp": "off",
+        "noUnknownProperty": "off",
+        "noUnnecessaryContinue": "off"
+      },
+      "style": {
+        "noArguments": "off",
+        "noParameterAssign": "off",
+        "noUnusedTemplateLiteral": "off",
+        "noUselessElse": "off",
+        "useDefaultParameterLast": "off",
+        "useNumberNamespace": "off",
+        "useShorthandFunctionType": "off"
+      },
+      "suspicious": {
+        "noConsole": {
+          "level": "error",
+          "options": { "allow": ["warn", "error", "log"] }
+        },
+        "noPrototypeBuiltins": "off",
+        "noEmptyBlock": "off",
+        "noShadowRestrictedNames": "off",
+        "noArrayIndexKey": "off",
+        "noExplicitAny": "off"
+      },
+      "complexity": {
+        "noForEach": "off",
+        "useOptionalChain": "off",
+        "noUselessThisAlias": "off",
+        "noUselessSwitchCase": "off"
+      },
+      "performance": {
+        "noDelete": "off"
+      },
+      "security": {
+        "noDangerouslySetInnerHtml": "off"
+      }
+    }
+  }
+}
