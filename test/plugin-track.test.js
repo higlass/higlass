@@ -1,6 +1,5 @@
 // @ts-nocheck
-
-import { expect } from 'chai';
+import { afterEach, describe, expect, it } from 'vitest';
 
 import { register } from './utils/DummyTrack';
 import createElementAndApi from './utils/create-element-and-api';
