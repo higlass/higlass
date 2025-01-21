@@ -25,9 +25,6 @@
         "useSemanticElements": "off",
         "useAriaPropsForRole": "off"
       },
-      "correctness": {
-        "noUnnecessaryContinue": "off"
-      },
       "style": {
         "noArguments": "off",
         "noParameterAssign": "off",
