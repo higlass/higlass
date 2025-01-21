@@ -1,7 +1,7 @@
 // @ts-nocheck
+import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 
 import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
-import { expect } from 'chai';
 import Enzyme from 'enzyme';
 
 import { select } from 'd3-selection';
@@ -22,7 +22,7 @@ describe('Double view', () => {
   let hgc = null;
   let div = null;
 
-  before(async () => {
+  beforeAll(async () => {
     [div, hgc] = await mountHGComponentAsync(div, hgc, twoViewConfig, {
       style: 'width:800px; height:400px; background-color: lightgreen',
       bounded: true,
@@ -31,7 +31,7 @@ describe('Double view', () => {
     // to the left
   });
 
-  after(async () => {
+  afterAll(async () => {
     removeHGComponent(div);
   });
 
@@ -150,7 +150,7 @@ describe('Double view', () => {
     expect(axisText.indexOf('1e+5')).to.be.greaterThan(0);
   });
 
-  it('Adds a chromInfo track', (done) => {
+  it('Adds a chromInfo track', async () => {
     // this test was here to visually make sure that the HorizontalChromosomeAxis
     // was rendered after being drawn
     hgc.instance().handleTrackAdded('view2', chromInfoTrack, 'top');
@@ -161,74 +161,57 @@ describe('Double view', () => {
       .tiledPlots.view2.trackRenderer.syncTrackObjects(
         hgc.instance().tiledPlots.view2.positionedTracks(),
       );
-
-    // make sure that the chromInfo is displayed
-    // setTimeout(() => done(), 1000);
-    waitForTilesLoaded(hgc.instance(), done);
+    await new Promise((done) => waitForTilesLoaded(hgc.instance(), done));
   });
 
-  it('splits one of the views', (done) => {
+  it('splits one of the views', async () => {
     hgc.instance().handleAddView(twoViewConfig.views[0]);
-
-    waitForTilesLoaded(hgc.instance(), done);
+    await new Promise((done) => waitForTilesLoaded(hgc.instance(), done));
   });
 
-  it('splits one of the views1', (done) => {
+  it('splits one of the views1', async () => {
     hgc.instance().handleAddView(twoViewConfig.views[0]);
-
-    waitForTilesLoaded(hgc.instance(), done);
+    await new Promise((done) => waitForTilesLoaded(hgc.instance(), done));
   });
-  it('splits one of the views2', (done) => {
+  it('splits one of the views2', async () => {
     hgc.instance().handleAddView(twoViewConfig.views[0]);
-
-    waitForTilesLoaded(hgc.instance(), done);
+    await new Promise((done) => waitForTilesLoaded(hgc.instance(), done));
   });
-  it('splits one of the views3', (done) => {
+  it('splits one of the views3', async () => {
     hgc.instance().handleAddView(twoViewConfig.views[0]);
-
-    waitForTilesLoaded(hgc.instance(), done);
+    await new Promise((done) => waitForTilesLoaded(hgc.instance(), done));
   });
-  it('splits one of the views3', (done) => {
+  it('splits one of the views3', async () => {
     hgc.instance().handleAddView(twoViewConfig.views[0]);
-
-    waitForTilesLoaded(hgc.instance(), done);
+    await new Promise((done) => waitForTilesLoaded(hgc.instance(), done));
   });
-  it('splits one of the views3', (done) => {
+  it('splits one of the views3', async () => {
     hgc.instance().handleAddView(twoViewConfig.views[0]);
-
-    waitForTilesLoaded(hgc.instance(), done);
+    await new Promise((done) => waitForTilesLoaded(hgc.instance(), done));
   });
-  it('splits one of the views3', (done) => {
+  it('splits one of the views3', async () => {
     hgc.instance().handleAddView(twoViewConfig.views[0]);
-
-    waitForTilesLoaded(hgc.instance(), done);
+    await new Promise((done) => waitForTilesLoaded(hgc.instance(), done));
   });
-  it('splits one of the views3', (done) => {
+  it('splits one of the views3', async () => {
     hgc.instance().handleAddView(twoViewConfig.views[0]);
-
-    waitForTilesLoaded(hgc.instance(), done);
+    await new Promise((done) => waitForTilesLoaded(hgc.instance(), done));
   });
-  it('splits one of the views3', (done) => {
+  it('splits one of the views3', async () => {
     hgc.instance().handleAddView(twoViewConfig.views[0]);
-
-    waitForTilesLoaded(hgc.instance(), done);
+    await new Promise((done) => waitForTilesLoaded(hgc.instance(), done));
   });
-  it('splits one of the views3', (done) => {
+  it('splits one of the views3', async () => {
     hgc.instance().handleAddView(twoViewConfig.views[0]);
-
-    waitForTilesLoaded(hgc.instance(), done);
+    await new Promise((done) => waitForTilesLoaded(hgc.instance(), done));
   });
-  it('splits one of the views3', (done) => {
+  it('splits one of the views3', async () => {
     hgc.instance().handleAddView(twoViewConfig.views[0]);
-
-    waitForTilesLoaded(hgc.instance(), done);
+    await new Promise((done) => waitForTilesLoaded(hgc.instance(), done));
   });
-  // it('checks to make sure the colorbar is gone', (done) => {
-  //   //
-  //   const track = getTrackObjectFromHGC(hgc.instance(), 'aa', 'heatmap1');
-
-  //   expect(track.pColorbarArea.visible).to.equal(false);
-
-  //   waitForTilesLoaded(hgc.instance(), done);
-  // });
+  it('checks to make sure the colorbar is gone', async () => {
+    const track = getTrackObjectFromHGC(hgc.instance(), 'aa', 'heatmap1');
+    expect(track.pColorbarArea.visible).to.equal(false);
+    await new Promise((done) => waitForTilesLoaded(hgc.instance(), done));
+  });
 });
