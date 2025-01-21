@@ -1,8 +1,7 @@
 // @ts-nocheck
-
 import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
-import { expect } from 'chai';
 import Enzyme from 'enzyme';
+import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 
 import { simpleCenterViewConfig } from './view-configs';
 
@@ -18,7 +17,7 @@ describe('Add and remove viewconf', () => {
   let api = null;
 
   describe('API tests', () => {
-    before(() => {
+    beforeAll(() => {
       div = global.document.createElement('div');
       global.document.body.appendChild(div);
 
@@ -44,7 +43,7 @@ describe('Add and remove viewconf', () => {
       expect(newViewConf.trackSourceServers[0]).to.eql('http://blah');
     });
 
-    after(() => {
+    afterAll(() => {
       removeHGComponent(div);
     });
   });

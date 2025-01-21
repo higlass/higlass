@@ -1,5 +1,5 @@
-import { describe, beforeEach, it, expect } from 'vitest';
 import ndarray from 'ndarray';
+import { beforeEach, describe, expect, it } from 'vitest';
 
 import ndarrayAssign from '../app/scripts/utils/ndarray-assign';
 

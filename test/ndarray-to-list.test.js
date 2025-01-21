@@ -1,5 +1,5 @@
-import { describe, it, expect } from 'vitest';
 import ndarray from 'ndarray';
+import { describe, expect, it } from 'vitest';
 import ndarrayToList from '../app/scripts/utils/ndarray-to-list';
 
 describe('ndarrayToList()', () => {

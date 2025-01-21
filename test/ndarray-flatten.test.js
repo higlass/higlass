@@ -1,5 +1,5 @@
-import { describe, expect, it } from 'vitest';
 import ndarray from 'ndarray';
+import { describe, expect, it } from 'vitest';
 import ndarrayFlatten from '../app/scripts/utils/ndarray-flatten';
 
 describe('ndarrayFlatten()', () => {

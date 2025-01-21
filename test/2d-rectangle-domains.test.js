@@ -1,6 +1,7 @@
-import { describe, it, beforeAll, afterAll, expect } from 'vitest';
 import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
 import Enzyme from 'enzyme';
+// @ts-nocheck
+import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 
 // Utils
 import {
