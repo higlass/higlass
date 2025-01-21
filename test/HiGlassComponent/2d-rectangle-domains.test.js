@@ -1,11 +1,11 @@
 // @ts-nocheck
+import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 
 import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
-import { expect } from 'chai';
-import { configure } from 'enzyme';
+import Enzyme from 'enzyme';
 
 import {
-  mountHGComponent,
+  mountHGComponentAsync,
   removeHGComponent,
   waitForTilesLoaded,
 } from '../../app/scripts/test-helpers';
@@ -13,14 +13,14 @@ import { getTrackByUid, getTrackObjectFromHGC } from '../../app/scripts/utils';
 
 import { rectangleDomains } from '../view-configs';
 
-configure({ adapter: new Adapter() });
+Enzyme.configure({ adapter: new Adapter() });
 
 describe('2D Rectangle Annotations', () => {
   let hgc = null;
   let div = null;
 
-  before((done) => {
-    [div, hgc] = mountHGComponent(div, hgc, rectangleDomains, done, {
+  beforeAll(async () => {
+    [div, hgc] = await mountHGComponentAsync(div, hgc, rectangleDomains, {
       style: 'width:800px; height:400px; background-color: lightgreen',
       bounded: false,
     });
@@ -28,11 +28,11 @@ describe('2D Rectangle Annotations', () => {
     // to the left
   });
 
-  after(async () => {
+  afterAll(() => {
     removeHGComponent(div);
   });
 
-  it('Check to make sure that the rectangles are initially small', (done) => {
+  it('Check to make sure that the rectangles are initially small', async () => {
     let track = getTrackObjectFromHGC(hgc.instance(), 'aa', 'rectangles1');
 
     let hasSmaller = false;
@@ -50,14 +50,12 @@ describe('2D Rectangle Annotations', () => {
 
     track.options.minSquareSize = '8';
 
-    hgc.setState({
-      views,
-    });
+    hgc.setState({ views });
 
-    waitForTilesLoaded(hgc.instance(), done);
+    await new Promise((done) => waitForTilesLoaded(hgc.instance(), done));
   });
 
-  it('Make sure that the rectangles are large', (done) => {
+  it('Make sure that the rectangles are large', async () => {
     let track = getTrackObjectFromHGC(hgc.instance(), 'aa', 'rectangles1');
 
     let hasSmaller = false;
@@ -75,11 +73,8 @@ describe('2D Rectangle Annotations', () => {
 
     track.options.minSquareSize = '5';
 
-    hgc.setState({
-      views,
-    });
-
-    waitForTilesLoaded(hgc.instance(), done);
+    hgc.setState({ views });
+    await new Promise((done) => waitForTilesLoaded(hgc.instance(), done));
   });
 
   it('Exports to SVG', () => {
