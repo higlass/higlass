@@ -962,7 +962,7 @@ class TiledPlot extends React.Component {
 
         break;
 
-      case 'whole':
+      // case 'whole':
       default:
         width = this.leftWidth + this.centerWidth + this.rightWidth;
         height = this.topHeight + this.centerHeight + this.bottomHeight;

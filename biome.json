@@ -54,8 +54,7 @@
       },
       "complexity": {
         "noForEach": "off",
-        "noUselessThisAlias": "off",
-        "noUselessSwitchCase": "off"
+        "noUselessThisAlias": "off"
       },
       "performance": {
         "noDelete": "off"
