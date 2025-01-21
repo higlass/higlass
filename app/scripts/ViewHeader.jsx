@@ -243,8 +243,8 @@ class ViewHeader extends React.Component {
           {this.props.mouseTool === MOUSE_TOOL_SELECT && (
             <svg
               className={clsx(classes['mouse-tool-selection'], classNameIcon)}
-              title="Selection tool active"
             >
+              <title>Selection tool active</title>
               <use xlinkHref="#select" />
             </svg>
           )}

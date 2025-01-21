@@ -121,6 +121,7 @@ class HeatmapOptions extends React.Component {
                   height: 10,
                 }}
               >
+                <title>Remove</title>
                 <use xlinkHref="#cross" />
               </svg>
             </div>
@@ -192,6 +193,7 @@ class HeatmapOptions extends React.Component {
               }}
               width="10px"
             >
+              <title>Add</title>
               <use xlinkHref="#plus" />
             </svg>
           </div>

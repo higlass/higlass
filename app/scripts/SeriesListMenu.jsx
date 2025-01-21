@@ -420,6 +420,7 @@ export default class SeriesListMenu extends ContextMenuContainer {
         >
           Configure Series
           <svg className={classes['play-icon']}>
+            <title>Play</title>
             <use xlinkHref="#play" />
           </svg>
         </ContextMenuItem>
@@ -438,6 +439,7 @@ export default class SeriesListMenu extends ContextMenuContainer {
           <span className={classes['context-menu-span']}>
             Track Type
             <svg className={classes['play-icon']}>
+              <title>Play</title>
               <use xlinkHref="#play" />
             </svg>
           </span>

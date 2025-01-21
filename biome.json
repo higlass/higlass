@@ -21,7 +21,6 @@
     "rules": {
       "recommended": true,
       "a11y": {
-        "noSvgWithoutTitle": "off",
         "useKeyWithClickEvents": "off",
         "useSemanticElements": "off",
         "useAriaPropsForRole": "off"

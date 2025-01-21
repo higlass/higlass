@@ -66,6 +66,7 @@ class NestedContextMenu extends ContextMenuContainer {
           {menuItem.name}
           {menuItem.children && (
             <svg className={classes['play-icon']}>
+              <title>Play</title>
               <use xlinkHref="#play" />
             </svg>
           )}

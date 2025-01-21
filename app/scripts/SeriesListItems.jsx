@@ -95,6 +95,7 @@ export const getSeriesItems = (
             : x.type}
           {onItemMouseEnter && onItemMouseLeave ? (
             <svg className={classes['play-icon']}>
+              <title>Play</title>
               <use xlinkHref="#play" />
             </svg>
           ) : null}

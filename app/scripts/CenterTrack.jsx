@@ -488,6 +488,7 @@ class CenterTrack extends React.Component {
             }}
             xmlns="http://www.w3.org/2000/svg"
           >
+            <title>Range Selection Brush</title>
             <g
               ref={(el) => {
                 this.brushElX = select(el);
