@@ -1,11 +1,11 @@
 // @ts-nocheck
+import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 
 import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
-import { expect } from 'chai';
 import Enzyme from 'enzyme';
 
 import {
-  mountHGComponent,
+  mountHGComponentAsync,
   removeHGComponent,
   waitForTilesLoaded,
 } from '../../app/scripts/test-helpers';
@@ -18,8 +18,8 @@ describe('Close view', () => {
   let hgc = null;
   let div = null;
 
-  before((done) => {
-    [div, hgc] = mountHGComponent(div, hgc, twoViewConfig, done, {
+  beforeAll(async () => {
+    [div, hgc] = await mountHGComponentAsync(div, hgc, twoViewConfig, {
       style: 'width:800px; height:400px; background-color: lightgreen',
       bounded: true,
     });
@@ -27,20 +27,14 @@ describe('Close view', () => {
     // to the left
   });
 
-  after(async () => {
+  afterAll(() => {
     removeHGComponent(div);
   });
 
-  it('Ensures that when a view is closed, the PIXI graphics are removed', (done) => {
+  it('Ensures that when a view is closed, the PIXI graphics are removed', async () => {
     hgc.instance().handleCloseView('view2');
-
-    // console.log('hgc.instance:', hgc.instance().pixiStage.children);
-    // hgc.setState(hgc.instance().state);
-
-    // console.log('checking...', hgc.instance().pixiStage.children);
     // since we removed one of the children, there should be only one left
     expect(hgc.instance().pixiStage.children.length).to.equal(1);
-
-    waitForTilesLoaded(hgc.instance(), done);
+    await new Promise((done) => waitForTilesLoaded(hgc.instance(), done));
   });
 });
