@@ -43,8 +43,7 @@
           "level": "error",
           "options": { "allow": ["warn", "error"] }
         },
-        "noPrototypeBuiltins": "off",
-        "noEmptyBlock": "off"
+        "noPrototypeBuiltins": "off"
       },
       "complexity": {
         "noForEach": "off"

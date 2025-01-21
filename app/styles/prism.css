@@ -45,6 +45,7 @@ pre[class*="language-"] {
 }
 
 :not(pre) > code[class*="language-"],
+/* biome-ignore lint/suspicious/noEmptyBlock: vendored */
 pre[class*="language-"] {
 }
 
