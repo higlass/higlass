@@ -1,54 +1,33 @@
 // @ts-nocheck
-
-import { configure } from 'enzyme';
+import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 
 import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
-
-import { expect } from 'chai';
+import Enzyme from 'enzyme';
 
 // Utils
 import {
-  mountHGComponent,
+  mountHGComponentAsync,
   removeHGComponent,
 } from '../app/scripts/test-helpers';
 
-const baseConf = {
-  views: [
-    {
-      tracks: {
-        center: [
-          {
-            type: 'combined',
-            contents: [
-              {
-                server: '//higlass.io/api/v1',
-                tilesetUid: 'CQMd6V_cRw6iCI_-Unl3PQ',
-                type: 'heatmap',
-                options: {
-                  colorRange: ['white', 'black'],
-                },
-              },
-            ],
-          },
-        ],
-      },
-    },
-  ],
-};
-
-configure({ adapter: new Adapter() });
+Enzyme.configure({ adapter: new Adapter() });
 
 describe('SVG Export', () => {
   describe('color bars 0-1 log', () => {
     let hgc = null;
     let div = null;
-    before((done) => {
+
+    beforeAll(async () => {
       const viewConf = JSON.parse(JSON.stringify(baseConf));
       const options = viewConf.views[0].tracks.center[0].contents[0].options;
       options.scaleStartPercent = 0;
       options.scaleEndPercent = 1;
       options.heatmapValueScaling = 'log';
-      [div, hgc] = mountHGComponent(div, hgc, viewConf, done);
+      [div, hgc] = await mountHGComponentAsync(div, hgc, viewConf);
+    });
+
+    afterAll(() => {
+      removeHGComponent(div);
     });
 
     it('scales correctly', () => {
@@ -64,22 +43,22 @@ describe('SVG Export', () => {
         'fill: rgb(255, 255, 255)',
       );
     });
-
-    after(() => {
-      removeHGComponent(div);
-    });
   });
 
   describe('color bars 0.5-1 log', () => {
     let hgc = null;
     let div = null;
-    before((done) => {
+    beforeAll(async () => {
       const viewConf = JSON.parse(JSON.stringify(baseConf));
       const options = viewConf.views[0].tracks.center[0].contents[0].options;
       options.scaleStartPercent = 0.5;
       options.scaleEndPercent = 1;
       options.heatmapValueScaling = 'log';
-      [div, hgc] = mountHGComponent(div, hgc, viewConf, done);
+      [div, hgc] = await mountHGComponentAsync(div, hgc, viewConf);
+    });
+
+    afterAll(() => {
+      removeHGComponent(div);
     });
 
     it('scales correctly', () => {
@@ -94,10 +73,6 @@ describe('SVG Export', () => {
       expect(rects[255].getAttribute('style')).to.equal(
         'fill: rgb(255, 255, 255)',
       );
-    });
-
-    after(() => {
-      removeHGComponent(div);
     });
   });
 
@@ -156,13 +131,17 @@ describe('SVG Export', () => {
       ],
     };
 
-    before((done) => {
+    beforeAll(async () => {
       const viewConf = JSON.parse(JSON.stringify(addedRulesConf));
       const options = viewConf.views[0].tracks.center[0].contents[0].options;
       options.scaleStartPercent = 0;
       options.scaleEndPercent = 1;
       options.heatmapValueScaling = 'log';
-      [div, hgc] = mountHGComponent(div, hgc, viewConf, done);
+      [div, hgc] = await mountHGComponentAsync(div, hgc, viewConf);
+    });
+
+    afterAll(() => {
+      removeHGComponent(div);
     });
 
     it('includes line for added vertical rule', () => {
@@ -197,9 +176,29 @@ describe('SVG Export', () => {
       expect(Number(line[1].getAttribute('x2'))).to.be.greaterThan(0);
       expect(Number(line[1].getAttribute('y1'))).to.equal(307.2001108175058);
     });
-
-    after(() => {
-      removeHGComponent(div);
-    });
   });
 });
+
+const baseConf = {
+  views: [
+    {
+      tracks: {
+        center: [
+          {
+            type: 'combined',
+            contents: [
+              {
+                server: '//higlass.io/api/v1',
+                tilesetUid: 'CQMd6V_cRw6iCI_-Unl3PQ',
+                type: 'heatmap',
+                options: {
+                  colorRange: ['white', 'black'],
+                },
+              },
+            ],
+          },
+        ],
+      },
+    },
+  ],
+};
