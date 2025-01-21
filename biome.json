@@ -32,8 +32,7 @@
         "noConsole": {
           "level": "error",
           "options": { "allow": ["warn", "error"] }
-        },
-        "noPrototypeBuiltins": "off"
+        }
       },
       "complexity": {
         "noForEach": "off"

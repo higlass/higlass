@@ -1392,7 +1392,7 @@ class HiGlassComponent extends React.Component {
    *    Event handler is called with parameters (xScale, yScale)
    */
   addDraggingChangedListener(viewUid, listenerUid, eventHandler) {
-    if (!this.draggingChangedListeners.hasOwnProperty(viewUid)) {
+    if (!(viewUid in this.draggingChangedListeners)) {
       this.draggingChangedListeners[viewUid] = {};
     }
 
@@ -1409,10 +1409,10 @@ class HiGlassComponent extends React.Component {
    * @param listenerUid: The uid of the listener itself.
    */
   removeDraggingChangedListener(viewUid, listenerUid) {
-    if (this.draggingChangedListeners.hasOwnProperty(viewUid)) {
+    if (viewUid in this.draggingChangedListeners) {
       const listeners = this.draggingChangedListeners[viewUid];
 
-      if (listeners.hasOwnProperty(listenerUid)) {
+      if (listenerUid in listeners) {
         // make sure the listener doesn't think we're still
         // dragging
         listeners[listenerUid](false);
@@ -1653,7 +1653,7 @@ class HiGlassComponent extends React.Component {
 
         // notify the listeners of all locked views that the scales of
         // this view have changed
-        if (this.scalesChangedListeners.hasOwnProperty(key)) {
+        if (key in this.scalesChangedListeners) {
           dictValues(this.scalesChangedListeners[key]).forEach((x) => {
             x(newXScale, newYScale);
           });
@@ -1715,7 +1715,7 @@ class HiGlassComponent extends React.Component {
 
         // notify the listeners of all locked views that the scales of
         // this view have changed
-        if (this.scalesChangedListeners.hasOwnProperty(key)) {
+        if (key in this.scalesChangedListeners) {
           dictValues(this.scalesChangedListeners[key]).forEach((x) => {
             x(newXScale, newYScale);
           });
@@ -1778,7 +1778,7 @@ class HiGlassComponent extends React.Component {
 
         // notify the listeners of all locked views that the scales of
         // this view have changed
-        if (this.scalesChangedListeners.hasOwnProperty(key)) {
+        if (key in this.scalesChangedListeners) {
           dictValues(this.scalesChangedListeners[key]).forEach((x) => {
             x(newXScale, newYScale);
           });
@@ -1841,7 +1841,7 @@ class HiGlassComponent extends React.Component {
 
         // notify the listeners of all locked views that the scales of
         // this view have changed
-        if (this.scalesChangedListeners.hasOwnProperty(key)) {
+        if (key in this.scalesChangedListeners) {
           dictValues(this.scalesChangedListeners[key]).forEach((x) => {
             x(newXScale, newYScale);
           });
@@ -4022,7 +4022,7 @@ class HiGlassComponent extends React.Component {
         'right',
         'bottom',
       ]) {
-        if (v.tracks?.hasOwnProperty(trackOrientation)) {
+        if (trackOrientation in (v.tracks ?? {})) {
           // filter out invalid tracks
           v.tracks[trackOrientation] = v.tracks[trackOrientation].filter((t) =>
             this.isTrackValid(t, viewUidsSet),

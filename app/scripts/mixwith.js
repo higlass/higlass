@@ -76,6 +76,7 @@ export const apply = (superclass, mixin) => {
  * `mixin` to a superclass
  */
 export const isApplicationOf = (proto, mixin) =>
+  // biome-ignore lint/suspicious/noPrototypeBuiltins:
   proto.hasOwnProperty(_appliedMixin) && proto[_appliedMixin] === unwrap(mixin);
 
 /**
