@@ -26,7 +26,6 @@
         "useAriaPropsForRole": "off"
       },
       "correctness": {
-        "noChildrenProp": "off",
         "noUnknownProperty": "off",
         "noUnnecessaryContinue": "off"
       },

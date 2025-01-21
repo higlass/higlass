@@ -291,7 +291,8 @@ class TiledPlot extends React.Component {
 
         this.props.modal.open(
           <CustomTrackDialog
-            children={componentArray} // eslint-disable-line react/no-children-prop
+            // biome-ignore lint/correctness/noChildrenProp:
+            children={componentArray}
             bodyProps={bodyPropsArray}
             onCancel={this.props.closeCustomDialog}
             title={dialogData[0].title}
