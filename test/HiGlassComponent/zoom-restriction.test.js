@@ -1,11 +1,11 @@
 // @ts-nocheck
+import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 
 import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
-import { expect } from 'chai';
 import Enzyme from 'enzyme';
 
 import {
-  mountHGComponent,
+  mountHGComponentAsync,
   removeHGComponent,
   waitForTransitionsFinished,
 } from '../../app/scripts/test-helpers';
@@ -18,27 +18,24 @@ describe('Zoom restriction', () => {
   let hgc = null;
   let div = null;
 
-  before((done) => {
-    [div, hgc] = mountHGComponent(div, hgc, restrictedZoom, done, {
+  beforeAll(async () => {
+    [div, hgc] = await mountHGComponentAsync(div, hgc, restrictedZoom, {
       style: 'width:800px; height:400px; background-color: lightgreen',
       bounded: true,
     });
-    // visual check that the heatmap track config menu is moved
-    // to the left
   });
 
-  after(async () => {
+  afterAll(() => {
     removeHGComponent(div);
   });
 
-  it('Has the corrent limits', (done) => {
+  it('Has the corrent limits', () => {
     const zoomLimits = hgc.instance().tiledPlots.aa.props.zoomLimits;
     expect(zoomLimits[0]).to.equal(0.002);
     expect(zoomLimits[1]).to.equal(2);
-    done();
   });
 
-  it('Zooms in and respects zoom limit', (done) => {
+  it('Zooms in and respects zoom limit', async () => {
     // Create a wheel event that zooms in beying the zoom limit
     const evt = new WheelEvent('wheel', {
       deltaX: 0,
@@ -56,12 +53,12 @@ describe('Zoom restriction', () => {
 
     hgc.instance().tiledPlots.aa.trackRenderer.element.dispatchEvent(evt);
 
-    waitForTransitionsFinished(hgc.instance(), () => {
-      // Make sure, it does not zoom too far
-      const k = hgc.instance().tiledPlots.aa.trackRenderer.zoomTransform.k;
-      expect(k).to.equal(2);
+    await new Promise((done) =>
+      waitForTransitionsFinished(hgc.instance(), done),
+    );
 
-      done();
-    });
+    // Make sure, it does not zoom too far
+    const k = hgc.instance().tiledPlots.aa.trackRenderer.zoomTransform.k;
+    expect(k).to.equal(2);
   });
 });
