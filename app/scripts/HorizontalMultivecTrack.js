@@ -417,7 +417,8 @@ export default class HorizontalMultivecTrack extends HeatmapTiledPixiTrack {
     ) {
       const visibleData = this.getVisibleData(trackX, trackY);
       const elements = visibleData.split('<br/>');
-      const color = this.options.colorRange[parseInt(elements[0], 10) - 1];
+      const color =
+        this.options.colorRange[Number.parseInt(elements[0], 10) - 1];
       const label = elements[1];
       if (
         Number.isNaN(color) ||

@@ -1008,7 +1008,7 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
       Math.ceil((limitedYDomain[1] - limitedYDomain[0]) / tileRes),
     );
 
-    const out = ndarray(new Array(binHeight * binWidth).fill(NaN), [
+    const out = ndarray(new Array(binHeight * binWidth).fill(Number.NaN), [
       binHeight,
       binWidth,
     ]);
@@ -1221,7 +1221,7 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
         // it with nan values
         const newArray = new Float32Array(this.tilesetInfo.tile_size);
 
-        newArray.fill(NaN);
+        newArray.fill(Number.NaN);
         newArray.set(tile.tileData.dense);
 
         tile.tileData.dense = newArray;

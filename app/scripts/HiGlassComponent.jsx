@@ -292,7 +292,7 @@ class HiGlassComponent extends React.Component {
       mouseOverOverlayUid: null,
       mouseTool,
       isDarkTheme: false,
-      rangeSelection1dSize: [0, Infinity],
+      rangeSelection1dSize: [0, Number.POSITIVE_INFINITY],
       rangeSelectionToInt: false,
       modal: null,
     };
@@ -514,7 +514,7 @@ class HiGlassComponent extends React.Component {
       autoResize: true,
     };
 
-    const versionNumber = parseInt(PIXI.VERSION[0], 10);
+    const versionNumber = Number.parseInt(PIXI.VERSION[0], 10);
 
     if (versionNumber === 4) {
       console.warn(
@@ -1229,14 +1229,16 @@ class HiGlassComponent extends React.Component {
 
     if (
       minValues.length === 0 ||
-      minValues.filter((x) => x === null || x === Infinity).length > 0
+      minValues.filter((x) => x === null || x === Number.POSITIVE_INFINITY)
+        .length > 0
     ) {
       return null; // Data hasn't loaded completely
     }
 
     if (
       maxValues.length === 0 ||
-      maxValues.filter((x) => x === null || x === -Infinity).length > 0
+      maxValues.filter((x) => x === null || x === Number.NEGATIVE_INFINITY)
+        .length > 0
     ) {
       return null; // Data hasn't loaded completely
     }
@@ -2530,7 +2532,7 @@ class HiGlassComponent extends React.Component {
   }
 
   calculateZoomLimits(view, initialXDomain) {
-    const limits = [0, Infinity];
+    const limits = [0, Number.POSITIVE_INFINITY];
 
     // By default, highest zoom resolution is 1bp
     const viewConfLimit = view.zoomLimits || [1, null];
@@ -4350,7 +4352,10 @@ class HiGlassComponent extends React.Component {
             (listenerId) => listenerId.indexOf(LOCATION_LISTENER_PREFIX) === 0,
           )
           .map((listenerId) =>
-            parseInt(listenerId.slice(LOCATION_LISTENER_PREFIX.length + 1), 10),
+            Number.parseInt(
+              listenerId.slice(LOCATION_LISTENER_PREFIX.length + 1),
+              10,
+            ),
           )
           .reduce((max, value) => Math.max(max, value), 0) + 1;
     }

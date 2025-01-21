@@ -573,7 +573,7 @@ export const tileDataToPixData = (
     if (ignoreLowerLeft) {
       for (let row = 0; row < tileWidth; row++) {
         for (let col = 0; col < row; col++) {
-          tile.tileData.dense[row * tileWidth + col] = NaN;
+          tile.tileData.dense[row * tileWidth + col] = Number.NaN;
         }
       }
     }

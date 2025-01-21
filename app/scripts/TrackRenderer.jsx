@@ -777,7 +777,8 @@ class TrackRenderer extends React.Component {
   ) {
     // Make sure the initial domain is within the limits first
     zoomLimits[0] = zoomLimits[0] === null ? 0 : zoomLimits[0];
-    zoomLimits[1] = zoomLimits[1] === null ? Infinity : zoomLimits[1];
+    zoomLimits[1] =
+      zoomLimits[1] === null ? Number.POSITIVE_INFINITY : zoomLimits[1];
 
     // make sure the two scales are equally wide:
     const xWidth = initialXDomain[1] - initialXDomain[0];

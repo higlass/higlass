@@ -36,7 +36,6 @@
       "style": {
         "noArguments": "off",
         "noParameterAssign": "off",
-        "useNumberNamespace": "off",
         "useShorthandFunctionType": "off"
       },
       "suspicious": {

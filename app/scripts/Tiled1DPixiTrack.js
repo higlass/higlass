@@ -293,7 +293,10 @@ class Tiled1DPixiTrack extends TiledPixiTrack {
    */
   getAggregatedVisibleValue(aggregator = 'max') {
     const aggregate = aggregator === 'min' ? Math.min : Math.max;
-    const limit = aggregator === 'min' ? Infinity : -Infinity;
+    const limit =
+      aggregator === 'min'
+        ? Number.POSITIVE_INFINITY
+        : Number.NEGATIVE_INFINITY;
 
     let visibleAndFetchedIds = this.visibleAndFetchedIds();
 

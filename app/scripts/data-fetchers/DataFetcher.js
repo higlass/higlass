@@ -325,7 +325,7 @@ export default class DataFetcher {
     const result = new Float32Array(numeratorData.length);
 
     for (let i = 0; i < result.length; i++) {
-      if (denominatorData[i] === 0.0) result[i] = NaN;
+      if (denominatorData[i] === 0.0) result[i] = Number.NaN;
       else result[i] = numeratorData[i] / denominatorData[i];
     }
 

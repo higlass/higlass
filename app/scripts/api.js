@@ -193,7 +193,7 @@ const createApi = function api(context, pubSub) {
        * hgv.activateTool('select'); // Activate select tool
        * hgv.setRangeSelection1dSize(5000, 10000); // Force selections to be between 5 and 10 Kb
        */
-      setRangeSelection1dSize(minSize = 0, maxSize = Infinity) {
+      setRangeSelection1dSize(minSize = 0, maxSize = Number.POSITIVE_INFINITY) {
         self.setState({
           rangeSelection1dSize: [minSize, maxSize],
         });

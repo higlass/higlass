@@ -217,9 +217,9 @@ class Autocomplete extends React.Component {
     const node = this.inputEl;
     const rect = node.getBoundingClientRect();
     const computedStyle = global.window.getComputedStyle(node);
-    const marginBottom = parseInt(computedStyle.marginBottom, 10) || 0;
-    const marginLeft = parseInt(computedStyle.marginLeft, 10) || 0;
-    const marginRight = parseInt(computedStyle.marginRight, 10) || 0;
+    const marginBottom = Number.parseInt(computedStyle.marginBottom, 10) || 0;
+    const marginLeft = Number.parseInt(computedStyle.marginLeft, 10) || 0;
+    const marginRight = Number.parseInt(computedStyle.marginRight, 10) || 0;
     this.setState({
       menuTop: rect.bottom + marginBottom,
       menuLeft: rect.left + marginLeft,

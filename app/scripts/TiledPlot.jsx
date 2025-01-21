@@ -1413,8 +1413,8 @@ class TiledPlot extends React.Component {
     if (!scale) return [null, null];
 
     return [
-      parseInt(scale.invert(range[0]), 10),
-      parseInt(scale.invert(range[1]), 10),
+      Number.parseInt(scale.invert(range[0]), 10),
+      Number.parseInt(scale.invert(range[1]), 10),
     ];
   }
 
