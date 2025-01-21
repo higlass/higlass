@@ -1,5 +1,4 @@
 // @ts-nocheck
-/* eslint-disable max-classes-per-file */
 
 // used by apply() and isApplicationOf()
 const _appliedMixin = '__mixwith_appliedMixin';

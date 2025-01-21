@@ -1,5 +1,5 @@
 // @ts-nocheck
-/* eslint-env mocha */
+
 import { expect } from 'chai';
 import ndarray from 'ndarray';
 import ndarrayAssign from '../app/scripts/utils/ndarray-assign';

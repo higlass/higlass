@@ -55,8 +55,8 @@ fetchTilesPool.run(function(params, done) {
 */
 
 const sessionId = import.meta.env.DEV ? 'dev' : slugid.nice();
-export let requestsInFlight = 0; // eslint-disable-line import/no-mutable-exports
-export let authHeader = null; // eslint-disable-line import/no-mutable-exports
+export let requestsInFlight = 0;
+export let authHeader = null;
 
 const throttleAndDebounce = (func, interval, finalWait) => {
   let timeout;
@@ -210,8 +210,6 @@ export function fetchMultiRequestTiles(req, pubSub) {
       const renderParams = theseTileIds.map((x) => `d=${x}`).join('&');
       const outUrl = `${server}/tiles/?${renderParams}&s=${sessionId}`;
 
-      /* eslint-disable no-loop-func */
-      /* eslint-disable no-unused-vars */
       const p = new Promise((resolve, reject) => {
         pubSub.publish('requestSent', outUrl);
         const params = {};
@@ -486,7 +484,7 @@ export const calculateTilesFromResolution = (
   // console.log('PIXELS_PER_TILE:', PIXELS_PER_TILE);
 
   if (!maxX) {
-    maxX = Number.MAX_VALUE; // eslint-disable-line no-param-reassign
+    maxX = Number.MAX_VALUE;
   }
 
   const lowerBound = Math.max(
@@ -709,7 +707,6 @@ export const trackInfo = (server, tilesetUid, doneCb, errorCb, pubSub) => {
   json(
     url,
     (error, data) => {
-      // eslint-disable-line
       pubSub.publish('requestReceived', url);
       if (error) {
         // console.log('error:', error);

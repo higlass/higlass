@@ -1,5 +1,3 @@
-/* eslint-disable */
-
 import type { THEME_DARK, THEME_LIGHT } from './configs';
 
 export type Scale = import('d3-scale').ScaleContinuousNumeric<number, number>;

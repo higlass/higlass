@@ -6,9 +6,9 @@ import clsx from 'clsx';
 import TrackControl from './TrackControl';
 
 // Styles
-import styles from '../styles/GalleryTracks.module.scss'; // eslint-disable-line no-unused-vars
-import stylesPlot from '../styles/TiledPlot.module.scss'; // eslint-disable-line no-unused-vars
-import stylesTrack from '../styles/Track.module.scss'; // eslint-disable-line no-unused-vars
+import styles from '../styles/GalleryTracks.module.scss';
+import stylesPlot from '../styles/TiledPlot.module.scss';
+import stylesTrack from '../styles/Track.module.scss';
 
 const STYLES = {
   pointerEvents: 'all',

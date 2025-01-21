@@ -15,9 +15,9 @@ import SortableList from './SortableList';
 import { or, resetD3BrushStyle, sum, IS_TRACK_RANGE_SELECTABLE } from './utils';
 
 // Styles
-import styles from '../styles/VerticalTiledPlot.module.scss'; // eslint-disable-line no-unused-vars
-import stylesPlot from '../styles/TiledPlot.module.scss'; // eslint-disable-line no-unused-vars
-import stylesTrack from '../styles/Track.module.scss'; // eslint-disable-line no-unused-vars
+import styles from '../styles/VerticalTiledPlot.module.scss';
+import stylesPlot from '../styles/TiledPlot.module.scss';
+import stylesTrack from '../styles/Track.module.scss';
 
 function sourceEvent(event) {
   return event?.sourceEvent;

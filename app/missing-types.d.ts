@@ -1,4 +1,3 @@
-/* eslint-disable */
 // https://www.npmjs.com/package/pub-sub-es
 declare module 'pub-sub-es' {
   // biome-ignore lint/suspicious/noExplicitAny: Inherited API

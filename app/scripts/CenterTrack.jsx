@@ -11,8 +11,8 @@ import TrackControl from './TrackControl';
 import { or, resetD3BrushStyle, IS_TRACK_RANGE_SELECTABLE } from './utils';
 
 // Styles
-import styles from '../styles/CenterTrack.module.scss'; // eslint-disable-line no-unused-vars
-import stylesTrack from '../styles/Track.module.scss'; // eslint-disable-line no-unused-vars
+import styles from '../styles/CenterTrack.module.scss';
+import stylesTrack from '../styles/Track.module.scss';
 
 const STYLES = {
   pointerEvents: 'all',

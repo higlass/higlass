@@ -1,5 +1,5 @@
 // @ts-nocheck
-/* eslint-env mocha */
+
 import Enzyme from 'enzyme';
 import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
 import { expect } from 'chai';
@@ -56,7 +56,6 @@ describe('Double view', () => {
 
     hgc.instance().setState({ views });
 
-    // eslint-disable-next-line react/no-find-dom-node
     const selection = select(ReactDOM.findDOMNode(hgc.instance())).selectAll(
       '.selection',
     );

@@ -1,5 +1,5 @@
 // @ts-nocheck
-/* eslint-env mocha */
+
 import Enzyme from 'enzyme';
 import { expect } from 'chai';
 import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
@@ -100,9 +100,8 @@ describe('Label test', () => {
       const track5 = getTrackObjectFromHGC(hg, 'aa', 'bar5');
       const track6 = getTrackObjectFromHGC(hg, 'aa', 'bar6');
 
-      // eslint-disable-next-line no-unused-expressions
       expect(track5.labelText.text.startsWith('hg19 | ')).to.be.true;
-      // eslint-disable-next-line no-unused-expressions
+
       expect(track6.labelText.text.startsWith('hg19 | ')).to.be.false;
     });
 

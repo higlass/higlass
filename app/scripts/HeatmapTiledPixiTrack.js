@@ -493,10 +493,10 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
     // Fritz: I am disabling ESLint here twice because moving the slash onto the
     // next line breaks my editors style template somehow.
     const startPercent =
-      (startDomain - axisValueScale.domain()[0]) / // eslint-disable-line operator-linebreak
+      (startDomain - axisValueScale.domain()[0]) /
       (axisValueScale.domain()[1] - axisValueScale.domain()[0]);
     const endPercent =
-      (endDomain - axisValueScale.domain()[0]) / // eslint-disable-line operator-linebreak
+      (endDomain - axisValueScale.domain()[0]) /
       (axisValueScale.domain()[1] - axisValueScale.domain()[0]);
 
     newOptions.scaleStartPercent = startPercent.toFixed(SCALE_LIMIT_PRECISION);

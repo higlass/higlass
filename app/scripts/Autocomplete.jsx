@@ -1,5 +1,5 @@
 // @ts-nocheck
-/* eslint-disable react/jsx-props-no-spreading */
+
 import React from 'react';
 import { findDOMNode } from 'react-dom';
 import scrollIntoView from 'dom-scroll-into-view';
@@ -102,14 +102,12 @@ class Autocomplete extends React.Component {
     };
   }
 
-  // eslint-disable-next-line camelcase
   UNSAFE_componentWillMount() {
     this._ignoreBlur = false;
     this._performAutoCompleteOnUpdate = false;
     this._performAutoCompleteOnKeyUp = false;
   }
 
-  // eslint-disable-next-line camelcase
   UNSAFE_componentWillReceiveProps(nextProps) {
     this._performAutoCompleteOnUpdate = true;
     // If `items` has changed we want to reset `highlightedIndex`
@@ -143,9 +141,8 @@ class Autocomplete extends React.Component {
 
   maybeScrollItemIntoView() {
     if (this.state.isOpen === true && this.state.highlightedIndex !== null) {
-      // eslint-disable-next-line react/no-string-refs
       const itemNode = this.refs[`item-${this.state.highlightedIndex}`];
-      // eslint-disable-next-line react/no-string-refs
+
       const menuNode = this.refs.menu;
       if (itemNode) {
         scrollIntoView(findDOMNode(itemNode), findDOMNode(menuNode), {
@@ -403,11 +400,7 @@ Autocomplete.defaultProps = {
   onChange() {},
   onSelect() {},
   renderMenu(items, value, style) {
-    return (
-      /* eslint-disable react/no-this-in-sfc */
-      <div style={{ ...style, ...this.menuStyle }}>{items}</div>
-      /* eslint-enable react/no-this-in-sfc */
-    );
+    return <div style={{ ...style, ...this.menuStyle }}>{items}</div>;
   },
   shouldItemRender() {
     return true;

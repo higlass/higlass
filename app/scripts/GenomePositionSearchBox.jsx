@@ -24,7 +24,7 @@ import { SearchIcon } from './icons';
 import { THEME_DARK, ZOOM_TRANSITION_DURATION } from './configs';
 
 // Styles
-import styles from '../styles/GenomePositionSearchBox.module.scss'; // eslint-disable-line no-unused-vars
+import styles from '../styles/GenomePositionSearchBox.module.scss';
 
 class GenomePositionSearchBox extends React.Component {
   constructor(props) {

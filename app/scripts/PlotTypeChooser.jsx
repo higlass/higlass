@@ -32,7 +32,6 @@ class PlotTypeChooser extends React.Component {
     };
   }
 
-  // eslint-disable-next-line camelcase
   UNSAFE_componentWillReceiveProps(newProps) {
     this.AVAILABLE_TRACK_TYPES = AVAILABLE_TRACK_TYPES(
       newProps.datatypes,

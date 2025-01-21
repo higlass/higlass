@@ -1,5 +1,5 @@
 // @ts-nocheck
-/* eslint-env mocha */
+
 import { spyOn } from 'tinyspy';
 import { expect } from 'chai';
 
@@ -20,7 +20,6 @@ describe('Context menu tests', () => {
   });
 
   it('Tries to open a context menu', (done) => {
-    // eslint-disable-next-line no-unused-vars
     const contextmenu = new MouseEvent('contextmenu', {
       clientX: 348,
       clientY: 315,

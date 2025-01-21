@@ -16,7 +16,6 @@ const getDataFetcher = (
   // Check if a plugin data fetcher is available.
   const pluginDataFetcher = pluginDataFetchers[dataConfig.type];
   if (pluginDataFetcher) {
-    // eslint-disable-next-line new-cap
     return new pluginDataFetcher.dataFetcher(
       availableForPlugins,
       dataConfig,

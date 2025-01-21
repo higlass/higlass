@@ -420,7 +420,6 @@ class TrackRenderer extends React.Component {
     return this._yScale;
   }
 
-  // eslint-disable-next-line camelcase
   UNSAFE_componentWillMount() {
     this.pubSubs = [];
     this.pubSubs.push(
@@ -507,7 +506,6 @@ class TrackRenderer extends React.Component {
       .scaleExtent(this.zoomLimits);
   }
 
-  // eslint-disable-next-line camelcase
   /** @param {TrackRendererProps} nextProps */
   UNSAFE_componentWillReceiveProps(nextProps) {
     /**
@@ -1737,7 +1735,7 @@ class TrackRenderer extends React.Component {
             definition: track,
           };
           try {
-            return new pluginTrack.track( // eslint-disable-line new-cap
+            return new pluginTrack.track(
               this.availableForPlugins,
               context,
               track.options,
@@ -2089,7 +2087,7 @@ class TrackRenderer extends React.Component {
           }
 
           try {
-            return new pluginTrack.track( // eslint-disable-line new-cap
+            return new pluginTrack.track(
               this.availableForPlugins,
               context,
               track.options,

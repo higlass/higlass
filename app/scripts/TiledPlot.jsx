@@ -47,8 +47,8 @@ import {
 } from './configs';
 
 // Styles
-import styles from '../styles/TiledPlot.module.scss'; // eslint-disable-line no-unused-vars
-import stylesCenterTrack from '../styles/CenterTrack.module.scss'; // eslint-disable-line no-unused-vars
+import styles from '../styles/TiledPlot.module.scss';
+import stylesCenterTrack from '../styles/CenterTrack.module.scss';
 
 class TiledPlot extends React.Component {
   constructor(props) {
@@ -207,7 +207,6 @@ class TiledPlot extends React.Component {
     );
   }
 
-  // eslint-disable-next-line camelcase
   UNSAFE_componentWillReceiveProps(newProps) {
     this.addUidsToTracks(newProps.tracks);
 
@@ -251,7 +250,6 @@ class TiledPlot extends React.Component {
     return toUpdate;
   }
 
-  // eslint-disable-next-line camelcase
   UNSAFE_componentWillUpdate() {
     /**
      * Need to determine the offset of this element relative to the canvas on which stuff

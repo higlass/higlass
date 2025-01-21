@@ -1,5 +1,5 @@
 // @ts-nocheck
-/* eslint-env mocha */
+
 import { globalPubSub } from 'pub-sub-es';
 import { select, create } from 'd3-selection';
 import { expect } from 'chai';

@@ -81,10 +81,10 @@ import {
 } from './configs';
 
 // Styles
-import styles from '../styles/HiGlass.module.scss'; // eslint-disable-line no-unused-vars
-import stylesMTHeader from '../styles/ViewHeader.module.scss'; // eslint-disable-line no-unused-vars
+import styles from '../styles/HiGlass.module.scss';
+import stylesMTHeader from '../styles/ViewHeader.module.scss';
 
-import '../styles/HiGlass.scss'; // eslint-disable-line no-unused-vars
+import '../styles/HiGlass.scss';
 
 const NUM_GRID_COLUMNS = 12;
 const DEFAULT_NEW_VIEW_HEIGHT = 12;
@@ -370,7 +370,6 @@ class HiGlassComponent extends React.Component {
     );
   }
 
-  // eslint-disable-next-line camelcase
   UNSAFE_componentWillMount() {
     this.domEvent.register('keydown', document);
     this.domEvent.register('keyup', document);
@@ -422,7 +421,6 @@ class HiGlassComponent extends React.Component {
   }
 
   get sizeMode() {
-    // eslint-disable-next-line no-nested-ternary
     return typeof this.props.options.sizeMode === 'undefined'
       ? this.props.options.bounded
         ? 'bounded'
@@ -545,7 +543,7 @@ class HiGlassComponent extends React.Component {
 
     // keep track of the width and height of this element, because it
     // needs to be reflected in the size of our drawing surface
-    // eslint-disable-next-line react/no-did-mount-set-state
+
     this.setState({
       svgElement: this.svgElement,
       canvasElement: this.canvasElement,
@@ -623,7 +621,6 @@ class HiGlassComponent extends React.Component {
     return views;
   }
 
-  // eslint-disable-next-line camelcase
   UNSAFE_componentWillReceiveProps(newProps) {
     const viewsByUid = this.loadIfRemoteViewConfig(newProps.viewConfig);
 
@@ -655,7 +652,6 @@ class HiGlassComponent extends React.Component {
     });
   }
 
-  // eslint-disable-next-line camelcase
   UNSAFE_componentWillUpdate() {
     // let width = this.element.clientWidth;
     // let height = this.element.clientHeight;
@@ -1602,7 +1598,6 @@ class HiGlassComponent extends React.Component {
       const lockGroup = this.zoomLocks[uid];
       const lockGroupItems = dictItems(lockGroup);
 
-      // eslint-disable-next-line no-unused-vars
       const [centerX, centerY, k] = scalesCenterAndK(
         this.xScales[uid],
         this.yScales[uid],
@@ -1621,7 +1616,6 @@ class HiGlassComponent extends React.Component {
           continue;
         }
 
-        // eslint-disable-next-line no-unused-vars
         const [keyCenterX, keyCenterY, keyK] = scalesCenterAndK(
           this.xScales[key],
           this.yScales[key],
@@ -1666,7 +1660,6 @@ class HiGlassComponent extends React.Component {
       const lockGroup = this.locationLocks[uid];
       const lockGroupItems = dictItems(lockGroup);
 
-      // eslint-disable-next-line no-unused-vars
       const [centerX, centerY, k] = scalesCenterAndK(
         this.xScales[uid],
         this.yScales[uid],
@@ -1680,7 +1673,6 @@ class HiGlassComponent extends React.Component {
           continue;
         }
 
-        // eslint-disable-next-line no-unused-vars
         const [keyCenterX, keyCenterY, keyK] = scalesCenterAndK(
           this.xScales[key],
           this.yScales[key],
@@ -1731,7 +1723,6 @@ class HiGlassComponent extends React.Component {
       // this means the x axis of this view (uid) is locked to the y axis of another view
       const lockCrossAxis = this.locationLocksAxisWise.x[uid].axis !== 'x';
 
-      // eslint-disable-next-line no-unused-vars
       const [centerX, centerY, k] = scalesCenterAndK(
         this.xScales[uid],
         this.yScales[uid],
@@ -1745,7 +1736,6 @@ class HiGlassComponent extends React.Component {
           continue;
         }
 
-        // eslint-disable-next-line no-unused-vars
         const [keyCenterX, keyCenterY, keyK] = scalesCenterAndK(
           this.xScales[key],
           this.yScales[key],
@@ -1794,7 +1784,6 @@ class HiGlassComponent extends React.Component {
       // this means the y axis of this view (uid) is locked to the x axis of another view
       const lockCrossAxis = this.locationLocksAxisWise.y[uid].axis !== 'y';
 
-      // eslint-disable-next-line no-unused-vars
       const [centerX, centerY, k] = scalesCenterAndK(
         this.xScales[uid],
         this.yScales[uid],
@@ -1808,7 +1797,6 @@ class HiGlassComponent extends React.Component {
           continue;
         }
 
-        // eslint-disable-next-line no-unused-vars
         const [keyCenterX, keyCenterY, keyK] = scalesCenterAndK(
           this.xScales[key],
           this.yScales[key],
@@ -2122,12 +2110,11 @@ class HiGlassComponent extends React.Component {
     const targetXScale = this.xScales[uid1];
     const targetYScale = this.yScales[uid1];
 
-    // eslint-disable-next-line no-unused-vars
     const [targetCenterX, targetCenterY, targetK] = scalesCenterAndK(
       targetXScale,
       targetYScale,
     );
-    // eslint-disable-next-line no-unused-vars
+
     const [sourceCenterX, sourceCenterY, sourceK] = scalesCenterAndK(
       sourceXScale,
       sourceYScale,
@@ -2152,12 +2139,11 @@ class HiGlassComponent extends React.Component {
     const targetXScale = this.xScales[uid1];
     const targetYScale = this.yScales[uid1];
 
-    // eslint-disable-next-line no-unused-vars
     const [targetCenterX, targetCenterY, targetK] = scalesCenterAndK(
       targetXScale,
       targetYScale,
     );
-    // eslint-disable-next-line no-unused-vars
+
     const [sourceCenterX, sourceCenterY, sourceK] = scalesCenterAndK(
       sourceXScale,
       sourceYScale,
@@ -2314,7 +2300,7 @@ class HiGlassComponent extends React.Component {
 
   forceRefreshView() {
     // force everything to rerender
-    this.setState(this.state); // eslint-disable-line react/no-access-state-in-setstate
+    this.setState(this.state);
   }
 
   refreshView(timeout = SHORT_DRAG_TIMEOUT) {
@@ -3694,7 +3680,6 @@ class HiGlassComponent extends React.Component {
     });
 
     this.setState((prevState) => {
-      // eslint-disable-next-line no-shadow
       const views = JSON.parse(JSON.stringify(prevState.views));
       views[newView.uid] = newView;
       return { views };
