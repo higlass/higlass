@@ -373,7 +373,7 @@ class Autocomplete extends React.Component {
             this.handleKeyUp.bind(this),
             inputProps.onKeyUp?.bind(this),
           )}
-          // eslint-disable-next-line jsx-a11y/role-has-required-aria-props
+          // biome-ignore lint/a11y/useAriaPropsForRole:
           role="combobox"
           value={this.props.value}
         />

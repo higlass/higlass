@@ -15,6 +15,7 @@ function ContextMenuItem(props) {
       onClick={(e) => props.onClick(e)}
       onMouseEnter={(e) => props.onMouseEnter(e)}
       onMouseLeave={(e) => props.onMouseLeave(e)}
+      // biome-ignore lint/a11y/useSemanticElements:
       role="button"
       tabIndex={0}
     >
