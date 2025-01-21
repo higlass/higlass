@@ -1,11 +1,11 @@
 // @ts-nocheck
+import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 
 import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
-import { expect } from 'chai';
 import Enzyme from 'enzyme';
 
 import {
-  mountHGComponent,
+  mountHGComponentAsync,
   removeHGComponent,
 } from '../../app/scripts/test-helpers';
 
@@ -17,8 +17,8 @@ describe('Division track', () => {
   let hgc = null;
   let div = null;
 
-  before((done) => {
-    [div, hgc] = mountHGComponent(div, hgc, invalidTrackConfig, done, {
+  beforeAll(async () => {
+    [div, hgc] = await mountHGComponentAsync(div, hgc, invalidTrackConfig, {
       style: 'width:800px; height:400px; background-color: lightgreen',
       bounded: false,
     });
@@ -26,7 +26,7 @@ describe('Division track', () => {
     // to the left
   });
 
-  after(async () => {
+  afterAll(async () => {
     removeHGComponent(div);
   });
 
