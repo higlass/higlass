@@ -1,6 +1,4 @@
-// @ts-nocheck
-
-import { expect } from 'chai';
+import { describe, expect, it } from 'vitest';
 import SearchField from '../app/scripts/SearchField';
 
 import chromInfoHg19 from './chrom_info';
