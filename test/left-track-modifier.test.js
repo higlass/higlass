@@ -1,12 +1,12 @@
 // @ts-nocheck
+import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 
 import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
-import { expect } from 'chai';
 import Enzyme from 'enzyme';
 
 // Utils
 import {
-  mountHGComponent,
+  mountHGComponentAsync,
   removeHGComponent,
 } from '../app/scripts/test-helpers';
 import { getTrackObjectFromHGC } from '../app/scripts/utils';
@@ -17,11 +17,15 @@ describe('Left track modifier', () => {
   let hgc = null;
   let div = null;
 
-  before((done) => {
-    [div, hgc] = mountHGComponent(div, hgc, zoomLimitViewConf, done, {
+  beforeAll(async () => {
+    [div, hgc] = await mountHGComponentAsync(div, hgc, zoomLimitViewConf, {
       style: 'width:800px; height:400px; background-color: lightgreen',
       bounded: true,
     });
+  });
+
+  afterAll(() => {
+    removeHGComponent(div);
   });
 
   it('should respect zoom limits', () => {
@@ -32,10 +36,6 @@ describe('Left track modifier', () => {
     // trackObj is a LeftTrackModifier that contains the
     // original track
     expect(trackObj.originalTrack.id).to.eql('tt');
-  });
-
-  after(() => {
-    removeHGComponent(div);
   });
 });
 
