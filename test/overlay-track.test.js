@@ -1,6 +1,5 @@
 // @ts-nocheck
-
-import { expect } from 'chai';
+import { afterEach, describe, expect, it } from 'vitest';
 
 import createElementAndApi from './utils/create-element-and-api';
 import removeDiv from './utils/remove-div';
@@ -66,7 +65,7 @@ describe('Overlay Track:', () => {
   });
 
   describe('Chromosome grid overlay:', () => {
-    it('Should render', (done) => {
+    it('Should render', async () => {
       viewConf = overlayChromGridViewConf;
 
       [div, api] = createElementAndApi(viewConf, { bound: true });
@@ -82,15 +81,17 @@ describe('Overlay Track:', () => {
 
       expect(overlayTrackObj.constructor.name).to.deep.equal('ChromosomeGrid');
 
-      hgc.pubSub.subscribe('requestReceived', (url) => {
-        if (url === '//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv') {
-          expect(!!overlayTrackObj.lineGraphics).to.be.equal(true);
-          expect(!!overlayTrackObj.lineGraphics1dH).to.be.equal(true);
-          expect(!!overlayTrackObj.lineGraphics1dV).to.be.equal(true);
-          expect(!!overlayTrackObj.lineGraphics2d).to.be.equal(true);
+      await new Promise((done) => {
+        hgc.pubSub.subscribe('requestReceived', (url) => {
+          if (url === '//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv') {
+            expect(!!overlayTrackObj.lineGraphics).to.be.equal(true);
+            expect(!!overlayTrackObj.lineGraphics1dH).to.be.equal(true);
+            expect(!!overlayTrackObj.lineGraphics1dV).to.be.equal(true);
+            expect(!!overlayTrackObj.lineGraphics2d).to.be.equal(true);
 
-          done();
-        }
+            done();
+          }
+        });
       });
     });
 
