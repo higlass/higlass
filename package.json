@@ -23,7 +23,7 @@
     "typecheck": "tsc",
     "format": "biome format --write",
     "lint": "biome ci",
-    "vitest": "vitest"
+    "vitest": "vitest --browser=chromium"
   },
   "repository": {
     "type": "git",
@@ -102,6 +102,7 @@
     "@types/react": "^17.0.2",
     "@types/react-dom": "^17.0.2",
     "@vitejs/plugin-react": "^4.2.0",
+    "@vitest/browser": "^3.0.3",
     "@web/test-runner": "^0.17.2",
     "@web/test-runner-puppeteer": "^0.14.1",
     "@wojtekmaj/enzyme-adapter-react-17": "^0.6.7",

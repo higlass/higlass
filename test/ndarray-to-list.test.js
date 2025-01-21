@@ -1,6 +1,4 @@
-// @ts-nocheck
-
-import { expect } from 'chai';
+import { describe, it, expect } from 'vitest';
 import ndarray from 'ndarray';
 import ndarrayToList from '../app/scripts/utils/ndarray-to-list';
 

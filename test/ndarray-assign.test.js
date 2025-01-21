@@ -1,10 +1,10 @@
-// @ts-nocheck
-
-import { expect } from 'chai';
+import { describe, beforeEach, it, expect } from 'vitest';
 import ndarray from 'ndarray';
+
 import ndarrayAssign from '../app/scripts/utils/ndarray-assign';
 
 describe('ndarrayAssign()', () => {
+  /** @type{ndarray.NdArray<any>} */
   let v;
 
   beforeEach(() => {
