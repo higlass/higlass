@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import SearchField from '../app/scripts/SearchField';
 
-import chromInfoHg19 from './chrom_info';
+import chromInfoHg19 from './utils/chrom-info';
 
 describe('A search field', () => {
   // 'https://s3.amazonaws.com/pkerp/data/hg19/chromInfo.txt'

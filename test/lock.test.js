@@ -1,15 +1,15 @@
 // @ts-nocheck
+import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 
 import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
 import Ajv from 'ajv';
-import { expect } from 'chai';
 import Enzyme from 'enzyme';
 
 import schema from '../app/schema.json';
 
 // Utils
 import {
-  mountHGComponent,
+  mountHGComponentAsync,
   removeHGComponent,
 } from '../app/scripts/test-helpers';
 
@@ -19,8 +19,8 @@ describe('Lock tests', () => {
   let hgc = null;
   let div = null;
 
-  before((done) => {
-    [div, hgc] = mountHGComponent(div, hgc, viewconf, done, {
+  beforeAll(async () => {
+    [div, hgc] = await mountHGComponentAsync(div, hgc, viewconf, {
       style: 'width:800px; height:400px; background-color: lightgreen',
       bounded: true,
     });
@@ -60,7 +60,7 @@ describe('Lock tests', () => {
     expect(trackObj).not.to.eql(null);
   });
 
-  after(() => {
+  afterAll(() => {
     removeHGComponent(div);
   });
 });
