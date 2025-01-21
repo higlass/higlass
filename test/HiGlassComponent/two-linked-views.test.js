@@ -1,11 +1,11 @@
+import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 // @ts-nocheck
 
 import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
-import { expect } from 'chai';
 import Enzyme from 'enzyme';
 
 import {
-  mountHGComponent,
+  mountHGComponentAsync,
   removeHGComponent,
   waitForTilesLoaded,
 } from '../../app/scripts/test-helpers';
@@ -20,30 +20,26 @@ describe('Two linked views', () => {
   let hgc = null;
   let div = null;
 
-  before((done) => {
-    [div, hgc] = mountHGComponent(
+  beforeAll(async () => {
+    [div, hgc] = await mountHGComponentAsync(
       div,
       hgc,
       JSON.parse(JSON.stringify(twoViewConfig)),
-      done,
       {
         style: 'width:800px; height:400px; background-color: lightgreen',
         bounded: true,
       },
     );
-    // visual check that the heatmap track config menu is moved
-    // to the left
   });
 
-  after(async () => {
+  afterAll(() => {
     removeHGComponent(div);
   });
 
-  it('zoom to the data extent', (done) => {
+  it('zoom to the data extent', async () => {
     // console.log('zooming to extent');
     hgc.instance().api.zoomToDataExtent('aa');
-
-    waitForTilesLoaded(hgc.instance(), done);
+    await new Promise((done) => waitForTilesLoaded(hgc.instance(), done));
   });
 
   it('ensures both views zoomed to the data extent', () => {
