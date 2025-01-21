@@ -123,7 +123,8 @@ export const isWaitingOnTiles = (hgc) => {
       !(track.track.data && track.track.data.type === 'divided')
     ) {
       continue;
-    } else if (
+    }
+    if (
       (track.track.data && track.track.data.type === 'divided') ||
       (track.track.server && track.track.tilesetUid)
     ) {

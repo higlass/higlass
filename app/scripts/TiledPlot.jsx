@@ -858,9 +858,8 @@ class TiledPlot extends React.Component {
         for (let i = 0; i < this.state.tracks.top.length; i++) {
           if (this.state.tracks.top[i].uid === track.uid) {
             break;
-          } else {
-            top += this.state.tracks.top[i].height;
           }
+          top += this.state.tracks.top[i].height;
         }
 
         break;
@@ -872,9 +871,8 @@ class TiledPlot extends React.Component {
         for (let i = 0; i < this.state.tracks.bottom.length; i++) {
           if (this.state.tracks.bottom[i].uid === track.uid) {
             break;
-          } else {
-            top += this.state.tracks.bottom[i].height;
           }
+          top += this.state.tracks.bottom[i].height;
         }
 
         break;
@@ -887,9 +885,8 @@ class TiledPlot extends React.Component {
         for (let i = 0; i < this.state.tracks.left.length; i++) {
           if (this.state.tracks.left[i].uid === track.uid) {
             break;
-          } else {
-            left += this.state.tracks.left[i].width;
           }
+          left += this.state.tracks.left[i].width;
         }
 
         break;
@@ -903,9 +900,8 @@ class TiledPlot extends React.Component {
         for (let i = 0; i < this.state.tracks.right.length; i++) {
           if (this.state.tracks.right[i].uid === track.uid) {
             break;
-          } else {
-            left += this.state.tracks.right[i].width;
           }
+          left += this.state.tracks.right[i].width;
         }
 
         break;
@@ -936,14 +932,13 @@ class TiledPlot extends React.Component {
         for (let i = 0; i < this.state.tracks.gallery.length; i++) {
           if (this.state.tracks.gallery[i].uid === track.uid) {
             break;
-          } else {
-            width -= 2 * this.state.tracks.gallery[i].height;
-            height -= 2 * this.state.tracks.gallery[i].height;
-            left += this.state.tracks.gallery[i].height;
-            top += this.state.tracks.gallery[i].height;
-            offsetX -= this.state.tracks.gallery[i].height;
-            offsetY -= this.state.tracks.gallery[i].height;
           }
+          width -= 2 * this.state.tracks.gallery[i].height;
+          height -= 2 * this.state.tracks.gallery[i].height;
+          left += this.state.tracks.gallery[i].height;
+          top += this.state.tracks.gallery[i].height;
+          offsetX -= this.state.tracks.gallery[i].height;
+          offsetY -= this.state.tracks.gallery[i].height;
         }
 
         for (let i = 0; i < this.state.tracks.right.length; i++) {

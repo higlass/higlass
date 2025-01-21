@@ -537,7 +537,8 @@ class GenomePositionSearchBox extends React.Component {
             }
             foundGeneSymbol = true; // we found a gene symbol
             break;
-          } else if (k === j + 1) {
+          }
+          if (k === j + 1) {
             if (spacePart.length) {
               spacePart += '-';
             }

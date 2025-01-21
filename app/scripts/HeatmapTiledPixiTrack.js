@@ -904,7 +904,7 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
         );
       } else {
         // when no tiles are loaded, color will be undefined and we don't want to crash
-        rectColor.setAttribute('style', "fill: rgb(255,255,255,0)");
+        rectColor.setAttribute('style', 'fill: rgb(255,255,255,0)');
       }
     }
 
