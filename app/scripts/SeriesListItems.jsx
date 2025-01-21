@@ -65,7 +65,7 @@ export const getSeriesItems = (
     const imgTag = thumbnail ? (
       <div
         className={classes['context-menu-icon']}
-        // eslint-disable-next-line react/no-danger
+        // biome-ignore lint/security/noDangerouslySetInnerHtml: Defined by plugins
         dangerouslySetInnerHTML={{ __html: thumbnail.outerHTML }}
       />
     ) : (

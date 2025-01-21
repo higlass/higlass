@@ -92,7 +92,7 @@ class PlotTypeChooser extends React.Component {
         const imgTag = trackTypeToInfo[x.type].thumbnail ? (
           <div
             className="track-thumbnail"
-            // eslint-disable-next-line react/no-danger
+            // biome-ignore lint/security/noDangerouslySetInnerHtml: Required for plugins
             dangerouslySetInnerHTML={{ __html: thumbnail.outerHTML }}
           />
         ) : (

@@ -60,9 +60,6 @@
       },
       "performance": {
         "noDelete": "off"
-      },
-      "security": {
-        "noDangerouslySetInnerHtml": "off"
       }
     }
   }
