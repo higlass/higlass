@@ -1,11 +1,11 @@
 // @ts-nocheck
+import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 
 import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
-import { expect } from 'chai';
 import Enzyme from 'enzyme';
 
 import {
-  mountHGComponent,
+  mountHGComponentAsync,
   removeHGComponent,
   waitForTilesLoaded,
 } from '../../app/scripts/test-helpers';
@@ -19,24 +19,22 @@ describe('Division track', () => {
   let hgc = null;
   let div = null;
 
-  before((done) => {
-    [div, hgc] = mountHGComponent(div, hgc, oneViewConfig, done, {
+  beforeAll(async () => {
+    [div, hgc] = await mountHGComponentAsync(div, hgc, oneViewConfig, {
       style: 'width:800px; height:400px; background-color: lightgreen',
       bounded: false,
     });
-    // visual check that the heatmap track config menu is moved
-    // to the left
   });
 
-  after(async () => {
+  afterAll(() => {
     removeHGComponent(div);
   });
 
-  it('should load the initial config', (done) => {
-    waitForTilesLoaded(hgc.instance(), done);
+  it('should load the initial config', async () => {
+    await new Promise((done) => waitForTilesLoaded(hgc.instance(), done));
   });
 
-  it('Changes the axis to inner right', (done) => {
+  it('Changes the axis to inner right', async () => {
     const newOptions = {
       axisPositionHorizontal: 'right',
     };
@@ -50,10 +48,10 @@ describe('Division track', () => {
     expect(pAxis.position.x).to.be.greaterThan(track.position[0]);
     expect(pAxis.children[0].x).to.be.lessThan(0);
 
-    waitForTilesLoaded(hgc.instance(), done);
+    await new Promise((done) => waitForTilesLoaded(hgc.instance(), done));
   });
 
-  it('Changes the axis to outside right', (done) => {
+  it('Changes the axis to outside right', async () => {
     const newOptions = {
       axisPositionHorizontal: 'outsideRight',
     };
@@ -67,10 +65,10 @@ describe('Division track', () => {
     expect(pAxis.position.x).to.be.greaterThan(track.position[0]);
     expect(pAxis.children[0].x).to.be.greaterThan(0);
 
-    waitForTilesLoaded(hgc.instance(), done);
+    await new Promise((done) => waitForTilesLoaded(hgc.instance(), done));
   });
 
-  it('Changes the axis to outside left', (done) => {
+  it('Changes the axis to outside left', async () => {
     const newOptions = {
       axisPositionHorizontal: 'outsideLeft',
     };
@@ -84,10 +82,10 @@ describe('Division track', () => {
     expect(pAxis.position.x).to.equal(track.position[0]);
     expect(pAxis.children[0].x).to.be.lessThan(0);
 
-    waitForTilesLoaded(hgc.instance(), done);
+    await new Promise((done) => waitForTilesLoaded(hgc.instance(), done));
   });
 
-  it('Changes the axis to the left', (done) => {
+  it('Changes the axis to the left', async () => {
     const newOptions = {
       axisPositionHorizontal: 'left',
     };
@@ -101,10 +99,10 @@ describe('Division track', () => {
     expect(pAxis.position.x).to.equal(track.position[0]);
     expect(pAxis.children[0].x).to.be.greaterThan(0);
 
-    waitForTilesLoaded(hgc.instance(), done);
+    await new Promise((done) => waitForTilesLoaded(hgc.instance(), done));
   });
 
-  it('Changes the axis to the top', (done) => {
+  it('Changes the axis to the top', async () => {
     const newOptions = {
       axisPositionHorizontal: null,
       axisPositionVertical: 'top',
@@ -123,10 +121,10 @@ describe('Division track', () => {
     expect(pAxis.position.x).to.equal(track.position[0]);
     expect(pAxis.children[0].x).to.be.greaterThan(0);
 
-    waitForTilesLoaded(hgc.instance(), done);
+    await new Promise((done) => waitForTilesLoaded(hgc.instance(), done));
   });
 
-  it('Changes the axis to the outside top', (done) => {
+  it('Changes the axis to the outside top', async () => {
     const newOptions = {
       axisPositionHorizontal: null,
       axisPositionVertical: 'outsideTop',
@@ -145,10 +143,10 @@ describe('Division track', () => {
     expect(pAxis.position.x).to.equal(track.position[0]);
     expect(pAxis.children[0].x).to.be.lessThan(0);
 
-    waitForTilesLoaded(hgc.instance(), done);
+    await new Promise((done) => waitForTilesLoaded(hgc.instance(), done));
   });
 
-  it('Changes the axis to the outside bottom', (done) => {
+  it('Changes the axis to the outside bottom', async () => {
     const newOptions = {
       axisPositionHorizontal: null,
       axisPositionVertical: 'outsideBottom',
@@ -167,10 +165,10 @@ describe('Division track', () => {
     expect(pAxis.position.x).to.be.greaterThan(track.position[0]);
     expect(pAxis.children[0].x).to.be.greaterThan(0);
 
-    waitForTilesLoaded(hgc.instance(), done);
+    await new Promise((done) => waitForTilesLoaded(hgc.instance(), done));
   });
 
-  it('Changes the axis to the bottom', (done) => {
+  it('Changes the axis to the bottom', async () => {
     const newOptions = {
       axisPositionVertical: 'bottom',
     };
@@ -188,13 +186,13 @@ describe('Division track', () => {
     expect(pAxis.position.x).to.be.greaterThan(track.position[0]);
     expect(pAxis.children[0].x).to.be.lessThan(0);
 
-    waitForTilesLoaded(hgc.instance(), done);
+    await new Promise((done) => waitForTilesLoaded(hgc.instance(), done));
   });
 
-  it('should have a bottom track of height 0', (done) => {
+  it('should have a bottom track of height 0', async () => {
     const height = hgc.instance().state.views.aa.tracks.bottom[0].height;
     expect(height).to.equal(0);
 
-    waitForTilesLoaded(hgc.instance(), done);
+    await new Promise((done) => waitForTilesLoaded(hgc.instance(), done));
   });
 });
