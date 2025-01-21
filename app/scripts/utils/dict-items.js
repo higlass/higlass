@@ -7,25 +7,14 @@
  * Return an array of (key,value) pairs that are present in this
  * dictionary
  *
- * TODO(Trevor): Replace with `Object.entries`?
- *
  * @template {object} T
  * @param {T} dictionary
  *
  * @returns {DictItems<T>}
  */
 const dictItems = (dictionary) => {
-  /** @type {DictItems<T>} */
-  const keyValues = [];
-
-  for (const key in dictionary) {
-    // biome-ignore lint/suspicious/noPrototypeBuiltins:
-    if (dictionary.hasOwnProperty(key)) {
-      keyValues.push([key, dictionary[key]]);
-    }
-  }
-
-  return keyValues;
+  // @ts-expect-error - Correct types for simple objects
+  return Object.entries(dictionary);
 };
 
 export default dictItems;
