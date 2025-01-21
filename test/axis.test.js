@@ -1,8 +1,7 @@
-// @ts-nocheck
-
 import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
-import { expect } from 'chai';
 import Enzyme from 'enzyme';
+// @ts-nocheck
+import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 
 import {
   mountHGComponentAsync,
@@ -19,7 +18,7 @@ describe('Axis tests', () => {
   let div = null;
 
   describe('Axis tets', () => {
-    before(async () => {
+    beforeAll(async () => {
       [div, hgc] = await mountHGComponentAsync(div, hgc, viewconf, {
         style: 'width:800px; height:400px; background-color: lightgreen',
         bounded: true,
@@ -75,7 +74,7 @@ describe('Axis tests', () => {
       );
     });
 
-    after(async () => {
+    afterAll(async () => {
       removeHGComponent(div);
     });
   });
