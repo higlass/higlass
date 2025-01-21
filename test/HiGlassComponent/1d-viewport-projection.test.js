@@ -1,11 +1,11 @@
 // @ts-nocheck
+import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 
 import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
-import { expect } from 'chai';
 import Enzyme from 'enzyme';
 
 import {
-  mountHGComponent,
+  mountHGComponentAsync,
   removeHGComponent,
   waitForTilesLoaded,
 } from '../../app/scripts/test-helpers';
@@ -19,7 +19,7 @@ describe('1D viewport projection', () => {
   let hgc = null;
   let div = null;
 
-  before((done) => {
+  beforeAll(async () => {
     const newViewConf = JSON.parse(JSON.stringify(project1D));
 
     const center1 = JSON.parse(JSON.stringify(heatmapTrack));
@@ -33,7 +33,7 @@ describe('1D viewport projection', () => {
     newViewConf.views[0].layout.h = 10;
     newViewConf.views[1].layout.h = 10;
 
-    [div, hgc] = mountHGComponent(div, hgc, newViewConf, done, {
+    [div, hgc] = await mountHGComponentAsync(div, hgc, newViewConf, {
       style: 'width:800px; height:400px; background-color: lightgreen',
       bounded: false,
     });
@@ -41,11 +41,11 @@ describe('1D viewport projection', () => {
     // to the left
   });
 
-  after(async () => {
+  afterAll(() => {
     removeHGComponent(div);
   });
 
-  it('Should lock the location without throwing an error', (done) => {
+  it('Should lock the location without throwing an error', async () => {
     hgc.instance().handleLocationLockChosen('aa', 'bb');
     // the viewconf contains a location lock, we need to ignore it
     //
@@ -57,10 +57,10 @@ describe('1D viewport projection', () => {
     // there should be two colorbars
     expect(overlayElements.length).to.equal(2);
 
-    waitForTilesLoaded(hgc.instance(), done);
+    await new Promise((done) => waitForTilesLoaded(hgc.instance(), done));
   });
 
-  it('Should add a vertical viewport projection', (done) => {
+  it('Should add a vertical viewport projection', async () => {
     hgc.instance().handleViewportProjected('bb', 'aa', 'vline1');
     // move the viewport just a little bit
     const overlayElements = document.getElementsByClassName('overlay');
@@ -68,10 +68,10 @@ describe('1D viewport projection', () => {
     // we should have created an overlay element
     expect(overlayElements.length).to.equal(3);
 
-    waitForTilesLoaded(hgc.instance(), done);
+    await new Promise((done) => waitForTilesLoaded(hgc.instance(), done));
   });
 
-  it('Should project the viewport of view2 onto the gene annotations track', (done) => {
+  it('Should project the viewport of view2 onto the gene annotations track', async () => {
     hgc.instance().handleViewportProjected('bb', 'aa', 'ga1');
     hgc
       .instance()
@@ -81,17 +81,16 @@ describe('1D viewport projection', () => {
         195.2581009864807,
       );
     // move the viewport just a little bit
-    //
-    waitForTilesLoaded(hgc.instance(), done);
+    await new Promise((done) => waitForTilesLoaded(hgc.instance(), done));
   });
 
-  it('Should make sure that the track labels still contain the assembly', (done) => {
+  it('Should make sure that the track labels still contain the assembly', async () => {
     const track = getTrackObjectFromHGC(hgc.instance(), 'bb', 'line2');
     expect(track.labelText.text.indexOf('hg19')).to.equal(0);
-    waitForTilesLoaded(hgc.instance(), done);
+    await new Promise((done) => waitForTilesLoaded(hgc.instance(), done));
   });
 
-  it('Add a 2D vertical projection and move the lower track to different location', (done) => {
+  it('Add a 2D vertical projection and move the lower track to different location', async () => {
     hgc
       .instance()
       .tiledPlots.bb.trackRenderer.setCenter(
@@ -101,6 +100,6 @@ describe('1D viewport projection', () => {
       );
     hgc.instance().handleViewportProjected('bb', 'aa', 'heatmap3');
 
-    waitForTilesLoaded(hgc.instance(), done);
+    await new Promise((done) => waitForTilesLoaded(hgc.instance(), done));
   });
 });
