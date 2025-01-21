@@ -1,12 +1,12 @@
 // @ts-nocheck
+import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 
 import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
-import { expect } from 'chai';
 import Enzyme from 'enzyme';
 
 // Utils
 import {
-  mountHGComponent,
+  mountHGComponentAsync,
   removeHGComponent,
   waitForTilesLoaded,
 } from '../app/scripts/test-helpers';
@@ -15,13 +15,13 @@ import { emptyConf } from './view-configs';
 
 Enzyme.configure({ adapter: new Adapter() });
 
-xdescribe('View manipulation tests', () => {
+describe('View manipulation tests', () => {
   let hgc = null;
   let div = null;
 
   describe('Viewconf change tests', () => {
-    before((done) => {
-      [div, hgc] = mountHGComponent(div, hgc, valueScaleLocksConf, done, {
+    beforeAll(async () => {
+      [div, hgc] = await mountHGComponentAsync(div, hgc, valueScaleLocksConf, {
         style: 'width:800px; height:400px; background-color: lightgreen',
         bounded: true,
       });
@@ -35,19 +35,14 @@ xdescribe('View manipulation tests', () => {
 
       expect(Object.keys(hgc.instance().valueScaleLocks).length).to.eql(0);
     });
-
-    // after(() => {
-    //   // removeHGComponent(div);
-    // });
   });
 
   describe('Viewport projection tests', () => {
-    before((done) => {
-      [div, hgc] = mountHGComponent(
+    beforeAll(async () => {
+      [div, hgc] = await mountHGComponentAsync(
         div,
         hgc,
         'http://higlass.io/api/v1/viewconfs/?d=KaeBVQQpTaqT0kfhE32boQ',
-        done,
         {
           style: 'width:800px; height:400px; background-color: lightgreen',
           bounded: true,
@@ -55,24 +50,26 @@ xdescribe('View manipulation tests', () => {
       );
     });
 
-    it("Ensure that the viewport projection's borders are black", (done) => {
+    afterAll(() => {
+      removeHGComponent(div);
+    });
+
+    it("Ensure that the viewport projection's borders are black", async () => {
       hgc
         .instance()
         .handleAddView(Object.values(hgc.instance().state.views)[0]);
 
-      waitForTilesLoaded(hgc.instance(), () => {
-        const views = Object.values(hgc.instance().state.views);
+      await new Promise((done) => {
+        waitForTilesLoaded(hgc.instance(), () => {
+          const views = Object.values(hgc.instance().state.views);
 
-        // make sure the width of the view has been halved
-        expect(views[0].layout.w).to.eql(6);
-        expect(views[1].layout.w).to.eql(6);
+          // make sure the width of the view has been halved
+          expect(views[0].layout.w).to.eql(6);
+          expect(views[1].layout.w).to.eql(6);
 
-        done();
+          done(null);
+        });
       });
-    });
-
-    after(() => {
-      removeHGComponent(div);
     });
   });
 });
