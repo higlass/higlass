@@ -1,11 +1,11 @@
 // @ts-nocheck
+import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 
 import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
-import { expect } from 'chai';
 import Enzyme from 'enzyme';
 
 import {
-  mountHGComponent,
+  mountHGComponentAsync,
   removeHGComponent,
 } from '../../app/scripts/test-helpers';
 
@@ -17,8 +17,8 @@ describe('View positioning', () => {
   let hgc = null;
   let div = null;
 
-  before((done) => {
-    [div, hgc] = mountHGComponent(div, hgc, simpleCenterViewConfig, done, {
+  beforeAll(async () => {
+    [div, hgc] = await mountHGComponentAsync(div, hgc, simpleCenterViewConfig, {
       style: 'width:800px; height:400px; background-color: lightgreen',
       bounded: true,
     });
@@ -27,17 +27,12 @@ describe('View positioning', () => {
     // to the left
   });
 
-  after(async () => {
+  afterAll(async () => {
     removeHGComponent(div);
   });
 
-  it('Sets a new viewconfig', (done) => {
-    const p = hgc.instance().api.setViewConfig(twoViewConfig);
-
-    p.then(() => {
-      // should only be called when all the tiles are loaded
-      done();
-    });
+  it('Sets a new viewconfig', async () => {
+    await hgc.instance().api.setViewConfig(twoViewConfig);
   });
 
   it('Zooms one of the views to the center', () => {
