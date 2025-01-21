@@ -1,11 +1,11 @@
 // @ts-nocheck
+import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 
 import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
-import { expect } from 'chai';
 import Enzyme from 'enzyme';
 
 import {
-  mountHGComponent,
+  mountHGComponentAsync,
   removeHGComponent,
 } from '../../app/scripts/test-helpers';
 import { getTrackObjectFromHGC } from '../../app/scripts/utils';
@@ -18,16 +18,14 @@ describe('Track dimension modification test', () => {
   let hgc = null;
   let div = null;
 
-  before((done) => {
-    [div, hgc] = mountHGComponent(div, hgc, geneAnnotationsOnly, done, {
+  beforeAll(async () => {
+    [div, hgc] = await mountHGComponentAsync(div, hgc, geneAnnotationsOnly, {
       style: 'width:800px; height:400px; background-color: lightgreen',
       bounded: true,
     });
-    // visual check that the heatmap track config menu is moved
-    // to the left
   });
 
-  after(async () => {
+  afterAll(() => {
     removeHGComponent(div);
   });
 
@@ -40,7 +38,6 @@ describe('Track dimension modification test', () => {
       height: 100,
     };
     hgc.instance().trackDimensionsModifiedHandler(settings);
-
     const track = getTrackObjectFromHGC(hgc.instance(), 'aa', trackId);
     expect(track.dimensions[1]).to.equal(100);
   });
