@@ -1,7 +1,7 @@
 // @ts-nocheck
+import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 
 import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
-import { expect } from 'chai';
 import Enzyme from 'enzyme';
 
 import {
@@ -17,7 +17,7 @@ describe('Divergent tracks', () => {
   let hgc = null;
   let div = null;
 
-  before(async () => {
+  beforeAll(async () => {
     // await fetchMockHelper.activateFetchMock();
     [div, hgc] = await mountHGComponentAsync(div, hgc, divergentTrackConfig, {
       style: 'width:800px; height:400px; background-color: lightgreen',
@@ -27,7 +27,7 @@ describe('Divergent tracks', () => {
     // to the left
   });
 
-  after(async () => {
+  afterAll(() => {
     removeHGComponent(div);
   });
 
