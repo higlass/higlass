@@ -1,11 +1,11 @@
 // @ts-nocheck
+import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 
 import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
-import { expect } from 'chai';
 import Enzyme from 'enzyme';
 
 import {
-  mountHGComponent,
+  mountHGComponentAsync,
   removeHGComponent,
 } from '../app/scripts/test-helpers';
 import { getTrackObjectFromHGC } from '../app/scripts/utils';
@@ -19,11 +19,15 @@ describe('Label test', () => {
   describe('Axis texts', () => {
     let hgc = null;
     let div = null;
-    before((done) => {
-      [div, hgc] = mountHGComponent(div, hgc, viewconf, done, {
+    beforeAll(async () => {
+      [div, hgc] = await mountHGComponentAsync(div, hgc, viewconf, {
         style: 'width:800px; height:400px; background-color: lightgreen',
         bounded: true,
       });
+    });
+
+    afterAll(() => {
+      removeHGComponent(div);
     });
 
     it('Checks the label margin', () => {
@@ -79,20 +83,20 @@ describe('Label test', () => {
           track4.options.labelBottomMargin,
       );
     });
-
-    after(() => {
-      removeHGComponent(div);
-    });
   });
 
   describe('Label text options', () => {
     let hgc = null;
     let div = null;
-    before((done) => {
-      [div, hgc] = mountHGComponent(div, hgc, viewconf, done, {
+    beforeAll(async () => {
+      [div, hgc] = await mountHGComponentAsync(div, hgc, viewconf, {
         style: 'width:800px; height:400px; background-color: lightgreen',
         bounded: true,
       });
+    });
+
+    afterAll(() => {
+      removeHGComponent(div);
     });
 
     it('Checks for assembly text', () => {
@@ -104,20 +108,24 @@ describe('Label test', () => {
 
       expect(track6.labelText.text.startsWith('hg19 | ')).to.be.false;
     });
-
-    after(() => {
-      removeHGComponent(div);
-    });
   });
 
   describe('Heatmap label tests', () => {
     let hgc = null;
     let div = null;
-    before((done) => {
-      [div, hgc] = mountHGComponent(div, hgc, viewconfSplitHeatmaps, done, {
-        style: 'width:800px; height:400px; background-color: lightgreen',
-        bounded: true,
-      });
+    beforeAll(async () => {
+      [div, hgc] = await mountHGComponentAsync(
+        div,
+        hgc,
+        viewconfSplitHeatmaps,
+        {
+          style: 'width:800px; height:400px; background-color: lightgreen',
+          bounded: true,
+        },
+      );
+    });
+    afterAll(() => {
+      removeHGComponent(div);
     });
 
     it('Makes sure that hiding the label works', () => {
@@ -128,10 +136,6 @@ describe('Label test', () => {
       const trackObj = getTrackObjectFromHGC(hgc.instance(), 'aa', 't1');
 
       expect(trackObj.labelText.alpha).to.be.eql(0);
-    });
-
-    after(() => {
-      removeHGComponent(div);
     });
   });
 });
