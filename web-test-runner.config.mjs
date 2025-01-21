@@ -4,10 +4,10 @@ import cache from './scripts/wtr-cache-plugin.mjs';
 const USE_CACHE = process.env.HIGLASS_USE_CACHE === 'true';
 const cacheFile = './response-cache.json';
 if (USE_CACHE) {
-  // eslint-disable-next-line no-console
+  // biome-ignore lint/suspicious/noConsole: Reporting just in test runner
   console.log(`Using cache file: ${cacheFile}.`);
 } else {
-  // eslint-disable-next-line no-console
+  // biome-ignore lint/suspicious/noConsole: Reporting just in test runner
   console.log('Not using cache.');
 }
 

@@ -45,7 +45,7 @@
       "suspicious": {
         "noConsole": {
           "level": "error",
-          "options": { "allow": ["warn", "error", "log"] }
+          "options": { "allow": ["warn", "error"] }
         },
         "noPrototypeBuiltins": "off",
         "noEmptyBlock": "off",
