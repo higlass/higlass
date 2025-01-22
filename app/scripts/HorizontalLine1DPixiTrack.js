@@ -4,7 +4,7 @@ import { scaleLinear } from 'd3-scale';
 
 import HorizontalTiled1DPixiTrack from './HorizontalTiled1DPixiTrack';
 
-import { colorDomainToRgbaArray, colorToHex, absToChr } from './utils';
+import { absToChr, colorDomainToRgbaArray, colorToHex } from './utils';
 
 class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
   stopHover() {
@@ -18,8 +18,7 @@ class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
     // if we're not supposed to show the tooltip, don't show it
     // we return here so that the mark isn't drawn in the code
     // below
-    if (!this.tilesetInfo || !this.valueScale)
-      return '';
+    if (!this.tilesetInfo || !this.valueScale) return '';
 
     const value = this.getDataAtPos(trackX);
     let textValue = '';
@@ -66,10 +65,11 @@ class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
         </div>
         `;
 
-      output += `</div>`;
-    }
-    else {
-      output = (this.options.isFirst) ? `<div class="track-mouseover-menu-table">` : '';
+      output += '</div>';
+    } else {
+      output = this.options.isFirst
+        ? `<div class="track-mouseover-menu-table">`
+        : '';
 
       if (this.options.isFirst && this.options.chromInfo) {
         const dataX = this._xScale.invert(trackX);
@@ -85,8 +85,12 @@ class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
           `;
       }
 
-      const colorLabelBox = (this.options.barFillColor) ? `<div style="border:1px solid black;background-color:${this.options.barFillColor};width:10px;height:10px;display:inline-block;margin-right:5px;margin-left:2px;"></div>` : '';
-      const itemLabel = (this.options.name) ? `${colorLabelBox}${this.options.name}` : 'Value';
+      const colorLabelBox = this.options.barFillColor
+        ? `<div style="border:1px solid black;background-color:${this.options.barFillColor};width:10px;height:10px;display:inline-block;margin-right:5px;margin-left:2px;"></div>`
+        : '';
+      const itemLabel = this.options.name
+        ? `${colorLabelBox}${this.options.name}`
+        : 'Value';
 
       output += `
         <div class="track-mouseover-menu-table-item">
@@ -95,7 +99,7 @@ class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
         </div>
         `;
 
-      output += (this.options.isLast) ? `</div>` : '';
+      output += this.options.isLast ? '</div>' : '';
     }
 
     return output;
@@ -353,7 +357,6 @@ class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
       : 'blue';
 
     this.visibleAndFetchedTiles().forEach((tile) => {
-
       // const tileProps = Object.getOwnPropertyNames(tile);
       // console.log(`tileProps ${tileProps}`);
 
@@ -364,7 +367,7 @@ class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
       // in order to simulate the heatmap presentation
       //
 
-      if (tile.hasOwnProperty('segments')) {
+      if (Object.hasOwn(tile, 'segments')) {
         const p = document.createElement('path');
         p.setAttribute('fill', 'transparent');
         p.setAttribute('stroke', stroke);
@@ -379,8 +382,7 @@ class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
         }
         p.setAttribute('d', d);
         output.appendChild(p);
-      }
-      else if (tile.hasOwnProperty('tileData')) {
+      } else if (Object.hasOwn(tile, 'tileData')) {
         const { tileX, tileWidth } = this.getTilePosAndDimensions(
           tile.tileData.zoomLevel,
           tile.tileData.tilePos,
@@ -425,14 +427,15 @@ class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
             if (this.colorScale && !this.options.colorRangeGradient) {
               try {
                 const v = Math.round(colorScale(tileValues[i] + pseudocount));
-                color = '#' + this.colorScale[v].map(e => e.toString(16).padStart(2, 0)).join("");
+                color = `#${this.colorScale[v]
+                  .map((e) => e.toString(16).padStart(2, 0))
+                  .join('')}`;
                 if (Number.isNaN(tileValues[i]) || height < 0 || yPos < 0) {
                   height = this.dimensions[1];
                   color = '#ffffff';
                 }
                 this.addSVGInfo(tile, xPos, yPos, width, height, color);
-              }
-              catch (err) {}
+              } catch (err) {}
             }
           }
 
@@ -442,7 +445,10 @@ class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
             // so alpha values are generated from the last two characters of the color string
             const barColor = data.barColors[j];
             const barColorFull = barColor.substring(0, barColor.length - 2);
-            const barColorAlpha = parseFloat(parseInt(barColor.substring(barColor.length - 2), 16)) / 255.0;
+            const barColorAlpha =
+              Number.parseFloat(
+                Number.parseInt(barColor.substring(barColor.length - 2), 16),
+              ) / 255.0;
             const rect = document.createElement('rect');
             rect.setAttribute('fill', barColorFull);
             rect.setAttribute('fill-opacity', barColorAlpha);
@@ -454,8 +460,7 @@ class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
             if (tile.barBorders) {
               rect.setAttribute('stroke-width', '0.1');
               rect.setAttribute('stroke', 'black');
-            }
-            else {
+            } else {
               // rect.setAttribute('stroke-width', '0');
               // rect.setAttribute('stroke', data.barColors[j]);
             }
@@ -463,7 +468,6 @@ class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
           }
         }
       }
-
     });
 
     const gAxis = document.createElement('g');

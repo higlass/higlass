@@ -230,7 +230,11 @@ class CombinedTrack {
 
     for (const childTrack of this.childTracks) {
       if (childTrack.getMouseOverHtml) {
-        const trackHtml = childTrack.getMouseOverHtml(trackX, trackY, isShiftDown);
+        const trackHtml = childTrack.getMouseOverHtml(
+          trackX,
+          trackY,
+          isShiftDown,
+        );
 
         if (trackHtml?.length) {
           mouseOverHtml += trackHtml;

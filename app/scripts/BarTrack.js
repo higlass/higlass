@@ -226,11 +226,11 @@ class BarTrack extends HorizontalLine1DPixiTrack {
   }
 
   destroyTile(tile) {
-    tile.graphics.destroy(true)
+    tile.graphics.destroy(true);
   }
 
   remove() {
-    this.visibleAndFetchedTiles().forEach(tile => this.destroyTile(tile))
+    this.visibleAndFetchedTiles().forEach((tile) => this.destroyTile(tile));
   }
 
   rerender(options, force) {
@@ -307,10 +307,9 @@ class BarTrack extends HorizontalLine1DPixiTrack {
     // but rather its parent's
     super.draw();
 
-    if (this.zeroLine && this.zeroLine._graphics && this.options.zeroLineVisible) {
+    if (this.zeroLine?._graphics && this.options.zeroLineVisible) {
       this.drawZeroLine();
-    }
-    else if (this.zeroLine && this.zeroLine._graphics) {
+    } else if (this.zeroLine?._graphics) {
       this.zeroLine.clear();
     }
 
@@ -456,8 +455,16 @@ class BarTrack extends HorizontalLine1DPixiTrack {
           // hex colors with transparency cannot be directly used in SVG opened in Adobe Illustrator
           // so alpha values are generated from the last two characters of the color string
           const barColor = data.barColors[i];
-          const barColorFull = (barColor.length === 9) ? barColor.substring(0, barColor.length - 2) : barColor;
-          const barColorAlpha = (barColor.length === 9) ? parseFloat(parseInt(barColor.substring(barColor.length - 2), 16)) / 255.0 : 1.0;
+          const barColorFull =
+            barColor.length === 9
+              ? barColor.substring(0, barColor.length - 2)
+              : barColor;
+          const barColorAlpha =
+            barColor.length === 9
+              ? Number.parseFloat(
+                  Number.parseInt(barColor.substring(barColor.length - 2), 16),
+                ) / 255.0
+              : 1.0;
           const rect = document.createElement('rect');
           rect.setAttribute('fill', barColorFull);
           rect.setAttribute('fill-opacity', barColorAlpha);

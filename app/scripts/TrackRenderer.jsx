@@ -1293,8 +1293,7 @@ class TrackRenderer extends React.Component {
       try {
         this.trackDefObjects[trackUids[i]].trackObject.remove();
         delete this.trackDefObjects[trackUids[i]];
-      } 
-      catch (err) {}
+      } catch (err) {}
     }
   }
 

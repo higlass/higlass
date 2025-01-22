@@ -292,8 +292,6 @@ class HorizontalTiled1DPixiTrack extends Tiled1DPixiTrack {
                 labelG.x = this.position[0] + 2;
                 labelG.y = y;
                 break;
-
-              case 'leftTop':
               default:
                 labelG.anchor.x = 0;
                 labelG.anchor.y = 1;

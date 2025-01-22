@@ -739,7 +739,7 @@ class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
       .filter((tile) => tile.drawnAtScale)
       .forEach((tile) => {
         try {
-          if (!tile.textBgGraphics) return; 
+          if (!tile.textBgGraphics) return;
 
           tile.textBgGraphics.clear();
           tile.textBgGraphics.beginFill(
@@ -757,24 +757,24 @@ class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
             // tile probably hasn't been initialized yet
             if (!tile.texts) return;
             if (td.type === 'filler') return;
-  
+
             const geneInfo = td.fields;
             const geneName = geneInfo[3];
-  
+
             const geneId = this.geneId(geneInfo, td.type);
-  
+
             const text = tile.texts[geneId];
-  
+
             if (!text) return;
-  
+
             const chrOffset = +td.chrOffset;
             const txStart = +geneInfo[1] + chrOffset;
             const txEnd = +geneInfo[2] + chrOffset;
             const txMiddle = (txStart + txEnd) / 2;
             let textYMiddle = this.dimensions[1] / 2;
-  
+
             const fontRectPadding = (this.geneAreaHeight - this.fontSize) / 2;
-  
+
             if (geneInfo[5] === '+') {
               // genes on the + strand drawn above and in a user-specified color or the
               // default blue textYMiddle -= 10;
@@ -793,19 +793,19 @@ class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
                     1
                   : 1.5 * this.fontSize + this.geneAreaHeight + 2;
             }
-  
+
             text.position.x = this._xScale(txMiddle);
             text.position.y = textYMiddle;
-  
+
             if (!tile.textWidths[geneId]) {
               // if we haven't measured the text's width in renderTile, do it now
               // this can occur if the same gene is in more than one tile, so its
               // dimensions are measured for the first tile and not for the second
               try {
-                if (text && text.getBounds) {
+                if (text?.getBounds) {
                   const textWidth = text.getBounds().width;
                   const textHeight = text.getBounds().height;
-  
+
                   tile.textHeights[geneId] = textHeight;
                   tile.textWidths[geneId] = textWidth;
                 }
@@ -815,12 +815,12 @@ class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
                 tile.textWidths[geneId] = 0;
               }
             }
-  
+
             if (!parentInFetched) {
               text.visible = true;
-  
+
               const TEXT_MARGIN = 2;
-  
+
               if (this.flipText) {
                 // when flipText is set, that means that the track is being displayed
                 // vertically so we need to use the stored text height rather than width
@@ -840,14 +840,14 @@ class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
                   geneName,
                 ]);
               }
-  
+
               this.allTexts.push({
                 importance: +geneInfo[4],
                 text,
                 caption: geneName,
                 strand: geneInfo[5],
               });
-  
+
               allTiles.push(tile.textBgGraphics);
             } else {
               text.visible = false;
@@ -956,7 +956,8 @@ class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
 
           let output = `<div class="track-mouseover-menu-table">`;
 
-          let symbolNameText = (gene.fields.length >= 4) ? `${gene.fields[3]}` : null;
+          const symbolNameText =
+            gene.fields.length >= 4 ? `${gene.fields[3]}` : null;
 
           if (symbolNameText) {
             output += `
@@ -967,8 +968,14 @@ class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
             `;
           }
 
-          let strandText = (gene.fields.length >= 6) ? `${gene.fields[5]}` : null;
-          let positionText = (gene.fields.length >= 3) ? ((strandText) ? `${gene.fields[0]}:${gene.fields[1]}-${gene.fields[2]} (${strandText})` : `${gene.fields[0]}:${gene.fields[1]}-${gene.fields[2]}`) : null;
+          const strandText =
+            gene.fields.length >= 6 ? `${gene.fields[5]}` : null;
+          const positionText =
+            gene.fields.length >= 3
+              ? strandText
+                ? `${gene.fields[0]}:${gene.fields[1]}-${gene.fields[2]} (${strandText})`
+                : `${gene.fields[0]}:${gene.fields[1]}-${gene.fields[2]}`
+              : null;
 
           if (positionText) {
             output += `

@@ -1333,22 +1333,22 @@ class HiGlassComponent extends React.Component {
             lockedTrack.maxValue() - lockedTrack.valueScale.domain()[1],
           ) > epsilon;
 
-          let hasBrushMoved = false;
-          try {
-            hasBrushMoved =
-              sourceTrack.options &&
-              lockedTrack.options &&
-              typeof sourceTrack.options.scaleStartPercent !== 'undefined' &&
-              typeof sourceTrack.options.scaleEndPercent !== 'undefined' &&
-              (Math.abs(
-                lockedTrack.options.scaleStartPercent -
-                  sourceTrack.options.scaleStartPercent,
-              ) > epsilon ||
-                Math.abs(
-                  lockedTrack.options.scaleEndPercent -
-                    sourceTrack.options.scaleEndPercent,
-                ) > epsilon);
-          } catch (e) {}
+        let hasBrushMoved = false;
+        try {
+          hasBrushMoved =
+            sourceTrack.options &&
+            lockedTrack.options &&
+            typeof sourceTrack.options.scaleStartPercent !== 'undefined' &&
+            typeof sourceTrack.options.scaleEndPercent !== 'undefined' &&
+            (Math.abs(
+              lockedTrack.options.scaleStartPercent -
+                sourceTrack.options.scaleStartPercent,
+            ) > epsilon ||
+              Math.abs(
+                lockedTrack.options.scaleEndPercent -
+                  sourceTrack.options.scaleEndPercent,
+              ) > epsilon);
+        } catch (e) {}
 
         // If we do view based scaling we want to minimize the number of rerenders
         // Check if it is necessary to rerender
@@ -1579,7 +1579,7 @@ class HiGlassComponent extends React.Component {
         targetCanvas.width = this.canvasElement.width / 2;
         targetCanvas.height = this.canvasElement.height / 2;
         const ctx = targetCanvas.getContext('2d');
-        ctx.globalCompositeOperation = "source-over";
+        ctx.globalCompositeOperation = 'source-over';
         ctx.fillStyle = '#ffffff';
         ctx.fillRect(0, 0, targetCanvas.width, targetCanvas.height);
         // ctx.globalCompositeOperation = "source-over"; // reset
@@ -4543,10 +4543,9 @@ class HiGlassComponent extends React.Component {
   showHoverMenu(evt, isShiftDown) {
     // each track should have a function that returns an HTML representation
     // of the data at a give position
-    const mouseOverHtml =
-      evt.track && evt.track.getMouseOverHtml
-        ? evt.track.getMouseOverHtml(evt.relTrackX, evt.relTrackY, isShiftDown)
-        : '';
+    const mouseOverHtml = evt.track?.getMouseOverHtml
+      ? evt.track.getMouseOverHtml(evt.relTrackX, evt.relTrackY, isShiftDown)
+      : '';
 
     if (evt.track !== this.prevMouseHoverTrack) {
       if (this.prevMouseHoverTrack?.stopHover) {

@@ -99,7 +99,7 @@ class HorizontalChromosomeLabels extends PixiTrack {
         } catch (err) {
         } finally {
           this.animate();
-        } 
+        }
       },
       this.pubSub,
     );

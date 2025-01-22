@@ -604,7 +604,6 @@ class TiledPixiTrack extends PixiTrack {
     } catch (err) {}
   }
 
-
   loadTileData(tile, dataLoader) {
     /**
      * Extract drawable data from a tile loaded by a generic tile loader

@@ -55,7 +55,7 @@ const showMousePosition = (
   // This clears the mouse position graphics, i.e., the mouse position will not
   // be visible afterwards.
   const clearGraphics = () => {
-    if (graphics && graphics._geometry) {
+    if (graphics?._geometry) {
       graphics.clear();
     }
   };
