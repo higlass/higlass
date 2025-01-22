@@ -43,6 +43,10 @@ jobs:
   Test:
     needs: [Lint, Schema, Typecheck]
     runs-on: ubuntu-latest
+    name: "Test (shard: ${{ matrix.shard }})"
+    strategy:
+      matrix:
+        shard: [1/4, 2/4, 3/4, 4/4]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -51,4 +55,4 @@ jobs:
           cache: 'npm'
       - run: npm ci --legacy-peer-deps
       - run: npx playwright install chromium --with-deps
-      - run: npm test -- --maxWorkers=1 --no-file-parallelism
+      - run: npm test -- --maxWorkers=1 --no-file-parallelism --shard ${{ matrix.shard }}

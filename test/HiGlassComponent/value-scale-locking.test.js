@@ -5,7 +5,6 @@ import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
 import Enzyme from 'enzyme';
 
 import {
-  mountHGComponent,
   mountHGComponentAsync,
   removeHGComponent,
   waitForTilesLoaded,
