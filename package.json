@@ -96,6 +96,7 @@
     "@types/d3-transition": "^3.0.1",
     "@types/d3-zoom": "^3.0.0",
     "@types/ndarray": "^1.0.13",
+    "@types/node": "^22.10.7",
     "@types/pako": "^2.0.2",
     "@types/prop-types": "^15.7.3",
     "@types/react": "^17.0.2",
