@@ -40,23 +40,18 @@ describe('Gene Annotations Tracks', () => {
     const trackUid = 'genes1';
 
     const trackObj = getTrackObjectFromHGC(hgc, viewUid, trackUid);
+    await new Promise((done) => waitForTilesLoaded(hgc, done));
 
-    await new Promise((done) => {
-      waitForTilesLoaded(hgc, () => {
-        // make sure the gene is red
-        expect(trackObj.allTexts[0].text.style.fill).to.eql('#ff0000');
+    // make sure the gene is red
+    expect(trackObj.allTexts[0].text.style.fill).to.eql('#ff0000');
 
-        const trackConf = getTrackConfFromHGC(hgc, viewUid, trackUid);
-        const options = trackConf.options;
+    const trackConf = getTrackConfFromHGC(hgc, viewUid, trackUid);
+    const options = trackConf.options;
 
-        // set minus strand genes to black
-        options.minusStrandColor = 'black';
-        hgc.handleTrackOptionsChanged('aa', 'genes1', options);
-        expect(trackObj.allTexts[0].text.style.fill).to.eql('#000000');
-
-        done(null);
-      });
-    });
+    // set minus strand genes to black
+    options.minusStrandColor = 'black';
+    hgc.handleTrackOptionsChanged('aa', 'genes1', options);
+    expect(trackObj.allTexts[0].text.style.fill).to.eql('#000000');
   });
 
   it('changes the height of the gene annotations', async () => {
@@ -65,26 +60,21 @@ describe('Gene Annotations Tracks', () => {
 
     const trackObj = getTrackObjectFromHGC(hgc, viewUid, trackUid);
 
-    await new Promise((done) => {
-      waitForTilesLoaded(hgc, () => {
-        const tile = trackObj.fetchedTiles['16.27677'];
+    await new Promise((done) => waitForTilesLoaded(hgc, done));
+    const tile = trackObj.fetchedTiles['16.27677'];
 
-        // benchmark for the initial height this is half of the arrowhead
-        // so it should be half the default height of 16
-        expect(tile.allRects[0][0][3] - tile.allRects[0][0][1]).to.eql(8);
+    // benchmark for the initial height this is half of the arrowhead
+    // so it should be half the default height of 16
+    expect(tile.allRects[0][0][3] - tile.allRects[0][0][1]).to.eql(8);
 
-        const trackConf = getTrackConfFromHGC(hgc, viewUid, trackUid);
-        const options = trackConf.options;
+    const trackConf = getTrackConfFromHGC(hgc, viewUid, trackUid);
+    const options = trackConf.options;
 
-        options.geneAnnotationHeight = 32;
+    options.geneAnnotationHeight = 32;
 
-        // benchmark for the height after changing the options
-        hgc.handleTrackOptionsChanged('aa', 'genes1', options);
-        expect(tile.allRects[0][0][3] - tile.allRects[0][0][1]).to.eql(16);
-
-        done(null);
-      });
-    });
+    // benchmark for the height after changing the options
+    hgc.handleTrackOptionsChanged('aa', 'genes1', options);
+    expect(tile.allRects[0][0][3] - tile.allRects[0][0][1]).to.eql(16);
   });
 
   it('exports to SVG', () => {

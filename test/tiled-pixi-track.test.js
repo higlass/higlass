@@ -50,14 +50,12 @@ describe('Simple HiGlassComponent', () => {
         .instance()
         .zoomTo('a', 100000000, 200000000, 100000000, 200000000, 1000);
 
-      await new Promise((done) => {
-        waitForTransitionsFinished(hgc.instance(), () => {
-          waitForTilesLoaded(hgc.instance(), () => {
-            trackObject.off('dataChanged', dataChangedCb);
-            done(null);
-          });
-        });
-      });
+      await new Promise((done) =>
+        waitForTransitionsFinished(hgc.instance(), done),
+      );
+      await new Promise((done) => waitForTilesLoaded(hgc.instance(), done));
+
+      trackObject.off('dataChanged', dataChangedCb);
     });
   });
 });
