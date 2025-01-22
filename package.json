@@ -1,6 +1,6 @@
 {
   "name": "higlass",
-  "version": "1.13.4",
+  "version": "1.13.5",
   "description": "HiGlass Hi-C / genomic / large data viewer",
   "author": "Peter Kerpedjiev <pkerpedjiev@gmail.com>",
   "main": "dist/hglib.js",
@@ -13,24 +13,16 @@
     },
     "./dist/*": "./dist/*"
   },
-  "files": [
-    "app",
-    "dist"
-  ],
-  "keywords": [
-    "hi-c",
-    "genomics",
-    "matrix",
-    "tracks"
-  ],
+  "files": ["app", "dist"],
+  "keywords": ["hi-c", "genomics", "matrix", "tracks"],
   "scripts": {
     "test": "wtr",
     "start": "vite",
     "build": "node ./scripts/build.mjs",
     "compile": "npm run build && zip -r dist.zip dist",
     "typecheck": "tsc",
-    "format": "prettier --ignore-path=.gitignore --write \"**/*.{mjs,js,jsx,ts}\"",
-    "lint": "prettier --ignore-path=.gitignore --check \"**/*.{mjs,js,jsx,ts}\" && eslint --ignore-path=.gitignore \"**/*.{mjs,js,jsx}\""
+    "format": "biome format --write",
+    "lint": "biome ci"
   },
   "repository": {
     "type": "git",
@@ -61,6 +53,7 @@
     "d3-transition": "^3.0.1",
     "d3-zoom": "^3.0.0",
     "dom-scroll-into-view": "^1.2.1",
+    "enzyme-adapter-react-16": "^1.15.8",
     "genbank-parser": "^1.0.0",
     "ndarray": "^1.0.18",
     "pako": "^1.0.10",
@@ -87,6 +80,7 @@
     "@babel/core": "^7.23.3",
     "@babel/plugin-transform-classes": "^7.23.3",
     "@babel/preset-react": "^7.23.3",
+    "@biomejs/biome": "^1.9.4",
     "@types/d3-array": "^2.7.1",
     "@types/d3-axis": "^2.0.0",
     "@types/d3-brush": "^2.1.0",
@@ -114,15 +108,7 @@
     "chai": "^4.3.4",
     "enzyme": "^3.4.1",
     "esbuild": "^0.19.8",
-    "eslint": "^8.23.0",
-    "eslint-config-airbnb": "^19.0.4",
-    "eslint-config-prettier": "^8.5.0",
-    "eslint-plugin-import": "^2.26.0",
-    "eslint-plugin-jsx-a11y": "^6.6.1",
-    "eslint-plugin-react": "^7.31.8",
-    "eslint-plugin-react-hooks": "^4.6.0",
     "pixi.js": "^6.5.2",
-    "prettier": "^2.5.1",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "sass": "^1.54.5",

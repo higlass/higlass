@@ -11,9 +11,9 @@ import HorizontalTiled1DPixiTrack from './HorizontalTiled1DPixiTrack';
 // Services
 import { tileProxy } from './services';
 
+import trackUtils from './track-utils';
 // Utils
 import { colorToHex } from './utils';
-import trackUtils from './track-utils';
 
 // these are default values that are overwritten by the track's options
 const FONT_SIZE = 11;

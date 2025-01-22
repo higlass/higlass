@@ -8,8 +8,8 @@ import colorToHex from './utils/color-to-hex';
 // Configs
 import GLOBALS from './configs/globals';
 import {
-  isResolutionsTilesetInfo,
   isLegacyTilesetInfo,
+  isResolutionsTilesetInfo,
 } from './utils/type-guards';
 
 /**
@@ -208,12 +208,14 @@ class PixiTrack extends Track {
     this.errorText.anchor.x = 0.5;
     this.errorText.anchor.y = 0.5;
     this.pLabel.addChild(this.errorText);
-    /** @type {string} */
-    this.errorTextText = '';
+
     /** @type {boolean} */
     this.flipText = false;
     /** @type {import('./types').TilesetInfo | undefined} */
     this.tilesetInfo = undefined;
+
+    /** @type {{ [key: string]: string }} */
+    this.errorTexts = {};
   }
 
   setLabelText() {
@@ -296,16 +298,36 @@ class PixiTrack extends Track {
     );
   }
 
+  /** Set an error for this track.
+   *
+   * The error can be associated with a source so that multiple
+   * components within the track can set their own independent errors
+   * that will be displayed to the user without overlapping.
+   *
+   * @param {string} error The error text
+   * @param {string} source The source of the error
+   */
+  setError(error, source) {
+    this.errorTexts[source] = error;
+
+    this.drawError();
+  }
+
   drawError() {
-    if (this && this.position && this.errorText && this.errorTextText && this.errorTextText.length) {
-      this.errorText.x = this.position[0] + this.dimensions[0] / 2;
-      this.errorText.y = this.position[1] + this.dimensions[1] / 2;
+    this.errorText.x = this.position[0] + this.dimensions[0] / 2;
+    this.errorText.y = this.position[1] + this.dimensions[1] / 2;
 
-      this.errorText.text = this.errorTextText;
+    const errorTextText = Object.values(this.errorTexts)
+      .filter((x) => x?.length)
+      .reduce((acc, x) => (acc ? `${acc}\n${x}` : x), '');
 
-    // if (this.errorTextText && this.errorTextText.length) {
+    this.errorText.text = errorTextText;
+    this.errorText.alpha = 0.8;
+
+    if (this && this.position && errorTextText?.length) {
       // draw a red border around the track to bring attention to its
       // error
+
       const graphics = this.pBorder;
 
       if (!graphics || !graphics._geometry) return;
@@ -319,12 +341,8 @@ class PixiTrack extends Track {
         this.dimensions[0],
         this.dimensions[1],
       );
-    }
-    else {
-      this.errorText.text = '';
-      const graphics = this.pBorder;
-      if (!graphics || !graphics._geometry) return;
-      graphics.clear();
+    } else {
+      this.pBorder.clear();
     }
   }
 
@@ -375,9 +393,7 @@ class PixiTrack extends Track {
   }
 
   getName() {
-    return this.options.name
-      ? this.options.name
-      : (this.tilesetInfo && this.tilesetInfo.name) || '';
+    return this.options.name ? this.options.name : this.tilesetInfo?.name || '';
   }
 
   drawLabel() {
@@ -450,10 +466,10 @@ class PixiTrack extends Track {
       labelTextText += `\n[Current data resolution: ${formattedResolution}]`;
     }
 
-    if (this.options && this.options.dataTransform) {
+    if (this.options?.dataTransform) {
       let chosenTransform = null;
 
-      if (this.tilesetInfo && this.tilesetInfo.transforms) {
+      if (this.tilesetInfo?.transforms) {
         for (const transform of this.tilesetInfo.transforms) {
           if (transform.value === this.options.dataTransform) {
             chosenTransform = transform;
@@ -684,7 +700,7 @@ class PixiTrack extends Track {
     rectBackground.setAttribute('width', `${this.dimensions[0]}`);
     rectBackground.setAttribute('height', `${this.dimensions[1]}`);
 
-    if (this.options && this.options.backgroundColor) {
+    if (this.options?.backgroundColor) {
       rectBackground.setAttribute('fill', this.options.backgroundColor);
     } else {
       rectBackground.setAttribute('fill-opacity', '0');

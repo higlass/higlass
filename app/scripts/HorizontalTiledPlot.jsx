@@ -1,25 +1,25 @@
 // @ts-nocheck
-import PropTypes from 'prop-types';
-import React from 'react';
+import clsx from 'clsx';
 import { brushX } from 'd3-brush';
 import { select } from 'd3-selection';
+import PropTypes from 'prop-types';
+import React from 'react';
 import slugid from 'slugid';
-import clsx from 'clsx';
 
-import ListWrapper from './ListWrapper';
 import HorizontalItem from './HorizontalItem';
+import ListWrapper from './ListWrapper';
 import SortableList from './SortableList';
 
 // Utils
-import { or, resetD3BrushStyle, sum, IS_TRACK_RANGE_SELECTABLE } from './utils';
+import { IS_TRACK_RANGE_SELECTABLE, or, resetD3BrushStyle, sum } from './utils';
 
 // Styles
-import styles from '../styles/HorizontalTiledPlot.module.scss'; // eslint-disable-line no-unused-vars
-import stylesPlot from '../styles/TiledPlot.module.scss'; // eslint-disable-line no-unused-vars
-import stylesTrack from '../styles/Track.module.scss'; // eslint-disable-line no-unused-vars
+import styles from '../styles/HorizontalTiledPlot.module.scss';
+import stylesPlot from '../styles/TiledPlot.module.scss';
+import stylesTrack from '../styles/Track.module.scss';
 
 function sourceEvent(event) {
-  return event && event.sourceEvent;
+  return event?.sourceEvent;
 }
 
 class HorizontalTiledPlot extends React.Component {

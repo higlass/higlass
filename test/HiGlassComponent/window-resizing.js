@@ -1,8 +1,8 @@
 // @ts-nocheck
-/* eslint-env mocha */
-import Enzyme from 'enzyme';
+
 import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
 import { expect } from 'chai';
+import Enzyme from 'enzyme';
 
 import {
   mountHGComponent,
@@ -10,7 +10,7 @@ import {
   waitForTilesLoaded,
 } from '../../app/scripts/test-helpers';
 
-import { project1D, heatmapTrack } from '../view-configs';
+import { heatmapTrack, project1D } from '../view-configs';
 
 Enzyme.configure({ adapter: new Adapter() });
 

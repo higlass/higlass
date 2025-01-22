@@ -1,5 +1,5 @@
 export {};
-/* eslint-disable */
+
 declare global {
   interface Window {
     higlassTracksByType?: {

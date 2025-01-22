@@ -1,11 +1,11 @@
 // @ts-nocheck
-/* eslint-env mocha */
+
 import { expect } from 'chai';
 
 // Utils
 import { visitPositionedTracks } from '../app/scripts/utils';
-import selectedItemsToSize from '../app/scripts/utils/selected-items-to-size';
 import selectedItemsToCumWeights from '../app/scripts/utils/selected-items-to-cum-weights';
+import selectedItemsToSize from '../app/scripts/utils/selected-items-to-size';
 
 import { oneViewConfig } from './view-configs';
 

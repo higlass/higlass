@@ -26,17 +26,10 @@ jobs:
 
   Lint:
     runs-on: ubuntu-latest
-    env:
-      # not needed for linting
-      PUPPETEER_SKIP_CHROMIUM_DOWNLOAD: '1'
     steps:
       - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
-        with:
-          node-version: '20.x'
-          cache: 'npm'
-      - run: npm ci --legacy-peer-deps
-      - run: npm run lint
+      - uses: biomejs/setup-biome@v2 # detects version from package.json
+      - run: biome ci
 
   Schema:
     runs-on: ubuntu-latest

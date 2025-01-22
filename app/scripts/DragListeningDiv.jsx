@@ -1,8 +1,8 @@
 // @ts-nocheck
+import clsx from 'clsx';
 import PropTypes from 'prop-types';
 import React from 'react';
 import slugid from 'slugid';
-import clsx from 'clsx';
 
 import withPubSub from './hocs/with-pub-sub';
 

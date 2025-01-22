@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { mouse, select, selectAll, event } from 'd3-selection';
+import { event, mouse, select, selectAll } from 'd3-selection';
 import slugid from 'slugid';
 
 import '../styles/d3-context-menu.css';
@@ -72,12 +72,11 @@ function contextMenu(menu, optsIn) {
   return function onContextMenu(
     data,
     index,
-    /* eslint-disable-next-line default-param-last */
+    // biome-ignore lint/style/useDefaultParameterLast:
     pMouseUp = false,
     clickAwayFunc,
     useMouse = false,
   ) {
-    const elm = this;
     let mousePos = null;
     const currentThis = this;
 
@@ -136,7 +135,7 @@ function contextMenu(menu, optsIn) {
       .on('click', (d) => {
         if (d.disabled) return; // do nothing if disabled
         if (!d.action) return; // headers have no "action"
-        d.action(elm, data, index, mousePos);
+        d.action(this, data, index, mousePos);
 
         // close all context menus
         selectAll('.d3-context-menu').style('display', 'none');

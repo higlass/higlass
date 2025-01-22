@@ -19,6 +19,7 @@ const dictItems = (dictionary) => {
   const keyValues = [];
 
   for (const key in dictionary) {
+    // biome-ignore lint/suspicious/noPrototypeBuiltins:
     if (dictionary.hasOwnProperty(key)) {
       keyValues.push([key, dictionary[key]]);
     }

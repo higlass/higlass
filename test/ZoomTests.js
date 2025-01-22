@@ -1,7 +1,7 @@
 // @ts-nocheck
-/* eslint-env mocha */
-import { spyOn } from 'tinyspy';
+
 import { expect } from 'chai';
+import { spyOn } from 'tinyspy';
 
 // Utils
 import { getTrackRenderer } from '../app/scripts/utils';
@@ -58,7 +58,6 @@ describe('Zoom tests', () => {
   };
 
   it('Dispatches a mousewheel event on the horizontal track', (done) => {
-    // eslint-disable-next-line no-unused-vars
     const [dx, dy, _] = doMouseMove(345, 221);
 
     expect(dy).to.equal(0);
@@ -77,7 +76,6 @@ describe('Zoom tests', () => {
   });
 
   it('Dispatches a mousewheel event on the center', (done) => {
-    // eslint-disable-next-line no-unused-vars
     const [dx, dy, _] = doMouseMove(348, 315);
 
     expect(dy).to.equal(2);
@@ -87,7 +85,6 @@ describe('Zoom tests', () => {
   });
 
   it('Dispatches a mousewheel event on the left track', (done) => {
-    // eslint-disable-next-line no-unused-vars
     const [dx, dy, _] = doMouseMove(56, 315);
 
     expect(dy).to.equal(2);

@@ -1,5 +1,5 @@
 // @ts-nocheck
-/* eslint-disable react/jsx-props-no-spreading */
+
 import PropTypes from 'prop-types';
 import React from 'react';
 import { arrayMove } from 'react-sortable-hoc';
@@ -13,7 +13,6 @@ class ListWrapper extends React.Component {
     };
   }
 
-  // eslint-disable-next-line camelcase
   UNSAFE_componentWillReceiveProps(nextProps) {
     this.setState({
       items: nextProps.items,

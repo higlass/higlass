@@ -1,16 +1,16 @@
 // @ts-nocheck
-import ndarray from 'ndarray';
 import { brushY } from 'd3-brush';
 import { format } from 'd3-format';
 import { scaleLinear } from 'd3-scale';
 import { select } from 'd3-selection';
+import ndarray from 'ndarray';
 import slugid from 'slugid';
 
-// Utils
-import colorToRgba from './utils/color-to-rgba';
 import absToChr from './utils/abs-to-chr';
 import colorDomainToRgbaArray from './utils/color-domain-to-rgba-array';
 import colorToHex from './utils/color-to-hex';
+// Utils
+import colorToRgba from './utils/color-to-rgba';
 import { download } from './utils/download';
 import ndarrayAssign from './utils/ndarray-assign';
 import ndarrayFlatten from './utils/ndarray-flatten';
@@ -18,23 +18,23 @@ import objVals from './utils/obj-vals';
 import showMousePosition from './utils/show-mouse-position';
 import valueToColor from './utils/value-to-color';
 
-import TiledPixiTrack, { getValueScale } from './TiledPixiTrack';
 import AxisPixi from './AxisPixi';
+import TiledPixiTrack, { getValueScale } from './TiledPixiTrack';
 
 // Services
 import {
-  tileDataToPixData,
-  calculateTileWidth,
-  calculateTilesFromResolution,
-  calculateTiles,
   calculateResolution,
-  calculateZoomLevelFromResolutions,
+  calculateTileWidth,
+  calculateTiles,
+  calculateTilesFromResolution,
   calculateZoomLevel,
+  calculateZoomLevelFromResolutions,
+  tileDataToPixData,
 } from './services/tile-proxy';
 
-import GLOBALS from './configs/globals';
-import { NUM_PRECOMP_SUBSETS_PER_2D_TTILE } from './configs/dense-data-extrema-config';
 import { HEATED_OBJECT_MAP } from './configs/colormaps';
+import { NUM_PRECOMP_SUBSETS_PER_2D_TTILE } from './configs/dense-data-extrema-config';
+import GLOBALS from './configs/globals';
 
 const COLORBAR_MAX_HEIGHT = 200;
 const COLORBAR_WIDTH = 10;
@@ -99,7 +99,7 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
     // not a d3 color scale for speed
     this.colorScale = HEATED_OBJECT_MAP;
 
-    if (options && options.colorRange) {
+    if (options?.colorRange) {
       this.colorScale = colorDomainToRgbaArray(options.colorRange);
     }
 
@@ -131,11 +131,7 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
       );
     }
 
-    if (
-      this.options &&
-      this.options.showMousePosition &&
-      !this.hideMousePosition
-    ) {
+    if (this.options?.showMousePosition && !this.hideMousePosition) {
       this.hideMousePosition = showMousePosition(
         this,
         this.is2d,
@@ -313,7 +309,7 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
     }
 
     const [scaleType, valueScale] = getValueScale(
-      (this.options && this.options.heatmapValueScaling) || 'log',
+      this.options?.heatmapValueScaling || 'log',
       minValue,
       this.medianVisibleValue,
       maxValue,
@@ -363,7 +359,7 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
     // the normalization method may have changed
     this.calculateVisibleTiles();
 
-    if (options && options.colorRange) {
+    if (options?.colorRange) {
       this.colorScale = colorDomainToRgbaArray(options.colorRange);
     }
 
@@ -377,11 +373,7 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
       this.hideMousePosition = undefined;
     }
 
-    if (
-      this.options &&
-      this.options.showMousePosition &&
-      !this.hideMousePosition
-    ) {
+    if (this.options?.showMousePosition && !this.hideMousePosition) {
       this.hideMousePosition = showMousePosition(
         this,
         this.is2d,
@@ -501,10 +493,10 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
     // Fritz: I am disabling ESLint here twice because moving the slash onto the
     // next line breaks my editors style template somehow.
     const startPercent =
-      (startDomain - axisValueScale.domain()[0]) / // eslint-disable-line operator-linebreak
+      (startDomain - axisValueScale.domain()[0]) /
       (axisValueScale.domain()[1] - axisValueScale.domain()[0]);
     const endPercent =
-      (endDomain - axisValueScale.domain()[0]) / // eslint-disable-line operator-linebreak
+      (endDomain - axisValueScale.domain()[0]) /
       (axisValueScale.domain()[1] - axisValueScale.domain()[0]);
 
     newOptions.scaleStartPercent = startPercent.toFixed(SCALE_LIMIT_PRECISION);
@@ -912,7 +904,7 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
         );
       } else {
         // when no tiles are loaded, color will be undefined and we don't want to crash
-        rectColor.setAttribute('style', `fill: rgb(255,255,255,0)`);
+        rectColor.setAttribute('style', 'fill: rgb(255,255,255,0)');
       }
     }
 
@@ -1016,7 +1008,7 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
       Math.ceil((limitedYDomain[1] - limitedYDomain[0]) / tileRes),
     );
 
-    const out = ndarray(new Array(binHeight * binWidth).fill(NaN), [
+    const out = ndarray(new Array(binHeight * binWidth).fill(Number.NaN), [
       binHeight,
       binWidth,
     ]);
@@ -1229,7 +1221,7 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
         // it with nan values
         const newArray = new Float32Array(this.tilesetInfo.tile_size);
 
-        newArray.fill(NaN);
+        newArray.fill(Number.NaN);
         newArray.set(tile.tileData.dense);
 
         tile.tileData.dense = newArray;
@@ -1577,8 +1569,7 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
   tilesToId(xTiles, yTiles, zoomLevel) {
     const rows = xTiles;
     const cols = yTiles;
-    const dataTransform =
-      (this.options && this.options.dataTransform) || 'default';
+    const dataTransform = this.options?.dataTransform || 'default';
 
     // if we're mirroring tiles, then we only need tiles along the diagonal
     const tiles = [];
@@ -1680,6 +1671,28 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
       (this.tilesetInfo.mirror_tiles === false ||
         this.tilesetInfo.mirror_tiles === 'false')
     );
+  }
+
+  contextMenuItems(trackX, trackY) {
+    /* Get a list of context menu items to display and the actions
+         to take */
+
+    // This should return items like this:
+
+    // return [
+    //   {
+    //     label: 'Change background color to black',
+    //     onClick: (evt, onTrackOptionsChanged) => {
+    //       // The onTrackOptionsChanged handler will handle any changes
+    //       // to the track's options that are triggered in this event.
+    //       // The only thing that needs to be passed is the new option being
+    //       // passed
+    //       onTrackOptionsChanged({ backgroundColor: 'black' });
+    //     },
+    //   },
+    // ];
+
+    return [];
   }
 
   getMouseOverHtml(trackX, trackY, isShiftDown) {
@@ -1844,7 +1857,7 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
       zoomLevel = Math.min(zoomLevel, this.maxZoom);
     }
 
-    if (this.options && this.options.maxZoom) {
+    if (this.options?.maxZoom) {
       if (this.options.maxZoom >= 0) {
         zoomLevel = Math.min(this.options.maxZoom, zoomLevel);
       } else {

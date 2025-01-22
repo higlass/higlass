@@ -2,7 +2,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-// eslint-disable-next-line import/no-extraneous-dependencies
 import { mount } from 'enzyme';
 
 import { requestsInFlight } from '../services';
@@ -123,7 +122,8 @@ export const isWaitingOnTiles = (hgc) => {
       !(track.track.data && track.track.data.type === 'divided')
     ) {
       continue;
-    } else if (
+    }
+    if (
       (track.track.data && track.track.data.type === 'divided') ||
       (track.track.server && track.track.tilesetUid)
     ) {
@@ -138,7 +138,7 @@ export const isWaitingOnTiles = (hgc) => {
         return true;
       }
 
-      if (trackObj.fetching && trackObj.fetching.size) {
+      if (trackObj.fetching?.size) {
         return true;
       }
     } else {

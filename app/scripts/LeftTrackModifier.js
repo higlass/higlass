@@ -88,6 +88,7 @@ class LeftTrackModifier {
     /**
      * Either get or set the reference xScale
      */
+    // biome-ignore lint/style/noArguments: Getter/Setter
     if (!arguments.length) {
       return this.originalTrack._refYScale;
     }
@@ -101,6 +102,7 @@ class LeftTrackModifier {
     /**
      * Either get or set the reference yScale
      */
+    // biome-ignore lint/style/noArguments: Getter/Setter
     if (!arguments.length) {
       return this.originalTrack._refXScale;
     }
@@ -114,6 +116,7 @@ class LeftTrackModifier {
     /**
      * Either get or set the xScale
      */
+    // biome-ignore lint/style/noArguments: Getter/Setter
     if (!arguments.length) {
       return this.originalTrack._xScale;
     }
@@ -127,6 +130,7 @@ class LeftTrackModifier {
     /**
      * Either get or set the yScale
      */
+    // biome-ignore lint/style/noArguments: Getter/Setter
     if (!arguments.length) {
       return this.originalTrack._yScale;
     }

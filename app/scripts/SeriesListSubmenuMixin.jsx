@@ -2,8 +2,8 @@
 import React from 'react';
 import { Mixin } from './mixwith';
 
-import SeriesListMenu from './SeriesListMenu';
 import { getAllTracksAndSubtracks } from './SeriesListItems';
+import SeriesListMenu from './SeriesListMenu';
 
 const SeriesListSubmenuMixin = Mixin(
   (superclass) =>
@@ -27,6 +27,9 @@ const SeriesListSubmenuMixin = Mixin(
               top: bbox.top,
             };
           }
+
+          position.canvasLeft = this.props.position.canvasLeft;
+          position.canvasTop = this.props.position.canvasTop;
 
           const series = getAllTracksAndSubtracks(this.props.tracks);
           const selectedTrack = series.filter(
@@ -65,6 +68,7 @@ const SeriesListSubmenuMixin = Mixin(
               theme={this.props.theme}
               track={selectedTrack}
               trackOrientation={this.props.trackOrientation}
+              trackRenderer={this.props.trackRenderer}
               trackSourceServers={this.props.trackSourceServers}
             />
           );

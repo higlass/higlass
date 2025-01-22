@@ -1,8 +1,8 @@
 // @ts-nocheck
-import React from 'react';
 import PropTypes from 'prop-types';
-import slugid from 'slugid';
+import React from 'react';
 import CheckboxTree from 'react-checkbox-tree';
+import slugid from 'slugid';
 
 import { tileProxy } from './services';
 
@@ -128,7 +128,7 @@ class TilesetFinder extends React.Component {
         [].concat(
           ...this.augmentedTracksInfo
             .filter((x) => x.datatype)
-            // eslint-disable-next-line arrow-body-style
+
             .filter((x) => {
               return (
                 x.orientation === this.props.orientation ||
@@ -356,41 +356,49 @@ class TilesetFinder extends React.Component {
             icons={{
               uncheck: (
                 <svg style={svgStyle}>
+                  <title>Uncheck</title>
                   <use xlinkHref="#square_o" />
                 </svg>
               ),
               check: (
                 <svg style={svgStyle}>
+                  <title>Check</title>
                   <use xlinkHref="#check_square_o" />
                 </svg>
               ),
               halfCheck: (
                 <svg style={halfSvgStyle}>
+                  <title>Half Check</title>
                   <use xlinkHref="#check_square_o" />
                 </svg>
               ),
               leaf: (
                 <svg style={svgStyle}>
+                  <title>Leaf</title>
                   <use xlinkHref="#file_o" />
                 </svg>
               ),
               expandClose: (
                 <svg style={svgStyle}>
+                  <title>Expand Close</title>
                   <use xlinkHref="#chevron_right" />
                 </svg>
               ),
               expandOpen: (
                 <svg style={svgStyle}>
+                  <title>Expand Open </title>
                   <use xlinkHref="#chevron_down" />
                 </svg>
               ),
               parentClose: (
                 <svg style={svgStyle}>
+                  <title>Parent Close</title>
                   <use xlinkHref="#folder_o" />
                 </svg>
               ),
               parentOpen: (
                 <svg style={svgStyle}>
+                  <title>Parent Open</title>
                   <use xlinkHref="#folder_open_o" />
                 </svg>
               ),

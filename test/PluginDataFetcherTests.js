@@ -1,10 +1,10 @@
 // @ts-nocheck
-/* eslint-env mocha */
+
 import { expect } from 'chai';
 
+import { register } from './utils/DummyDataFetcher';
 import createElementAndApi from './utils/create-element-and-api';
 import removeDiv from './utils/remove-div';
-import { register } from './utils/DummyDataFetcher';
 
 import dummyDataFetcherViewConf from './view-configs/dummy-data-fetcher.json';
 
@@ -39,7 +39,7 @@ describe('Plugin data fetchers:', () => {
     });
 
     afterEach(() => {
-      if (api && api.destroy) api.destroy();
+      if (api?.destroy) api.destroy();
       if (div) removeDiv(div);
       api = undefined;
       div = undefined;

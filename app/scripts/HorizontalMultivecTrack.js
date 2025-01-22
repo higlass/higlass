@@ -5,9 +5,9 @@ import HeatmapTiledPixiTrack from './HeatmapTiledPixiTrack';
 
 import { tileProxy } from './services';
 import absToChr from './utils/abs-to-chr';
-import selectedItemsToSize from './utils/selected-items-to-size';
-import selectedItemsToCumWeights from './utils/selected-items-to-cum-weights';
 import getAggregationFunction from './utils/get-aggregation-function';
+import selectedItemsToCumWeights from './utils/selected-items-to-cum-weights';
+import selectedItemsToSize from './utils/selected-items-to-size';
 
 export default class HorizontalMultivecTrack extends HeatmapTiledPixiTrack {
   constructor(context, options) {
@@ -22,8 +22,7 @@ export default class HorizontalMultivecTrack extends HeatmapTiledPixiTrack {
 
   updateDataFetcher(options) {
     if (
-      options &&
-      options.selectRows &&
+      options?.selectRows &&
       options.selectRowsAggregationMethod === 'server'
     ) {
       const { pubSub, dataFetcher: prevDataFetcher } = this;
@@ -416,12 +415,14 @@ export default class HorizontalMultivecTrack extends HeatmapTiledPixiTrack {
     const elements = visibleData.split('<br/>');
 
     if (
-      this.options &&
-      this.options.heatmapValueScaling &&
+      this.options?.heatmapValueScaling &&
       this.options.heatmapValueScaling === 'categorical' &&
       this.options.colorRange
     ) {
-      const color = this.options.colorRange[parseInt(elements[0], 10) - 1];
+      const visibleData = this.getVisibleData(trackX, trackY);
+      const elements = visibleData.split('<br/>');
+      const color =
+        this.options.colorRange[Number.parseInt(elements[0], 10) - 1];
       if (
         Number.isNaN(color) ||
         color === 'NaN' ||

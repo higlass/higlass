@@ -1,5 +1,5 @@
 // @ts-nocheck
-/* eslint-env mocha */
+
 import { expect } from 'chai';
 
 // Utils
@@ -9,8 +9,8 @@ import { getTrackObjectFromHGC } from '../app/scripts/utils';
 import createElementAndApi from './utils/create-element-and-api';
 import removeDiv from './utils/remove-div';
 
-import horizontal1dLineTrackWithConstViewConf from './view-configs/horizontal-1d-line-track-with-const.json';
 import { horizontalLineEnd } from './view-configs';
+import horizontal1dLineTrackWithConstViewConf from './view-configs/horizontal-1d-line-track-with-const.json';
 
 describe('Horizontal 1D track tests', () => {
   let hgc = null;
@@ -39,7 +39,7 @@ describe('Horizontal 1D track tests', () => {
     });
 
     afterEach(() => {
-      if (api && api.destroy) api.destroy();
+      if (api?.destroy) api.destroy();
       if (div) removeDiv(div);
       api = undefined;
       div = undefined;
@@ -81,7 +81,7 @@ describe('Horizontal 1D track tests', () => {
     });
 
     afterEach(() => {
-      if (api && api.destroy) api.destroy();
+      if (api?.destroy) api.destroy();
       if (div) removeDiv(div);
       api = undefined;
       div = undefined;

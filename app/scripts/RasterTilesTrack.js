@@ -16,8 +16,9 @@ class RasterTilesTrack extends OSMTilesTrack {
     this.style = options.style;
 
     if (!this.options.tileSource) {
-      this.errorTextText =
-        'No tile source string provided in the options. It should be in the form of http://a.com/{z}/{x}/{y}';
+      this.setError(
+        'No tile source string provided in the options. It should be in the form of http://a.com/{z}/{x}/{y}',
+      );
       this.drawError();
     }
   }

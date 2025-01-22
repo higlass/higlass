@@ -1,14 +1,14 @@
 // @ts-nocheck
-/* eslint-env mocha */
-import Enzyme from 'enzyme';
+
 import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
+import Enzyme from 'enzyme';
 
 // Utils
 import {
   mountHGComponent,
   removeHGComponent,
-  waitForTransitionsFinished,
   waitForTilesLoaded,
+  waitForTransitionsFinished,
 } from '../app/scripts/test-helpers';
 
 import { getTrackObjectFromHGC } from '../app/scripts/utils';

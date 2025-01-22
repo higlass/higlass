@@ -44,7 +44,6 @@ add a line to `karma.conf.js` to include it in the tests.
 
 .. code-block:: javascript
 
-    /* eslint-env node, jasmine */
     import {
       configure,
       // render,

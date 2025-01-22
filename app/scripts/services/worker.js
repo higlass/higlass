@@ -1,4 +1,4 @@
-import { scaleLog, scaleLinear } from 'd3-scale';
+import { scaleLinear, scaleLog } from 'd3-scale';
 
 // utils
 import DenseDataExtrema1D from '../utils/DenseDataExtrema1D';

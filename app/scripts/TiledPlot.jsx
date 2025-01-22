@@ -1,31 +1,31 @@
 // @ts-nocheck
+import { ElementQueries, ResizeSensor } from 'css-element-queries';
 import { pointer } from 'd3-selection';
-import slugid from 'slugid';
+import PropTypes from 'prop-types';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import PropTypes from 'prop-types';
-import { ResizeSensor, ElementQueries } from 'css-element-queries';
+import slugid from 'slugid';
 
+import AddTrackDialog from './AddTrackDialog';
+import CenterTrack from './CenterTrack';
+import CloseTrackMenu from './CloseTrackMenu';
+import ConfigTrackMenu from './ConfigTrackMenu';
+import ContextMenuContainer from './ContextMenuContainer';
 // Components
 import ContextMenuItem from './ContextMenuItem';
-import CenterTrack from './CenterTrack';
+import CustomTrackDialog from './CustomTrackDialog';
 import DragListeningDiv from './DragListeningDiv';
 import GalleryTracks from './GalleryTracks';
-import TrackRenderer from './TrackRenderer';
-import AddTrackDialog from './AddTrackDialog';
-import CustomTrackDialog from './CustomTrackDialog';
-import ConfigTrackMenu from './ConfigTrackMenu';
-import CloseTrackMenu from './CloseTrackMenu';
-import PopupMenu from './PopupMenu';
-import ContextMenuContainer from './ContextMenuContainer';
 import HorizontalTiledPlot from './HorizontalTiledPlot';
+import PopupMenu from './PopupMenu';
+import TrackRenderer from './TrackRenderer';
 import VerticalTiledPlot from './VerticalTiledPlot';
 import ViewContextMenu from './ViewContextMenu';
 // import {HeatmapOptions} from './HeatmapOptions';
 
+import withModal from './hocs/with-modal';
 // Higher-order components
 import withPubSub from './hocs/with-pub-sub';
-import withModal from './hocs/with-modal';
 import withTheme from './hocs/with-theme';
 
 // Utils
@@ -46,9 +46,9 @@ import {
   TRACK_LOCATIONS,
 } from './configs';
 
+import stylesCenterTrack from '../styles/CenterTrack.module.scss';
 // Styles
-import styles from '../styles/TiledPlot.module.scss'; // eslint-disable-line no-unused-vars
-import stylesCenterTrack from '../styles/CenterTrack.module.scss'; // eslint-disable-line no-unused-vars
+import styles from '../styles/TiledPlot.module.scss';
 
 class TiledPlot extends React.Component {
   constructor(props) {
@@ -207,7 +207,6 @@ class TiledPlot extends React.Component {
     );
   }
 
-  // eslint-disable-next-line camelcase
   UNSAFE_componentWillReceiveProps(newProps) {
     this.addUidsToTracks(newProps.tracks);
 
@@ -251,7 +250,6 @@ class TiledPlot extends React.Component {
     return toUpdate;
   }
 
-  // eslint-disable-next-line camelcase
   UNSAFE_componentWillUpdate() {
     /**
      * Need to determine the offset of this element relative to the canvas on which stuff
@@ -265,7 +263,7 @@ class TiledPlot extends React.Component {
 
       if (
         this.state.defaultChromSizes &&
-        this.state.rangeSelection.every((range) => range && range.length)
+        this.state.rangeSelection.every((range) => range?.length)
       ) {
         // Convert data into genomic loci
         genomicRange = this.state.rangeSelection.map((range) =>
@@ -291,7 +289,8 @@ class TiledPlot extends React.Component {
 
         this.props.modal.open(
           <CustomTrackDialog
-            children={componentArray} // eslint-disable-line react/no-children-prop
+            // biome-ignore lint/correctness/noChildrenProp:
+            children={componentArray}
             bodyProps={bodyPropsArray}
             onCancel={this.props.closeCustomDialog}
             title={dialogData[0].title}
@@ -858,9 +857,8 @@ class TiledPlot extends React.Component {
         for (let i = 0; i < this.state.tracks.top.length; i++) {
           if (this.state.tracks.top[i].uid === track.uid) {
             break;
-          } else {
-            top += this.state.tracks.top[i].height;
           }
+          top += this.state.tracks.top[i].height;
         }
 
         break;
@@ -872,9 +870,8 @@ class TiledPlot extends React.Component {
         for (let i = 0; i < this.state.tracks.bottom.length; i++) {
           if (this.state.tracks.bottom[i].uid === track.uid) {
             break;
-          } else {
-            top += this.state.tracks.bottom[i].height;
           }
+          top += this.state.tracks.bottom[i].height;
         }
 
         break;
@@ -887,9 +884,8 @@ class TiledPlot extends React.Component {
         for (let i = 0; i < this.state.tracks.left.length; i++) {
           if (this.state.tracks.left[i].uid === track.uid) {
             break;
-          } else {
-            left += this.state.tracks.left[i].width;
           }
+          left += this.state.tracks.left[i].width;
         }
 
         break;
@@ -903,9 +899,8 @@ class TiledPlot extends React.Component {
         for (let i = 0; i < this.state.tracks.right.length; i++) {
           if (this.state.tracks.right[i].uid === track.uid) {
             break;
-          } else {
-            left += this.state.tracks.right[i].width;
           }
+          left += this.state.tracks.right[i].width;
         }
 
         break;
@@ -936,14 +931,13 @@ class TiledPlot extends React.Component {
         for (let i = 0; i < this.state.tracks.gallery.length; i++) {
           if (this.state.tracks.gallery[i].uid === track.uid) {
             break;
-          } else {
-            width -= 2 * this.state.tracks.gallery[i].height;
-            height -= 2 * this.state.tracks.gallery[i].height;
-            left += this.state.tracks.gallery[i].height;
-            top += this.state.tracks.gallery[i].height;
-            offsetX -= this.state.tracks.gallery[i].height;
-            offsetY -= this.state.tracks.gallery[i].height;
           }
+          width -= 2 * this.state.tracks.gallery[i].height;
+          height -= 2 * this.state.tracks.gallery[i].height;
+          left += this.state.tracks.gallery[i].height;
+          top += this.state.tracks.gallery[i].height;
+          offsetX -= this.state.tracks.gallery[i].height;
+          offsetY -= this.state.tracks.gallery[i].height;
         }
 
         for (let i = 0; i < this.state.tracks.right.length; i++) {
@@ -962,7 +956,7 @@ class TiledPlot extends React.Component {
 
         break;
 
-      case 'whole':
+      // case 'whole':
       default:
         width = this.leftWidth + this.centerWidth + this.rightWidth;
         height = this.topHeight + this.centerHeight + this.bottomHeight;
@@ -1030,10 +1024,7 @@ class TiledPlot extends React.Component {
      */
     if (this.props.overlays) {
       const overlayDefs = this.props.overlays
-        .filter(
-          (overlayTrack) =>
-            overlayTrack.includes && overlayTrack.includes.length,
-        )
+        .filter((overlayTrack) => overlayTrack.includes?.length)
         .map((overlayTrack) => {
           const type = overlayTrack.type
             ? `overlay-${overlayTrack.type}-track`
@@ -1228,8 +1219,7 @@ class TiledPlot extends React.Component {
                 }
               }
             } else if (
-              this.props.tracks.center &&
-              this.props.tracks.center.length &&
+              this.props.tracks.center?.length &&
               this.props.tracks.center[0].uid === uid
             ) {
               trackObj.is2d = true;
@@ -1422,8 +1412,8 @@ class TiledPlot extends React.Component {
     if (!scale) return [null, null];
 
     return [
-      parseInt(scale.invert(range[0]), 10),
-      parseInt(scale.invert(range[1]), 10),
+      Number.parseInt(scale.invert(range[0]), 10),
+      Number.parseInt(scale.invert(range[1]), 10),
     ];
   }
 
@@ -1615,6 +1605,7 @@ class TiledPlot extends React.Component {
             position={this.state.contextMenuPosition}
             theme={this.props.theme}
             tracks={relevantTracks}
+            trackRenderer={this.trackRenderer}
             trackSourceServers={this.props.trackSourceServers}
           />
         </PopupMenu>
@@ -2232,6 +2223,7 @@ class TiledPlot extends React.Component {
               this.props.tracks,
               this.state.configTrackMenuId,
             )}
+            trackRenderer={this.trackRenderer}
             tracks={[
               getTrackByUid(this.props.tracks, this.state.configTrackMenuId),
             ]}

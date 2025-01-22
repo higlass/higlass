@@ -1,15 +1,15 @@
 // @ts-nocheck
-import { scaleLinear, scaleLog, scaleQuantile } from 'd3-scale';
 import { median, range, ticks } from 'd3-array';
+import { scaleLinear, scaleLog, scaleQuantile } from 'd3-scale';
 import slugid from 'slugid';
 
-import DataFetcher from './data-fetchers/DataFetcher';
 import PixiTrack from './PixiTrack';
+import DataFetcher from './data-fetchers/DataFetcher';
 
+import backgroundTaskScheduler from './utils/background-task-scheduler';
+import parseChromsizesRows from './utils/parse-chromsizes-rows';
 // Utils
 import throttleAndDebounce from './utils/throttle-and-debounce';
-import parseChromsizesRows from './utils/parse-chromsizes-rows';
-import backgroundTaskScheduler from './utils/background-task-scheduler';
 
 // Configs
 import GLOBALS from './configs/globals';
@@ -174,7 +174,7 @@ class TiledPixiTrack extends PixiTrack {
       this.tilesetUid = this.dataFetcher.dataConfig.tilesetUid;
       this.server = this.dataFetcher.dataConfig.server || 'unknown';
 
-      if (this.tilesetInfo && this.tilesetInfo.chromsizes) {
+      if (this.tilesetInfo?.chromsizes) {
         this.chromInfo = parseChromsizesRows(this.tilesetInfo.chromsizes);
       }
 
@@ -200,7 +200,7 @@ class TiledPixiTrack extends PixiTrack {
         this.maxZoom = +this.tilesetInfo.max_zoom;
       }
 
-      if (this.options && this.options.maxZoom) {
+      if (this.options?.maxZoom) {
         if (this.options.maxZoom >= 0) {
           this.maxZoom = Math.min(this.options.maxZoom, this.maxZoom);
         } else {
@@ -222,12 +222,6 @@ class TiledPixiTrack extends PixiTrack {
       this.drawLabel(); // draw the label so that the current resolution is displayed
       this.animate();
     });
-  }
-
-  setError(error) {
-    this.errorTextText = error;
-    this.draw();
-    this.animate();
   }
 
   setFixedValueScaleMin(value) {
@@ -306,7 +300,7 @@ class TiledPixiTrack extends PixiTrack {
       this.maxZoom = +this.tilesetInfo.max_zoom;
     }
 
-    if (this.options && this.options.maxZoom) {
+    if (this.options?.maxZoom) {
       if (this.options.maxZoom >= 0) {
         this.maxZoom = Math.min(this.options.maxZoom, this.maxZoom);
       } else {
@@ -634,6 +628,9 @@ class TiledPixiTrack extends PixiTrack {
   }
 
   fetchNewTiles(toFetch) {
+    this._checkForErrors();
+    this.draw();
+
     if (toFetch.length > 0) {
       const toFetchList = [...new Set(toFetch.map((x) => x.remoteId))];
 
@@ -738,6 +735,26 @@ class TiledPixiTrack extends PixiTrack {
     }
   }
 
+  _checkForErrors() {
+    const errors = Object.values(this.fetchedTiles)
+      .map((x) => x.tileData?.error && `${x.tileId}: ${x.tileData.error}`)
+      .filter((x) => x);
+
+    if (errors.length) {
+      this.errorTexts.TiledPixiTrack = errors.join('\n');
+    } else {
+      this.errorTexts.TiledPixiTrack = '';
+    }
+
+    if (this.tilesetInfoError) {
+      this.errorTexts.TiledPixiTrack = this.tilesetInfoError;
+
+      errors.push(this.tilesetInfoError);
+    }
+
+    return errors;
+  }
+
   draw() {
     if (this.delayDrawing) return;
 
@@ -765,18 +782,8 @@ class TiledPixiTrack extends PixiTrack {
         uuid: this.uuid,
       });
     }
-    const errors = Object.values(this.fetchedTiles)
-      .map(
-        (x) =>
-          x.tileData && x.tileData.error && `${x.tileId}: ${x.tileData.error}`,
-      )
-      .filter((x) => x);
 
-    if (errors.length) {
-      this.errorTextText = errors.join('\n');
-    } else {
-      this.errorTextText = '';
-    }
+    this._checkForErrors();
 
     super.draw();
 

@@ -1,9 +1,9 @@
 // @ts-nocheck
-/* eslint-env mocha */
-import Enzyme from 'enzyme';
+
 import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
-import { expect } from 'chai';
 import Ajv from 'ajv';
+import { expect } from 'chai';
+import Enzyme from 'enzyme';
 
 import schema from '../app/schema.json';
 

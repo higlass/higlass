@@ -1,10 +1,10 @@
 // @ts-nocheck
-/* eslint-env mocha */
+
 import { expect } from 'chai';
 
+import { register } from './utils/DummyTrack';
 import createElementAndApi from './utils/create-element-and-api';
 import removeDiv from './utils/remove-div';
-import { register } from './utils/DummyTrack';
 
 import dummyTrackViewConf from './view-configs/dummy-track.json';
 
@@ -137,7 +137,7 @@ describe('Plugin track tests', () => {
   });
 
   afterEach(() => {
-    if (api && api.destroy) api.destroy();
+    if (api?.destroy) api.destroy();
     if (div) removeDiv(div);
     api = undefined;
     div = undefined;
