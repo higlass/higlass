@@ -9,7 +9,6 @@ import ReactDOM from 'react-dom';
 
 // Utils
 import {
-  mountHGComponent,
   mountHGComponentAsync,
   removeHGComponent,
 } from '../app/scripts/test-helpers';
@@ -45,29 +44,24 @@ describe('Horizontal multivecs', () => {
   });
 
   it('Test horizontal multivec with track containing smaller-than-default width and height', async () => {
-    await new Promise((done) => {
-      [div, hgc] = mountHGComponent(
-        div,
-        hgc,
-        horizontalMultivecWithSmallerDimensions,
-        () => {
-          const track = getTrackObjectFromHGC(
-            hgc.instance(),
-            'viewConf2_uid',
-            'K_0GxgCvQfCHM56neOnHKg',
-          ); // uuid of horizontal-multivec
-          const width = track.dimensions[0];
-          const height = track.dimensions[1];
-          if (height === MIN_HORIZONTAL_HEIGHT || width === MIN_VERTICAL_WIDTH)
-            return;
-          done(null);
-        },
-        {
-          style: 'width:800px; height:400px; background-color: lightgreen',
-          bounded: true,
-        },
-      );
-    });
+    [div, hgc] = await mountHGComponentAsync(
+      div,
+      hgc,
+      horizontalMultivecWithSmallerDimensions,
+      {
+        style: 'width:800px; height:400px; background-color: lightgreen',
+        bounded: true,
+      },
+    );
+    const track = getTrackObjectFromHGC(
+      hgc.instance(),
+      'viewConf2_uid',
+      'K_0GxgCvQfCHM56neOnHKg',
+    ); // uuid of horizontal-multivec
+    const width = track.dimensions[0];
+    const height = track.dimensions[1];
+    if (height === MIN_HORIZONTAL_HEIGHT || width === MIN_VERTICAL_WIDTH)
+      return;
   });
 
   it('has a colorbar', () => {
@@ -109,371 +103,326 @@ describe('Horizontal multivecs', () => {
   });
 
   it('Test horizontal multivec with null zero value color option', async () => {
-    await new Promise((done) => {
-      [div, hgc] = mountHGComponent(
-        div,
-        hgc,
-        horizontalMultivecWithZeroValueColorOption,
-        () => {
-          const track = getTrackObjectFromHGC(
-            hgc.instance(),
-            'view-0',
-            'horizontal-multivec-track-0',
-          ); // uuid of horizontal-multivec
-          const trackTiles = track.visibleAndFetchedTiles();
-          expect(trackTiles.length).to.equal(1);
+    [div, hgc] = await mountHGComponentAsync(
+      div,
+      hgc,
+      horizontalMultivecWithZeroValueColorOption,
+      {
+        style: 'width:1000px; height:1000px; background-color: lightgreen',
+      },
+    );
+    const track = getTrackObjectFromHGC(
+      hgc.instance(),
+      'view-0',
+      'horizontal-multivec-track-0',
+    ); // uuid of horizontal-multivec
+    const trackTiles = track.visibleAndFetchedTiles();
+    expect(trackTiles.length).to.equal(1);
 
-          const zeroCellCoords = [79, 184];
-          const tooltipValue = track.getVisibleData(
-            zeroCellCoords[0],
-            zeroCellCoords[1],
-          );
-          // The data at this coordinate should correspond to this particular zero value.
-          expect(tooltipValue).to.equal(
-            '0.000<br/>Homo sapiens	CHIP-SEQ ANALYSIS OF H3K27AC IN' +
-              ' HUMAN INFERIOR TEMPORAL LOBE CELLS; DNA_LIB 1053	G' +
-              'SM1112812	GSE17312	None	Inferior Temporal Lobe Cel' +
-              'l	Brain	Active Motif, 39133, 31610003	H3K27ac	hm	No' +
-              'rmal',
-          );
+    const zeroCellCoords = [79, 184];
+    const tooltipValue = track.getVisibleData(
+      zeroCellCoords[0],
+      zeroCellCoords[1],
+    );
+    // The data at this coordinate should correspond to this particular zero value.
+    expect(tooltipValue).to.equal(
+      '0.000<br/>Homo sapiens	CHIP-SEQ ANALYSIS OF H3K27AC IN' +
+        ' HUMAN INFERIOR TEMPORAL LOBE CELLS; DNA_LIB 1053	G' +
+        'SM1112812	GSE17312	None	Inferior Temporal Lobe Cel' +
+        'l	Brain	Active Motif, 39133, 31610003	H3K27ac	hm	No' +
+        'rmal',
+    );
 
-          const canvas = trackTiles[0].canvas;
-          const ctx = canvas.getContext('2d');
+    const canvas = trackTiles[0].canvas;
+    const ctx = canvas.getContext('2d');
 
-          expect(canvas.width).to.equal(256);
-          expect(canvas.height).to.equal(228);
-          expect(track.dimensions[0]).to.equal(805);
-          expect(track.dimensions[1]).to.equal(370);
+    expect(canvas.width).to.equal(256);
+    expect(canvas.height).to.equal(228);
+    expect(track.dimensions[0]).to.equal(805);
+    expect(track.dimensions[1]).to.equal(370);
 
-          // Need to scale from screen coordinates to dataset coordinates.
-          const scaledCoord = [
-            Math.ceil((zeroCellCoords[0] / track.dimensions[0]) * canvas.width),
-            Math.floor(
-              (zeroCellCoords[1] / track.dimensions[1]) * canvas.height,
-            ),
-          ];
-          // Obtain the color at this pixel on the canvas.
-          const pixel = ctx.getImageData(
-            scaledCoord[0],
-            scaledCoord[1],
-            canvas.width,
-            canvas.height,
-          ).data;
+    // Need to scale from screen coordinates to dataset coordinates.
+    const scaledCoord = [
+      Math.ceil((zeroCellCoords[0] / track.dimensions[0]) * canvas.width),
+      Math.floor((zeroCellCoords[1] / track.dimensions[1]) * canvas.height),
+    ];
+    // Obtain the color at this pixel on the canvas.
+    const pixel = ctx.getImageData(
+      scaledCoord[0],
+      scaledCoord[1],
+      canvas.width,
+      canvas.height,
+    ).data;
 
-          // Pixel should be slightly yellow.
-          expect(pixel[0]).to.equal(255); // r
-          expect(pixel[1]).to.equal(255); // g
-          expect(pixel[2]).to.equal(247); // b // 247, for the faint yellow color.
-          expect(pixel[3]).to.equal(255); // a
-
-          done(null);
-        },
-        {
-          style: 'width:1000px; height:1000px; background-color: lightgreen',
-        },
-      );
-    });
+    // Pixel should be slightly yellow.
+    expect(pixel[0]).to.equal(255); // r
+    expect(pixel[1]).to.equal(255); // g
+    expect(pixel[2]).to.equal(247); // b // 247, for the faint yellow color.
+    expect(pixel[3]).to.equal(255); // a
   });
 
   it('Test horizontal multivec with blue zero value color option', async () => {
     horizontalMultivecWithZeroValueColorOption.views[0].tracks.center[0].options.zeroValueColor =
       'blue';
 
-    await new Promise((done) => {
-      [div, hgc] = mountHGComponent(
-        div,
-        hgc,
-        horizontalMultivecWithZeroValueColorOption,
-        () => {
-          const track = getTrackObjectFromHGC(
-            hgc.instance(),
-            'view-0',
-            'horizontal-multivec-track-0',
-          ); // uuid of horizontal-multivec
-          const trackTiles = track.visibleAndFetchedTiles();
-          expect(trackTiles.length).to.equal(1);
+    [div, hgc] = await mountHGComponentAsync(
+      div,
+      hgc,
+      horizontalMultivecWithZeroValueColorOption,
+      {
+        style: 'width:1000px; height:1000px; background-color: lightgreen',
+      },
+    );
+    const track = getTrackObjectFromHGC(
+      hgc.instance(),
+      'view-0',
+      'horizontal-multivec-track-0',
+    ); // uuid of horizontal-multivec
+    const trackTiles = track.visibleAndFetchedTiles();
+    expect(trackTiles.length).to.equal(1);
 
-          const zeroCellCoords = [79, 184];
-          const tooltipValue = track.getVisibleData(
-            zeroCellCoords[0],
-            zeroCellCoords[1],
-          );
-          // The data at this coordinate should correspond to this particular zero value.
-          expect(tooltipValue).to.equal(
-            '0.000<br/>Homo sapiens	CHIP-SEQ ANALYSIS OF H3K27AC IN' +
-              ' HUMAN INFERIOR TEMPORAL LOBE CELLS; DNA_LIB 1053	G' +
-              'SM1112812	GSE17312	None	Inferior Temporal Lobe Cel' +
-              'l	Brain	Active Motif, 39133, 31610003	H3K27ac	hm	No' +
-              'rmal',
-          );
+    const zeroCellCoords = [79, 184];
+    const tooltipValue = track.getVisibleData(
+      zeroCellCoords[0],
+      zeroCellCoords[1],
+    );
+    // The data at this coordinate should correspond to this particular zero value.
+    expect(tooltipValue).to.equal(
+      '0.000<br/>Homo sapiens	CHIP-SEQ ANALYSIS OF H3K27AC IN' +
+        ' HUMAN INFERIOR TEMPORAL LOBE CELLS; DNA_LIB 1053	G' +
+        'SM1112812	GSE17312	None	Inferior Temporal Lobe Cel' +
+        'l	Brain	Active Motif, 39133, 31610003	H3K27ac	hm	No' +
+        'rmal',
+    );
 
-          const canvas = trackTiles[0].canvas;
-          const ctx = canvas.getContext('2d');
+    const canvas = trackTiles[0].canvas;
+    const ctx = canvas.getContext('2d');
 
-          expect(canvas.width).to.equal(256);
-          expect(canvas.height).to.equal(228);
-          expect(track.dimensions[0]).to.equal(805);
-          expect(track.dimensions[1]).to.equal(370);
+    expect(canvas.width).to.equal(256);
+    expect(canvas.height).to.equal(228);
+    expect(track.dimensions[0]).to.equal(805);
+    expect(track.dimensions[1]).to.equal(370);
 
-          // Need to scale from screen coordinates to dataset coordinates.
-          const scaledCoord = [
-            Math.ceil((zeroCellCoords[0] / track.dimensions[0]) * canvas.width),
-            Math.floor(
-              (zeroCellCoords[1] / track.dimensions[1]) * canvas.height,
-            ),
-          ];
-          // Obtain the color at this pixel on the canvas.
-          const pixel = ctx.getImageData(
-            scaledCoord[0],
-            scaledCoord[1],
-            canvas.width,
-            canvas.height,
-          ).data;
+    // Need to scale from screen coordinates to dataset coordinates.
+    const scaledCoord = [
+      Math.ceil((zeroCellCoords[0] / track.dimensions[0]) * canvas.width),
+      Math.floor((zeroCellCoords[1] / track.dimensions[1]) * canvas.height),
+    ];
+    // Obtain the color at this pixel on the canvas.
+    const pixel = ctx.getImageData(
+      scaledCoord[0],
+      scaledCoord[1],
+      canvas.width,
+      canvas.height,
+    ).data;
 
-          // Pixel should be blue.
-          expect(pixel[0]).to.equal(0); // r
-          expect(pixel[1]).to.equal(0); // g
-          expect(pixel[2]).to.equal(255); // b
-          expect(pixel[3]).to.equal(255); // a
-
-          done(null);
-        },
-        {
-          style: 'width:1000px; height:1000px; background-color: lightgreen',
-        },
-      );
-    });
+    // Pixel should be blue.
+    expect(pixel[0]).to.equal(0); // r
+    expect(pixel[1]).to.equal(0); // g
+    expect(pixel[2]).to.equal(255); // b
+    expect(pixel[3]).to.equal(255); // a
   });
 
   it('Test horizontal multivec with transparent zero value color option', async () => {
     horizontalMultivecWithZeroValueColorOption.views[0].tracks.center[0].options.zeroValueColor =
       'transparent';
 
-    await new Promise((done) => {
-      [div, hgc] = mountHGComponent(
-        div,
-        hgc,
-        horizontalMultivecWithZeroValueColorOption,
-        () => {
-          const track = getTrackObjectFromHGC(
-            hgc.instance(),
-            'view-0',
-            'horizontal-multivec-track-0',
-          ); // uuid of horizontal-multivec
-          const trackTiles = track.visibleAndFetchedTiles();
-          expect(trackTiles.length).to.equal(1);
+    [div, hgc] = await mountHGComponentAsync(
+      div,
+      hgc,
+      horizontalMultivecWithZeroValueColorOption,
+      {
+        style: 'width:1000px; height:1000px; background-color: green',
+      },
+    );
 
-          const zeroCellCoords = [79, 184];
-          const tooltipValue = track.getVisibleData(
-            zeroCellCoords[0],
-            zeroCellCoords[1],
-          );
-          // The data at this coordinate should correspond to this particular zero value.
-          expect(tooltipValue).to.equal(
-            '0.000<br/>Homo sapiens	CHIP-SEQ ANALYSIS OF H3K27AC IN' +
-              ' HUMAN INFERIOR TEMPORAL LOBE CELLS; DNA_LIB 1053	G' +
-              'SM1112812	GSE17312	None	Inferior Temporal Lobe Cel' +
-              'l	Brain	Active Motif, 39133, 31610003	H3K27ac	hm	No' +
-              'rmal',
-          );
+    const track = getTrackObjectFromHGC(
+      hgc.instance(),
+      'view-0',
+      'horizontal-multivec-track-0',
+    ); // uuid of horizontal-multivec
+    const trackTiles = track.visibleAndFetchedTiles();
+    expect(trackTiles.length).to.equal(1);
 
-          const canvas = trackTiles[0].canvas;
-          const ctx = canvas.getContext('2d');
+    const zeroCellCoords = [79, 184];
+    const tooltipValue = track.getVisibleData(
+      zeroCellCoords[0],
+      zeroCellCoords[1],
+    );
+    // The data at this coordinate should correspond to this particular zero value.
+    expect(tooltipValue).to.equal(
+      '0.000<br/>Homo sapiens	CHIP-SEQ ANALYSIS OF H3K27AC IN' +
+        ' HUMAN INFERIOR TEMPORAL LOBE CELLS; DNA_LIB 1053	G' +
+        'SM1112812	GSE17312	None	Inferior Temporal Lobe Cel' +
+        'l	Brain	Active Motif, 39133, 31610003	H3K27ac	hm	No' +
+        'rmal',
+    );
 
-          expect(canvas.width).to.equal(256);
-          expect(canvas.height).to.equal(228);
-          expect(track.dimensions[0]).to.equal(805);
-          expect(track.dimensions[1]).to.equal(370);
+    const canvas = trackTiles[0].canvas;
+    const ctx = canvas.getContext('2d');
 
-          // Need to scale from screen coordinates to dataset coordinates.
-          const scaledCoord = [
-            Math.ceil((zeroCellCoords[0] / track.dimensions[0]) * canvas.width),
-            Math.floor(
-              (zeroCellCoords[1] / track.dimensions[1]) * canvas.height,
-            ),
-          ];
-          // Obtain the color at this pixel on the canvas.
-          const pixel = ctx.getImageData(
-            scaledCoord[0],
-            scaledCoord[1],
-            canvas.width,
-            canvas.height,
-          ).data;
+    expect(canvas.width).to.equal(256);
+    expect(canvas.height).to.equal(228);
+    expect(track.dimensions[0]).to.equal(805);
+    expect(track.dimensions[1]).to.equal(370);
 
-          // Pixel should be transparent.
-          expect(pixel[3]).to.equal(0); // transparent
+    // Need to scale from screen coordinates to dataset coordinates.
+    const scaledCoord = [
+      Math.ceil((zeroCellCoords[0] / track.dimensions[0]) * canvas.width),
+      Math.floor((zeroCellCoords[1] / track.dimensions[1]) * canvas.height),
+    ];
+    // Obtain the color at this pixel on the canvas.
+    const pixel = ctx.getImageData(
+      scaledCoord[0],
+      scaledCoord[1],
+      canvas.width,
+      canvas.height,
+    ).data;
 
-          done(null);
-        },
-        {
-          style: 'width:1000px; height:1000px; background-color: green',
-        },
-      );
-    });
+    // Pixel should be transparent.
+    expect(pixel[3]).to.equal(0); // transparent
   });
 
   it('Test horizontal multivec with filtered rows', async () => {
-    await new Promise((done) => {
-      [div, hgc] = mountHGComponent(
-        div,
-        hgc,
-        horizontalMultivecWithFilteredRows,
-        () => {
-          const track = getTrackObjectFromHGC(
-            hgc.instance(),
-            'UiHlCoxRQ-aITBDi5j8b_w',
-            'YafcbvKDQvWoWRT1WrygPA',
-          ); // uuid of horizontal-multivec
-          const trackTiles = track.visibleAndFetchedTiles();
-          expect(trackTiles.length).to.equal(2);
-          expect(trackTiles[0].canvas.width).to.equal(256);
-          expect(trackTiles[0].canvas.height).to.equal(10);
-          expect(trackTiles[1].canvas.width).to.equal(256);
-          expect(trackTiles[1].canvas.height).to.equal(10);
+    [div, hgc] = await mountHGComponentAsync(
+      div,
+      hgc,
+      horizontalMultivecWithFilteredRows,
+      {
+        style: 'width:800px; height:400px; background-color: lightgreen',
+        bounded: true,
+      },
+    );
+    const track = getTrackObjectFromHGC(
+      hgc.instance(),
+      'UiHlCoxRQ-aITBDi5j8b_w',
+      'YafcbvKDQvWoWRT1WrygPA',
+    ); // uuid of horizontal-multivec
+    const trackTiles = track.visibleAndFetchedTiles();
+    expect(trackTiles.length).to.equal(2);
+    expect(trackTiles[0].canvas.width).to.equal(256);
+    expect(trackTiles[0].canvas.height).to.equal(10);
+    expect(trackTiles[1].canvas.width).to.equal(256);
+    expect(trackTiles[1].canvas.height).to.equal(10);
 
-          const tooltipValue = track.getVisibleData(100, 100);
-          expect(tooltipValue.startsWith('0.676')).to.be.true;
-          done(null);
-        },
-        {
-          style: 'width:800px; height:400px; background-color: lightgreen',
-          bounded: true,
-        },
-      );
-    });
+    const tooltipValue = track.getVisibleData(100, 100);
+    expect(tooltipValue.startsWith('0.676')).to.be.true;
   });
 
   it('Test horizontal multivec without filtered rows', async () => {
-    await new Promise((done) => {
-      [div, hgc] = mountHGComponent(
-        div,
-        hgc,
-        horizontalMultivecWithSmallerDimensions,
-        () => {
-          const track = getTrackObjectFromHGC(
-            hgc.instance(),
-            'viewConf2_uid',
-            'K_0GxgCvQfCHM56neOnHKg',
-          ); // uuid of horizontal-multivec
-          const trackTiles = track.visibleAndFetchedTiles();
-          expect(trackTiles.length).to.equal(3);
-          expect(trackTiles[0].canvas.width).to.equal(256);
-          expect(trackTiles[0].canvas.height).to.equal(228);
-          expect(trackTiles[1].canvas.width).to.equal(256);
-          expect(trackTiles[1].canvas.height).to.equal(228);
+    [div, hgc] = await mountHGComponentAsync(
+      div,
+      hgc,
+      horizontalMultivecWithSmallerDimensions,
+      {
+        style: 'width:800px; height:400px; background-color: lightgreen',
+        bounded: true,
+      },
+    );
+    const track = getTrackObjectFromHGC(
+      hgc.instance(),
+      'viewConf2_uid',
+      'K_0GxgCvQfCHM56neOnHKg',
+    ); // uuid of horizontal-multivec
+    const trackTiles = track.visibleAndFetchedTiles();
+    expect(trackTiles.length).to.equal(3);
+    expect(trackTiles[0].canvas.width).to.equal(256);
+    expect(trackTiles[0].canvas.height).to.equal(228);
+    expect(trackTiles[1].canvas.width).to.equal(256);
+    expect(trackTiles[1].canvas.height).to.equal(228);
 
-          const tooltipValue = track.getVisibleData(40, 40);
-          expect(tooltipValue).to.equal('647.000');
-          done(null);
-        },
-        {
-          style: 'width:800px; height:400px; background-color: lightgreen',
-          bounded: true,
-        },
-      );
-    });
+    const tooltipValue = track.getVisibleData(40, 40);
+    expect(tooltipValue).to.equal('647.000');
   });
 
   it('Test horizontal multivec with aggregation of rows', async () => {
     horizontalMultivecWithAggregation.views[0].tracks.center[0].options.selectRowsAggregationWithRelativeHeight = true;
-    await new Promise((done) => {
-      [div, hgc] = mountHGComponent(
-        div,
-        hgc,
-        horizontalMultivecWithAggregation,
-        () => {
-          const track = getTrackObjectFromHGC(
-            hgc.instance(),
-            'aggregation-view',
-            'aggregation-track',
-          ); // uuid of horizontal-multivec
-          const trackTiles = track.visibleAndFetchedTiles();
-          expect(trackTiles.length).to.be.greaterThanOrEqual(1);
-          expect(trackTiles[0].canvas.width).to.equal(256);
-          expect(trackTiles[0].canvas.height).to.equal(5);
+    [div, hgc] = await mountHGComponentAsync(
+      div,
+      hgc,
+      horizontalMultivecWithAggregation,
+      {
+        style: 'width:800px; height:400px; background-color: lightgreen',
+        bounded: true,
+      },
+    );
+    const track = getTrackObjectFromHGC(
+      hgc.instance(),
+      'aggregation-view',
+      'aggregation-track',
+    ); // uuid of horizontal-multivec
+    const trackTiles = track.visibleAndFetchedTiles();
+    expect(trackTiles.length).to.be.greaterThanOrEqual(1);
+    expect(trackTiles[0].canvas.width).to.equal(256);
+    expect(trackTiles[0].canvas.height).to.equal(5);
 
-          const trackHeight = track.dimensions[1];
-          const itemHeight = trackHeight / 5;
+    const trackHeight = track.dimensions[1];
+    const itemHeight = trackHeight / 5;
 
-          let tooltipValue;
+    let tooltipValue;
 
-          tooltipValue = track.getVisibleData(40, itemHeight * 0 + 1);
-          expect(tooltipValue.substring(0, 5)).to.equal('6.118');
+    tooltipValue = track.getVisibleData(40, itemHeight * 0 + 1);
+    expect(tooltipValue.substring(0, 5)).to.equal('6.118');
 
-          tooltipValue = track.getVisibleData(40, itemHeight * 3 - 1);
-          expect(tooltipValue.substring(0, 5)).to.equal('6.118');
+    tooltipValue = track.getVisibleData(40, itemHeight * 3 - 1);
+    expect(tooltipValue.substring(0, 5)).to.equal('6.118');
 
-          tooltipValue = track.getVisibleData(40, itemHeight * 3 + 1);
-          expect(tooltipValue.substring(0, 5)).to.equal('0.829');
+    tooltipValue = track.getVisibleData(40, itemHeight * 3 + 1);
+    expect(tooltipValue.substring(0, 5)).to.equal('0.829');
 
-          tooltipValue = track.getVisibleData(40, itemHeight * 4 - 1);
-          expect(tooltipValue.substring(0, 5)).to.equal('0.829');
+    tooltipValue = track.getVisibleData(40, itemHeight * 4 - 1);
+    expect(tooltipValue.substring(0, 5)).to.equal('0.829');
 
-          tooltipValue = track.getVisibleData(40, itemHeight * 4 + 1);
-          expect(tooltipValue.substring(0, 5)).to.equal('0.174');
+    tooltipValue = track.getVisibleData(40, itemHeight * 4 + 1);
+    expect(tooltipValue.substring(0, 5)).to.equal('0.174');
 
-          tooltipValue = track.getVisibleData(40, itemHeight * 5 - 1);
-          expect(tooltipValue.substring(0, 5)).to.equal('0.174');
-
-          done(null);
-        },
-        {
-          style: 'width:800px; height:400px; background-color: lightgreen',
-          bounded: true,
-        },
-      );
-    });
+    tooltipValue = track.getVisibleData(40, itemHeight * 5 - 1);
+    expect(tooltipValue.substring(0, 5)).to.equal('0.174');
   });
 
   it('Test horizontal multivec with aggregation of rows and static row height', async () => {
     horizontalMultivecWithAggregation.views[0].tracks.center[0].options.selectRowsAggregationWithRelativeHeight = false;
-    await new Promise((done) => {
-      [div, hgc] = mountHGComponent(
-        div,
-        hgc,
-        horizontalMultivecWithAggregation,
-        () => {
-          const track = getTrackObjectFromHGC(
-            hgc.instance(),
-            'aggregation-view',
-            'aggregation-track',
-          ); // uuid of horizontal-multivec
-          const trackTiles = track.visibleAndFetchedTiles();
-          expect(trackTiles.length).to.be.greaterThanOrEqual(1);
-          expect(trackTiles[0].canvas.width).to.equal(256);
-          expect(trackTiles[0].canvas.height).to.equal(3);
+    [div, hgc] = await mountHGComponentAsync(
+      div,
+      hgc,
+      horizontalMultivecWithAggregation,
+      {
+        style: 'width:800px; height:400px; background-color: lightgreen',
+        bounded: true,
+      },
+    );
+    const track = getTrackObjectFromHGC(
+      hgc.instance(),
+      'aggregation-view',
+      'aggregation-track',
+    ); // uuid of horizontal-multivec
+    const trackTiles = track.visibleAndFetchedTiles();
+    expect(trackTiles.length).to.be.greaterThanOrEqual(1);
+    expect(trackTiles[0].canvas.width).to.equal(256);
+    expect(trackTiles[0].canvas.height).to.equal(3);
 
-          const trackHeight = track.dimensions[1];
-          const itemHeight = trackHeight / 3;
+    const trackHeight = track.dimensions[1];
+    const itemHeight = trackHeight / 3;
 
-          let tooltipValue;
+    let tooltipValue;
 
-          tooltipValue = track.getVisibleData(40, itemHeight * 0 + 1);
-          expect(tooltipValue.substring(0, 5)).to.equal('6.118');
+    tooltipValue = track.getVisibleData(40, itemHeight * 0 + 1);
+    expect(tooltipValue.substring(0, 5)).to.equal('6.118');
 
-          tooltipValue = track.getVisibleData(40, itemHeight * 1 - 1);
-          expect(tooltipValue.substring(0, 5)).to.equal('6.118');
+    tooltipValue = track.getVisibleData(40, itemHeight * 1 - 1);
+    expect(tooltipValue.substring(0, 5)).to.equal('6.118');
 
-          tooltipValue = track.getVisibleData(40, itemHeight * 1 + 1);
-          expect(tooltipValue.substring(0, 5)).to.equal('0.829');
+    tooltipValue = track.getVisibleData(40, itemHeight * 1 + 1);
+    expect(tooltipValue.substring(0, 5)).to.equal('0.829');
 
-          tooltipValue = track.getVisibleData(40, itemHeight * 2 - 1);
-          expect(tooltipValue.substring(0, 5)).to.equal('0.829');
+    tooltipValue = track.getVisibleData(40, itemHeight * 2 - 1);
+    expect(tooltipValue.substring(0, 5)).to.equal('0.829');
 
-          tooltipValue = track.getVisibleData(40, itemHeight * 2 + 1);
-          expect(tooltipValue.substring(0, 5)).to.equal('0.174');
+    tooltipValue = track.getVisibleData(40, itemHeight * 2 + 1);
+    expect(tooltipValue.substring(0, 5)).to.equal('0.174');
 
-          tooltipValue = track.getVisibleData(40, itemHeight * 3 - 1);
-          expect(tooltipValue.substring(0, 5)).to.equal('0.174');
-
-          done(null);
-        },
-        {
-          style: 'width:800px; height:400px; background-color: lightgreen',
-          bounded: true,
-        },
-      );
-    });
+    tooltipValue = track.getVisibleData(40, itemHeight * 3 - 1);
+    expect(tooltipValue.substring(0, 5)).to.equal('0.174');
   });
 
   it('handles dynamic selectRows values by updating the dataFetcher and fetching new tiles', async () => {
@@ -482,67 +431,59 @@ describe('Horizontal multivecs', () => {
     horizontalMultivecWithAggregation.views[0].tracks.center[0].options.selectRowsAggregationWithRelativeHeight = false;
     horizontalMultivecWithAggregation.views[0].tracks.center[0].options.selectRowsAggregationMethod =
       'client';
-    await new Promise((done) => {
-      [div, hgc] = mountHGComponent(
-        div,
-        hgc,
-        horizontalMultivecWithAggregation,
-        () => {
-          const clientAggTrack = getTrackObjectFromHGC(
-            hgc.instance(),
-            'aggregation-view',
-            'aggregation-track',
-          );
+    [div, hgc] = await mountHGComponentAsync(
+      div,
+      hgc,
+      horizontalMultivecWithAggregation,
+      {
+        style: 'width:800px; height:400px; background-color: lightgreen',
+        bounded: true,
+      },
+    );
+    const clientAggTrack = getTrackObjectFromHGC(
+      hgc.instance(),
+      'aggregation-view',
+      'aggregation-track',
+    );
 
-          // When aggregation method === client, do not expect options in the dataConfig.
-          const clientAggDataConfig = clientAggTrack.dataFetcher.dataConfig;
-          expect(clientAggDataConfig.options).to.be.undefined;
+    // When aggregation method === client, do not expect options in the dataConfig.
+    const clientAggDataConfig = clientAggTrack.dataFetcher.dataConfig;
+    expect(clientAggDataConfig.options).to.be.undefined;
 
-          // When aggregation method === server, expect options.aggGroups in the dataConfig.
-          const serverAggViewConf1 = horizontalMultivecWithAggregation;
-          serverAggViewConf1.views[0].tracks.center[0].options.selectRowsAggregationMethod =
-            'server';
-          const serverAggViews1 = hgc
-            .instance()
-            .processViewConfig(serverAggViewConf1);
-          hgc.setState({
-            views: serverAggViews1,
-          });
-          const serverAggTrack1 = getTrackObjectFromHGC(
-            hgc.instance(),
-            'aggregation-view',
-            'aggregation-track',
-          );
-          const serverAggDataConfig1 = serverAggTrack1.dataFetcher.dataConfig;
-          expect(serverAggDataConfig1.options.aggGroups).to.eql([1, 2, 3]);
-
-          // When selectRows changes, check that options.aggGroups in the dataConfig also changes.
-          const serverAggViewConf2 = horizontalMultivecWithAggregation;
-          serverAggViewConf2.views[0].tracks.center[0].options.selectRows = [
-            4, 5, 6,
-          ];
-          const serverAggViews2 = hgc
-            .instance()
-            .processViewConfig(serverAggViewConf2);
-          hgc.setState({
-            views: serverAggViews2,
-          });
-          const serverAggTrack2 = getTrackObjectFromHGC(
-            hgc.instance(),
-            'aggregation-view',
-            'aggregation-track',
-          );
-          const serverAggDataConfig2 = serverAggTrack2.dataFetcher.dataConfig;
-          expect(serverAggDataConfig2.options.aggGroups).to.eql([4, 5, 6]);
-
-          done(null);
-        },
-        {
-          style: 'width:800px; height:400px; background-color: lightgreen',
-          bounded: true,
-        },
-      );
+    // When aggregation method === server, expect options.aggGroups in the dataConfig.
+    const serverAggViewConf1 = horizontalMultivecWithAggregation;
+    serverAggViewConf1.views[0].tracks.center[0].options.selectRowsAggregationMethod =
+      'server';
+    const serverAggViews1 = hgc
+      .instance()
+      .processViewConfig(serverAggViewConf1);
+    hgc.setState({
+      views: serverAggViews1,
     });
+    const serverAggTrack1 = getTrackObjectFromHGC(
+      hgc.instance(),
+      'aggregation-view',
+      'aggregation-track',
+    );
+    const serverAggDataConfig1 = serverAggTrack1.dataFetcher.dataConfig;
+    expect(serverAggDataConfig1.options.aggGroups).to.eql([1, 2, 3]);
+
+    // When selectRows changes, check that options.aggGroups in the dataConfig also changes.
+    const serverAggViewConf2 = horizontalMultivecWithAggregation;
+    serverAggViewConf2.views[0].tracks.center[0].options.selectRows = [4, 5, 6];
+    const serverAggViews2 = hgc
+      .instance()
+      .processViewConfig(serverAggViewConf2);
+    hgc.setState({
+      views: serverAggViews2,
+    });
+    const serverAggTrack2 = getTrackObjectFromHGC(
+      hgc.instance(),
+      'aggregation-view',
+      'aggregation-track',
+    );
+    const serverAggDataConfig2 = serverAggTrack2.dataFetcher.dataConfig;
+    expect(serverAggDataConfig2.options.aggGroups).to.eql([4, 5, 6]);
   });
 });
 
