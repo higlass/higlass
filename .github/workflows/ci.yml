@@ -13,13 +13,12 @@ jobs:
   Typecheck:
     runs-on: ubuntu-latest
     env:
-      # not needed for typechecking
-      PUPPETEER_SKIP_CHROMIUM_DOWNLOAD: '1'
+      PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: '1'
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
-          node-version: '20.x'
+          node-version: '22.x'
           cache: 'npm'
       - run: npm ci --legacy-peer-deps
       - run: npm run typecheck
@@ -34,30 +33,26 @@ jobs:
   Schema:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
-          node-version: '20.x'
+          node-version: '22.x'
       - run: npm install -g ajv-cli
       - run: ajv validate -s app/schema.json -d "{docs/examples/viewconfs,test/{view-configs,view-configs-more}}/*.json"
 
   Test:
     needs: [Lint, Schema, Typecheck]
     runs-on: ubuntu-latest
-
+    name: "Test (shard: ${{ matrix.shard }})"
+    strategy:
+      matrix:
+        shard: [1/4, 2/4, 3/4, 4/4]
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
-          node-version: '20.x'
+          node-version: '22.x'
           cache: 'npm'
-      # required to run headless puppeteer on ubuntu-latest
-      - name: Setup xvf
-        env:
-          DISPLAY: '0'
-        run: |
-          sudo apt-get install -y xvfb
-          # start xvfb in the background
-          sudo /usr/bin/Xvfb $DISPLAY -screen 0 1280x1024x24 &
       - run: npm ci --legacy-peer-deps
-      - run: npm test -- --static-logging # don't show progress bar in CI
+      - run: npx playwright install chromium --with-deps
+      - run: npm test -- --maxWorkers=1 --no-file-parallelism --shard ${{ matrix.shard }}

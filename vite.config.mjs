@@ -17,4 +17,13 @@ export default defineConfig(({ mode }) => ({
   optimizeDeps: {
     entries: ['app/scripts/hglib.jsx', 'test/**/*'],
   },
+  test: {
+    silent: true,
+    browser: {
+      provider: 'playwright',
+      headless: true,
+      enabled: true,
+      instances: [{ browser: 'chromium' }],
+    },
+  },
 }));
