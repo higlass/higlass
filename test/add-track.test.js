@@ -9,9 +9,9 @@ import { oneViewConfig } from './view-configs';
 // Utils
 import {
   mountHGComponentAsync,
+  removeHGComponent,
   waitForJsonComplete,
   waitForTilesLoaded,
-  removeHGComponent,
 } from '../app/scripts/test-helpers';
 
 Enzyme.configure({ adapter: new Adapter() });
@@ -56,7 +56,7 @@ describe('Add track(s)', () => {
 
     tilesetFinder.props.onDoubleClick(
       tilesetFinder.state.options[
-      'http://higlass.io/api/v1/CQMd6V_cRw6iCI_-Unl3PQ'
+        'http://higlass.io/api/v1/CQMd6V_cRw6iCI_-Unl3PQ'
       ],
     );
 
@@ -161,7 +161,7 @@ describe('Add track(s)', () => {
     hgc.update();
   });
 
-  it('remove existing tracks & add a new dm6 track: should zoom to dm6 extent', (done) => {
+  it('remove existing tracks & add a new dm6 track: should zoom to dm6 extent', async () => {
     // 1. Remove all existing tracks
     const { trackRenderer } = hgc.instance().tiledPlots.aa;
 
@@ -189,22 +189,15 @@ describe('Add track(s)', () => {
     hgc.instance().modalRef.handleSubmit();
     hgc.update();
 
-    waitForTilesLoaded(hgc.instance(), () => {
-      const { tilesetInfo } = Object.values(
-        hgc.instance().tiledPlots.aa.trackRenderer.trackDefObjects,
-      )[0].trackObject;
+    await new Promise((done) => waitForTilesLoaded(hgc.instance(), done));
+    const { tilesetInfo } = Object.values(
+      hgc.instance().tiledPlots.aa.trackRenderer.trackDefObjects,
+    )[0].trackObject;
 
-      const viewConf = JSON.parse(hgc.instance().getViewsAsString());
+    const viewConf = JSON.parse(hgc.instance().getViewsAsString());
 
-      expect(viewConf.views[0].initialXDomain[0]).to.eql(
-        tilesetInfo.min_pos[0],
-      );
-      expect(viewConf.views[0].initialXDomain[1]).to.eql(
-        tilesetInfo.max_pos[0],
-      );
-
-      done();
-    });
+    expect(viewConf.views[0].initialXDomain[0]).to.eql(tilesetInfo.min_pos[0]);
+    expect(viewConf.views[0].initialXDomain[1]).to.eql(tilesetInfo.max_pos[0]);
   });
 
   it('remove existing track & add a new hg19 track: should zoom to hg19 extent', async () => {

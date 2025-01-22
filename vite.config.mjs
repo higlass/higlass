@@ -18,8 +18,10 @@ export default defineConfig(({ mode }) => ({
     entries: ['app/scripts/hglib.jsx', 'test/**/*'],
   },
   test: {
-    include: ['**/*.test.js'],
+    silent: true,
     browser: {
+      provider: 'playwright',
+      headless: true,
       enabled: true,
       instances: [{ browser: 'chromium' }],
     },
