@@ -24,6 +24,10 @@ describe('Empty Tracks', () => {
     });
   });
 
+  afterAll(() => {
+    removeHGComponent(div);
+  });
+
   it('should respect zoom limits', () => {
     // add your tests here
 
@@ -32,10 +36,6 @@ describe('Empty Tracks', () => {
 
     const trackObj2 = getTrackObjectFromHGC(hgc.instance(), 'vv', 't2');
     expect(trackObj2.dimensions[1]).to.eql(42);
-  });
-
-  afterAll(() => {
-    removeHGComponent(div);
   });
 });
 

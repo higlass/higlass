@@ -26,6 +26,10 @@ describe('Lock tests', () => {
     });
   });
 
+  afterAll(() => {
+    removeHGComponent(div);
+  });
+
   it('should viewconfig be valid', () => {
     const validate = new Ajv().compile(schema);
     const valid = validate(viewconf);
@@ -38,8 +42,6 @@ describe('Lock tests', () => {
   });
 
   it('should export as SVG', () => {
-    // add your tests here
-
     const svg = hgc.instance().createSVGString();
     expect(svg.length).to.be.above(1);
   });
@@ -50,18 +52,13 @@ describe('Lock tests', () => {
     const trackUid = views.v1.tracks.top[0].uid;
     views.v1.tracks.top[0].type = 'horizontal-bar';
 
-    hgc.setState({
-      views,
-    });
+    hgc.setState({ views });
 
     const trackObj = hgc
       .instance()
       .tiledPlots.v1.trackRenderer.getTrackObject(trackUid);
-    expect(trackObj).not.to.eql(null);
-  });
 
-  afterAll(() => {
-    removeHGComponent(div);
+    expect(trackObj).not.to.eql(null);
   });
 });
 

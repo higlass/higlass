@@ -51,4 +51,4 @@ jobs:
           cache: 'npm'
       - run: npm ci --legacy-peer-deps
       - run: npx playwright install chromium --with-deps
-      - run: npm test
+      - run: npm test -- --maxWorkers=1 --no-file-parallelism
