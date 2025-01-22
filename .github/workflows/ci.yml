@@ -50,4 +50,5 @@ jobs:
           node-version: '22.x'
           cache: 'npm'
       - run: npm ci --legacy-peer-deps
+      - run: npx playwright install chromium --with-deps
       - run: npm test
