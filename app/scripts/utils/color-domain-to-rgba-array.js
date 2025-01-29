@@ -1,7 +1,7 @@
 // @ts-nocheck
-import { scaleLinear } from 'd3-scale';
 import { range } from 'd3-array';
 import { rgb } from 'd3-color';
+import { scaleLinear } from 'd3-scale';
 
 /**
  * Convert a color domain to a 255 element array of [r,g,b,a]

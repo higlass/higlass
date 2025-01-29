@@ -1,8 +1,8 @@
 import { scaleLinear } from 'd3-scale';
 
+import fakePubSub from './utils/fake-pub-sub';
 // Services
 import isWithin from './utils/is-within';
-import fakePubSub from './utils/fake-pub-sub';
 
 /**
  * @typedef TrackContext

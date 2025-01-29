@@ -1,9 +1,9 @@
 // @ts-nocheck
-import PropTypes from 'prop-types';
 import { rgb as d3rgb } from 'd3-color';
+import PropTypes from 'prop-types';
 import React from 'react';
-import reactCSS from 'reactcss';
 import { SketchPicker } from 'react-color';
+import reactCSS from 'reactcss';
 
 class SketchInlinePicker extends React.Component {
   constructor(props) {

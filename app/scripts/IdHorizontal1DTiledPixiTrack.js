@@ -48,11 +48,11 @@ class IdHorizontal1DTiledPixiTrack extends HorizontalTiled1DPixiTrack {
   }
 
   destroyTile(tile) {
-    tile.graphics.destroy(true)
+    tile.graphics.destroy(true);
   }
 
   remove() {
-    this.visibleAndFetchedTiles().forEach(tile => this.destroyTile(tile))
+    this.visibleAndFetchedTiles().forEach((tile) => this.destroyTile(tile));
   }
 
   drawTile(tile) {

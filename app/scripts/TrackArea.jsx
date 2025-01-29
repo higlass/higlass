@@ -47,6 +47,7 @@ class TrackArea extends React.Component {
           style={this.getMoveImgStyle()}
           width="10px"
         >
+          <title>Move</title>
           <use xlinkHref="#move" />
         </svg>
       ));
@@ -84,6 +85,7 @@ class TrackArea extends React.Component {
           style={this.getSettingsImgStyle()}
           width="10px"
         >
+          <title>No Zoom</title>
           <use xlinkHref="#cog" />
         </svg>
 
@@ -97,6 +99,7 @@ class TrackArea extends React.Component {
           style={this.getAddImgStyle()}
           width="10px"
         >
+          <title>Add</title>
           <use xlinkHref="#plus" />
         </svg>
 
@@ -114,6 +117,7 @@ class TrackArea extends React.Component {
           style={this.getCloseImgStyle()}
           width="10px"
         >
+          <title>Close</title>
           <use xlinkHref="#cross" />
         </svg>
       </div>

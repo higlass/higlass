@@ -1,25 +1,25 @@
 // @ts-nocheck
-import PropTypes from 'prop-types';
-import React from 'react';
+import clsx from 'clsx';
 import { brush, brushX, brushY } from 'd3-brush';
 import { select } from 'd3-selection';
-import clsx from 'clsx';
+import PropTypes from 'prop-types';
+import React from 'react';
 
 import TrackControl from './TrackControl';
 
 // Utils
-import { or, resetD3BrushStyle, IS_TRACK_RANGE_SELECTABLE } from './utils';
+import { IS_TRACK_RANGE_SELECTABLE, or, resetD3BrushStyle } from './utils';
 
 // Styles
-import styles from '../styles/CenterTrack.module.scss'; // eslint-disable-line no-unused-vars
-import stylesTrack from '../styles/Track.module.scss'; // eslint-disable-line no-unused-vars
+import styles from '../styles/CenterTrack.module.scss';
+import stylesTrack from '../styles/Track.module.scss';
 
 const STYLES = {
   pointerEvents: 'all',
 };
 
 function sourceEvent(event) {
-  return event && event.sourceEvent;
+  return event?.sourceEvent;
 }
 
 class CenterTrack extends React.Component {
@@ -488,6 +488,7 @@ class CenterTrack extends React.Component {
             }}
             xmlns="http://www.w3.org/2000/svg"
           >
+            <title>Range Selection Brush</title>
             <g
               ref={(el) => {
                 this.brushElX = select(el);

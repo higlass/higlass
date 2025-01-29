@@ -1,7 +1,7 @@
 // @ts-nocheck
-import React from 'react';
-import PropTypes from 'prop-types';
 import { select } from 'd3-selection';
+import PropTypes from 'prop-types';
+import React from 'react';
 import classes from '../styles/ViewHeader.module.scss';
 
 export const COG = {
@@ -392,6 +392,7 @@ export function SearchIcon({ theStyle, onClick }) {
       onClick={onClick}
       xmlns="http://www.w3.org/2000/svg"
     >
+      <title>Search</title>
       <g fill="none" stroke="#6c6c6c" strokeWidth="2">
         <path d="M11.29 11.71l-4-4" />
         <circle cx="5" cy="5" r="4" />

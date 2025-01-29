@@ -1,46 +1,46 @@
-import React from 'react';
 import PropTypes from 'prop-types';
+import React from 'react';
 
-import { zoom, zoomIdentity } from 'd3-zoom';
-import { select, pointer } from 'd3-selection';
-import { scaleLinear } from 'd3-scale';
-import slugid from 'slugid';
 import clsx from 'clsx';
+import { scaleLinear } from 'd3-scale';
+import { pointer, select } from 'd3-selection';
+import { zoom, zoomIdentity } from 'd3-zoom';
+import slugid from 'slugid';
 
-import PixiTrack from './PixiTrack';
+import BedLikeTrack from './BedLikeTrack';
+import CombinedTrack from './CombinedTrack';
 import HeatmapTiledPixiTrack from './HeatmapTiledPixiTrack';
 import Id2DTiledPixiTrack from './Id2DTiledPixiTrack';
 import IdHorizontal1DTiledPixiTrack from './IdHorizontal1DTiledPixiTrack';
 import IdVertical1DTiledPixiTrack from './IdVertical1DTiledPixiTrack';
-import TopAxisTrack from './TopAxisTrack';
 import LeftAxisTrack from './LeftAxisTrack';
-import CombinedTrack from './CombinedTrack';
-import BedLikeTrack from './BedLikeTrack';
 import OverlayTrack from './OverlayTrack';
+import PixiTrack from './PixiTrack';
+import TopAxisTrack from './TopAxisTrack';
 
-import HorizontalLine1DPixiTrack from './HorizontalLine1DPixiTrack';
-import HorizontalPoint1DPixiTrack from './HorizontalPoint1DPixiTrack';
-import HorizontalMultivecTrack from './HorizontalMultivecTrack';
 import BarTrack from './BarTrack';
 import DivergentBarTrack from './DivergentBarTrack';
 import Horizontal1dHeatmapTrack from './Horizontal1dHeatmapTrack';
+import HorizontalLine1DPixiTrack from './HorizontalLine1DPixiTrack';
+import HorizontalMultivecTrack from './HorizontalMultivecTrack';
+import HorizontalPoint1DPixiTrack from './HorizontalPoint1DPixiTrack';
 
+import Annotations1dTrack from './Annotations1dTrack';
+import Annotations2dTrack from './Annotations2dTrack';
+import ArrowheadDomainsTrack from './ArrowheadDomainsTrack';
 import CNVIntervalTrack from './CNVIntervalTrack';
-import LeftTrackModifier from './LeftTrackModifier';
-import Track from './Track';
 import HorizontalGeneAnnotationsTrack from './HorizontalGeneAnnotationsTrack';
 import HorizontalGeneBED12AnnotationsTrack from './HorizontalGeneBED12AnnotationsTrack';
-import ArrowheadDomainsTrack from './ArrowheadDomainsTrack';
-import Annotations2dTrack from './Annotations2dTrack';
-import Annotations1dTrack from './Annotations1dTrack';
+import LeftTrackModifier from './LeftTrackModifier';
+import Track from './Track';
 
 import Horizontal2DDomainsTrack from './Horizontal2DDomainsTrack';
 
-import SquareMarkersTrack from './SquareMarkersTrack';
+import Chromosome2DAnnotations from './Chromosome2DAnnotations';
 import Chromosome2DLabels from './Chromosome2DLabels';
 import ChromosomeGrid from './ChromosomeGrid';
-import Chromosome2DAnnotations from './Chromosome2DAnnotations';
 import HorizontalChromosomeLabels from './HorizontalChromosomeLabels';
+import SquareMarkersTrack from './SquareMarkersTrack';
 
 import HorizontalHeatmapTrack from './HorizontalHeatmapTrack';
 import UnknownPixiTrack from './UnknownPixiTrack';
@@ -49,13 +49,13 @@ import ViewportTracker2D from './ViewportTracker2D';
 import ViewportTrackerHorizontal from './ViewportTrackerHorizontal';
 import ViewportTrackerVertical from './ViewportTrackerVertical';
 
+import CrossRule from './CrossRule';
 import HorizontalRule from './HorizontalRule';
 import VerticalRule from './VerticalRule';
-import CrossRule from './CrossRule';
 
-import OSMTilesTrack from './OSMTilesTrack';
-import OSMTileIdsTrack from './OSMTileIdsTrack';
 import MapboxTilesTrack from './MapboxTilesTrack';
+import OSMTileIdsTrack from './OSMTileIdsTrack';
+import OSMTilesTrack from './OSMTilesTrack';
 import RasterTilesTrack from './RasterTilesTrack';
 
 import SVGTrack from './SVGTrack';
@@ -421,7 +421,6 @@ class TrackRenderer extends React.Component {
     return this._yScale;
   }
 
-  // eslint-disable-next-line camelcase
   UNSAFE_componentWillMount() {
     this.pubSubs = [];
     this.pubSubs.push(
@@ -508,7 +507,6 @@ class TrackRenderer extends React.Component {
       .scaleExtent(this.zoomLimits);
   }
 
-  // eslint-disable-next-line camelcase
   /** @param {TrackRendererProps} nextProps */
   UNSAFE_componentWillReceiveProps(nextProps) {
     /**
@@ -778,7 +776,8 @@ class TrackRenderer extends React.Component {
   ) {
     // Make sure the initial domain is within the limits first
     zoomLimits[0] = zoomLimits[0] === null ? 0 : zoomLimits[0];
-    zoomLimits[1] = zoomLimits[1] === null ? Infinity : zoomLimits[1];
+    zoomLimits[1] =
+      zoomLimits[1] === null ? Number.POSITIVE_INFINITY : zoomLimits[1];
 
     // make sure the two scales are equally wide:
     const xWidth = initialXDomain[1] - initialXDomain[0];
@@ -1294,8 +1293,7 @@ class TrackRenderer extends React.Component {
       try {
         this.trackDefObjects[trackUids[i]].trackObject.remove();
         delete this.trackDefObjects[trackUids[i]];
-      } 
-      catch (err) {}
+      } catch (err) {}
     }
   }
 
@@ -1575,7 +1573,7 @@ class TrackRenderer extends React.Component {
   zoomStarted(event) {
     this.zooming = true;
 
-    if (event && event.sourceEvent) {
+    if (event?.sourceEvent) {
       this.zoomStartPos = pointer(event.sourceEvent, this.props.canvasElement);
 
       if (event.sourceEvent.shiftKey) {
@@ -1742,7 +1740,7 @@ class TrackRenderer extends React.Component {
             definition: track,
           };
           try {
-            return new pluginTrack.track( // eslint-disable-line new-cap
+            return new pluginTrack.track(
               this.availableForPlugins,
               context,
               track.options,
@@ -2094,7 +2092,7 @@ class TrackRenderer extends React.Component {
           }
 
           try {
-            return new pluginTrack.track( // eslint-disable-line new-cap
+            return new pluginTrack.track(
               this.availableForPlugins,
               context,
               track.options,

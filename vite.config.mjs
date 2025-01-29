@@ -1,14 +1,14 @@
-import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
+import { defineConfig } from 'vite';
 import { version } from './package.json';
 
 export default defineConfig(({ mode }) => ({
   css: {
     preprocessorOptions: {
       scss: {
-        api: 'modern-compiler'
-      }
-    }
+        api: 'modern-compiler',
+      },
+    },
   },
   plugins: [react()],
   resolve: {
@@ -23,5 +23,14 @@ export default defineConfig(({ mode }) => ({
   },
   optimizeDeps: {
     entries: ['app/scripts/hglib.jsx', 'test/**/*'],
+  },
+  test: {
+    silent: true,
+    browser: {
+      provider: 'playwright',
+      headless: true,
+      enabled: true,
+      instances: [{ browser: 'chromium' }],
+    },
   },
 }));

@@ -9,7 +9,7 @@ function IntervalTreeNode(start, end, left, right) {
    * Max endpoint in subtree which starts from this node.
    * @member {Number}
    */
-  this.max = -Infinity;
+  this.max = Number.NEGATIVE_INFINITY;
   /**
    * Parent node.
    * @member {IntervalTreeNode}
@@ -192,7 +192,7 @@ IntervalTree.prototype.height = function height() {
 IntervalTree.prototype.findMax = function findMax(node) {
   const stack = [node];
   let current;
-  let max = -Infinity;
+  let max = Number.NEGATIVE_INFINITY;
   let maxNode;
   while (stack.length) {
     current = stack.pop();

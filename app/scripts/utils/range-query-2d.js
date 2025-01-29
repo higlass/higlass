@@ -1,6 +1,6 @@
 // @ts-nocheck
-import addArrays from './add-arrays';
 import accessorTransposition from './accessor-transposition';
+import addArrays from './add-arrays';
 
 /**
  * Perform a 2D query on a 1D array
@@ -24,9 +24,9 @@ const rangeQuery2d = (
   xRange,
   yRange,
   mirrored,
-  /* eslint-disable-next-line default-param-last */
+  // biome-ignore lint/style/useDefaultParameterLast:
   xOff = 0,
-  /* eslint-disable-next-line default-param-last */
+  // biome-ignore lint/style/useDefaultParameterLast:
   yOff = 0,
   outList,
 ) => {

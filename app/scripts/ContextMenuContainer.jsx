@@ -1,8 +1,8 @@
 // @ts-nocheck
+import clsx from 'clsx';
 import PropTypes from 'prop-types';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import clsx from 'clsx';
 
 import { THEME_DARK } from './configs';
 
@@ -36,7 +36,6 @@ class ContextMenuContainer extends React.Component {
     this.updateOrientation();
   }
 
-  // eslint-disable-next-line camelcase
   UNSAFE_componentWillReceiveProps(newProps) {
     this.adjusted = false;
 

@@ -39,24 +39,18 @@ Boilerplate
 -----------
 
 Use the following template and replace individual ``it`` blocks
-to set up new tests. Add this code to the `tests` directory and
-add a line to `karma.conf.js` to include it in the tests.
+to set up new tests. Add this code to the `test` directory.
 
 .. code-block:: javascript
 
-    /* eslint-env node, jasmine */
-    import {
-      configure,
-      // render,
-    } from 'enzyme';
+    import { describe, beforeAll, afterAll, it, expect } from 'vitest';
 
+    import Enzyme from 'enzyme';
     import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
-
-    import { expect } from 'chai';
 
     // Utils
     import {
-      mountHGComponent,
+      mountHGComponentAsync,
       removeHGComponent,
     } from '../app/scripts/test-helpers';
     import { getTrackObjectFromHGC } from '../app/scripts/utils';
@@ -67,15 +61,15 @@ add a line to `karma.conf.js` to include it in the tests.
       let hgc = null;
       let div = null;
 
-      beforeAll((done) => {
-        ([div, hgc] = mountHGComponent(div, hgc,
-          viewconf,
-          done,
-          {
-            style: 'width:800px; height:400px; background-color: lightgreen',
-            bounded: true,
-          })
-        );
+      beforeAll(async () => {
+        [div, hgc] = await mountHGComponentAsync(div, hgc, viewconf, {
+          style: 'width:800px; height:400px; background-color: lightgreen',
+          bounded: true,
+        }) 
+      });
+
+      afterAll(() => {
+        removeHGComponent(div);
       });
 
       it('should respect zoom limits', () => {
@@ -85,9 +79,6 @@ add a line to `karma.conf.js` to include it in the tests.
         expect(trackObj.calculateZoomLevel()).to.eql(1);
       });
 
-      afterAll(() => {
-        removeHGComponent(div);
-      });
     });
 
     // enter either a viewconf link or a viewconf object

@@ -1,12 +1,12 @@
 // @ts-nocheck
+import clsx from 'clsx';
 import { drag } from 'd3-drag';
 import { pointer, select } from 'd3-selection';
 import PropTypes from 'prop-types';
 import React from 'react';
-import clsx from 'clsx';
 
-import withTheme from './hocs/with-theme';
 import { THEME_DARK } from './configs';
+import withTheme from './hocs/with-theme';
 
 import classes from '../styles/DraggableDiv.module.scss';
 
@@ -65,7 +65,6 @@ class DraggableDiv extends React.Component {
     select(this.rightHandle).call(this.dragRight);
   }
 
-  // eslint-disable-next-line camelcase
   UNSAFE_componentWillReceiveProps(newProps) {
     if ('width' in newProps) {
       this.setState({ width: newProps.width });

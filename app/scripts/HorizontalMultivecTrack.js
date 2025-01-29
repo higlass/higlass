@@ -5,9 +5,9 @@ import HeatmapTiledPixiTrack from './HeatmapTiledPixiTrack';
 
 import { tileProxy } from './services';
 import absToChr from './utils/abs-to-chr';
-import selectedItemsToSize from './utils/selected-items-to-size';
-import selectedItemsToCumWeights from './utils/selected-items-to-cum-weights';
 import getAggregationFunction from './utils/get-aggregation-function';
+import selectedItemsToCumWeights from './utils/selected-items-to-cum-weights';
+import selectedItemsToSize from './utils/selected-items-to-size';
 
 export default class HorizontalMultivecTrack extends HeatmapTiledPixiTrack {
   constructor(context, options) {
@@ -22,8 +22,7 @@ export default class HorizontalMultivecTrack extends HeatmapTiledPixiTrack {
 
   updateDataFetcher(options) {
     if (
-      options &&
-      options.selectRows &&
+      options?.selectRows &&
       options.selectRowsAggregationMethod === 'server'
     ) {
       const { pubSub, dataFetcher: prevDataFetcher } = this;
@@ -406,7 +405,8 @@ export default class HorizontalMultivecTrack extends HeatmapTiledPixiTrack {
    *
    */
   getMouseOverHtml(trackX, trackY, isShiftDown) {
-    if (!this.tilesetInfo || (!this.options.showTooltip && !isShiftDown)) return '';
+    if (!this.tilesetInfo || (!this.options.showTooltip && !isShiftDown))
+      return '';
 
     const tilePos = this.getTilePosAtPosition(trackX, trackY);
 
@@ -416,12 +416,15 @@ export default class HorizontalMultivecTrack extends HeatmapTiledPixiTrack {
     const elements = visibleData.split('<br/>');
 
     if (
-      this.options &&
-      this.options.heatmapValueScaling &&
+      this.options?.heatmapValueScaling &&
       this.options.heatmapValueScaling === 'categorical' &&
       this.options.colorRange
     ) {
-      const color = this.options.colorRange[parseInt(elements[0], 10) - 1];
+      const visibleData = this.getVisibleData(trackX, trackY);
+      const elements = visibleData.split('<br/>');
+      const color =
+        this.options.colorRange[Number.parseInt(elements[0], 10) - 1];
+      let label = elements[1];
       if (
         Number.isNaN(color) ||
         color === 'NaN' ||
@@ -430,14 +433,21 @@ export default class HorizontalMultivecTrack extends HeatmapTiledPixiTrack {
       ) {
         return '';
       }
-      let label = elements[1];
-      const colorIndex = parseInt(elements[0], 10);
-      if (!label || label === "undefined" || typeof label === "undefined") return '';
+      const colorIndex = Number.parseInt(elements[0], 10);
+      if (!label || label === 'undefined' || typeof label === 'undefined')
+        return '';
       let colorLabel = 'NA';
       if (this.options.colorLabels) {
         // colorLabel = (this.options.colorLabels[colorIndex - 1]) ? this.options.colorLabels[colorIndex - 1][0] : null;
-        colorLabel = (this.options.colorLabels[colorIndex]) ? this.options.colorLabels[colorIndex][0] : null;
-        if (!colorLabel || colorLabel === "undefined" || typeof colorLabel === "undefined") colorLabel = 'NA';
+        colorLabel = this.options.colorLabels[colorIndex]
+          ? this.options.colorLabels[colorIndex][0]
+          : null;
+        if (
+          !colorLabel ||
+          colorLabel === 'undefined' ||
+          typeof colorLabel === 'undefined'
+        )
+          colorLabel = 'NA';
         label += ` | ${colorLabel}`;
       }
 
@@ -446,13 +456,15 @@ export default class HorizontalMultivecTrack extends HeatmapTiledPixiTrack {
       if (this.options.chromInfo && this.options.binSize) {
         const atcX = absToChr(dataX, this.options.chromInfo);
         const chrom = atcX[0];
-        const position = Math.ceil(atcX[1] / this.options.binSize) * this.options.binSize - this.options.binSize;
+        const position =
+          Math.ceil(atcX[1] / this.options.binSize) * this.options.binSize -
+          this.options.binSize;
         positionText = `${chrom}:${position}`;
       }
 
-      const metadataElements = elements[1].split('|').map(d => d.trim());
+      const metadataElements = elements[1].split('|').map((d) => d.trim());
       output = `<div class="track-mouseover-menu-table">`;
-      
+
       if (positionText) {
         output += `
         <div class="track-mouseover-menu-table-item">
@@ -463,11 +475,15 @@ export default class HorizontalMultivecTrack extends HeatmapTiledPixiTrack {
       }
 
       function capitalize(text) {
-        return text[0].toUpperCase() + text.substring(1)
+        return text[0].toUpperCase() + text.substring(1);
       }
 
       const sampleName = capitalize(metadataElements[1]);
-      const specificSampleName = (metadataElements.length === 3 && metadataElements[1] !== metadataElements[2]) ? `(${metadataElements[2]})` : "";
+      const specificSampleName =
+        metadataElements.length === 3 &&
+        metadataElements[1] !== metadataElements[2]
+          ? `(${metadataElements[2]})`
+          : '';
       output += `<div class="track-mouseover-menu-table-item">
         <label for="sampleName" class="track-mouseover-menu-table-item-label">Biosample</label>
         <div name="sampleName" class="track-mouseover-menu-table-item-value">${sampleName} ${specificSampleName}</div>
@@ -478,7 +494,7 @@ export default class HorizontalMultivecTrack extends HeatmapTiledPixiTrack {
         <label for="sampleId" class="track-mouseover-menu-table-item-label">Identifier</label>
         <div name="sampleId" class="track-mouseover-menu-table-item-value">${sampleId}</div>
       </div>`;
-      
+
       const stateColor = color;
       const stateName = colorLabel; // metadataElements[2];
       const stateRGBMarkup = `<svg width="10" height="10" style="position:relative; top:-2px;"><rect width="10" height="10" rx="2" ry="2" style="fill:${stateColor};stroke:black;stroke-width:2;"></svg> ${stateName}`;
@@ -487,22 +503,24 @@ export default class HorizontalMultivecTrack extends HeatmapTiledPixiTrack {
           <label for="stateName" class="track-mouseover-menu-table-item-label">Chromatin state</label>
           <div name="stateName" class="track-mouseover-menu-table-item-value">${stateRGBMarkup}</div>
         </div>`;
-      output += `</div>`;
-    }
-    else if (
-      this.options &&
-      this.options.heatmapType && 
+      output += '</div>';
+    } else if (
+      this.options?.heatmapType &&
       this.options.heatmapType === 'genericIndexDHS'
     ) {
       let componentLongNameToColor = null;
       if (this.options.heatmapComponents) {
         componentLongNameToColor = {};
-        for (const [key, value] of Object.entries(this.options.heatmapComponents)) {
+        for (const [key, value] of Object.entries(
+          this.options.heatmapComponents,
+        )) {
           componentLongNameToColor[value.longName] = value.color;
         }
       }
       const normalizedDensity = elements[0];
-      const biosampleMetadataElements = elements[1].split('|').map(d => d.trim());
+      const biosampleMetadataElements = elements[1]
+        .split('|')
+        .map((d) => d.trim());
       const biosampleMetadata = {
         normalizedDensity: elements[0],
         taxonomyName: biosampleMetadataElements[0],
@@ -513,7 +531,9 @@ export default class HorizontalMultivecTrack extends HeatmapTiledPixiTrack {
       if (this.options.chromInfo && this.options.binSize) {
         const atcX = absToChr(dataX, this.options.chromInfo);
         const chrom = atcX[0];
-        const position = Math.ceil(atcX[1] / this.options.binSize) * this.options.binSize - this.options.binSize;
+        const position =
+          Math.ceil(atcX[1] / this.options.binSize) * this.options.binSize -
+          this.options.binSize;
         positionText = `${chrom}:${position}`;
       }
       output += `<div class="track-mouseover-menu-table">`;
@@ -535,7 +555,8 @@ export default class HorizontalMultivecTrack extends HeatmapTiledPixiTrack {
           <div name="taxonomyName" class="track-mouseover-menu-table-item-value">${biosampleMetadata.taxonomyName}</div>
         </div>`;
       if (componentLongNameToColor) {
-        const componentColor = componentLongNameToColor[biosampleMetadata.componentName];
+        const componentColor =
+          componentLongNameToColor[biosampleMetadata.componentName];
         const componentName = biosampleMetadata.componentName;
         const componentRGBMarkup = `<svg width="10" height="10"><rect width="10" height="10" rx="2" ry="2" style="fill:${componentColor};stroke:black;stroke-width:2;"></svg> ${componentName}`;
         output += `
@@ -543,18 +564,16 @@ export default class HorizontalMultivecTrack extends HeatmapTiledPixiTrack {
             <label for="componentName" class="track-mouseover-menu-table-item-label">Component</label>
             <div name="componentName" class="track-mouseover-menu-table-item-value">${componentRGBMarkup}</div>
           </div>`;
-      }
-      else {
+      } else {
         output += `
           <div class="track-mouseover-menu-table-item">
             <label for="componentName" class="track-mouseover-menu-table-item-label">Component</label>
             <div name="componentName" class="track-mouseover-menu-table-item-value">${biosampleMetadata.componentName}</div>
           </div>`;
       }
-        
-      output += `</div>`
-    }
-    else {
+
+      output += '</div>';
+    } else {
       output += `Data value: ${this.getVisibleData(trackX, trackY)}</br>`;
       output += `Zoom level: ${tilePos[0]} tile position: ${tilePos[1]}`;
     }

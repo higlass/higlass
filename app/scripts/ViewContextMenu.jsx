@@ -1,14 +1,14 @@
 // @ts-nocheck
-import React from 'react';
-import PropTypes from 'prop-types';
 import clsx from 'clsx';
+import PropTypes from 'prop-types';
+import React from 'react';
 import { mix } from './mixwith';
 
-import { expandCombinedTracks } from './utils';
 import { getSeriesItems } from './SeriesListItems';
+import { expandCombinedTracks } from './utils';
 
-import ContextMenuItem from './ContextMenuItem';
 import ContextMenuContainer from './ContextMenuContainer';
+import ContextMenuItem from './ContextMenuItem';
 import SeriesListSubmenuMixin from './SeriesListSubmenuMixin';
 
 import { THEME_DARK } from './configs';

@@ -48,14 +48,11 @@ This starts a server in development mode at http://localhost:5173/.
 ### Tests
 
 The tests for the React components and API functions are located in the `test` directory.
-Tests are run with [`web-test-runner`](https://modern-web.dev/docs/test-runner/overview/), which you can learn more about the CLI in the [documentation](https://modern-web.dev/docs/test-runner/cli-and-configuration/#test-runner-cli-and-configuration).
+Tests are run with [`vitest`](https://vitest.dev/).
 
 Useful commands:
 
-- Run all tests: `npm test`
-- Run all tests in interactive "watch" mode: `npm test -- --watch`
-- Run a specific test or "glob" of tests: `npm test -- test/APITests.js [--watch]`
-- Manually run individual tests in an open browser window: `npm test -- --manual`
+- Run all tests in the browser: `npm test`
 
 **Troubleshooting:**
 

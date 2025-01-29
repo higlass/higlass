@@ -203,15 +203,15 @@ class SearchField {
 
     if (parts.length > 1) {
       // calculate the range in one direction
-      /* eslint-disable-next-line no-unused-vars */
+
       let [chr1, chrPos1, genomePos1] = this.parsePosition(parts[0]);
-      /* eslint-disable-next-line no-unused-vars */
+
       let [chr2, chrPos2, genomePos2] = this.parsePosition(parts[1], chr1);
 
       const tempRange1 = [genomePos1, genomePos2];
 
       [chr1, chrPos1, genomePos1] = this.parsePosition(parts[1]);
-      /* eslint-disable-next-line no-unused-vars */
+
       [chr2, chrPos2, genomePos2] = this.parsePosition(parts[0], chr1);
 
       if (chr1 === null && chr2 !== null) {
@@ -219,7 +219,7 @@ class SearchField {
         // and when we try to search the rever, the first chromosome
         // is null
         // we have to pass in the previous chromosome as a prevChrom
-        /* eslint-disable-next-line no-unused-vars */
+
         [chr1, chrPos1, genomePos1] = this.parsePosition(parts[1], chr2);
       }
 
@@ -245,7 +245,7 @@ class SearchField {
       ];
     } else {
       // e.g. ("chr1:540340")
-      // eslint-disable-next-line no-unused-vars
+
       const [chr1, chrPos1, pos1] = this.parsePosition(parts[0]);
 
       range = [pos1 - 8000000, pos1 + 8000000];

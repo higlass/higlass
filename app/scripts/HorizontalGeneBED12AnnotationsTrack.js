@@ -53,7 +53,8 @@ class HorizontalGeneBED12AnnotationsTrack extends HorizontalTiled1DPixiTrack {
 
     this.drawnGenes = {};
 
-    this.biosampleCount = +this.options.biosampleCount || DEFAULT_BIOSAMPLE_COUNT;
+    this.biosampleCount =
+      +this.options.biosampleCount || DEFAULT_BIOSAMPLE_COUNT;
     this.fontSize = +this.options.fontSize || FONT_SIZE;
     this.geneLabelPos = this.options.geneLabelPosition || GENE_LABEL_POS;
     this.geneRectHeight =
@@ -98,7 +99,7 @@ class HorizontalGeneBED12AnnotationsTrack extends HorizontalTiled1DPixiTrack {
       const fill = PIXI.utils.rgb2hex([
         fillTriplet[0] / 255.0,
         fillTriplet[1] / 255.0,
-        fillTriplet[2] / 255.0
+        fillTriplet[2] / 255.0,
       ]);
 
       tile.textWidths = {};
@@ -115,7 +116,7 @@ class HorizontalGeneBED12AnnotationsTrack extends HorizontalTiled1DPixiTrack {
       const text = new PIXI.Text(geneName, {
         fontSize: `${this.fontSize}px`,
         fontFamily: FONT_FAMILY,
-        fill
+        fill,
       });
       text.interactive = true;
 
@@ -138,14 +139,14 @@ class HorizontalGeneBED12AnnotationsTrack extends HorizontalTiled1DPixiTrack {
     const zoomLevel = +tile.tileId.split('.')[0];
     const tiles = this.visibleAndFetchedTiles();
     const tileIds = {};
-    tiles.forEach(t => {
+    tiles.forEach((t) => {
       tileIds[t.tileId] = t;
     });
 
-    if (tile.tileData && tile.tileData.filter && this.drawnGenes[zoomLevel]) {
+    if (tile.tileData?.filter && this.drawnGenes[zoomLevel]) {
       tile.tileData
-        .filter(td => this.drawnGenes[zoomLevel][td.fields[3]])
-        .forEach(td => {
+        .filter((td) => this.drawnGenes[zoomLevel][td.fields[3]])
+        .forEach((td) => {
           const gene = td.fields[3];
           // We might need to rerender because we're about to remove a tile, which can
           // contain gene annotations stretching multiple tiles. By removing this tile
@@ -153,12 +154,11 @@ class HorizontalGeneBED12AnnotationsTrack extends HorizontalTiled1DPixiTrack {
           // contain its data.
           if (this.drawnGenes[zoomLevel][gene]) {
             const reRender = Object.keys(
-              this.drawnGenes[zoomLevel][gene].otherTileIds
-            ).some(tileId => {
+              this.drawnGenes[zoomLevel][gene].otherTileIds,
+            ).some((tileId) => {
               if (tileIds[tileId]) {
-                this.drawnGenes[zoomLevel][gene].otherTileIds[
-                  tileId
-                ] = undefined;
+                this.drawnGenes[zoomLevel][gene].otherTileIds[tileId] =
+                  undefined;
                 delete this.drawnGenes[zoomLevel][gene].otherTileIds[tileId];
                 this.drawnGenes[zoomLevel][gene].tileId = tileId;
                 this.renderTile(tileIds[tileId]);
@@ -192,7 +192,7 @@ class HorizontalGeneBED12AnnotationsTrack extends HorizontalTiled1DPixiTrack {
 
     this.prevOptions = strOptions;
 
-    this.visibleAndFetchedTiles().forEach(tile => {
+    this.visibleAndFetchedTiles().forEach((tile) => {
       this.renderTile(tile);
     });
   }
@@ -222,7 +222,7 @@ class HorizontalGeneBED12AnnotationsTrack extends HorizontalTiled1DPixiTrack {
 
     const zoomLevel = +tile.tileId.split('.')[0];
 
-    const filteredTiles = tile.tileData.filter(td => {
+    const filteredTiles = tile.tileData.filter((td) => {
       if (!this.drawnGenes[zoomLevel]) this.drawnGenes[zoomLevel] = {};
 
       const gene = td.fields[3];
@@ -230,7 +230,7 @@ class HorizontalGeneBED12AnnotationsTrack extends HorizontalTiled1DPixiTrack {
       if (!this.drawnGenes[zoomLevel][gene]) {
         this.drawnGenes[zoomLevel][gene] = {
           tileId: tile.tileId,
-          otherTileIds: {}
+          otherTileIds: {},
         };
         return true;
       }
@@ -269,7 +269,7 @@ class HorizontalGeneBED12AnnotationsTrack extends HorizontalTiled1DPixiTrack {
       const fill = PIXI.utils.rgb2hex([
         fillTriplet[0] / 255.0,
         fillTriplet[1] / 255.0,
-        fillTriplet[2] / 255.0
+        fillTriplet[2] / 255.0,
       ]);
       const score = +geneInfo[4];
       const fillOpacity =
@@ -331,7 +331,7 @@ class HorizontalGeneBED12AnnotationsTrack extends HorizontalTiled1DPixiTrack {
             'Gene annotations have less than 12 columns (chrName, chrStart, chrEnd, ' +
               'name, score, strand, thickStart, thickEnd, itemRgb, ' +
               'blockCount, blockSizes, blockStarts):',
-            geneInfo
+            geneInfo,
           );
         } else {
           tile.allRects = tile.allRects.concat(
@@ -347,8 +347,8 @@ class HorizontalGeneBED12AnnotationsTrack extends HorizontalTiled1DPixiTrack {
               yMiddle,
               geneInfo[5],
               fill,
-              fillOpacity
-            ).map(x => [x, geneInfo[5], geneInfo[8], fillOpacity])
+              fillOpacity,
+            ).map((x) => [x, geneInfo[5], geneInfo[8], fillOpacity]),
           );
         }
       } else {
@@ -361,7 +361,7 @@ class HorizontalGeneBED12AnnotationsTrack extends HorizontalTiled1DPixiTrack {
             rectX + this.geneRectHeight / 2,
             yMiddle + this.geneRectHeight / 2,
             rectX,
-            yMiddle + this.geneRectHeight
+            yMiddle + this.geneRectHeight,
           ];
         } else if (geneInfo[5] === '-') {
           poly = [
@@ -370,7 +370,7 @@ class HorizontalGeneBED12AnnotationsTrack extends HorizontalTiled1DPixiTrack {
             rectX - this.geneRectHeight / 2,
             yMiddle + this.geneRectHeight / 2,
             rectX,
-            yMiddle + this.geneRectHeight
+            yMiddle + this.geneRectHeight,
           ];
         } else {
           poly = [
@@ -381,7 +381,7 @@ class HorizontalGeneBED12AnnotationsTrack extends HorizontalTiled1DPixiTrack {
             rectX - this.geneRectHeight / 2,
             rectY + this.geneRectHeight,
             rectX,
-            rectY + this.geneRectHeight
+            rectY + this.geneRectHeight,
           ];
         }
         tile.rectGraphics.drawPolygon(poly);
@@ -404,7 +404,7 @@ class HorizontalGeneBED12AnnotationsTrack extends HorizontalTiled1DPixiTrack {
       text.style = {
         fontSize: `${this.fontSize}px`,
         fontFamily: FONT_FAMILY,
-        fill
+        fill,
       };
 
       text.alpha = fillOpacity;
@@ -426,7 +426,7 @@ class HorizontalGeneBED12AnnotationsTrack extends HorizontalTiled1DPixiTrack {
     const xZoomLevel = tileProxy.calculateZoomLevel(
       this._xScale,
       this.tilesetInfo.min_pos[0],
-      this.tilesetInfo.max_pos[0]
+      this.tilesetInfo.max_pos[0],
     );
 
     let zoomLevel = Math.min(xZoomLevel, this.maxZoom);
@@ -447,9 +447,9 @@ class HorizontalGeneBED12AnnotationsTrack extends HorizontalTiled1DPixiTrack {
     yMiddle,
     strand,
     fill,
-    fillOpacity
+    fillOpacity,
   ) {
-    const blockOffsetStarts = blockStarts.split(',').map(x => +x + txStart);
+    const blockOffsetStarts = blockStarts.split(',').map((x) => +x + txStart);
     const blockOffsetEnds = blockSizes
       .split(',')
       .map((x, i) => +x + blockOffsetStarts[i]);
@@ -480,7 +480,7 @@ class HorizontalGeneBED12AnnotationsTrack extends HorizontalTiled1DPixiTrack {
       xStartPos + width,
       yPos + lineHeight,
       xStartPos,
-      yPos + lineHeight
+      yPos + lineHeight,
     ];
 
     graphics.drawPolygon(poly);
@@ -494,7 +494,7 @@ class HorizontalGeneBED12AnnotationsTrack extends HorizontalTiled1DPixiTrack {
       xStartPos + width,
       yPos + lineHeight,
       xStartPos,
-      yPos + lineHeight
+      yPos + lineHeight,
     ]);
 
     // We only render directionality cues if the strand column explicitly contains that information
@@ -511,7 +511,7 @@ class HorizontalGeneBED12AnnotationsTrack extends HorizontalTiled1DPixiTrack {
             j + this.geneTriangleHeight / 2,
             yExonPos + this.geneRectHeight / 2,
             j,
-            yExonPos + (this.geneRectHeight + this.geneTriangleHeight) / 2
+            yExonPos + (this.geneRectHeight + this.geneTriangleHeight) / 2,
           ];
         } else if (strand === '-') {
           poly = [
@@ -520,7 +520,7 @@ class HorizontalGeneBED12AnnotationsTrack extends HorizontalTiled1DPixiTrack {
             j - this.geneTriangleHeight / 2,
             yExonPos + this.geneRectHeight / 2,
             j,
-            yExonPos + (this.geneRectHeight + this.geneTriangleHeight) / 2
+            yExonPos + (this.geneRectHeight + this.geneTriangleHeight) / 2,
           ];
         }
 
@@ -537,7 +537,7 @@ class HorizontalGeneBED12AnnotationsTrack extends HorizontalTiled1DPixiTrack {
       const xStart = this._xScale(blockStart);
       const localWidth = Math.max(
         1,
-        this._xScale(blockEnd) - this._xScale(blockStart)
+        this._xScale(blockEnd) - this._xScale(blockStart),
       );
       const height = exonHeight;
 
@@ -551,7 +551,7 @@ class HorizontalGeneBED12AnnotationsTrack extends HorizontalTiled1DPixiTrack {
         xStart,
         yExonPos + height,
         xStart,
-        yExonPos
+        yExonPos,
       ];
 
       polys.push(localPoly);
@@ -563,7 +563,7 @@ class HorizontalGeneBED12AnnotationsTrack extends HorizontalTiled1DPixiTrack {
     const thickHeight = this.geneRectHHeight * 2;
     const thickWidth = Math.max(
       1,
-      this._xScale(thickEnd) - this._xScale(thickStart)
+      this._xScale(thickEnd) - this._xScale(thickStart),
     );
     const thickXStart = this._xScale(thickStart);
     const thickYStart = yPos - thickHeight;
@@ -577,7 +577,7 @@ class HorizontalGeneBED12AnnotationsTrack extends HorizontalTiled1DPixiTrack {
       thickXStart,
       thickYStart + 2 * thickHeight,
       thickXStart,
-      thickYStart
+      thickYStart,
     ];
     // console.log("thickPoly", thickPoly);
     polys.push(thickPoly);
@@ -600,7 +600,7 @@ class HorizontalGeneBED12AnnotationsTrack extends HorizontalTiled1DPixiTrack {
     Object.values(this.fetchedTiles)
       // tile hasn't been drawn properly because we likely got some
       // bogus data from the server
-      .filter(tile => {
+      .filter((tile) => {
         if (!tile.drawnAtScale) return false;
 
         const tileK =
@@ -609,15 +609,15 @@ class HorizontalGeneBED12AnnotationsTrack extends HorizontalTiled1DPixiTrack {
 
         return tileK > 3;
       })
-      .forEach(tile => {
+      .forEach((tile) => {
         this.renderTile(tile);
       });
 
     Object.values(this.fetchedTiles)
       // tile hasn't been drawn properly because we likely got some
       // bogus data from the server
-      .filter(tile => tile.drawnAtScale)
-      .forEach(tile => {
+      .filter((tile) => tile.drawnAtScale)
+      .forEach((tile) => {
         const tileK =
           (tile.drawnAtScale.domain()[1] - tile.drawnAtScale.domain()[0]) /
           (this._xScale.domain()[1] - this._xScale.domain()[0]);
@@ -631,7 +631,7 @@ class HorizontalGeneBED12AnnotationsTrack extends HorizontalTiled1DPixiTrack {
         tile.textBgGraphics.beginFill(
           typeof this.options.labelBackgroundColor !== 'undefined'
             ? colorToHex(this.options.labelBackgroundColor)
-            : WHITE_HEX
+            : WHITE_HEX,
         );
 
         // move the texts
@@ -709,7 +709,7 @@ class HorizontalGeneBED12AnnotationsTrack extends HorizontalTiled1DPixiTrack {
                 textYMiddle - fontSizeHalf - 1,
                 text.position.x + tile.textHeights[geneId] + TEXT_MARGIN,
                 textYMiddle + fontSizeHalf - 1,
-                geneName
+                geneName,
               ]);
             } else {
               this.allBoxes.push([
@@ -717,7 +717,7 @@ class HorizontalGeneBED12AnnotationsTrack extends HorizontalTiled1DPixiTrack {
                 textYMiddle - fontSizeHalf - 1,
                 text.position.x + tile.textWidths[geneId] + TEXT_MARGIN,
                 textYMiddle + fontSizeHalf - 1,
-                geneName
+                geneName,
               ]);
             }
 
@@ -726,7 +726,7 @@ class HorizontalGeneBED12AnnotationsTrack extends HorizontalTiled1DPixiTrack {
               text,
               caption: geneName,
               strand: geneInfo[5],
-              geneId
+              geneId,
             };
 
             this.allTexts.push(textObj);
@@ -752,7 +752,7 @@ class HorizontalGeneBED12AnnotationsTrack extends HorizontalTiled1DPixiTrack {
           minX - width / 2,
           minY - height / 2,
           width,
-          height
+          height,
         );
       }
     });
@@ -780,7 +780,7 @@ class HorizontalGeneBED12AnnotationsTrack extends HorizontalTiled1DPixiTrack {
     this.halfRectHHeight = this.dimensions[1] / 2;
 
     // redraw the contents
-    this.visibleAndFetchedTiles().forEach(tile => {
+    this.visibleAndFetchedTiles().forEach((tile) => {
       this.renderTile(tile);
     });
   }
@@ -807,24 +807,24 @@ class HorizontalGeneBED12AnnotationsTrack extends HorizontalTiled1DPixiTrack {
     const output = document.createElement('g');
     output.setAttribute(
       'transform',
-      `translate(${this.position[0]},${this.position[1]})`
+      `translate(${this.position[0]},${this.position[1]})`,
     );
 
     track.appendChild(output);
 
     this.visibleAndFetchedTiles()
-      .filter(tile => tile.allRects)
-      .forEach(tile => {
+      .filter((tile) => tile.allRects)
+      .forEach((tile) => {
         const gTile = document.createElement('g');
         gTile.setAttribute(
           'transform',
           `translate(${tile.rectGraphics.position.x},
           ${tile.rectGraphics.position.y})
           scale(${tile.rectGraphics.scale.x},
-          ${tile.rectGraphics.scale.y})`
+          ${tile.rectGraphics.scale.y})`,
         );
 
-        tile.allRects.forEach(rect => {
+        tile.allRects.forEach((rect) => {
           const r = document.createElement('path');
 
           const poly = rect[0];
@@ -837,7 +837,7 @@ class HorizontalGeneBED12AnnotationsTrack extends HorizontalTiled1DPixiTrack {
 
           r.setAttribute('d', d);
 
-/*
+          /*
           if (rect[1] === '+') {
             r.setAttribute('fill', this.options.plusStrandColor);
           } else {
@@ -848,8 +848,7 @@ class HorizontalGeneBED12AnnotationsTrack extends HorizontalTiled1DPixiTrack {
           if (rect.length >= 3) {
             if (rect[2].startsWith('#')) {
               r.setAttribute('fill', `${rect[2]}`);
-            }
-            else {
+            } else {
               r.setAttribute('fill', `rgb(${rect[2]})`);
             }
           }
@@ -864,8 +863,8 @@ class HorizontalGeneBED12AnnotationsTrack extends HorizontalTiled1DPixiTrack {
       });
 
     this.allTexts
-      .filter(text => text.text.visible)
-      .forEach(text => {
+      .filter((text) => text.text.visible)
+      .forEach((text) => {
         const g = document.createElement('g');
         const t = document.createElement('text');
         t.setAttribute('text-anchor', 'middle');
@@ -877,7 +876,7 @@ class HorizontalGeneBED12AnnotationsTrack extends HorizontalTiled1DPixiTrack {
         t.setAttribute('dy', '-.2em');
         g.setAttribute('transform', `scale(${text.text.scale.x},1)`);
 
-/*
+        /*
         if (text.strand === '+') {
           // t.setAttribute('stroke', this.options.plusStrandColor);
           t.setAttribute('fill', this.options.plusStrandColor);
@@ -892,7 +891,7 @@ class HorizontalGeneBED12AnnotationsTrack extends HorizontalTiled1DPixiTrack {
         g.appendChild(t);
         g.setAttribute(
           'transform',
-          `translate(${text.text.x},${text.text.y})scale(${text.text.scale.x},1)`
+          `translate(${text.text.x},${text.text.y})scale(${text.text.scale.x},1)`,
         );
         output.appendChild(g);
       });
@@ -913,7 +912,7 @@ class HorizontalGeneBED12AnnotationsTrack extends HorizontalTiled1DPixiTrack {
     const tileWidth = tileProxy.calculateTileWidth(
       this.tilesetInfo,
       zoomLevel,
-      this.tilesetInfo.tile_size
+      this.tilesetInfo.tile_size,
     );
 
     // the position of the tile containing the query position
@@ -982,7 +981,7 @@ class HorizontalGeneBED12AnnotationsTrack extends HorizontalTiled1DPixiTrack {
     const tileWidth = tileProxy.calculateTileWidth(
       this.tilesetInfo,
       zoomLevel,
-      this.tilesetInfo.tile_size
+      this.tilesetInfo.tile_size,
     );
 
     // the position of the tile containing the query position
@@ -991,7 +990,7 @@ class HorizontalGeneBED12AnnotationsTrack extends HorizontalTiled1DPixiTrack {
     return [zoomLevel, Math.floor(tilePos)];
   }
 
-    formattedBED12HTML(bed12FieldsObj) {
+  formattedBED12HTML(bed12FieldsObj) {
     const chrom = bed12FieldsObj[0];
     const start = +bed12FieldsObj[1];
     const end = +bed12FieldsObj[2];
@@ -1012,9 +1011,8 @@ class HorizontalGeneBED12AnnotationsTrack extends HorizontalTiled1DPixiTrack {
       idElems.length > 1
         ? Number.parseFloat(idElems[1]).toPrecision(realScorePrecision)
         : score;
-    const realBiosampleCount = 
-      idElems.length > 2
-        ? Number.parseInt(idElems[2]) : 'NA';
+    const realBiosampleCount =
+      idElems.length > 2 ? Number.parseInt(idElems[2]) : 'NA';
 
     const hc = document.getElementsByClassName('higlass')[0];
     if (hc) {
@@ -1141,7 +1139,7 @@ class HorizontalGeneBED12AnnotationsTrack extends HorizontalTiled1DPixiTrack {
     //   </div>
     // </div>`;
 
-    let output = "";
+    let output = '';
     output += `<div class="track-mouseover-menu-table">`;
     output += `
         <div class="track-mouseover-menu-table-item">
@@ -1180,8 +1178,8 @@ class HorizontalGeneBED12AnnotationsTrack extends HorizontalTiled1DPixiTrack {
         <div name="score" class="track-mouseover-menu-table-item-value track-mouseover-menu-table-item-value-svg">${elementCartoon}</div>
       </div>
     `;
-      
-    output += `</div>`; // end .track-mouseover-menu-table
+
+    output += '</div>'; // end .track-mouseover-menu-table
 
     return output;
   }
@@ -1207,7 +1205,7 @@ class HorizontalGeneBED12AnnotationsTrack extends HorizontalTiled1DPixiTrack {
   //     idElems.length > 1
   //       ? Number.parseFloat(idElems[1]).toPrecision(realScorePrecision)
   //       : score;
-  //   const realBiosampleCount = 
+  //   const realBiosampleCount =
   //     idElems.length > 2
   //       ? Number.parseInt(idElems[2]) : 'NA';
 
@@ -1338,7 +1336,8 @@ class HorizontalGeneBED12AnnotationsTrack extends HorizontalTiled1DPixiTrack {
   // }
 
   getMouseOverHtml(trackX, trackY, isShiftDown) {
-    if (!this.tilesetInfo || (!this.options.showTooltip && !isShiftDown)) return '';
+    if (!this.tilesetInfo || (!this.options.showTooltip && !isShiftDown))
+      return '';
 
     const tilePos = this.getTilePosAtPosition(trackX, trackY);
     const zoomLevel = tilePos[0];
@@ -1355,7 +1354,7 @@ class HorizontalGeneBED12AnnotationsTrack extends HorizontalTiled1DPixiTrack {
 
     // console.log("this.visibleAndFetchedTiles()", this.visibleAndFetchedTiles());
     const candidateTileElements = [];
-    this.visibleAndFetchedTiles().forEach(d => {
+    this.visibleAndFetchedTiles().forEach((d) => {
       if (
         d.tileId === candidateTileId ||
         d.tileId === previousCandidateTileId
@@ -1371,14 +1370,14 @@ class HorizontalGeneBED12AnnotationsTrack extends HorizontalTiled1DPixiTrack {
     //console.log("candidateTileElements", candidateTileElements);
     let output = '';
     if (candidateTileElements.length !== 0) {
-      candidateTileElements.forEach(ct => {
+      candidateTileElements.forEach((ct) => {
         const xStarts = ct.xScaledStarts;
         const xEnds = ct.xScaledEnds;
         const yStarts = ct.yScaledStarts;
         const yEnds = ct.yScaledEnds;
         let candidateTileElementsIdx = 0;
         if (!xStarts) return;
-        Object.keys(xStarts).forEach(k => {
+        Object.keys(xStarts).forEach((k) => {
           //console.log(k, "|", trackX, xStarts[k], xEnds[k], "|", trackY, yStarts[k], yEnds[k]);
           if (
             xStarts[k] < trackX &&

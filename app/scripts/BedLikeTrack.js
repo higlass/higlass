@@ -2,8 +2,8 @@
 import boxIntersect from 'box-intersect';
 import { median, range } from 'd3-array';
 import { scaleBand, scaleLinear } from 'd3-scale';
-import classifyPoint from 'robust-point-in-polygon';
 import { zoomIdentity } from 'd3-zoom';
+import classifyPoint from 'robust-point-in-polygon';
 
 import HorizontalTiled1DPixiTrack from './HorizontalTiled1DPixiTrack';
 import trackUtils from './track-utils';
@@ -84,7 +84,7 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
     let plusStrandRows = [];
     let minusStrandRows = [];
 
-    if (tile.tileData && tile.tileData.length) {
+    if (tile.tileData?.length) {
       tile.tileData.sort((a, b) => b.importance - a.importance);
       // tile.tileData = tile.tileData.slice(0, MAX_TILE_ENTRIES);
 
@@ -164,9 +164,9 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
     tile.rectGraphics.clear();
     tile.rendered = false;
 
-    if (tile.tileData && tile.tileData.length) {
+    if (tile.tileData?.length) {
       tile.tileData.forEach((td, i) => {
-        if (this.drawnRects[zoomLevel] && this.drawnRects[zoomLevel][td.uid]) {
+        if (this.drawnRects[zoomLevel]?.[td.uid]) {
           if (this.drawnRects[zoomLevel][td.uid][2] === tile.tileId) {
             // this was the tile that drew that rectangle
             delete this.drawnRects[zoomLevel][td.uid];
@@ -197,7 +197,7 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
   }
 
   drawTile(tile) {
-    if (this.options && this.options.valueColumn) {
+    if (this.options?.valueColumn) {
       // there might no be a value scale if no valueColumn was specified
       if (this.valueScale) this.drawAxis(this.valueScale);
     }
@@ -223,9 +223,9 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
     }
 
     // for (const tile of this.visibleAndFetchedTiles()) {
-      // this.destroyTile(tile);
-      // this.initTile(tile);
-      // this.renderTile(tile);
+    // this.destroyTile(tile);
+    // this.initTile(tile);
+    // this.renderTile(tile);
     // }
   }
 
@@ -411,7 +411,7 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
   setValueScale() {
     this.valueScale = null;
 
-    if (this.options && this.options.valueColumn) {
+    if (this.options?.valueColumn) {
       /**
        * These intervals come with some y-value that we want to plot
        */
@@ -438,8 +438,7 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
     this.colorValueScale = null;
 
     if (
-      this.options &&
-      this.options.colorEncoding &&
+      this.options?.colorEncoding &&
       this.options.colorEncoding !== 'itemRgb'
     ) {
       const min = this.options.colorEncodingRange
@@ -662,7 +661,7 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
     // this.options.colorEncoding is set
     this.setColorValueScale();
 
-    if (tile.tileData && tile.tileData.length) {
+    if (tile.tileData?.length) {
       const fill =
         this.options.plusStrandColor || this.options.fillColor || 'blue';
       const minusStrandFill =
@@ -728,7 +727,7 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
       null,
       visibleAndFetchedIds
         .map((x) => this.fetchedTiles[x])
-        .filter((x) => x.tileData && x.tileData.length)
+        .filter((x) => x.tileData?.length)
         .map((x) =>
           Math.min.apply(
             null,
@@ -760,7 +759,7 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
       null,
       visibleAndFetchedIds
         .map((x) => this.fetchedTiles[x])
-        .filter((x) => x.tileData && x.tileData.length)
+        .filter((x) => x.tileData?.length)
         .map((x) =>
           Math.max.apply(
             null,
@@ -796,7 +795,7 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
       .concat(
         ...visibleAndFetchedIds
           .map((x) => this.fetchedTiles[x])
-          .filter((x) => x.tileData && x.tileData.length)
+          .filter((x) => x.tileData?.length)
           .map((x) =>
             x.tileData
               .sort((a, b) => b.importance - a.importance)
@@ -840,7 +839,7 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
         continue;
       }
 
-      if (tile.tileData && tile.tileData.length) {
+      if (tile.tileData?.length) {
         tile.tileData.forEach((td) => {
           if (!tile.texts) {
             // tile probably hasn't been initialized yet
@@ -953,7 +952,6 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
       }
 
       tile.tileData.forEach((td) => {
-        console.log(`exportSVG tile ${tile.tileId}`)
         const zoomLevel = +tile.tileId.split('.')[0];
 
         const gTile = document.createElement('g');
@@ -1129,7 +1127,7 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
 
           let output = `<div class="track-mouseover-menu-table">`;
 
-          const identifierText = (parts.length >= 4) ? parts[3] : null;
+          const identifierText = parts.length >= 4 ? parts[3] : null;
 
           if (identifierText) {
             output += `
@@ -1140,9 +1138,12 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
             `;
           }
 
-          const intervalText = ((parts.length >= 5) && (typeof parts[5] !== 'undefined')) ? `${parts[0]}:${+parts[1]}-${+parts[2]} (${parts[5]})` : `${parts[0]}:${+parts[1]}-${+parts[2]}`;
+          const intervalText =
+            parts.length >= 5 && typeof parts[5] !== 'undefined'
+              ? `${parts[0]}:${+parts[1]}-${+parts[2]} (${parts[5]})`
+              : `${parts[0]}:${+parts[1]}-${+parts[2]}`;
 
-          if ((intervalText) && (intervalText !== identifierText)) {
+          if (intervalText && intervalText !== identifierText) {
             output += `
             <div class="track-mouseover-menu-table-item">
               <label for="interval" class="track-mouseover-menu-table-item-label">Interval</label>
@@ -1155,7 +1156,12 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
             return typeof value === 'number';
           }
 
-          const scoreText = (parts.length >= 5) ? ((isNumber(Number(parts[4]))) ? Number(parts[4]).toExponential(3) : null) : null;
+          const scoreText =
+            parts.length >= 5
+              ? isNumber(Number(parts[4]))
+                ? Number(parts[4]).toExponential(3)
+                : null
+              : null;
 
           if (scoreText) {
             output += `
@@ -1166,7 +1172,7 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
             `;
           }
 
-          output += `</div>`;
+          output += '</div>';
 
           return output;
 

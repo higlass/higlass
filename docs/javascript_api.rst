@@ -272,3 +272,33 @@ API Functions
 .. js:autofunction:: setGlobalMousePosition
 
 .. js:autofunction:: option
+
+Other customization
+===================
+
+Each track can provide specify custom context menu items that
+are displayed when someone clicks on the track.
+
+
+
+.. code-block:: javascript
+
+  contextMenuItems(trackX, trackY) {
+    /* Get a list of context menu items to display and the actions
+       to take */
+
+    // This should return items like this:
+
+     return [
+       {
+         label: 'Change background color to black',
+         onClick: (evt, onTrackOptionsChanged) => {
+           // The onTrackOptionsChanged handler will handle any changes
+           // to the track's options that are triggered in this event.
+           // The only thing that needs to be passed is the new option being
+           // passed
+           onTrackOptionsChanged({ backgroundColor: 'black' });
+         },
+       },
+     ];
+  }

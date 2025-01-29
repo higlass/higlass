@@ -1,11 +1,11 @@
 // @ts-nocheck
+import clsx from 'clsx';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { SortableHandle } from 'react-sortable-hoc';
-import clsx from 'clsx';
 
-import withTheme from './hocs/with-theme';
 import { THEME_DARK } from './configs';
+import withTheme from './hocs/with-theme';
 
 // Styles
 import classes from '../styles/TrackControl.module.scss';
