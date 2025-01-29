@@ -275,6 +275,7 @@ class PixiTrack extends Track {
   drawBorder() {
     const graphics = this.pBorder;
 
+    // @ts-expect-error - PixiJS Graphics object does not expose private property, which may still be null or undefined when Graphics object is only partially released
     if (!graphics || !graphics._geometry) return;
 
     graphics.clear();
@@ -308,6 +309,7 @@ class PixiTrack extends Track {
       // error
       const graphics = this.pBorder;
 
+      // @ts-expect-error - PixiJS Graphics object does not expose private property, which may still be null or undefined when Graphics object is only partially released
       if (!graphics || !graphics._geometry) return;
 
       graphics.clear();
@@ -323,6 +325,7 @@ class PixiTrack extends Track {
     else {
       this.errorText.text = '';
       const graphics = this.pBorder;
+      // @ts-expect-error - PixiJS Graphics object does not expose private property, which may still be null or undefined when Graphics object is only partially released
       if (!graphics || !graphics._geometry) return;
       graphics.clear();
     }
@@ -331,6 +334,7 @@ class PixiTrack extends Track {
   drawBackground() {
     const graphics = this.pBackground;
 
+    // @ts-expect-error - PixiJS Graphics object does not expose private property, which may still be null or undefined when Graphics object is only partially released
     if (!graphics || !graphics._geometry) return;
 
     graphics.clear();
@@ -385,6 +389,7 @@ class PixiTrack extends Track {
 
     const graphics = this.pLabel;
 
+    // @ts-expect-error - PixiJS Graphics object does not expose private property, which may still be null or undefined when Graphics object is only partially released
     if (!graphics || !graphics._geometry) return;
 
     graphics.clear();

@@ -24,6 +24,7 @@
     "tracks"
   ],
   "scripts": {
+    "clean": "rm -rf node_modules && rm -f package-lock.json && rm -rf dist && rm -rf build",
     "test": "wtr",
     "start": "vite",
     "build": "node ./scripts/build.mjs",
@@ -131,5 +132,10 @@
     "vite": "^5.0.3",
     "vite-plugin-babel": "^1.1.3",
     "vite-plugin-css-injected-by-js": "^3.3.0"
+  },
+  "overrides": {
+    "enzyme": {
+      "cheerio": "1.0.0-rc.10"
+    }
   }
 }

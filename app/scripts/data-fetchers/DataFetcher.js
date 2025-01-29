@@ -1,13 +1,13 @@
-import slugid from 'slugid';
 import { scaleLinear } from 'd3-scale';
+import slugid from 'slugid';
 
-// Utils
-import tts from '../utils/trim-trailing-slash';
-import dictValues from '../utils/dict-values';
-import minNonZero from '../utils/min-non-zero';
-import maxNonZero from '../utils/max-non-zero';
 import DenseDataExtrema1D from '../utils/DenseDataExtrema1D';
 import DenseDataExtrema2D from '../utils/DenseDataExtrema2D';
+import dictValues from '../utils/dict-values';
+import maxNonZero from '../utils/max-non-zero';
+import minNonZero from '../utils/min-non-zero';
+// Utils
+import tts from '../utils/trim-trailing-slash';
 
 // Services
 import * as tileProxy from '../services/tile-proxy';
@@ -90,17 +90,13 @@ function createDefaultTileSource(pubSub) {
 
 /** @implements {AbstractDataFetcher<Tile | DividedTile>} */
 export default class DataFetcher {
-  /** @type {TileSource<Tile>} */
-  #tileSource;
-
   /**
    * @param {import('../types').DataConfig} dataConfig
    * @param {import('pub-sub-es').PubSub} pubSub
    * @param {TileSource<Tile>} [tileSource]
    */
   constructor(dataConfig, pubSub, tileSource) {
-    // this.#tileSource = tileSource || createDefaultTileSource(pubSub);
-    this.tileSource = tileSource || createDefaultTileSource(pubSub);
+    this._tileSource = tileSource || createDefaultTileSource(pubSub);
     /** @type {boolean} */
     this.tilesetInfoLoading = true;
 
@@ -140,8 +136,7 @@ export default class DataFetcher {
    * @param {string=} opts.coordSystem - The coordinate system being served (e.g. 'hg38')
    */
   async registerFileUrl({ server, url, filetype, coordSystem }) {
-    // return this.#tileSource.registerTileset({
-    return this.tileSource.registerTileset({
+    return this._tileSource.registerTileset({
       server,
       url,
       filetype,
@@ -197,8 +192,7 @@ export default class DataFetcher {
         );
         finished(null);
       } else {
-        // this.#tileSource
-        this.tileSource
+        this._tileSource
           .fetchTilesetInfo({ server, tilesetUid })
           .then((tilesetInfo) => {
             // tileset infos are indxed by by tilesetUids, we can just resolve
@@ -265,8 +259,7 @@ export default class DataFetcher {
 
     if (!this.dataConfig.children && this.dataConfig.tilesetUid) {
       // no children, just return the fetched tiles as is
-      // const promise = this.#tileSource.fetchTiles({
-      const promise = this.tileSource.fetchTiles({
+      const promise = this._tileSource.fetchTiles({
         id: slugid.nice(),
         server: this.dataConfig.server,
         tileIds: tileIds.map((x) => `${this.dataConfig.tilesetUid}.${x}`),
@@ -332,7 +325,7 @@ export default class DataFetcher {
     const result = new Float32Array(numeratorData.length);
 
     for (let i = 0; i < result.length; i++) {
-      if (denominatorData[i] === 0.0) result[i] = NaN;
+      if (denominatorData[i] === 0.0) result[i] = Number.NaN;
       else result[i] = numeratorData[i] / denominatorData[i];
     }
 
@@ -447,8 +440,7 @@ export default class DataFetcher {
     }
 
     // actually fetch the new tileIds
-    // const promise = this.#tileSource.fetchTiles({
-    const promise = this.tileSource.fetchTiles({
+    const promise = this._tileSource.fetchTiles({
       id: slugid.nice(),
       server: this.dataConfig.server,
       tileIds: newTileIds.map((x) => `${this.dataConfig.tilesetUid}.${x}`),
