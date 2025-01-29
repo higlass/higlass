@@ -452,7 +452,7 @@ class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
             if (tile.barBorders) {
               rect.setAttribute('stroke-width', '0.1');
               rect.setAttribute('stroke', 'black');
-            } 
+            }
             output.appendChild(rect);
           }
         }
