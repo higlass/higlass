@@ -316,13 +316,6 @@ export default class HorizontalMultivecTrack extends HeatmapTiledPixiTrack {
         posInTileX =
           fetchedTile.tileData.dense.length * (tilePos - Math.floor(tilePos));
       }
-      /*
-      const a = rangeQuery2d(fetchedTile.tileData.dense,
-        this.tilesetInfo.shape[0],
-        this.tilesetInfo.shape[1],
-        [Math.floor(posInTileX), Math.floor(posInTileX)],
-        [posInTileY, posInTileY],
-      */
       let index = null;
       if (this.tilesetInfo.shape) {
         // Accomodate data from vector sources
@@ -438,7 +431,6 @@ export default class HorizontalMultivecTrack extends HeatmapTiledPixiTrack {
         return '';
       let colorLabel = 'NA';
       if (this.options.colorLabels) {
-        // colorLabel = (this.options.colorLabels[colorIndex - 1]) ? this.options.colorLabels[colorIndex - 1][0] : null;
         colorLabel = this.options.colorLabels[colorIndex]
           ? this.options.colorLabels[colorIndex][0]
           : null;
@@ -496,7 +488,7 @@ export default class HorizontalMultivecTrack extends HeatmapTiledPixiTrack {
       </div>`;
 
       const stateColor = color;
-      const stateName = colorLabel; // metadataElements[2];
+      const stateName = colorLabel;
       const stateRGBMarkup = `<svg width="10" height="10" style="position:relative; top:-2px;"><rect width="10" height="10" rx="2" ry="2" style="fill:${stateColor};stroke:black;stroke-width:2;"></svg> ${stateName}`;
       output += `
         <div class="track-mouseover-menu-table-item">

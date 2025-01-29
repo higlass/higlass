@@ -208,12 +208,6 @@ class HorizontalGeneBED12AnnotationsTrack extends HorizontalTiled1DPixiTrack {
 
     tile.allRects = [];
 
-    /*
-    const tileWidth = tileProxy.calculateTileWidth(
-      this.tilesetInfo, zoomLevel, this.tilesetInfo.tile_size
-    );
-*/
-
     // store the scale at while the tile was drawn at so that
     // we only resize it when redrawing
     tile.drawnAtScale = this._xScale.copy();
@@ -244,8 +238,6 @@ class HorizontalGeneBED12AnnotationsTrack extends HorizontalTiled1DPixiTrack {
         this.drawnGenes[zoomLevel][td.fields[3]].tileId === tile.tileId
       );
     });
-
-    // console.log("filteredTiles length", filteredTiles.length);
 
     const lastIndex = filteredTiles.length - 1;
 
@@ -316,11 +308,6 @@ class HorizontalGeneBED12AnnotationsTrack extends HorizontalTiled1DPixiTrack {
 
       const xStartPos = this._xScale(txStart);
       const xEndPos = this._xScale(txEnd);
-
-      /*
-        td.xStart = txStart;
-        td.xEnd = txEnd;
-      */
 
       const MIN_SIZE_FOR_EXONS = 3;
 
@@ -396,8 +383,6 @@ class HorizontalGeneBED12AnnotationsTrack extends HorizontalTiled1DPixiTrack {
       if (i >= MAX_TEXTS) return;
 
       const text = tile.texts[geneId];
-      // const geneIdElems = tile.texts[geneId].split('|');
-      // const text = (geneIdElems.length > 1) ? geneIdElems[0] : tile.texts[geneId];
 
       if (!text) return;
 
@@ -462,11 +447,6 @@ class HorizontalGeneBED12AnnotationsTrack extends HorizontalTiled1DPixiTrack {
     const exonHeight = this.geneRectHeight;
     const width = xEndPos - xStartPos;
 
-    /*
-    const yPos = strand === '+'
-      ? this.halfRectHHeight - this.geneStrandHSpacing - this.geneRectHHeight - lineHHeight
-      : this.halfRectHHeight + this.geneStrandHSpacing + this.geneRectHHeight - lineHHeight;
-*/
     const yPos = yMiddle;
 
     const yExonPos = yPos - this.geneRectHHeight + lineHHeight;
@@ -650,8 +630,6 @@ class HorizontalGeneBED12AnnotationsTrack extends HorizontalTiled1DPixiTrack {
           const geneId = this.geneId(geneInfo);
 
           const text = tile.texts[geneId];
-          // const geneIdElems = tile.texts[geneId].split('|');
-          // const text = (geneIdElems.length > 1) ? geneIdElems[0] : tile.texts[geneId];
 
           if (!text) return;
 
@@ -837,14 +815,6 @@ class HorizontalGeneBED12AnnotationsTrack extends HorizontalTiled1DPixiTrack {
 
           r.setAttribute('d', d);
 
-          /*
-          if (rect[1] === '+') {
-            r.setAttribute('fill', this.options.plusStrandColor);
-          } else {
-            r.setAttribute('fill', this.options.minusStrandColor);
-          }
-          r.setAttribute('opacity', '0.3');
-*/
           if (rect.length >= 3) {
             if (rect[2].startsWith('#')) {
               r.setAttribute('fill', `${rect[2]}`);
@@ -876,15 +846,6 @@ class HorizontalGeneBED12AnnotationsTrack extends HorizontalTiled1DPixiTrack {
         t.setAttribute('dy', '-.2em');
         g.setAttribute('transform', `scale(${text.text.scale.x},1)`);
 
-        /*
-        if (text.strand === '+') {
-          // t.setAttribute('stroke', this.options.plusStrandColor);
-          t.setAttribute('fill', this.options.plusStrandColor);
-        } else {
-          // t.setAttribute('stroke', this.options.minusStrandColor);
-          t.setAttribute('fill', this.options.minusStrandColor);
-        }
-*/
         t.setAttribute('fill', text.text.style.fill);
         t.innerHTML = text.text.text;
 
@@ -930,28 +891,6 @@ class HorizontalGeneBED12AnnotationsTrack extends HorizontalTiled1DPixiTrack {
     let value = '';
 
     if (fetchedTile) {
-      /*
-      if (!this.tilesetInfo.shape) {
-        posInTileX = fetchedTile.tileData.dense.length * (tilePos - Math.floor(tilePos));
-      }
-*/
-      /*
-      const a = rangeQuery2d(fetchedTile.tileData.dense,
-        this.tilesetInfo.shape[0],
-        this.tilesetInfo.shape[1],
-        [Math.floor(posInTileX), Math.floor(posInTileX)],
-        [posInTileY, posInTileY],
-      */
-      /*
-      let index = null;
-      if (this.tilesetInfo.shape) {
-        // accomodate data from vector sources
-        index = this.tilesetInfo.shape[0] * Math.floor(posInTileY) + Math.floor(posInTileX);
-      } else {
-        index = fetchedTile.tileData.dense.length * Math.floor(posInTileY) + Math.floor(posInTileX);
-      }
-*/
-      //       value = format('.3f')(fetchedTile.tileData.dense[index]);
       value = `${fetchedTile.rectGraphics.position.x} | posInTileX ${posInTileX} (${trackX}) | posInTileY ${posInTileY} (${trackY})`;
     }
 
@@ -1115,30 +1054,6 @@ class HorizontalGeneBED12AnnotationsTrack extends HorizontalTiled1DPixiTrack {
       intervalMarkup += `:${strand}`;
     }
 
-    /*
-      <div id="bed12-id" style="display:block; font-size:1.1em; font-weight:bolder; z-index:100000;">
-        ${realId}
-      </div>
-    */
-
-    // return `<div>
-    //   <div id="bed12-interval" style="display:block; font-size:13px;">
-    //     <span style="font-weight: bold;">${intervalMarkup}</span>
-    //   </div>
-    //   <div id="bed12-score" style="display:block; font-size:13px;">
-    //     Score: <span style="font-weight: bold;">${realScore}</span>
-    //   </div>
-    //   <div id="bed12-biosample-count" style="display:block; font-size:13px;">
-    //     In <span style="font-weight: bold;">${realBiosampleCount}</span> / ${this.biosampleCount} biosamples
-    //   </div>
-    //   <div id="bed12-component" style="display:block;">
-    //     ${itemRGBMarkup}
-    //   </div>
-    //   <div id="bed12-element-cartoon" style="display:block;">
-    //     ${elementCartoon}
-    //   </div>
-    // </div>`;
-
     let output = '';
     output += `<div class="track-mouseover-menu-table">`;
     output += `
@@ -1184,157 +1099,6 @@ class HorizontalGeneBED12AnnotationsTrack extends HorizontalTiled1DPixiTrack {
     return output;
   }
 
-  // formattedBED12HTML(bed12FieldsObj) {
-  //   const chrom = bed12FieldsObj[0];
-  //   const start = +bed12FieldsObj[1];
-  //   const end = +bed12FieldsObj[2];
-  //   const id = bed12FieldsObj[3];
-  //   const score = bed12FieldsObj[4];
-  //   const strand = bed12FieldsObj[5];
-  //   const thickStart = +bed12FieldsObj[6];
-  //   const thickEnd = +bed12FieldsObj[7];
-  //   const itemRGB = bed12FieldsObj[8] !== '.' ? bed12FieldsObj[8] : '0,0,0';
-  //   const blockCount = +bed12FieldsObj[9];
-  //   const blockSizes = bed12FieldsObj[10].split(',');
-  //   const blockStarts = bed12FieldsObj[11].split(',');
-
-  //   const idElems = id.split('|');
-  //   const realId = idElems[0];
-  //   const realScorePrecision = 4;
-  //   const realScore =
-  //     idElems.length > 1
-  //       ? Number.parseFloat(idElems[1]).toPrecision(realScorePrecision)
-  //       : score;
-  //   const realBiosampleCount =
-  //     idElems.length > 2
-  //       ? Number.parseInt(idElems[2]) : 'NA';
-
-  //   const hc = document.getElementsByClassName('higlass')[0];
-  //   if (hc) {
-  //     hc.style.cursor = 'pointer';
-  //   }
-
-  //   let itemRGBMarkup = '';
-  //   if (this.options.itemRGBMap) {
-  //     const itemRGBName = this.options.itemRGBMap[itemRGB]
-  //       ? this.options.itemRGBMap[itemRGB]
-  //       : DEFAULT_ITEM_RGB_NAME;
-  //     itemRGBMarkup = `<div id="bed12-component" style="display:inline-block; position:relative; top:-2px;">
-  //       <svg width="10" height="10">
-  //         <rect width="10" height="10" rx="2" ry="2" style="fill:rgb(${itemRGB});stroke:black;stroke-width:2;" />
-  //       </svg>
-  //       <span style="position:relative; top:1px; font-weight:600;">${itemRGBName}</span>
-  //     </div>`;
-  //   }
-
-  //   /*
-  //     With gratitude to Pierre Lindenbaum @ biostars
-  //   */
-  //   let elementCartoon = '';
-  //   const elementCartoonWidth = 200;
-  //   const elementCartoonGeneHeight = 30;
-  //   const elementCartoonHeight = elementCartoonGeneHeight + 10;
-  //   const elementCartoonMiddle = elementCartoonHeight / 2;
-  //   function pos2pixel(pos) {
-  //     return ((pos - start) / ((end - start) * 1.0)) * elementCartoonWidth;
-  //   }
-  //   if (blockCount > 0) {
-  //     elementCartoon += `<svg width="${elementCartoonWidth}" height="${elementCartoonHeight}">
-  //       <style type="text/css">
-  //         .ticks {stroke:rgb(${itemRGB});stroke-width:1px;fill:none;}
-  //         .gene {stroke:rgb(${itemRGB});stroke-width:1px;fill:none;}
-  //         .translate { fill:rgb(${itemRGB});fill-opacity:1;}
-  //         .exon { fill:rgb(${itemRGB});fill-opacity:1;}
-  //         .score { fill:rgb(${itemRGB});fill-opacity:1;font:bold 12px sans-serif;}
-  //         .id { fill:rgb(${itemRGB});fill-opacity:1;font:bold 12px sans-serif;}
-  //       </style>
-  //       <defs>
-  //         <path id="ft" class="ticks" d="m -3 -3  l 3 3  l -3 3" />
-  //         <path id="rt" class="ticks" d="m 3 -3  l -3 3  l 3 3" />
-  //       </defs>
-  //     `;
-  //     const ecStart = pos2pixel(start);
-  //     const ecEnd = pos2pixel(end);
-  //     elementCartoon += `<line class="gene" x1=${ecStart} x2=${ecEnd} y1=${elementCartoonMiddle} y2=${elementCartoonMiddle} />`;
-  //     const ecThickStart = pos2pixel(thickStart);
-  //     const ecThickEnd = pos2pixel(thickEnd);
-  //     const ecThickY = elementCartoonMiddle - elementCartoonGeneHeight / 4;
-  //     const ecThickHeight = elementCartoonGeneHeight / 2;
-  //     let ecThickWidth = ecThickEnd - ecThickStart;
-  //     if (this.options.isBarPlotLike) {
-  //       ecThickWidth = ecThickWidth !== 1 ? 1 : ecThickWidth;
-  //     }
-  //     let realIdTextAnchor = '';
-  //     if (ecThickStart < 0.15 * elementCartoonWidth) {
-  //       realIdTextAnchor = 'start';
-  //     } else if (
-  //       ecThickStart >= 0.15 * elementCartoonWidth &&
-  //       ecThickStart <= 0.85 * elementCartoonWidth
-  //     ) {
-  //       realIdTextAnchor = 'middle';
-  //     } else {
-  //       realIdTextAnchor = 'end';
-  //     }
-  //     // const realScoreTextAnchor = (ecThickStart < (0.15 * elementCartoonWidth)) ? "start" : (ecThickStart > (0.85 * elementCartoonWidth)) ? "end" : "middle";
-  //     elementCartoon += `<rect class="translate" x=${ecThickStart} y=${ecThickY} width=${ecThickWidth} height=${ecThickHeight} />`;
-  //     const ecLabelDy = '-0.25em';
-  //     elementCartoon += `<text class="id" text-anchor="${realIdTextAnchor}" x=${ecThickStart} y=${ecThickY} dy=${ecLabelDy}>${realId}</text>`;
-  //     if (strand === '+' || strand === '-') {
-  //       const ecStrandHref = strand === '+' ? '#ft' : '#rt';
-  //       for (let i = 0; i < elementCartoonWidth; i += 10) {
-  //         elementCartoon += `<use x=${i} y=${elementCartoonMiddle} href=${ecStrandHref} />`;
-  //       }
-  //     }
-  //     for (let i = 0; i < blockCount; i++) {
-  //       let ecExonStart = pos2pixel(start + +blockStarts[i]);
-  //       const ecExonY = elementCartoonMiddle - elementCartoonGeneHeight / 8;
-  //       let ecExonWidth = pos2pixel(start + +blockSizes[i]);
-  //       const ecExonHeight = elementCartoonGeneHeight / 4;
-  //       if (this.options.isBarPlotLike) {
-  //         if (i === 0) {
-  //           ecExonStart = ecStart;
-  //           ecExonWidth = ecStart + 1;
-  //         } else if (i === blockCount - 1) {
-  //           ecExonStart = ecEnd - 1;
-  //           ecExonWidth = ecEnd;
-  //         }
-  //       }
-  //       elementCartoon += `<rect class="exon" x=${ecExonStart} y=${ecExonY} width=${ecExonWidth} height=${ecExonHeight} />`;
-  //     }
-
-  //     elementCartoon += '</svg>';
-  //   }
-
-  //   let intervalMarkup = `${chrom}:${start}-${end}`;
-  //   if (strand === '+' || strand === '-') {
-  //     intervalMarkup += `:${strand}`;
-  //   }
-
-  //   /*
-  //     <div id="bed12-id" style="display:block; font-size:1.1em; font-weight:bolder; z-index:100000;">
-  //       ${realId}
-  //     </div>
-  //   */
-
-  //   return `<div>
-  //     <div id="bed12-interval" style="display:block; font-size:13px;">
-  //       <span style="font-weight: bold;">${intervalMarkup}</span>
-  //     </div>
-  //     <div id="bed12-score" style="display:block; font-size:13px;">
-  //       Score: <span style="font-weight: bold;">${realScore}</span>
-  //     </div>
-  //     <div id="bed12-biosample-count" style="display:block; font-size:13px;">
-  //       In <span style="font-weight: bold;">${realBiosampleCount}</span> / ${this.biosampleCount} biosamples
-  //     </div>
-  //     <div id="bed12-component" style="display:block;">
-  //       ${itemRGBMarkup}
-  //     </div>
-  //     <div id="bed12-element-cartoon" style="display:block;">
-  //       ${elementCartoon}
-  //     </div>
-  //   </div>`;
-  // }
-
   getMouseOverHtml(trackX, trackY, isShiftDown) {
     if (!this.tilesetInfo || (!this.options.showTooltip && !isShiftDown))
       return '';
@@ -1367,7 +1131,6 @@ class HorizontalGeneBED12AnnotationsTrack extends HorizontalTiled1DPixiTrack {
       Test for collision of mouse position with candidate tile elements and return a formatted
       HTML element, where a collision is found
     */
-    //console.log("candidateTileElements", candidateTileElements);
     let output = '';
     if (candidateTileElements.length !== 0) {
       candidateTileElements.forEach((ct) => {
@@ -1378,7 +1141,6 @@ class HorizontalGeneBED12AnnotationsTrack extends HorizontalTiled1DPixiTrack {
         let candidateTileElementsIdx = 0;
         if (!xStarts) return;
         Object.keys(xStarts).forEach((k) => {
-          //console.log(k, "|", trackX, xStarts[k], xEnds[k], "|", trackY, yStarts[k], yEnds[k]);
           if (
             xStarts[k] < trackX &&
             xEnds[k] &&
@@ -1396,8 +1158,6 @@ class HorizontalGeneBED12AnnotationsTrack extends HorizontalTiled1DPixiTrack {
         });
       });
     }
-
-    // console.log(`this.drawnGenes[${zoomLevel}]`, this.drawnGenes[zoomLevel]);
 
     if (output.length === 0) {
       const hc = document.getElementsByClassName('higlass')[0];

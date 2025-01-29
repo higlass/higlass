@@ -448,7 +448,6 @@ class BarTrack extends HorizontalLine1DPixiTrack {
     this.visibleAndFetchedTiles()
       .filter((tile) => tile.svgData?.barXValues)
       .forEach((tile) => {
-        // const [xScale, xPos] = this.getXScaleAndOffset(tile.drawnAtScale);
         const data = tile.svgData;
 
         for (let i = 0; i < data.barXValues.length; i++) {
@@ -468,8 +467,6 @@ class BarTrack extends HorizontalLine1DPixiTrack {
           const rect = document.createElement('rect');
           rect.setAttribute('fill', barColorFull);
           rect.setAttribute('fill-opacity', barColorAlpha);
-          // rect.setAttribute('stroke', data.barColors[i]);
-          // rect.setAttribute('x', (data.barXValues[i] + xPos) * xScale);
           rect.setAttribute('x', data.barXValues[i]);
           rect.setAttribute('y', data.barYValues[i]);
           rect.setAttribute('height', data.barHeights[i]);

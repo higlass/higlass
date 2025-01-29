@@ -84,8 +84,6 @@ class HorizontalPoint1DPixiTrack extends HorizontalLine1DPixiTrack {
       .domain([0, this.tilesetInfo.tile_size])
       .range([tileX, tileX + tileWidth]);
 
-    // let strokeWidth = this.options.lineStrokeWidth ? this.options.lineStrokeWidth : 1;
-
     const strokeWidth = 0;
     graphics.lineStyle(strokeWidth, stroke, 1);
 
@@ -113,9 +111,6 @@ class HorizontalPoint1DPixiTrack extends HorizontalLine1DPixiTrack {
       // this data is in the last tile and extends beyond the length
       // of the coordinate system
 
-      // console.log('drawRect');
-      // console.log('xPos:', xPos)
-
       graphics.drawRect(
         xPos - squareSide / 2 / this.pMain.scale.x,
         yPos - squareSide / 2 / this.pMain.scale.y,
@@ -133,8 +128,6 @@ class HorizontalPoint1DPixiTrack extends HorizontalLine1DPixiTrack {
       const tileK =
         (tile.drawnAtScale.domain()[1] - tile.drawnAtScale.domain()[0]) /
         (this._xScale.domain()[1] - this._xScale.domain()[0]);
-
-      // let posOffset = newRange[0];
 
       const newRange = this._xScale.domain().map(tile.drawnAtScale);
 

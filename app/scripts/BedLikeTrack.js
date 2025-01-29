@@ -179,10 +179,7 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
   destroyTile(tile) {
     // remove texts
     this.removeTileRects(tile);
-
     tile.graphics.destroy(true);
-    // tile.graphics.removeChild(tile.textGraphics);
-    // tile.graphics.removeChild(tile.rectGraphics);
   }
 
   removeTiles(toRemoveIds) {
@@ -221,19 +218,10 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
     } else {
       this.colorScale = HEATED_OBJECT_MAP;
     }
-
-    // for (const tile of this.visibleAndFetchedTiles()) {
-    // this.destroyTile(tile);
-    // this.initTile(tile);
-    // this.renderTile(tile);
-    // }
   }
 
   updateTile(tile) {
-    // this.destroyTile(tile);
     if (this.areAllVisibleTilesLoaded()) {
-      // this.destroyTile(tile);
-      // this.initTile(tile);
       this.renderTile(tile);
     }
   }

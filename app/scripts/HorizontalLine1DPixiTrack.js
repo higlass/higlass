@@ -357,9 +357,6 @@ class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
       : 'blue';
 
     this.visibleAndFetchedTiles().forEach((tile) => {
-      // const tileProps = Object.getOwnPropertyNames(tile);
-      // console.log(`tileProps ${tileProps}`);
-
       //
       // when the track is used as a 1D heatmap, segments do not work as they
       // are not a property contained within the tile in this track mode.
@@ -389,13 +386,9 @@ class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
           this.tilesetInfo.bins_per_dimension || this.tilesetInfo.tile_size,
         );
         const tileValues = tile.tileData.dense;
-        // console.log(`tileValues ${JSON.stringify(tileValues)}`);
         if (tileValues.length !== 0) {
           tile.svgData = undefined;
 
-          // this.colorScale = this.colorScale.map((rgb) =>
-          //   rgb.map((channel) => channel / 255.0),
-          // );
           const tileXScale = scaleLinear()
             .domain([
               0,
@@ -452,7 +445,6 @@ class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
             const rect = document.createElement('rect');
             rect.setAttribute('fill', barColorFull);
             rect.setAttribute('fill-opacity', barColorAlpha);
-            // rect.setAttribute('stroke', data.barColors[j]);
             rect.setAttribute('x', data.barXValues[j]);
             rect.setAttribute('y', data.barYValues[j]);
             rect.setAttribute('height', data.barHeights[j]);
@@ -460,10 +452,7 @@ class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
             if (tile.barBorders) {
               rect.setAttribute('stroke-width', '0.1');
               rect.setAttribute('stroke', 'black');
-            } else {
-              // rect.setAttribute('stroke-width', '0');
-              // rect.setAttribute('stroke', data.barColors[j]);
-            }
+            } 
             output.appendChild(rect);
           }
         }
