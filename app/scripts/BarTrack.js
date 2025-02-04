@@ -463,11 +463,11 @@ class BarTrack extends HorizontalLine1DPixiTrack {
           // element.
           const barColor = data.barColors[i];
           const barColorFull =
-            barColor.length === 9
+            (barColor.length === 9 && barColor.startsWith('#'))
               ? barColor.substring(0, barColor.length - 2)
               : barColor;
           const barColorAlpha =
-            barColor.length === 9
+            (barColor.length === 9 && barColor.startsWith('#'))
               ? Number.parseFloat(
                   Number.parseInt(barColor.substring(barColor.length - 2), 16),
                 ) / 255.0
