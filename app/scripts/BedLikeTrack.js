@@ -1071,6 +1071,8 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
     this.animate();
   }
 
+  // If the showTooltip option is set to false, but the user is holding
+  // down the Shift key (isShiftDown is true), then show the tooltip
   getMouseOverHtml(trackX, trackY, isShiftDown) {
     if (!this.tilesetInfo) {
       return '';
@@ -1115,6 +1117,7 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
 
           let output = `<div class="track-mouseover-menu-table">`;
 
+          // If present, parts[3] is the gene name (analogous to fourth column of BED4+ file)
           const identifierText = parts.length >= 4 ? parts[3] : null;
 
           if (identifierText) {
@@ -1126,6 +1129,8 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
             `;
           }
 
+          // Fields 1-3 are the genomic coordinates and the sixth field is the strand (if present), 
+          // following the BED3 or BED6+ format
           const intervalText =
             parts.length >= 5 && typeof parts[5] !== 'undefined'
               ? `${parts[0]}:${+parts[1]}-${+parts[2]} (${parts[5]})`
@@ -1144,6 +1149,7 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
             return typeof value === 'number';
           }
 
+          // The fifth field is the score (if present), following the BED5+ format
           const scoreText =
             parts.length >= 5
               ? isNumber(Number(parts[4]))
@@ -1163,8 +1169,6 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
           output += '</div>';
 
           return output;
-
-          // return parts.join(' ');
         }
       }
     }

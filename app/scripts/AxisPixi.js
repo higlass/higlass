@@ -1,5 +1,6 @@
 // @ts-nocheck
 import { format } from 'd3-format';
+import slugid from 'slugid';
 
 // Configs
 import GLOBALS from './configs/globals';
@@ -238,7 +239,7 @@ class AxisPixi {
     if (this.track.getTheme() === THEME_DARK) stroke = '#cccccc';
 
     const line = document.createElement('path');
-    const lineVerticalAxisUniqueId = Math.random().toString(36).substring(7);
+    const lineVerticalAxisUniqueId = slugid.nice();
 
     line.setAttribute('fill', 'transparent');
     line.setAttribute('stroke', stroke);
@@ -262,7 +263,7 @@ class AxisPixi {
     if (this.track.getTheme() === THEME_DARK) stroke = '#cccccc';
 
     const line = document.createElement('path');
-    const lineAxisSVGUniqueId = Math.random().toString(36).substring(7);
+    const lineAxisSVGUniqueId = slugid.nice();
     line.setAttribute('id', `tick-mark-${lineAxisSVGUniqueId}`);
     line.setAttribute('fill', 'transparent');
     line.setAttribute('stroke', stroke);
@@ -273,7 +274,7 @@ class AxisPixi {
   createAxisSVGText(text) {
     // factor out the creation of axis texts
     const t = document.createElement('text');
-    const textAxisSVGUniqueId = Math.random().toString(36).substring(7);
+    const textAxisSVGUniqueId = slugid.nice();
 
     t.innerHTML = text;
     t.setAttribute('id', `axis-text-${textAxisSVGUniqueId}`);

@@ -601,7 +601,9 @@ class TiledPixiTrack extends PixiTrack {
           callback(this.visibleAndFetchedTiles().map((x) => x.tileData));
         }
       }
-    } catch (err) {}
+    } catch (err) {
+      console.warn(`Error in TiledPixiTrack.synchronizeTilesAndGraphics: ${JSON.stringify(err)}`);
+    }
   }
 
   loadTileData(tile, dataLoader) {

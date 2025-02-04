@@ -49,8 +49,6 @@ class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
 
     this.animate();
 
-    // return `${textValue}`;
-
     if (!textValue || textValue.length === 0) return '';
 
     let output = '';

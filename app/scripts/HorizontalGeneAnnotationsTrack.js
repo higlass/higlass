@@ -558,7 +558,6 @@ class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
   destroyTile(tile) {
     tile.rectGraphics.destroy();
     tile.rectMaskGraphics.destroy();
-    // tile.textGraphics.destroy();
     tile.textGraphics.destroy(true);
     tile.textBgGraphics.destroy();
     tile.graphics.destroy();
@@ -945,14 +944,6 @@ class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
 
         if (pc === -1) {
           const gene = tile.allRects[i][2];
-
-          // return `
-          //   <div>
-          //     <b>${gene.fields[3]}</b><br>
-          //     <b>Position:</b> ${gene.fields[0]}:${gene.fields[1]}-${gene.fields[2]}<br>
-          //     <b>Strand:</b> ${gene.fields[5]}
-          //   </div>
-          // `;
 
           let output = `<div class="track-mouseover-menu-table">`;
 

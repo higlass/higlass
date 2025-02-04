@@ -307,6 +307,10 @@ class BarTrack extends HorizontalLine1DPixiTrack {
     // but rather its parent's
     super.draw();
 
+    // PixiJS Graphics object does not expose private property, which 
+    // may still be null or undefined when Graphics object is only 
+    // partially released. This test helps avoid an exception being
+    // thrown.
     if (this.zeroLine?._graphics && this.options.zeroLineVisible) {
       this.drawZeroLine();
     } else if (this.zeroLine?._graphics) {
@@ -451,8 +455,12 @@ class BarTrack extends HorizontalLine1DPixiTrack {
         const data = tile.svgData;
 
         for (let i = 0; i < data.barXValues.length; i++) {
-          // hex colors with transparency cannot be directly used in SVG opened in Adobe Illustrator
-          // so alpha values are generated from the last two characters of the color string
+          // If a hex color with transparency is specified, the first seven hex characters specify 
+          // the color without transparency and the last two characters specify the alpha value.
+          // Because hex colors with transparency cannot be directly used in an SVG opened in Adobe
+          // Illustrator, the alpha values are stripped out of the original color value. The color 
+          // and alpha values are then used to specify the fill color and fill-opacity of the SVG 
+          // element.
           const barColor = data.barColors[i];
           const barColorFull =
             barColor.length === 9
