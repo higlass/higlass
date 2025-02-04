@@ -277,9 +277,6 @@ class PixiTrack extends Track {
   drawBorder() {
     const graphics = this.pBorder;
 
-    // @ts-expect-error - PixiJS Graphics object does not expose private property, which may still be null or undefined when Graphics object is only partially released
-    if (!graphics || !graphics._geometry) return;
-
     graphics.clear();
 
     // don't display the track label
@@ -315,59 +312,39 @@ class PixiTrack extends Track {
   }
 
   drawError() {
-    if (
-      this &&
-      this.position &&
-      this.errorText &&
-      this.errorTexts &&
-      this.errorTexts.length
-    ) {
-      this.errorText.x = this.position[0] + this.dimensions[0] / 2;
-      this.errorText.y = this.position[1] + this.dimensions[1] / 2;
+    this.errorText.x = this.position[0] + this.dimensions[0] / 2;
+    this.errorText.y = this.position[1] + this.dimensions[1] / 2;
 
-      // Collect all the error texts, filter out the ones that are empty
-      // and put the non-empty ones separate lines
-      const errorTextText = Object.values(this.errorTexts)
-        .filter((x) => x?.length)
-        .reduce((acc, x) => (acc ? `${acc}\n${x}` : x), '');
+    // Collect all the error texts, filter out the ones that are empty
+    // and put the non-empty ones separate lines
+    const errorTextText = Object.values(this.errorTexts)
+      .filter((x) => x?.length)
+      .reduce((acc, x) => (acc ? `${acc}\n${x}` : x), '');
 
-      this.errorText.text = errorTextText;
-      this.errorText.alpha = 0.8;
+    this.errorText.text = errorTextText;
+    this.errorText.alpha = 0.8;
 
-      if (errorTextText?.length) {
-        // draw a red border around the track to bring attention to its
-        // error
+    if (errorTextText?.length) {
+      // draw a red border around the track to bring attention to its
+      // error
 
-        const graphics = this.pBorder;
+      const graphics = this.pBorder;
+      graphics.clear();
+      graphics.lineStyle(1, colorToHex('red'));
 
-        // @ts-expect-error - PixiJS Graphics object does not expose private property, which may still be null or undefined when Graphics object is only partially released
-        if (!graphics || !graphics._geometry) return;
-
-        graphics.clear();
-        graphics.lineStyle(1, colorToHex('red'));
-
-        graphics.drawRect(
-          this.position[0],
-          this.position[1],
-          this.dimensions[0],
-          this.dimensions[1],
-        );
-      } else {
-        this.pBorder.clear();
-        this.errorText.text = '';
-        const graphics = this.pBorder;
-        // @ts-expect-error - PixiJS Graphics object does not expose private property, which may still be null or undefined when Graphics object is only partially released
-        if (!graphics || !graphics._geometry) return;
-        graphics.clear();
-      }
+      graphics.drawRect(
+        this.position[0],
+        this.position[1],
+        this.dimensions[0],
+        this.dimensions[1],
+      );
+    } else {
+      this.pBorder.clear();
     }
   }
 
   drawBackground() {
     const graphics = this.pBackground;
-
-    // @ts-expect-error - PixiJS Graphics object does not expose private property, which may still be null or undefined when Graphics object is only partially released
-    if (!graphics || !graphics._geometry) return;
 
     graphics.clear();
 
@@ -418,9 +395,6 @@ class PixiTrack extends Track {
     if (!this.labelText) return;
 
     const graphics = this.pLabel;
-
-    // @ts-expect-error - PixiJS Graphics object does not expose private property, which may still be null or undefined when Graphics object is only partially released
-    if (!graphics || !graphics._geometry) return;
 
     graphics.clear();
 

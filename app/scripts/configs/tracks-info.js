@@ -230,7 +230,7 @@ export const TRACKS_INFO = [
       heatmapValueScaling: 'log',
       showMousePosition: false,
       mousePositionColor: '#000000',
-      showTooltip: true,
+      showTooltip: false,
       extent: 'full',
       zeroValueColor: null,
     },
@@ -365,7 +365,7 @@ export const TRACKS_INFO = [
       showMousePosition: false,
       minHeight: 20,
       mousePositionColor: '#000000',
-      showTooltip: true,
+      showTooltip: false,
     },
     defaultOptionsByTheme: {
       [THEME_DARK]: {
@@ -430,7 +430,7 @@ export const TRACKS_INFO = [
       labelTextOpacity: 0.4,
       showMousePosition: false,
       mousePositionColor: '#000000',
-      showTooltip: true,
+      showTooltip: false,
     },
   },
   {
@@ -849,7 +849,6 @@ export const TRACKS_INFO = [
       'geneAnnotationHeight',
       'geneLabelPosition',
       'geneStrandSpacing',
-      'showTooltip',
     ],
     defaultOptions: {
       fontSize: 10,
@@ -870,7 +869,6 @@ export const TRACKS_INFO = [
       geneAnnotationHeight: 16,
       geneLabelPosition: 'outside',
       geneStrandSpacing: 4,
-      showTooltip: true,
     },
     defaultOptionsByTheme: {
       [THEME_DARK]: {

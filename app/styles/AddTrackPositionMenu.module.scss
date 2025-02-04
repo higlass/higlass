@@ -1,5 +1,5 @@
-@use './colors' as *;
-@use './transitions' as *;
+@import './colors';
+@import './transitions';
 
 .add-track-position-table {
   border-collapse: collapse;

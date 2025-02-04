@@ -295,7 +295,6 @@ class HiGlassComponent extends React.Component {
       rangeSelection1dSize: [0, Number.POSITIVE_INFINITY],
       rangeSelectionToInt: false,
       modal: null,
-      isShiftDown: false,
     };
 
     // monitor whether this element is attached to the DOM so that
@@ -508,7 +507,7 @@ class HiGlassComponent extends React.Component {
       height: this.state.height,
       view: this.canvasElement,
       antialias: true,
-      backgroundAlpha: 0,
+      transparent: true,
       resolution: 2,
       autoResize: true,
     };
@@ -892,21 +891,9 @@ class HiGlassComponent extends React.Component {
         mouseTool: MOUSE_TOOL_SELECT,
       });
     }
-
-    if (event.key === 'Shift') {
-      this.setState({
-        isShiftDown: true,
-      });
-    }
   }
 
   keyUpHandler(event) {
-    if (event.key === 'Shift') {
-      this.setState({
-        isShiftDown: false,
-      });
-    }
-
     if (this.props.options.rangeSelectionOnAlt && event.key === 'Alt') {
       this.setState({
         mouseTool: MOUSE_TOOL_MOVE,
@@ -1333,22 +1320,19 @@ class HiGlassComponent extends React.Component {
             lockedTrack.maxValue() - lockedTrack.valueScale.domain()[1],
           ) > epsilon;
 
-        let hasBrushMoved = false;
-        try {
-          hasBrushMoved =
-            sourceTrack.options &&
-            lockedTrack.options &&
-            typeof sourceTrack.options.scaleStartPercent !== 'undefined' &&
-            typeof sourceTrack.options.scaleEndPercent !== 'undefined' &&
-            (Math.abs(
-              lockedTrack.options.scaleStartPercent -
-                sourceTrack.options.scaleStartPercent,
-            ) > epsilon ||
-              Math.abs(
-                lockedTrack.options.scaleEndPercent -
-                  sourceTrack.options.scaleEndPercent,
-              ) > epsilon);
-        } catch (e) {}
+        const hasBrushMoved =
+          sourceTrack.options &&
+          lockedTrack.options &&
+          typeof sourceTrack.options.scaleStartPercent !== 'undefined' &&
+          typeof sourceTrack.options.scaleEndPercent !== 'undefined' &&
+          (Math.abs(
+            lockedTrack.options.scaleStartPercent -
+              sourceTrack.options.scaleStartPercent,
+          ) > epsilon ||
+            Math.abs(
+              lockedTrack.options.scaleEndPercent -
+                sourceTrack.options.scaleEndPercent,
+            ) > epsilon);
 
         // If we do view based scaling we want to minimize the number of rerenders
         // Check if it is necessary to rerender
@@ -1527,8 +1511,6 @@ class HiGlassComponent extends React.Component {
       '$1',
     );
 
-    svgString = svgString.replace('xmlns="http://www.w3.org/1999/xhtml"', '');
-
     const xmlDeclaration =
       '<?xml version="1.0" encoding="UTF-8" standalone="no"?>';
     const doctype =
@@ -1578,10 +1560,6 @@ class HiGlassComponent extends React.Component {
         // TODO: I have no idea why dimensions are doubled!
         targetCanvas.width = this.canvasElement.width / 2;
         targetCanvas.height = this.canvasElement.height / 2;
-        const ctx = targetCanvas.getContext('2d');
-        ctx.globalCompositeOperation = 'source-over';
-        ctx.fillStyle = '#ffffff';
-        ctx.fillRect(0, 0, targetCanvas.width, targetCanvas.height);
         targetCanvas.getContext('2d').drawImage(img, 0, 0);
         targetCanvas.toBlob((blob) => {
           resolve(blob);
@@ -4504,7 +4482,7 @@ class HiGlassComponent extends React.Component {
       isFromVerticalTrack: evt.isFromVerticalTrack,
     });
 
-    this.showHoverMenu(evt, this.state.isShiftDown);
+    this.showHoverMenu(evt);
   }
 
   getMinMaxValue(viewId, trackId, ignoreOffScreenValues, ignoreFixedScale) {
@@ -4538,11 +4516,11 @@ class HiGlassComponent extends React.Component {
   /**
    * Show a menu displaying some information about the track under it
    */
-  showHoverMenu(evt, isShiftDown) {
+  showHoverMenu(evt) {
     // each track should have a function that returns an HTML representation
     // of the data at a give position
     const mouseOverHtml = evt.track?.getMouseOverHtml
-      ? evt.track.getMouseOverHtml(evt.relTrackX, evt.relTrackY, isShiftDown)
+      ? evt.track.getMouseOverHtml(evt.relTrackX, evt.relTrackY)
       : '';
 
     if (evt.track !== this.prevMouseHoverTrack) {

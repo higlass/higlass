@@ -140,8 +140,8 @@ class LeftTrackModifier {
     return this;
   }
 
-  getMouseOverHtml(trackX, trackY, isShiftDown) {
-    return this.originalTrack.getMouseOverHtml(trackY, trackX, isShiftDown);
+  getMouseOverHtml(trackX, trackY) {
+    return this.originalTrack.getMouseOverHtml(trackY, trackX);
   }
 
   clickOutside() {

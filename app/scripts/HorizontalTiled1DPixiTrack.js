@@ -213,106 +213,104 @@ class HorizontalTiled1DPixiTrack extends Tiled1DPixiTrack {
   }
 
   drawConstIndicator() {
-    if (!this.constIndicator || !this.constIndicator._graphics) {
+    if (!this.constIndicator) {
       // this can happen if we receive a tilesetInfo in the TiledPixiTrack
       // constructor before we get a chance to initialize this object
       return;
     }
 
-    try {
-      this.constIndicator.clear();
-      while (this.constIndicator.children[0]) {
-        this.constIndicator.removeChild(this.constIndicator.children[0]);
-      }
+    this.constIndicator.clear();
+    while (this.constIndicator.children[0]) {
+      this.constIndicator.removeChild(this.constIndicator.children[0]);
+    }
 
-      if (!this.options.constIndicators || !this.valueScale) return;
+    if (!this.options.constIndicators || !this.valueScale) return;
 
-      this.options.constIndicators.forEach(
-        ({
-          color = 'black',
-          opacity = 1.0,
-          label = null,
-          labelColor = 'black',
-          labelOpacity = 1.0,
-          labelPosition = 'leftTop',
-          labelSize = 12,
-          value = 0,
-        } = {}) => {
-          const colorHex = colorToHex(color);
-          const labelColorHex = colorToHex(labelColor);
+    this.options.constIndicators.forEach(
+      ({
+        color = 'black',
+        opacity = 1.0,
+        label = null,
+        labelColor = 'black',
+        labelOpacity = 1.0,
+        labelPosition = 'leftTop',
+        labelSize = 12,
+        value = 0,
+      } = {}) => {
+        const colorHex = colorToHex(color);
+        const labelColorHex = colorToHex(labelColor);
 
-          this.constIndicator.beginFill(colorHex, opacity);
+        this.constIndicator.beginFill(colorHex, opacity);
 
-          const y = this.valueScale(value);
-          let xOffset = 0;
-          let widthOffset = 0;
+        const y = this.valueScale(value);
+        let xOffset = 0;
+        let widthOffset = 0;
 
-          if (label) {
-            const labelG = new GLOBALS.PIXI.Text(label, {
-              fontFamily: 'Arial',
-              fontSize: labelSize,
-              fill: labelColorHex,
-            });
-            labelG.alpha = labelOpacity;
+        if (label) {
+          const labelG = new GLOBALS.PIXI.Text(label, {
+            fontFamily: 'Arial',
+            fontSize: labelSize,
+            fill: labelColorHex,
+          });
+          labelG.alpha = labelOpacity;
 
-            switch (labelPosition) {
-              case 'right':
-                labelG.anchor.x = 1;
-                labelG.anchor.y = 0.5;
-                labelG.x = this.position[0] + this.dimensions[0] - 6;
-                labelG.y = y;
-                widthOffset = labelG.width + 8;
-                break;
+          switch (labelPosition) {
+            case 'right':
+              labelG.anchor.x = 1;
+              labelG.anchor.y = 0.5;
+              labelG.x = this.position[0] + this.dimensions[0] - 6;
+              labelG.y = y;
+              widthOffset = labelG.width + 8;
+              break;
 
-              case 'rightBottom':
-                labelG.anchor.x = 1;
-                labelG.anchor.y = 0;
-                labelG.x = this.position[0] + this.dimensions[0] - 6;
-                labelG.y = y;
-                break;
+            case 'rightBottom':
+              labelG.anchor.x = 1;
+              labelG.anchor.y = 0;
+              labelG.x = this.position[0] + this.dimensions[0] - 6;
+              labelG.y = y;
+              break;
 
-              case 'rightTop':
-                labelG.anchor.x = 1;
-                labelG.anchor.y = 1;
-                labelG.x = this.position[0] + this.dimensions[0] - 6;
-                labelG.y = y;
-                break;
+            case 'rightTop':
+              labelG.anchor.x = 1;
+              labelG.anchor.y = 1;
+              labelG.x = this.position[0] + this.dimensions[0] - 6;
+              labelG.y = y;
+              break;
 
-              case 'left':
-                labelG.anchor.x = 0;
-                labelG.anchor.y = 0.5;
-                labelG.x = this.position[0] + 2;
-                labelG.y = y;
-                xOffset = labelG.width + 4;
-                break;
+            case 'left':
+              labelG.anchor.x = 0;
+              labelG.anchor.y = 0.5;
+              labelG.x = this.position[0] + 2;
+              labelG.y = y;
+              xOffset = labelG.width + 4;
+              break;
 
-              case 'leftBottom':
-                labelG.anchor.x = 0;
-                labelG.anchor.y = 0;
-                labelG.x = this.position[0] + 2;
-                labelG.y = y;
-                break;
+            case 'leftBottom':
+              labelG.anchor.x = 0;
+              labelG.anchor.y = 0;
+              labelG.x = this.position[0] + 2;
+              labelG.y = y;
+              break;
 
-              // case 'leftTop':
-              default:
-                labelG.anchor.x = 0;
-                labelG.anchor.y = 1;
-                labelG.x = this.position[0] + 2;
-                labelG.y = y;
-                break;
-            }
-            this.constIndicator.addChild(labelG);
+            // case 'leftTop':
+            default:
+              labelG.anchor.x = 0;
+              labelG.anchor.y = 1;
+              labelG.x = this.position[0] + 2;
+              labelG.y = y;
+              break;
           }
+          this.constIndicator.addChild(labelG);
+        }
 
-          this.constIndicator.drawRect(
-            this.position[0] + xOffset,
-            y,
-            this.dimensions[0] - widthOffset,
-            1,
-          );
-        },
-      );
-    } catch (err) {}
+        this.constIndicator.drawRect(
+          this.position[0] + xOffset,
+          y,
+          this.dimensions[0] - widthOffset,
+          1,
+        );
+      },
+    );
   }
 
   exportSVG() {

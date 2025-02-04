@@ -225,20 +225,16 @@ class CombinedTrack {
     }
   }
 
-  getMouseOverHtml(trackX, trackY, isShiftDown) {
+  getMouseOverHtml(trackX, trackY) {
     let mouseOverHtml = '';
 
     for (const childTrack of this.childTracks) {
       if (childTrack.getMouseOverHtml) {
-        const trackHtml = childTrack.getMouseOverHtml(
-          trackX,
-          trackY,
-          isShiftDown,
-        );
+        const trackHtml = childTrack.getMouseOverHtml(trackX, trackY);
 
         if (trackHtml?.length) {
           mouseOverHtml += trackHtml;
-          // mouseOverHtml += '<br/>';
+          mouseOverHtml += '<br/>';
         }
       }
     }

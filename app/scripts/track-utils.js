@@ -455,10 +455,8 @@ function stretchRects(track, graphicsAccessors) {
         const posOffset = newRange[0];
 
         for (const graphicsAccessor of graphicsAccessors) {
-          try {
-            graphicsAccessor(tile).scale.x = tileK;
-            graphicsAccessor(tile).x = -posOffset * tileK;
-          } catch (err) {}
+          graphicsAccessor(tile).scale.x = tileK;
+          graphicsAccessor(tile).x = -posOffset * tileK;
         }
       }
     });

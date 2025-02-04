@@ -1631,10 +1631,6 @@ class TiledPlot extends React.Component {
 
     const datatype = evtJson.datatype;
 
-    if (datatype === undefined) {
-      return;
-    }
-
     if (!(datatype in DEFAULT_TRACKS_FOR_DATATYPE) && !evtJson.defaultTracks) {
       console.warn('unknown data type:', evtJson.higlassTrack);
       return undefined;

@@ -26,7 +26,7 @@ const SortableList = SortableContainer(
   }) => {
     const itemElements = items.map((item, index) =>
       React.createElement(itemReactClass, {
-        key: `sci-${item.uid}-${Math.random().toString(36).substring(7)}`,
+        key: `sci-${item.uid}`,
         className: itemClass,
         controlAlignLeft: itemControlAlignLeft,
         sortingIndex,
