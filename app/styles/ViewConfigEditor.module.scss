@@ -1,6 +1,6 @@
-@import './colors';
-@import './sizes';
-@import './transitions';
+@use './colors' as *;
+@use './sizes' as *;
+@use './transitions' as *;
 
 .view-config-editor-header {
   margin: (-1 * $base) + px (-1 * $base) + px 0 (-1 * $base) + px;

@@ -5,6 +5,13 @@ import { commands } from './scripts/vitest-browser-commands.mjs';
 
 /** @type {import("vite").UserConfigFnObject} */
 export default ({ mode }) => ({
+  css: {
+    preprocessorOptions: {
+      scss: {
+        api: 'modern-compiler',
+      },
+    },
+  },
   plugins: [react()],
   resolve: {
     alias: {

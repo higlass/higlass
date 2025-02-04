@@ -30,6 +30,7 @@ import Annotations2dTrack from './Annotations2dTrack';
 import ArrowheadDomainsTrack from './ArrowheadDomainsTrack';
 import CNVIntervalTrack from './CNVIntervalTrack';
 import HorizontalGeneAnnotationsTrack from './HorizontalGeneAnnotationsTrack';
+import HorizontalGeneBED12AnnotationsTrack from './HorizontalGeneBED12AnnotationsTrack';
 import LeftTrackModifier from './LeftTrackModifier';
 import Track from './Track';
 
@@ -1287,8 +1288,12 @@ export class TrackRenderer extends React.Component {
   /** @param {string[]} trackUids */
   removeTracks(trackUids) {
     for (let i = 0; i < trackUids.length; i++) {
-      this.trackDefObjects[trackUids[i]].trackObject.remove();
-      delete this.trackDefObjects[trackUids[i]];
+      if (this.trackDefObjects[trackUids[i]] == null) return;
+      if (this.trackDefObjects[trackUids[i]].trackObject == null) return;
+      try {
+        this.trackDefObjects[trackUids[i]].trackObject.remove();
+        delete this.trackDefObjects[trackUids[i]];
+      } catch (err) {}
     }
   }
 

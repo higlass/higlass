@@ -225,6 +225,14 @@ class BarTrack extends HorizontalLine1DPixiTrack {
     }
   }
 
+  destroyTile(tile) {
+    tile.graphics.destroy(true);
+  }
+
+  remove() {
+    this.visibleAndFetchedTiles().forEach((tile) => this.destroyTile(tile));
+  }
+
   rerender(options, force) {
     if (options?.colorRange) {
       if (options.colorRangeGradient) {
@@ -258,7 +266,8 @@ class BarTrack extends HorizontalLine1DPixiTrack {
 
   drawZeroLineSvg(output) {
     const zeroLine = document.createElement('rect');
-    zeroLine.setAttribute('id', 'zero-line');
+    const zeroLineUniqueID = Math.random().toString(36).substring(7);
+    zeroLine.setAttribute('id', `zero-line-${zeroLineUniqueID}`);
 
     zeroLine.setAttribute('x', 0);
     zeroLine.setAttribute('y', this.dimensions[1] - 1);
@@ -298,16 +307,27 @@ class BarTrack extends HorizontalLine1DPixiTrack {
     // but rather its parent's
     super.draw();
 
-    if (this.options.zeroLineVisible) this.drawZeroLine();
-    else this.zeroLine.clear();
+    // PixiJS Graphics object does not expose private property, which 
+    // may still be null or undefined when Graphics object is only 
+    // partially released. This test helps avoid an exception being
+    // thrown.
+    if (this.zeroLine?._graphics && this.options.zeroLineVisible) {
+      this.drawZeroLine();
+    } else if (this.zeroLine?._graphics) {
+      this.zeroLine.clear();
+    }
 
     Object.values(this.fetchedTiles).forEach((tile) => {
-      const [graphicsXScale, graphicsXPos] = this.getXScaleAndOffset(
-        tile.drawnAtScale,
-      );
-
-      tile.graphics.scale.x = graphicsXScale;
-      tile.graphics.position.x = graphicsXPos;
+      if (!tile || !tile.graphics) {
+        return;
+      }
+      try {
+        const [graphicsXScale, graphicsXPos] = this.getXScaleAndOffset(
+          tile.drawnAtScale,
+        );
+        tile.graphics.scale.x = graphicsXScale;
+        tile.graphics.position.x = graphicsXPos;
+      } catch (err) {}
     });
   }
 
@@ -432,15 +452,29 @@ class BarTrack extends HorizontalLine1DPixiTrack {
     this.visibleAndFetchedTiles()
       .filter((tile) => tile.svgData?.barXValues)
       .forEach((tile) => {
-        // const [xScale, xPos] = this.getXScaleAndOffset(tile.drawnAtScale);
         const data = tile.svgData;
 
         for (let i = 0; i < data.barXValues.length; i++) {
+          // If a hex color with transparency is specified, the first seven hex characters specify 
+          // the color without transparency and the last two characters specify the alpha value.
+          // Because hex colors with transparency cannot be directly used in an SVG opened in Adobe
+          // Illustrator, the alpha values are stripped out of the original color value. The color 
+          // and alpha values are then used to specify the fill color and fill-opacity of the SVG 
+          // element.
+          const barColor = data.barColors[i];
+          const barColorFull =
+            barColor.length === 9
+              ? barColor.substring(0, barColor.length - 2)
+              : barColor;
+          const barColorAlpha =
+            barColor.length === 9
+              ? Number.parseFloat(
+                  Number.parseInt(barColor.substring(barColor.length - 2), 16),
+                ) / 255.0
+              : 1.0;
           const rect = document.createElement('rect');
-          rect.setAttribute('fill', data.barColors[i]);
-          rect.setAttribute('stroke', data.barColors[i]);
-
-          // rect.setAttribute('x', (data.barXValues[i] + xPos) * xScale);
+          rect.setAttribute('fill', barColorFull);
+          rect.setAttribute('fill-opacity', barColorAlpha);
           rect.setAttribute('x', data.barXValues[i]);
           rect.setAttribute('y', data.barYValues[i]);
           rect.setAttribute('height', data.barHeights[i]);
@@ -449,13 +483,13 @@ class BarTrack extends HorizontalLine1DPixiTrack {
             rect.setAttribute('stroke-width', '0.1');
             rect.setAttribute('stroke', 'black');
           }
-
           output.appendChild(rect);
         }
       });
 
     const gAxis = document.createElement('g');
-    gAxis.setAttribute('id', 'axis');
+    const gAxisUniqueId = Math.random().toString(36).substring(7);
+    gAxis.setAttribute('id', `axis-${gAxisUniqueId}`);
 
     // append the axis to base so that it's not clipped
     base.appendChild(gAxis);
