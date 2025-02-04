@@ -1,4 +1,6 @@
 // @ts-nocheck
+import slugid from 'slugid';
+
 import ChromosomeInfo from './ChromosomeInfo';
 import PixiTrack from './PixiTrack';
 import SearchField from './SearchField';
@@ -288,7 +290,8 @@ class ChromosomeGrid extends PixiTrack {
     const output = document.createElement('g');
     track.appendChild(output);
 
-    base.setAttribute('id', 'ChromosomeGrid');
+    const cgUniqueUd = slugid.nice();
+    base.setAttribute('id', `ChromosomeGrid-${cgUniqueUd}`);
 
     output.setAttribute(
       'transform',

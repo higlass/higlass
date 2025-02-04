@@ -1,7 +1,7 @@
 // Third party styles should be added here so that they are name spaces
-@import 'react-grid-layout/css/styles.css';
-@import 'react-resizable/css/styles.css';
-@import 'prism.css';
+@use 'react-grid-layout/css/styles.css' as *;
+@use 'react-resizable/css/styles.css' as *;
+@use 'prism.css' as *;
 
 .higlass {
 

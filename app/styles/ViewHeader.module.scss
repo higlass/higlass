@@ -1,5 +1,5 @@
-@import './colors';
-@import './transitions';
+@use './colors' as *;
+@use './transitions' as *;
 
 $unit: 24px;
 
