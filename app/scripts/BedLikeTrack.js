@@ -179,9 +179,7 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
   destroyTile(tile) {
     // remove texts
     this.removeTileRects(tile);
-
-    tile.graphics.removeChild(tile.textGraphics);
-    tile.graphics.removeChild(tile.rectGraphics);
+    tile.graphics.destroy(true);
   }
 
   removeTiles(toRemoveIds) {
@@ -202,6 +200,12 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
     }
   }
 
+  remove() {
+    if (this.visibleTileIds) {
+      this.removeTiles([...this.visibleTileIds]);
+    }
+  }
+
   rerender(options, force) {
     super.rerender(options, force);
 
@@ -214,19 +218,10 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
     } else {
       this.colorScale = HEATED_OBJECT_MAP;
     }
-
-    for (const tile of this.visibleAndFetchedTiles()) {
-      this.destroyTile(tile);
-      this.initTile(tile);
-      this.renderTile(tile);
-    }
   }
 
   updateTile(tile) {
-    // this.destroyTile(tile);
     if (this.areAllVisibleTilesLoaded()) {
-      // this.destroyTile(tile);
-      // this.initTile(tile);
       this.renderTile(tile);
     }
   }
@@ -454,7 +449,7 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
     const rowScale = scaleBand()
       .domain(range(maxRows))
       .range([startY, endY])
-      .paddingInner(0.3);
+      .paddingInner(0.1);
 
     this.allVisibleRects();
     let allRects = null;
@@ -1076,8 +1071,19 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
     this.animate();
   }
 
-  getMouseOverHtml(trackX, trackY) {
+  // If the showTooltip option is set to false, but the user is holding
+  // down the Shift key (isShiftDown is true), then show the tooltip
+  getMouseOverHtml(trackX, trackY, isShiftDown) {
     if (!this.tilesetInfo) {
+      return '';
+    }
+
+    if (!this.drawnRects) {
+      return '';
+    }
+
+    if (!this.options.showTooltip && !isShiftDown) {
+      this.animate();
       return '';
     }
 
@@ -1109,7 +1115,60 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
         if (pc === -1) {
           const parts = visibleRects[i][1].value.fields;
 
-          return parts.join(' ');
+          let output = `<div class="track-mouseover-menu-table">`;
+
+          // If present, parts[3] is the gene name (analogous to fourth column of BED4+ file)
+          const identifierText = parts.length >= 4 ? parts[3] : null;
+
+          if (identifierText) {
+            output += `
+            <div class="track-mouseover-menu-table-item">
+              <label for="identifier" class="track-mouseover-menu-table-item-label">Identifier</label>
+              <div name="identifier" class="track-mouseover-menu-table-item-value">${identifierText}</div>
+            </div>
+            `;
+          }
+
+          // Fields 1-3 are the genomic coordinates and the sixth field is the strand (if present),
+          // following the BED3 or BED6+ format
+          const intervalText =
+            parts.length >= 5 && typeof parts[5] !== 'undefined'
+              ? `${parts[0]}:${+parts[1]}-${+parts[2]} (${parts[5]})`
+              : `${parts[0]}:${+parts[1]}-${+parts[2]}`;
+
+          if (intervalText && intervalText !== identifierText) {
+            output += `
+            <div class="track-mouseover-menu-table-item">
+              <label for="interval" class="track-mouseover-menu-table-item-label">Interval</label>
+              <div name="interval" class="track-mouseover-menu-table-item-value">${intervalText}</div>
+            </div>
+            `;
+          }
+
+          function isNumber(value) {
+            return typeof value === 'number';
+          }
+
+          // The fifth field is the score (if present), following the BED5+ format
+          const scoreText =
+            parts.length >= 5
+              ? isNumber(Number(parts[4]))
+                ? Number(parts[4]).toExponential(3)
+                : null
+              : null;
+
+          if (scoreText) {
+            output += `
+            <div class="track-mouseover-menu-table-item">
+              <label for="score" class="track-mouseover-menu-table-item-label">Score</label>
+              <div name="score" class="track-mouseover-menu-table-item-value">${scoreText}</div>
+            </div>
+            `;
+          }
+
+          output += '</div>';
+
+          return output;
         }
       }
     }
