@@ -16,6 +16,7 @@
   "files": ["app", "dist"],
   "keywords": ["hi-c", "genomics", "matrix", "tracks"],
   "scripts": {
+    "clean": "rm -rf node_modules && rm -f package-lock.json && rm -rf dist && rm -rf build",
     "start": "vite",
     "build": "node ./scripts/build.mjs",
     "compile": "npm run build && zip -r dist.zip dist",
@@ -117,5 +118,10 @@
     "vite-plugin-babel": "^1.1.3",
     "vite-plugin-css-injected-by-js": "^3.3.0",
     "vitest": "^3.0.3"
+  },
+  "overrides": {
+    "enzyme": {
+      "cheerio": "1.0.0-rc.10"
+    }
   }
 }

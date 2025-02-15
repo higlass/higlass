@@ -1,4 +1,4 @@
-@import './transitions';
+@use './transitions' as *;
 
 .track-range-selection {
   position: absolute;

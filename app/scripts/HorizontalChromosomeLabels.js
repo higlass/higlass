@@ -93,9 +93,13 @@ class HorizontalChromosomeLabels extends PixiTrack {
 
         this.searchField = new SearchField(this.chromInfo);
 
-        this.rerender(this.options, true);
-        this.draw();
-        this.animate();
+        try {
+          this.rerender(this.options, true);
+          this.draw();
+        } catch (err) {
+        } finally {
+          this.animate();
+        }
       },
       this.pubSub,
     );
@@ -155,6 +159,17 @@ class HorizontalChromosomeLabels extends PixiTrack {
       this.pTicks.addChild(this.gTicks[chromName]);
 
       this.texts.push(text);
+    }
+  }
+
+  remove() {
+    if (this.visibleTileIds) {
+      this.removeTiles([...this.visibleTileIds]);
+    }
+    if (this.texts) {
+      for (let idx = 0; idx < this.texts.length; idx++) {
+        this.texts[idx].destroy();
+      }
     }
   }
 
@@ -357,6 +372,7 @@ class HorizontalChromosomeLabels extends PixiTrack {
     while (tickTexts.length > ticks.length) {
       const text = tickTexts.pop();
       this.gTicks[cumPos.chr].removeChild(text);
+      text.destroy();
     }
 
     let i = 0;

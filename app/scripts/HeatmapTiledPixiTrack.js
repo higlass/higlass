@@ -113,12 +113,6 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
     // Contains information about which part of the upper left tile is visible
     this.prevIndUpperLeftTile = '';
 
-    /*
-    chromInfoService
-      .get(`${dataConfig.server}/chrom-sizes/?id=${dataConfig.tilesetUid}`)
-      .then((chromInfo) => { this.chromInfo = chromInfo; });
-    */
-
     this.onMouseMoveZoom = onMouseMoveZoom;
     this.setDataLensSize(11);
     this.dataLens = new Float32Array(this.dataLensSize ** 2);
@@ -412,14 +406,6 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
 
   exportData() {
     if (this.tilesetInfo) {
-      // const currentResolution = tileProxy.calculateResolution(this.tilesetInfo,
-      //  this.zoomLevel);
-
-      // const pixelsWidth = (this._xScale.domain()[1]  - this._xScale.domain()[0])
-      // / currentResolution;
-      // const pixelsHeight = (this._yScale.domain()[1]  - this._yScale.domain()[0])
-      // / currentResolution;
-
       const data = this.getVisibleRectangleData(
         0,
         0,
@@ -431,7 +417,6 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
         dimensions: data.shape,
         data: ndarrayFlatten(data),
       };
-
       download('data.json', JSON.stringify(output));
     }
   }
@@ -1110,29 +1095,6 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
     this.renderTile(tile);
   }
 
-  // /**
-  //  * Draw a border around tiles
-  //  *
-  //  * @param  {Array}  pixData  Pixel data to be adjusted
-  //  */
-  // addBorder(pixData) {
-  //   for (let i = 0; i < 256; i++) {
-  //     if (i === 0) {
-  //       const prefix = i * 256 * 4;
-  //       for (let j = 0; j < 255; j++) {
-  //         pixData[prefix + (j * 4)] = 0;
-  //         pixData[prefix + (j * 4) + 1] = 0;
-  //         pixData[prefix + (j * 4) + 2] = 255;
-  //         pixData[prefix + (j * 4) + 3] = 255;
-  //       }
-  //     }
-  //     pixData[(i * 256 * 4)] = 0;
-  //     pixData[(i * 256 * 4) + 1] = 0;
-  //     pixData[(i * 256 * 4) + 2] = 255;
-  //     pixData[(i * 256 * 4) + 3] = 255;
-  //   }
-  // }
-  //
   updateTile(tile) {
     if (
       tile.scale &&
@@ -1257,6 +1219,8 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
    * Remove this track from the view
    */
   remove() {
+    this.visibleAndFetchedTiles().forEach((tile) => this.destroyTile(tile));
+
     this.gMain.remove();
     this.gMain = null;
 
@@ -1693,8 +1657,8 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
     return [];
   }
 
-  getMouseOverHtml(trackX, trackY) {
-    if (!this.options || !this.options.showTooltip) {
+  getMouseOverHtml(trackX, trackY, isShiftDown) {
+    if (!this.options || (!this.options.showTooltip && !isShiftDown)) {
       return '';
     }
 

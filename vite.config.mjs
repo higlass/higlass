@@ -3,6 +3,13 @@ import { defineConfig } from 'vite';
 import { version } from './package.json';
 
 export default defineConfig(({ mode }) => ({
+  css: {
+    preprocessorOptions: {
+      scss: {
+        api: 'modern-compiler',
+      },
+    },
+  },
   plugins: [react()],
   resolve: {
     alias: {
