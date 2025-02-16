@@ -12,16 +12,8 @@ import tts from '../utils/trim-trailing-slash';
 // Services
 import * as tileProxy from '../services/tile-proxy';
 
-/** @typedef {import('../types').DataConfig} DataConfig */
-/** @typedef {import('../types').TilesetInfo} TilesetInfo */
-/**
- * @template T
- * @typedef {import('../types').AbstractDataFetcher<T>} AbstractDataFetcher
- */
-/**
- * @template T
- * @typedef {import('../types').TileSource<T>} TileSource
- */
+/** @import { DataConfig, TilesetInfo, AbstractDataFetcher, TileSource } from '../types' */
+/** @import { CompletedTileData, TileResponse } from '../services/worker' */
 
 /**
  * @typedef Tile
@@ -60,9 +52,16 @@ function isTuple(x) {
 function createDefaultTileSource(pubSub) {
   return {
     fetchTiles(request) {
-      const ids = request.tileIds;
-      return new Promise((done, _reject) => {
-        tileProxy.fetchTilesDebounced({ ...request, ids, done }, pubSub, true);
+      return new Promise((done) => {
+        tileProxy.fetchTilesDebounced(
+          {
+            ...request,
+            ids: request.tileIds ?? [],
+            // @ts-expect-error - This is just really hard to type correctly
+            done,
+          },
+          pubSub,
+        );
       });
     },
     fetchTilesetInfo({ server, tilesetUid }) {

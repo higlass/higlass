@@ -117,7 +117,8 @@ export type DataConfig = {
   filetype?: string;
   coordSystem?: string;
   children?: DataConfig[];
-  options?: unknown;
+  // biome-ignore lint/suspicious/noExplicitAny: We can't know what the options are
+  options?: Record<string, any>;
   type?: string;
   slicePos?: number;
 };
@@ -140,19 +141,21 @@ export interface AbstractDataFetcher<TileType> {
 
 // Tileset API
 
-type TilesRequest = {
+export type TilesRequest = {
   id: string;
-  server?: string;
-  tileIds: string[];
-  options?: unknown;
+  server: string;
+  tilesetUid: string;
+  tileIds: Array<string>;
+  // biome-ignore lint/suspicious/noExplicitAny: We can't know what the options are
+  options?: Record<string, any>;
 };
 
-type TilesetInfoRequest = {
+export type TilesetInfoRequest = {
   server: string;
   tilesetUid: string;
 };
 
-type RegisterTilesetRequest = {
+export type RegisterTilesetRequest = {
   server: string;
   url: string;
   filetype: string;
@@ -160,7 +163,7 @@ type RegisterTilesetRequest = {
 };
 
 export type TileSource<T> = {
-  fetchTiles: (request: TilesRequest) => Promise<Record<string, T>>;
+  fetchTiles: (request: Partial<TilesRequest>) => Promise<Record<string, T>>;
   fetchTilesetInfo: (
     request: TilesetInfoRequest,
   ) => Promise<Record<string, TilesetInfo>>;
