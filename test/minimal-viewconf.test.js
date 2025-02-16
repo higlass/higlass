@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { afterAll, beforeAll, describe, expect, it } from 'vitest';
+import * as vi from 'vitest';
 
 import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
 import Enzyme from 'enzyme';
@@ -14,22 +14,22 @@ Enzyme.configure({ adapter: new Adapter() });
 
 // TODO: Trevor(2025-01-21) - all these tests just assert true?
 
-describe('Minimal viewconfs', () => {
-  describe('Crazy minimal', () => {
+vi.describe('Minimal viewconfs', () => {
+  vi.describe('Crazy minimal', () => {
     const viewconf = {};
     let hgc = null;
     let div = null;
-    beforeAll(async () => {
+    vi.beforeAll(async () => {
       [div, hgc] = await mountHGComponentAsync(div, hgc, viewconf);
     });
-    afterAll(() => {
+    vi.afterAll(() => {
       removeHGComponent(div);
     });
-    it('can load and unload', () => {
-      expect(true).to.equal(true);
+    vi.it('can load and unload', () => {
+      vi.expect(true).to.equal(true);
     });
   });
-  describe('Reasonably minimal', () => {
+  vi.describe('Reasonably minimal', () => {
     const viewconf = {
       views: [
         {
@@ -47,17 +47,17 @@ describe('Minimal viewconfs', () => {
     };
     let hgc = null;
     let div = null;
-    beforeAll(async () => {
+    vi.beforeAll(async () => {
       [div, hgc] = await mountHGComponentAsync(div, hgc, viewconf);
     });
-    afterAll(() => {
+    vi.afterAll(() => {
       removeHGComponent(div);
     });
-    it('can load and unload', () => {
-      expect(true).to.equal(true);
+    vi.it('can load and unload', () => {
+      vi.expect(true).to.equal(true);
     });
   });
-  describe('Minimal with CrossRule', () => {
+  vi.describe('Minimal with CrossRule', () => {
     const viewconf = {
       views: [
         {
@@ -77,14 +77,14 @@ describe('Minimal viewconfs', () => {
     };
     let hgc = null;
     let div = null;
-    beforeAll(async () => {
+    vi.beforeAll(async () => {
       [div, hgc] = await mountHGComponentAsync(div, hgc, viewconf);
     });
-    afterAll(() => {
+    vi.afterAll(() => {
       removeHGComponent(div);
     });
-    it('can load and unload', async () => {
-      expect(true).to.equal(true);
+    vi.it('can load and unload', async () => {
+      vi.expect(true).to.equal(true);
     });
   });
 });

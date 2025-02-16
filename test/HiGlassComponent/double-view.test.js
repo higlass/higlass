@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { afterAll, beforeAll, describe, expect, it } from 'vitest';
+import * as vi from 'vitest';
 
 import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
 import Enzyme from 'enzyme';
@@ -18,11 +18,11 @@ import { chromInfoTrack, twoViewConfig } from '../view-configs';
 
 Enzyme.configure({ adapter: new Adapter() });
 
-describe('Double view', () => {
+vi.describe('Double view', () => {
   let hgc = null;
   let div = null;
 
-  beforeAll(async () => {
+  vi.beforeAll(async () => {
     [div, hgc] = await mountHGComponentAsync(div, hgc, twoViewConfig, {
       style: 'width:800px; height:400px; background-color: lightgreen',
       bounded: true,
@@ -31,24 +31,26 @@ describe('Double view', () => {
     // to the left
   });
 
-  afterAll(async () => {
+  vi.afterAll(async () => {
     removeHGComponent(div);
   });
 
-  it('has a colorbar', () => {
+  vi.it('has a colorbar', () => {
     const heatmap =
       hgc.instance().tiledPlots.aa.trackRenderer.trackDefObjects.c1.trackObject
         .createdTracks.heatmap1;
-    expect(heatmap.pColorbarArea.x).to.be.lessThan(heatmap.dimensions[0] / 2);
+    vi.expect(heatmap.pColorbarArea.x).to.be.lessThan(
+      heatmap.dimensions[0] / 2,
+    );
 
     const selection = select(div).selectAll('.selection');
 
     // we expect a colorbar selector brush to be visible
     // in both views
-    expect(selection.size()).to.equal(2);
+    vi.expect(selection.size()).to.equal(2);
   });
 
-  it('hides the colorbar', () => {
+  vi.it('hides the colorbar', () => {
     const { views } = hgc.instance().state;
 
     const track = getTrackByUid(views.aa.tracks, 'heatmap1');
@@ -62,38 +64,41 @@ describe('Double view', () => {
 
     // we expect a colorbar selector brush to be hidden
     // in one of the views
-    expect(selection.size()).to.equal(1);
+    vi.expect(selection.size()).to.equal(1);
 
     track.options.colorbarPosition = 'topLeft';
     hgc.instance().setState({ views });
   });
 
-  it('changes the colorbar color when the heatmap colormap is changed', () => {
-    // hgc.instance().handleTrackOptionsChanged('aa', 'line1', newOptions);
-    const newOptions = {
-      colorRange: ['white', 'black'],
-    };
+  vi.it(
+    'changes the colorbar color when the heatmap colormap is changed',
+    () => {
+      // hgc.instance().handleTrackOptionsChanged('aa', 'line1', newOptions);
+      const newOptions = {
+        colorRange: ['white', 'black'],
+      };
 
-    hgc.instance().handleTrackOptionsChanged('aa', 'heatmap1', newOptions);
+      hgc.instance().handleTrackOptionsChanged('aa', 'heatmap1', newOptions);
 
-    // const svg = getTrackObjectFromHGC(hgc.instance(), 'aa', 'heatmap1').exportSVG()[0];
-    // hgc.instance().handleExportSVG();
+      // const svg = getTrackObjectFromHGC(hgc.instance(), 'aa', 'heatmap1').exportSVG()[0];
+      // hgc.instance().handleExportSVG();
 
-    // how do we test for what's drawn in Pixi?'
+      // how do we test for what's drawn in Pixi?'
 
-    const oldOptions = {
-      colorRange: [
-        'white',
-        'rgba(245,166,35,1.0)',
-        'rgba(208,2,27,1.0)',
-        'black',
-      ],
-    };
+      const oldOptions = {
+        colorRange: [
+          'white',
+          'rgba(245,166,35,1.0)',
+          'rgba(208,2,27,1.0)',
+          'black',
+        ],
+      };
 
-    hgc.instance().handleTrackOptionsChanged('aa', 'heatmap1', oldOptions);
-  });
+      hgc.instance().handleTrackOptionsChanged('aa', 'heatmap1', oldOptions);
+    },
+  );
 
-  it('switches between log and linear scales', () => {
+  vi.it('switches between log and linear scales', () => {
     const newOptions = {
       labelColor: 'red',
       labelPosition: 'hidden',
@@ -103,11 +108,11 @@ describe('Double view', () => {
       valueScaling: 'linear',
     };
 
-    expect(
+    vi.expect(
       getTrackObjectFromHGC(hgc.instance(), 'aa', 'line1').options.valueScaling,
     ).to.equal('log');
     hgc.instance().handleTrackOptionsChanged('aa', 'line1', newOptions);
-    expect(
+    vi.expect(
       getTrackObjectFromHGC(hgc.instance(), 'aa', 'line1').options.valueScaling,
     ).to.equal('linear');
 
@@ -117,7 +122,7 @@ describe('Double view', () => {
     // hgc.update();
   });
 
-  it('exports SVG', () => {
+  vi.it('exports SVG', () => {
     const svg = hgc.instance().createSVG();
     const svgText = new XMLSerializer().serializeToString(svg);
 
@@ -128,10 +133,10 @@ describe('Double view', () => {
 
     // make sure that we have this color in the colorbar (this is part of the custard
     // color map)
-    expect(svgText.indexOf('rgb(231, 104, 32)')).to.be.greaterThan(0);
+    vi.expect(svgText.indexOf('rgb(231, 104, 32)')).to.be.greaterThan(0);
 
     // make sure that this color, which is part of the afmhot colormap is not exported
-    expect(svgText.indexOf('rgb(171, 43, 0)')).to.be.lessThan(0);
+    vi.expect(svgText.indexOf('rgb(171, 43, 0)')).to.be.lessThan(0);
 
     const line1 =
       hgc.instance().tiledPlots.aa.trackRenderer.trackDefObjects.line1
@@ -147,10 +152,10 @@ describe('Double view', () => {
 
     // let axis = svg.getElementById('axis');
     // make sure we have a tick mark for 200000
-    expect(axisText.indexOf('1e+5')).to.be.greaterThan(0);
+    vi.expect(axisText.indexOf('1e+5')).to.be.greaterThan(0);
   });
 
-  it('Adds a chromInfo track', async () => {
+  vi.it('Adds a chromInfo track', async () => {
     // this test was here to visually make sure that the HorizontalChromosomeAxis
     // was rendered after being drawn
     hgc.instance().handleTrackAdded('view2', chromInfoTrack, 'top');
@@ -164,54 +169,54 @@ describe('Double view', () => {
     await new Promise((done) => waitForTilesLoaded(hgc.instance(), done));
   });
 
-  it('splits one of the views', async () => {
+  vi.it('splits one of the views', async () => {
     hgc.instance().handleAddView(twoViewConfig.views[0]);
     await new Promise((done) => waitForTilesLoaded(hgc.instance(), done));
   });
 
-  it('splits one of the views1', async () => {
+  vi.it('splits one of the views1', async () => {
     hgc.instance().handleAddView(twoViewConfig.views[0]);
     await new Promise((done) => waitForTilesLoaded(hgc.instance(), done));
   });
-  it('splits one of the views2', async () => {
+  vi.it('splits one of the views2', async () => {
     hgc.instance().handleAddView(twoViewConfig.views[0]);
     await new Promise((done) => waitForTilesLoaded(hgc.instance(), done));
   });
-  it('splits one of the views3', async () => {
+  vi.it('splits one of the views3', async () => {
     hgc.instance().handleAddView(twoViewConfig.views[0]);
     await new Promise((done) => waitForTilesLoaded(hgc.instance(), done));
   });
-  it('splits one of the views3', async () => {
+  vi.it('splits one of the views3', async () => {
     hgc.instance().handleAddView(twoViewConfig.views[0]);
     await new Promise((done) => waitForTilesLoaded(hgc.instance(), done));
   });
-  it('splits one of the views3', async () => {
+  vi.it('splits one of the views3', async () => {
     hgc.instance().handleAddView(twoViewConfig.views[0]);
     await new Promise((done) => waitForTilesLoaded(hgc.instance(), done));
   });
-  it('splits one of the views3', async () => {
+  vi.it('splits one of the views3', async () => {
     hgc.instance().handleAddView(twoViewConfig.views[0]);
     await new Promise((done) => waitForTilesLoaded(hgc.instance(), done));
   });
-  it('splits one of the views3', async () => {
+  vi.it('splits one of the views3', async () => {
     hgc.instance().handleAddView(twoViewConfig.views[0]);
     await new Promise((done) => waitForTilesLoaded(hgc.instance(), done));
   });
-  it('splits one of the views3', async () => {
+  vi.it('splits one of the views3', async () => {
     hgc.instance().handleAddView(twoViewConfig.views[0]);
     await new Promise((done) => waitForTilesLoaded(hgc.instance(), done));
   });
-  it('splits one of the views3', async () => {
+  vi.it('splits one of the views3', async () => {
     hgc.instance().handleAddView(twoViewConfig.views[0]);
     await new Promise((done) => waitForTilesLoaded(hgc.instance(), done));
   });
-  it('splits one of the views3', async () => {
+  vi.it('splits one of the views3', async () => {
     hgc.instance().handleAddView(twoViewConfig.views[0]);
     await new Promise((done) => waitForTilesLoaded(hgc.instance(), done));
   });
-  it('checks to make sure the colorbar is gone', async () => {
+  vi.it('checks to make sure the colorbar is gone', async () => {
     const track = getTrackObjectFromHGC(hgc.instance(), 'aa', 'heatmap1');
-    expect(track.pColorbarArea.visible).to.equal(false);
+    vi.expect(track.pColorbarArea.visible).to.equal(false);
     await new Promise((done) => waitForTilesLoaded(hgc.instance(), done));
   });
 });

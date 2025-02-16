@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { afterEach, describe, expect, it } from 'vitest';
+import * as vi from 'vitest';
 
 import { register } from './utils/DummyTrack';
 import createElementAndApi from './utils/create-element-and-api';
@@ -9,13 +9,13 @@ import dummyTrackViewConf from './view-configs/dummy-track.json';
 
 register();
 
-describe('Plugin track tests', () => {
+vi.describe('Plugin track tests', () => {
   let hgc = null;
   let api = null;
   let div = null;
   let viewConf;
 
-  it('Should render', () => {
+  vi.it('Should render', () => {
     viewConf = dummyTrackViewConf;
 
     [div, api] = createElementAndApi(viewConf, { bound: true });
@@ -27,15 +27,17 @@ describe('Plugin track tests', () => {
     const trackRenderer = hgc.tiledPlots[viewConf.views[0].uid].trackRenderer;
     const dummyTrack = trackRenderer.trackDefObjects[trackUid].trackObject;
 
-    expect(trackRenderer.props.positionedTracks.length).to.equal(1);
+    vi.expect(trackRenderer.props.positionedTracks.length).to.equal(1);
 
-    expect(dummyTrack.constructor.name).to.equal('DummyTrackClass');
+    vi.expect(dummyTrack.constructor.name).to.equal('DummyTrackClass');
 
-    expect({ ...dummyTrack.hgc }).to.deep.equal(
+    vi.expect({ ...dummyTrack.hgc }).to.deep.equal(
       trackRenderer.availableForPlugins,
     );
 
-    expect(trackRenderer.availableForPlugins.utils).to.have.deep.ordered.keys(
+    vi.expect(
+      trackRenderer.availableForPlugins.utils,
+    ).to.have.deep.ordered.keys(
       'DenseDataExtrema1D',
       'DenseDataExtrema2D',
       'IS_TRACK_RANGE_SELECTABLE',
@@ -135,7 +137,7 @@ describe('Plugin track tests', () => {
     );
   });
 
-  afterEach(() => {
+  vi.afterEach(() => {
     if (api?.destroy) api.destroy();
     if (div) removeDiv(div);
     api = undefined;

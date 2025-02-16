@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { afterAll, beforeAll, describe, expect, it } from 'vitest';
+import * as vi from 'vitest';
 
 import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
 import Enzyme from 'enzyme';
@@ -15,22 +15,22 @@ import { threeViews } from '../view-configs';
 
 Enzyme.configure({ adapter: new Adapter() });
 
-describe('Three views and linking', () => {
+vi.describe('Three views and linking', () => {
   let hgc = null;
   let div = null;
 
-  beforeAll(async () => {
+  vi.beforeAll(async () => {
     [div, hgc] = await mountHGComponentAsync(div, hgc, threeViews, {
       style: 'width:800px; height:400px; background-color: lightgreen',
       bounded: true,
     });
   });
 
-  afterAll(() => {
+  vi.afterAll(() => {
     removeHGComponent(div);
   });
 
-  it('Links two views and moves to the side', async () => {
+  vi.it('Links two views and moves to the side', async () => {
     hgc.instance().handleLocationLockChosen('aa', 'bb');
     hgc.instance().handleZoomLockChosen('aa', 'bb');
 
@@ -44,21 +44,24 @@ describe('Three views and linking', () => {
     await new Promise((done) => waitForTilesLoaded(hgc.instance(), done));
   });
 
-  it('Checks to make sure that the two views have moved to the same place', () => {
-    const aaXScale = hgc.instance().xScales.aa;
-    const aaYScale = hgc.instance().yScales.aa;
+  vi.it(
+    'Checks to make sure that the two views have moved to the same place',
+    () => {
+      const aaXScale = hgc.instance().xScales.aa;
+      const aaYScale = hgc.instance().yScales.aa;
 
-    const bbXScale = hgc.instance().xScales.bb;
-    const bbYScale = hgc.instance().yScales.bb;
+      const bbXScale = hgc.instance().xScales.bb;
+      const bbYScale = hgc.instance().yScales.bb;
 
-    const [aaCenterX, aaCenterY] = scalesCenterAndK(aaXScale, aaYScale);
-    const [bbCenterX, bbCenterY] = scalesCenterAndK(bbXScale, bbYScale);
+      const [aaCenterX, aaCenterY] = scalesCenterAndK(aaXScale, aaYScale);
+      const [bbCenterX, bbCenterY] = scalesCenterAndK(bbXScale, bbYScale);
 
-    expect(aaCenterX - bbCenterX).to.be.lessThan(0.001);
-    expect(aaCenterY - bbCenterY).to.be.lessThan(0.001);
-  });
+      vi.expect(aaCenterX - bbCenterX).to.be.lessThan(0.001);
+      vi.expect(aaCenterY - bbCenterY).to.be.lessThan(0.001);
+    },
+  );
 
-  it('Links the third view', async () => {
+  vi.it('Links the third view', async () => {
     hgc.instance().handleLocationYanked('cc', 'aa');
     hgc.instance().handleZoomYanked('cc', 'aa');
 
@@ -76,7 +79,7 @@ describe('Three views and linking', () => {
     await new Promise((done) => waitForTilesLoaded(hgc.instance(), done));
   });
 
-  it('Makes sure that the third view moved', async () => {
+  vi.it('Makes sure that the third view moved', async () => {
     const aaXScale = hgc.instance().xScales.aa;
     const aaYScale = hgc.instance().yScales.aa;
 
@@ -86,8 +89,8 @@ describe('Three views and linking', () => {
     const [aaCenterX, aaCenterY] = scalesCenterAndK(aaXScale, aaYScale);
     const [ccCenterX, ccCenterY] = scalesCenterAndK(ccXScale, ccYScale);
 
-    expect(aaCenterX - ccCenterX).to.be.lessThan(0.001);
-    expect(aaCenterY - ccCenterY).to.be.lessThan(0.001);
+    vi.expect(aaCenterX - ccCenterX).to.be.lessThan(0.001);
+    vi.expect(aaCenterY - ccCenterY).to.be.lessThan(0.001);
 
     await new Promise((done) => waitForTilesLoaded(hgc.instance(), done));
   });

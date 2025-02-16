@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { afterAll, beforeAll, describe, expect, it } from 'vitest';
+import * as vi from 'vitest';
 
 import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
 import Enzyme from 'enzyme';
@@ -14,8 +14,8 @@ import { getTrackObjectFromHGC } from '../app/scripts/utils';
 
 Enzyme.configure({ adapter: new Adapter() });
 
-describe('Rule tests', () => {
-  describe('Minimal with CrossRule', () => {
+vi.describe('Rule tests', () => {
+  vi.describe('Minimal with CrossRule', () => {
     const viewconf = {
       views: [
         {
@@ -44,33 +44,33 @@ describe('Rule tests', () => {
     let hgc = null;
     let div = null;
 
-    beforeAll(async () => {
+    vi.beforeAll(async () => {
       [div, hgc] = await mountHGComponentAsync(div, hgc, viewconf);
     });
 
-    afterAll(() => {
+    vi.afterAll(() => {
       removeHGComponent(div);
     });
 
-    it('can load and unload', () => {
-      expect(true).to.equal(true);
+    vi.it('can load and unload', () => {
+      vi.expect(true).to.equal(true);
     });
 
-    it('has a position', () => {
+    vi.it('has a position', () => {
       const obj = getTrackObjectFromHGC(hgc.instance(), 'aa', 'a');
 
-      expect(obj.xPosition).to.eql(100);
-      expect(obj.yPosition).to.eql(100);
+      vi.expect(obj.xPosition).to.eql(100);
+      vi.expect(obj.yPosition).to.eql(100);
     });
 
-    it('changes color', () => {
+    vi.it('changes color', () => {
       changeOptions(hgc, 'aa', 'a', { color: 'blue' });
 
       const svg = hgc.instance().createSVGString();
-      expect(svg.indexOf('blue')).to.be.above(-1);
+      vi.expect(svg.indexOf('blue')).to.be.above(-1);
     });
 
-    it('has the same range if a new track is added', () => {
+    vi.it('has the same range if a new track is added', () => {
       const obj1 = getTrackObjectFromHGC(hgc.instance(), 'aa', 'b');
       const obj1Width = obj1._xScale.range()[1];
 
@@ -94,7 +94,7 @@ describe('Rule tests', () => {
       // properly set in TrackRenderer. There was a bug where loading
       // a viewconf with pre-configured rules didn't properly set the
       // range and led to the rules moving about
-      expect(obj1Width).to.equal(obj2Width);
+      vi.expect(obj1Width).to.equal(obj2Width);
     });
   });
 });

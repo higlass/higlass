@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { afterAll, beforeAll, describe, expect, it } from 'vitest';
+import * as vi from 'vitest';
 
 import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
 import Enzyme from 'enzyme';
@@ -16,47 +16,47 @@ import { exportDataConfig } from './view-configs';
 
 Enzyme.configure({ adapter: new Adapter() });
 
-describe('Heatmaps', () => {
-  describe('Visualization', () => {
+vi.describe('Heatmaps', () => {
+  vi.describe('Visualization', () => {
     let hgc = null;
     let div = null;
 
-    beforeAll(async () => {
+    vi.beforeAll(async () => {
       [div, hgc] = await mountHGComponentAsync(div, hgc, noDataTransform, {
         style: 'width:800px; height:400px; background-color: lightgreen',
         bounded: true,
       });
     });
 
-    afterAll(() => {
+    vi.afterAll(() => {
       removeHGComponent(div);
     });
 
-    it('should respect zoom limits', () => {
+    vi.it('should respect zoom limits', () => {
       // add your tests here
 
       const trackObj = getTrackObjectFromHGC(hgc.instance(), 'v', 'heatmap0');
       const rectData = trackObj.getVisibleRectangleData(547, 18, 1, 1);
 
-      expect(Number.isNaN(rectData.data[0])).to.eql(false);
+      vi.expect(Number.isNaN(rectData.data[0])).to.eql(false);
     });
   });
 
-  describe('Export heatmap data', () => {
+  vi.describe('Export heatmap data', () => {
     let hgc = null;
     let div = null;
 
-    beforeAll(async () => {
+    vi.beforeAll(async () => {
       [div, hgc] = await mountHGComponentAsync(div, hgc, exportDataConfig, {
         style: 'width:600px;height:1200px;background-color: lightgreen',
         bounded: true,
       });
     });
-    afterAll(() => {
+    vi.afterAll(() => {
       removeHGComponent(div);
     });
 
-    it('once', () => {
+    vi.it('once', () => {
       const tp = getTrackObjectFromHGC(
         hgc.instance(),
         'NagBzk-AQZuoY0bqG-Yy0Q',
@@ -71,52 +71,52 @@ describe('Heatmaps', () => {
         tp.dimensions[1],
       );
 
-      expect(data.shape[0]).to.eql(756);
-      expect(data.shape[1]).to.eql(234);
+      vi.expect(data.shape[0]).to.eql(756);
+      vi.expect(data.shape[1]).to.eql(234);
 
       // tp.exportData();
     });
   });
 
-  describe('Visualization', () => {
+  vi.describe.only('Visualization', () => {
     let hgc = null;
     let div = null;
 
-    beforeAll(async () => {
+    vi.beforeAll(async () => {
       [div, hgc] = await mountHGComponentAsync(div, hgc, viewconf, {
         style: 'width:800px; height:400px; background-color: lightgreen',
         bounded: true,
       });
     });
 
-    afterAll(() => {
+    vi.afterAll(() => {
       removeHGComponent(div);
     });
 
-    it('should respect zoom limits', () => {
+    vi.it('should respect zoom limits', () => {
       // add your tests here
 
       const trackObj = getTrackObjectFromHGC(hgc.instance(), 'vv', 'tt');
       const rectData = trackObj.getVisibleRectangleData(547, 18, 1, 1);
 
-      expect(rectData.shape[0]).to.eql(0);
-      expect(rectData.shape[1]).to.eql(0);
+      vi.expect(rectData.shape[0]).to.eql(0);
+      vi.expect(rectData.shape[1]).to.eql(0);
     });
   });
 
-  describe('Triangular-split heatmaps', () => {
+  vi.describe('Triangular-split heatmaps', () => {
     let hgc = null;
     let div = null;
 
-    beforeAll(async () => {
+    vi.beforeAll(async () => {
       [div, hgc] = await mountHGComponentAsync(div, hgc, baseConf);
     });
 
-    afterAll(() => {
+    vi.afterAll(() => {
       removeHGComponent(div);
     });
 
-    it('should adjust options when new heatmap is added', () => {
+    vi.it('should adjust options when new heatmap is added', () => {
       hgc.instance().handleTrackAdded('v', heatmapTrack, 'center');
       hgc.update();
 
@@ -124,47 +124,54 @@ describe('Heatmaps', () => {
       const options0 = views.tracks.center[0].contents[0].options;
       const options1 = views.tracks.center[0].contents[1].options;
 
-      expect(views.tracks.center[0].contents.length).to.eql(2);
-      expect(options1.backgroundColor).to.eql('transparent');
-      expect(options1.showTooltip).to.eql(options0.showTooltip);
-      expect(options1.showMousePosition).to.eql(options0.showMousePosition);
-      expect(options1.mousePositionColor).to.eql(options0.mousePositionColor);
+      vi.expect(views.tracks.center[0].contents.length).to.eql(2);
+      vi.expect(options1.backgroundColor).to.eql('transparent');
+      vi.expect(options1.showTooltip).to.eql(options0.showTooltip);
+      vi.expect(options1.showMousePosition).to.eql(options0.showMousePosition);
+      vi.expect(options1.mousePositionColor).to.eql(
+        options0.mousePositionColor,
+      );
     });
 
-    it('should adjust position of name and colorbar when extent is triangular', () => {
-      const views = JSON.parse(JSON.stringify(hgc.instance().state.views));
-      const center = views.v.tracks.center[0];
+    vi.it(
+      'should adjust position of name and colorbar when extent is triangular',
+      () => {
+        const views = JSON.parse(JSON.stringify(hgc.instance().state.views));
+        const center = views.v.tracks.center[0];
 
-      const newOptions = {
-        ...center.contents[0].options,
-        extent: 'lower-left',
-      };
+        const newOptions = {
+          ...center.contents[0].options,
+          extent: 'lower-left',
+        };
 
-      hgc.instance().handleTrackOptionsChanged('v', 'heatmap0', newOptions);
-      hgc.update();
+        hgc.instance().handleTrackOptionsChanged('v', 'heatmap0', newOptions);
+        hgc.update();
 
-      const newViews = JSON.parse(JSON.stringify(hgc.instance().state.views.v));
-      const options0 = newViews.tracks.center[0].contents[0].options;
-      const options1 = newViews.tracks.center[0].contents[1].options;
+        const newViews = JSON.parse(
+          JSON.stringify(hgc.instance().state.views.v),
+        );
+        const options0 = newViews.tracks.center[0].contents[0].options;
+        const options1 = newViews.tracks.center[0].contents[1].options;
 
-      expect(options0.labelPosition).to.eql('bottomLeft');
-      expect(options0.colorbarPosition).to.eql('bottomLeft');
-      expect(options1.labelPosition).to.eql('topRight');
-      expect(options1.colorbarPosition).to.eql('topRight');
-    });
+        vi.expect(options0.labelPosition).to.eql('bottomLeft');
+        vi.expect(options0.colorbarPosition).to.eql('bottomLeft');
+        vi.expect(options1.labelPosition).to.eql('topRight');
+        vi.expect(options1.colorbarPosition).to.eql('topRight');
+      },
+    );
 
-    it('tiles on the diagonal should be independent', async () => {
+    vi.it('tiles on the diagonal should be independent', async () => {
       const trackObj0 = getTrackObjectFromHGC(hgc.instance(), 'v', 'heatmap0');
       const trackObj1 = getTrackObjectFromHGC(hgc.instance(), 'v', 'heatmap1');
 
       await new Promise((done) => {
         waitForTilesLoaded(hgc.instance(), () => {
           // hgc.instance().api.zoomToDataExtent('v');
-          expect(trackObj0.fetchedTiles['2.1.1.false'].tileData).to.not.eql(
+          vi.expect(trackObj0.fetchedTiles['2.1.1.false'].tileData).to.not.eql(
             trackObj1.fetchedTiles['2.1.1.true'].tileData,
           );
 
-          expect(
+          vi.expect(
             trackObj0.fetchedTiles['2.1.1.false'].tileData.dense,
           ).to.not.eql(trackObj1.fetchedTiles['2.1.1.true'].tileData.dense);
 

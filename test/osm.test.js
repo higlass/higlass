@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { describe, expect, it } from 'vitest';
+import * as vi from 'vitest';
 
 import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
 import Enzyme from 'enzyme';
@@ -27,8 +27,8 @@ function createElementAndAPI(viewConfig, options) {
   return [div, api];
 }
 
-describe('OSM tests', () => {
-  it('creates an editable component', () => {
+vi.describe('OSM tests', () => {
+  vi.it('creates an editable component', () => {
     const track = osmConf.views[0].tracks.center[0];
     track.options.minPos = -180;
     track.options.maxPos = 180;
@@ -42,7 +42,7 @@ describe('OSM tests', () => {
     });
 
     const component = api.getComponent();
-    expect(Object.keys(component.viewHeaders).length).to.be.above(0);
+    vi.expect(Object.keys(component.viewHeaders).length).to.be.above(0);
 
     removeHGComponent(div);
   });

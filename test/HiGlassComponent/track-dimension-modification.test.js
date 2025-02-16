@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { afterAll, beforeAll, describe, expect, it } from 'vitest';
+import * as vi from 'vitest';
 
 import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
 import Enzyme from 'enzyme';
@@ -14,22 +14,22 @@ import { geneAnnotationsOnly } from '../view-configs';
 
 Enzyme.configure({ adapter: new Adapter() });
 
-describe('Track dimension modification test', () => {
+vi.describe('Track dimension modification test', () => {
   let hgc = null;
   let div = null;
 
-  beforeAll(async () => {
+  vi.beforeAll(async () => {
     [div, hgc] = await mountHGComponentAsync(div, hgc, geneAnnotationsOnly, {
       style: 'width:800px; height:400px; background-color: lightgreen',
       bounded: true,
     });
   });
 
-  afterAll(() => {
+  vi.afterAll(() => {
     removeHGComponent(div);
   });
 
-  it('resizes the track', () => {
+  vi.it('resizes the track', () => {
     const trackId = 'G0zF1N_5QHmgD4MMduoYFQ';
     const viewId = 'aa';
     const settings = {
@@ -39,6 +39,6 @@ describe('Track dimension modification test', () => {
     };
     hgc.instance().trackDimensionsModifiedHandler(settings);
     const track = getTrackObjectFromHGC(hgc.instance(), 'aa', trackId);
-    expect(track.dimensions[1]).to.equal(100);
+    vi.expect(track.dimensions[1]).to.equal(100);
   });
 });

@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { afterAll, beforeEach, describe, expect, it } from 'vitest';
+import * as vi from 'vitest';
 
 import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
 import Enzyme from 'enzyme';
@@ -19,18 +19,18 @@ import viewconf from './view-configs/axis-specific-location-locks.json';
 Enzyme.configure({ adapter: new Adapter() });
 // jasmine.VAL = 30000;
 
-describe('Axis-specific location locks', () => {
+vi.describe('Axis-specific location locks', () => {
   let hgc;
   let div;
 
-  beforeEach(async () => {
+  vi.beforeEach(async () => {
     [div, hgc] = await mountHGComponentAsync(div, hgc, viewconf, {
       style: 'width:800px; height:400px; background-color: lightgreen',
       bounded: true,
     });
   });
 
-  afterAll(async () => {
+  vi.afterAll(async () => {
     removeHGComponent(div);
   });
 
@@ -61,13 +61,13 @@ describe('Axis-specific location locks', () => {
     });
   };
 
-  it('Validates ViewConfig', () => {
+  vi.it('Validates ViewConfig', () => {
     const validate = new Ajv().compile(schema);
     const valid = validate(viewconf);
-    expect(valid).eql(true);
+    vi.expect(valid).eql(true);
   });
 
-  it('Dispatches a click-and-drag event on a view', async () => {
+  vi.it('Dispatches a click-and-drag event on a view', async () => {
     // The initial scales of two axes of three views
     const view1XDomain = hgc.instance().xScales['view-1'].domain();
     const view1YDomain = hgc.instance().yScales['view-1'].domain();
@@ -88,22 +88,22 @@ describe('Axis-specific location locks', () => {
         const newView3YDomain = hgc.instance().yScales['view-3'].domain();
 
         // locations of x and y axes of view-1 are changed directly by mouse drag
-        expect(newView1XDomain[0]).not.closeTo(view1XDomain[0], 0.1);
-        expect(newView1XDomain[1]).not.closeTo(view1XDomain[1], 0.1);
-        expect(newView1YDomain[0]).not.closeTo(view1YDomain[0], 0.1);
-        expect(newView1YDomain[1]).not.closeTo(view1YDomain[1], 0.1);
+        vi.expect(newView1XDomain[0]).not.closeTo(view1XDomain[0], 0.1);
+        vi.expect(newView1XDomain[1]).not.closeTo(view1XDomain[1], 0.1);
+        vi.expect(newView1YDomain[0]).not.closeTo(view1YDomain[0], 0.1);
+        vi.expect(newView1YDomain[1]).not.closeTo(view1YDomain[1], 0.1);
 
         // view-1 and view-2 are not linked, so mouse drag should be not affected on view-2
-        expect(newView2XDomain[0]).closeTo(view2XDomain[0], 0.1);
-        expect(newView2XDomain[1]).closeTo(view2XDomain[1], 0.1);
-        expect(newView2YDomain[0]).closeTo(view2YDomain[0], 0.1);
-        expect(newView2YDomain[1]).closeTo(view2YDomain[1], 0.1);
+        vi.expect(newView2XDomain[0]).closeTo(view2XDomain[0], 0.1);
+        vi.expect(newView2XDomain[1]).closeTo(view2XDomain[1], 0.1);
+        vi.expect(newView2YDomain[0]).closeTo(view2YDomain[0], 0.1);
+        vi.expect(newView2YDomain[1]).closeTo(view2YDomain[1], 0.1);
 
         // x-axis of view-1 is linked with x-axis of view-3, so only the x-axis domain should be changed
-        expect(newView3XDomain[0]).not.closeTo(view3XDomain[0], 0.1);
-        expect(newView3XDomain[1]).not.closeTo(view3XDomain[1], 0.1);
-        expect(newView3YDomain[0]).closeTo(view3YDomain[0], 0.1);
-        expect(newView3YDomain[1]).closeTo(view3YDomain[1], 0.1);
+        vi.expect(newView3XDomain[0]).not.closeTo(view3XDomain[0], 0.1);
+        vi.expect(newView3XDomain[1]).not.closeTo(view3XDomain[1], 0.1);
+        vi.expect(newView3YDomain[0]).closeTo(view3YDomain[0], 0.1);
+        vi.expect(newView3YDomain[1]).closeTo(view3YDomain[1], 0.1);
 
         done(null);
       });

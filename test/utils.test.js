@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { describe, expect, it } from 'vitest';
+import * as vi from 'vitest';
 
 // Utils
 import { visitPositionedTracks } from '../app/scripts/utils';
@@ -8,8 +8,8 @@ import selectedItemsToSize from '../app/scripts/utils/selected-items-to-size';
 
 import { oneViewConfig } from './view-configs';
 
-describe('Utils tests', () => {
-  it('visitTrack should visit every track', () => {
+vi.describe('Utils tests', () => {
+  vi.it('visitTrack should visit every track', () => {
     // add your tests here
     let found = false;
     let visited = 0;
@@ -22,38 +22,44 @@ describe('Utils tests', () => {
       visited += 1;
     });
 
-    expect(found).to.equal(true);
-    expect(visited).to.equal(6);
+    vi.expect(found).to.equal(true);
+    vi.expect(visited).to.equal(6);
   });
 
-  it('should compute size based on an array of selected item indices', () => {
-    const selectRows = [1, [2, 3, 4], [5], 6, 7];
+  vi.it(
+    'should compute size based on an array of selected item indices',
+    () => {
+      const selectRows = [1, [2, 3, 4], [5], 6, 7];
 
-    let size;
-    size = selectedItemsToSize(selectRows, true);
-    expect(size).to.equal(7);
+      let size;
+      size = selectedItemsToSize(selectRows, true);
+      vi.expect(size).to.equal(7);
 
-    size = selectedItemsToSize(selectRows, false);
-    expect(size).to.equal(5);
-  });
+      size = selectedItemsToSize(selectRows, false);
+      vi.expect(size).to.equal(5);
+    },
+  );
 
-  it('should compute cumulative item size weights based on an array of selected item indices', () => {
-    const selectRows = [1, [2, 3, 4], [5], 6, 7];
+  vi.it(
+    'should compute cumulative item size weights based on an array of selected item indices',
+    () => {
+      const selectRows = [1, [2, 3, 4], [5], 6, 7];
 
-    let weights;
-    const delta = 0.01;
-    weights = selectedItemsToCumWeights(selectRows, true);
-    expect(weights[0]).to.be.closeTo(0.143, delta);
-    expect(weights[1]).to.be.closeTo(0.571, delta);
-    expect(weights[2]).to.be.closeTo(0.714, delta);
-    expect(weights[3]).to.be.closeTo(0.857, delta);
-    expect(weights[4]).to.be.closeTo(1, delta);
+      let weights;
+      const delta = 0.01;
+      weights = selectedItemsToCumWeights(selectRows, true);
+      vi.expect(weights[0]).to.be.closeTo(0.143, delta);
+      vi.expect(weights[1]).to.be.closeTo(0.571, delta);
+      vi.expect(weights[2]).to.be.closeTo(0.714, delta);
+      vi.expect(weights[3]).to.be.closeTo(0.857, delta);
+      vi.expect(weights[4]).to.be.closeTo(1, delta);
 
-    weights = selectedItemsToCumWeights(selectRows, false);
-    expect(weights[0]).to.be.closeTo(0.2, delta);
-    expect(weights[1]).to.be.closeTo(0.4, delta);
-    expect(weights[2]).to.be.closeTo(0.6, delta);
-    expect(weights[3]).to.be.closeTo(0.8, delta);
-    expect(weights[4]).to.be.closeTo(1, delta);
-  });
+      weights = selectedItemsToCumWeights(selectRows, false);
+      vi.expect(weights[0]).to.be.closeTo(0.2, delta);
+      vi.expect(weights[1]).to.be.closeTo(0.4, delta);
+      vi.expect(weights[2]).to.be.closeTo(0.6, delta);
+      vi.expect(weights[3]).to.be.closeTo(0.8, delta);
+      vi.expect(weights[4]).to.be.closeTo(1, delta);
+    },
+  );
 });

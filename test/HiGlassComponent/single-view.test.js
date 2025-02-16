@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { afterAll, beforeAll, describe, expect, it } from 'vitest';
+import * as vi from 'vitest';
 
 import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
 import Enzyme from 'enzyme';
@@ -15,26 +15,26 @@ import { oneViewConfig } from '../view-configs';
 
 Enzyme.configure({ adapter: new Adapter() });
 
-describe('Division track', () => {
+vi.describe('Division track', () => {
   let hgc = null;
   let div = null;
 
-  beforeAll(async () => {
+  vi.beforeAll(async () => {
     [div, hgc] = await mountHGComponentAsync(div, hgc, oneViewConfig, {
       style: 'width:800px; height:400px; background-color: lightgreen',
       bounded: false,
     });
   });
 
-  afterAll(() => {
+  vi.afterAll(() => {
     removeHGComponent(div);
   });
 
-  it('should load the initial config', async () => {
+  vi.it('should load the initial config', async () => {
     await new Promise((done) => waitForTilesLoaded(hgc.instance(), done));
   });
 
-  it('Changes the axis to inner right', async () => {
+  vi.it('Changes the axis to inner right', async () => {
     const newOptions = {
       axisPositionHorizontal: 'right',
     };
@@ -45,13 +45,13 @@ describe('Division track', () => {
     const { pAxis } = track.axis;
 
     // we want the axis labels to be to the left of the end of the track
-    expect(pAxis.position.x).to.be.greaterThan(track.position[0]);
-    expect(pAxis.children[0].x).to.be.lessThan(0);
+    vi.expect(pAxis.position.x).to.be.greaterThan(track.position[0]);
+    vi.expect(pAxis.children[0].x).to.be.lessThan(0);
 
     await new Promise((done) => waitForTilesLoaded(hgc.instance(), done));
   });
 
-  it('Changes the axis to outside right', async () => {
+  vi.it('Changes the axis to outside right', async () => {
     const newOptions = {
       axisPositionHorizontal: 'outsideRight',
     };
@@ -62,13 +62,13 @@ describe('Division track', () => {
     const { pAxis } = track.axis;
 
     // we want the axis labels to be to the left of the end of the track
-    expect(pAxis.position.x).to.be.greaterThan(track.position[0]);
-    expect(pAxis.children[0].x).to.be.greaterThan(0);
+    vi.expect(pAxis.position.x).to.be.greaterThan(track.position[0]);
+    vi.expect(pAxis.children[0].x).to.be.greaterThan(0);
 
     await new Promise((done) => waitForTilesLoaded(hgc.instance(), done));
   });
 
-  it('Changes the axis to outside left', async () => {
+  vi.it('Changes the axis to outside left', async () => {
     const newOptions = {
       axisPositionHorizontal: 'outsideLeft',
     };
@@ -79,13 +79,13 @@ describe('Division track', () => {
     const { pAxis } = track.axis;
 
     // we want the axis labels to be to the left of the end of the track
-    expect(pAxis.position.x).to.equal(track.position[0]);
-    expect(pAxis.children[0].x).to.be.lessThan(0);
+    vi.expect(pAxis.position.x).to.equal(track.position[0]);
+    vi.expect(pAxis.children[0].x).to.be.lessThan(0);
 
     await new Promise((done) => waitForTilesLoaded(hgc.instance(), done));
   });
 
-  it('Changes the axis to the left', async () => {
+  vi.it('Changes the axis to the left', async () => {
     const newOptions = {
       axisPositionHorizontal: 'left',
     };
@@ -96,13 +96,13 @@ describe('Division track', () => {
     const { pAxis } = track.axis;
 
     // we want the axis labels to be to the left of the end of the track
-    expect(pAxis.position.x).to.equal(track.position[0]);
-    expect(pAxis.children[0].x).to.be.greaterThan(0);
+    vi.expect(pAxis.position.x).to.equal(track.position[0]);
+    vi.expect(pAxis.children[0].x).to.be.greaterThan(0);
 
     await new Promise((done) => waitForTilesLoaded(hgc.instance(), done));
   });
 
-  it('Changes the axis to the top', async () => {
+  vi.it('Changes the axis to the top', async () => {
     const newOptions = {
       axisPositionHorizontal: null,
       axisPositionVertical: 'top',
@@ -118,13 +118,13 @@ describe('Division track', () => {
     const { pAxis } = track.axis;
 
     // we want the axis labels to be to the left of the end of the track
-    expect(pAxis.position.x).to.equal(track.position[0]);
-    expect(pAxis.children[0].x).to.be.greaterThan(0);
+    vi.expect(pAxis.position.x).to.equal(track.position[0]);
+    vi.expect(pAxis.children[0].x).to.be.greaterThan(0);
 
     await new Promise((done) => waitForTilesLoaded(hgc.instance(), done));
   });
 
-  it('Changes the axis to the outside top', async () => {
+  vi.it('Changes the axis to the outside top', async () => {
     const newOptions = {
       axisPositionHorizontal: null,
       axisPositionVertical: 'outsideTop',
@@ -140,13 +140,13 @@ describe('Division track', () => {
     const { pAxis } = track.axis;
 
     // we want the axis labels to be to the left of the end of the track
-    expect(pAxis.position.x).to.equal(track.position[0]);
-    expect(pAxis.children[0].x).to.be.lessThan(0);
+    vi.expect(pAxis.position.x).to.equal(track.position[0]);
+    vi.expect(pAxis.children[0].x).to.be.lessThan(0);
 
     await new Promise((done) => waitForTilesLoaded(hgc.instance(), done));
   });
 
-  it('Changes the axis to the outside bottom', async () => {
+  vi.it('Changes the axis to the outside bottom', async () => {
     const newOptions = {
       axisPositionHorizontal: null,
       axisPositionVertical: 'outsideBottom',
@@ -162,13 +162,13 @@ describe('Division track', () => {
     const { pAxis } = track.axis;
 
     // we want the axis labels to be to the left of the end of the track
-    expect(pAxis.position.x).to.be.greaterThan(track.position[0]);
-    expect(pAxis.children[0].x).to.be.greaterThan(0);
+    vi.expect(pAxis.position.x).to.be.greaterThan(track.position[0]);
+    vi.expect(pAxis.children[0].x).to.be.greaterThan(0);
 
     await new Promise((done) => waitForTilesLoaded(hgc.instance(), done));
   });
 
-  it('Changes the axis to the bottom', async () => {
+  vi.it('Changes the axis to the bottom', async () => {
     const newOptions = {
       axisPositionVertical: 'bottom',
     };
@@ -183,15 +183,15 @@ describe('Division track', () => {
     const { pAxis } = track.axis;
 
     // we want the axis labels to be to the left of the end of the track
-    expect(pAxis.position.x).to.be.greaterThan(track.position[0]);
-    expect(pAxis.children[0].x).to.be.lessThan(0);
+    vi.expect(pAxis.position.x).to.be.greaterThan(track.position[0]);
+    vi.expect(pAxis.children[0].x).to.be.lessThan(0);
 
     await new Promise((done) => waitForTilesLoaded(hgc.instance(), done));
   });
 
-  it('should have a bottom track of height 0', async () => {
+  vi.it('should have a bottom track of height 0', async () => {
     const height = hgc.instance().state.views.aa.tracks.bottom[0].height;
-    expect(height).to.equal(0);
+    vi.expect(height).to.equal(0);
 
     await new Promise((done) => waitForTilesLoaded(hgc.instance(), done));
   });

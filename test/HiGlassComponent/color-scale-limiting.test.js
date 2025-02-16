@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { afterAll, beforeAll, describe, expect, it } from 'vitest';
+import * as vi from 'vitest';
 
 import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
 import Enzyme from 'enzyme';
@@ -15,11 +15,11 @@ import { twoViewConfig } from '../view-configs';
 
 Enzyme.configure({ adapter: new Adapter() });
 
-describe('Color scale limiting', () => {
+vi.describe('Color scale limiting', () => {
   let hgc = null;
   let div = null;
 
-  beforeAll(async () => {
+  vi.beforeAll(async () => {
     [div, hgc] = await mountHGComponentAsync(div, hgc, twoViewConfig, {
       style: 'width:800px; height:400px; background-color: lightgreen',
       bounded: true,
@@ -28,18 +28,18 @@ describe('Color scale limiting', () => {
     // to the left
   });
 
-  afterAll(async () => {
+  vi.afterAll(async () => {
     removeHGComponent(div);
   });
 
-  it('Changes the position of the brush to the top right', () => {
+  vi.it('Changes the position of the brush to the top right', () => {
     const { views } = hgc.instance().state;
     views.aa.tracks.center[0].contents[0].options.colorbarPosition = 'topRight';
 
     hgc.instance().setState({ views });
   });
 
-  it('Moves the brush on one of the views', () => {
+  vi.it('Moves the brush on one of the views', () => {
     const track = getTrackObjectFromHGC(hgc.instance(), 'aa', 'heatmap1');
 
     const domain1 = track.limitedValueScale.domain();
@@ -49,13 +49,13 @@ describe('Color scale limiting', () => {
     const domain2 = track.limitedValueScale.domain();
 
     // we don't expect the other view to change
-    expect(domain1[0]).not.to.equal(domain2[0]);
+    vi.expect(domain1[0]).not.to.equal(domain2[0]);
 
     // console.log('domain1:', domain1);
     // console.log('domain2:', domain2);
   });
 
-  it('locks the scales and recenters the page', async () => {
+  vi.it('locks the scales and recenters the page', async () => {
     hgc
       .instance()
       .handleValueScaleLocked('aa', 'heatmap1', 'view2', 'heatmap2');
@@ -74,27 +74,30 @@ describe('Color scale limiting', () => {
     await new Promise((done) => waitForTilesLoaded(hgc.instance(), done));
   });
 
-  it('Moves the brush on one view and makes sure it moves on the other', () => {
-    const track = getTrackObjectFromHGC(hgc.instance(), 'aa', 'heatmap1');
+  vi.it(
+    'Moves the brush on one view and makes sure it moves on the other',
+    () => {
+      const track = getTrackObjectFromHGC(hgc.instance(), 'aa', 'heatmap1');
 
-    // console.log('lvs1', heatmapTrack.limitedValueScale.domain());
+      // console.log('lvs1', heatmapTrack.limitedValueScale.domain());
 
-    // move the brush down to limit the amount of visible data
-    track.gColorscaleBrush.call(track.scaleBrush.move, [0, 100]);
+      // move the brush down to limit the amount of visible data
+      track.gColorscaleBrush.call(track.scaleBrush.move, [0, 100]);
 
-    // console.log('lvs2', heatmapTrack.limitedValueScale.domain());
+      // console.log('lvs2', heatmapTrack.limitedValueScale.domain());
 
-    const heatmap2Track = getTrackObjectFromHGC(
-      hgc.instance(),
-      'view2',
-      'heatmap2',
-    );
+      const heatmap2Track = getTrackObjectFromHGC(
+        hgc.instance(),
+        'view2',
+        'heatmap2',
+      );
 
-    expect(track.options.scaleStartPercent).to.equal(
-      heatmap2Track.options.scaleStartPercent,
-    );
-    expect(track.options.scaleEndPercent).to.equal(
-      heatmap2Track.options.scaleEndPercent,
-    );
-  });
+      vi.expect(track.options.scaleStartPercent).to.equal(
+        heatmap2Track.options.scaleStartPercent,
+      );
+      vi.expect(track.options.scaleEndPercent).to.equal(
+        heatmap2Track.options.scaleEndPercent,
+      );
+    },
+  );
 });

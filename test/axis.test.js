@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { afterAll, beforeAll, describe, expect, it } from 'vitest';
+import * as vi from 'vitest';
 
 import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
 import Enzyme from 'enzyme';
@@ -14,19 +14,19 @@ import viewconf from './view-configs/axis.json';
 
 Enzyme.configure({ adapter: new Adapter() });
 
-describe('Axis tests', () => {
+vi.describe('Axis tests', () => {
   let hgc = null;
   let div = null;
 
-  describe('Axis tets', () => {
-    beforeAll(async () => {
+  vi.describe('Axis tets', () => {
+    vi.beforeAll(async () => {
       [div, hgc] = await mountHGComponentAsync(div, hgc, viewconf, {
         style: 'width:800px; height:400px; background-color: lightgreen',
         bounded: true,
       });
     });
 
-    it('Checks the axis texts', () => {
+    vi.it('Checks the axis texts', () => {
       const track1 = getTrackObjectFromHGC(
         hgc.instance(),
         'Cs0jaHTuQXuibqx36Ew1xg',
@@ -37,7 +37,7 @@ describe('Axis tests', () => {
 
       // make sure we don't find any scientific notation;
       for (const text of texts) {
-        expect(text.indexOf('e')).to.be.below(0);
+        vi.expect(text.indexOf('e')).to.be.below(0);
       }
 
       hgc
@@ -57,11 +57,11 @@ describe('Axis tests', () => {
       // corresponds to 'automatic'. Numbers with a short string representation
       // might not be converted.
       for (const text of texts1) {
-        expect(text.indexOf('e')).to.be.above(0);
+        vi.expect(text.indexOf('e')).to.be.above(0);
       }
     });
 
-    it('Checks the axis margin', () => {
+    vi.it('Checks the axis margin', () => {
       const track1 = getTrackObjectFromHGC(
         hgc.instance(),
         'Cs0jaHTuQXuibqx36Ew1xg',
@@ -70,12 +70,12 @@ describe('Axis tests', () => {
 
       const axisMargin = 10;
 
-      expect(track1.position[0] + track1.dimensions[0] - axisMargin).to.equal(
-        track1.axis.pAxis.position.x,
-      );
+      vi.expect(
+        track1.position[0] + track1.dimensions[0] - axisMargin,
+      ).to.equal(track1.axis.pAxis.position.x);
     });
 
-    afterAll(async () => {
+    vi.afterAll(async () => {
       removeHGComponent(div);
     });
   });

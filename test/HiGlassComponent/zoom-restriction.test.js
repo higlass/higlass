@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { afterAll, beforeAll, describe, expect, it } from 'vitest';
+import * as vi from 'vitest';
 
 import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
 import Enzyme from 'enzyme';
@@ -14,28 +14,28 @@ import { restrictedZoom } from '../view-configs';
 
 Enzyme.configure({ adapter: new Adapter() });
 
-describe('Zoom restriction', () => {
+vi.describe('Zoom restriction', () => {
   let hgc = null;
   let div = null;
 
-  beforeAll(async () => {
+  vi.beforeAll(async () => {
     [div, hgc] = await mountHGComponentAsync(div, hgc, restrictedZoom, {
       style: 'width:800px; height:400px; background-color: lightgreen',
       bounded: true,
     });
   });
 
-  afterAll(() => {
+  vi.afterAll(() => {
     removeHGComponent(div);
   });
 
-  it('Has the corrent limits', () => {
+  vi.it('Has the corrent limits', () => {
     const zoomLimits = hgc.instance().tiledPlots.aa.props.zoomLimits;
-    expect(zoomLimits[0]).to.equal(0.002);
-    expect(zoomLimits[1]).to.equal(2);
+    vi.expect(zoomLimits[0]).to.equal(0.002);
+    vi.expect(zoomLimits[1]).to.equal(2);
   });
 
-  it('Zooms in and respects zoom limit', async () => {
+  vi.it('Zooms in and respects zoom limit', async () => {
     // Create a wheel event that zooms in beying the zoom limit
     const evt = new WheelEvent('wheel', {
       deltaX: 0,
@@ -59,6 +59,6 @@ describe('Zoom restriction', () => {
 
     // Make sure, it does not zoom too far
     const k = hgc.instance().tiledPlots.aa.trackRenderer.zoomTransform.k;
-    expect(k).to.equal(2);
+    vi.expect(k).to.equal(2);
   });
 });

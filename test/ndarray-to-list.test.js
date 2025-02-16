@@ -1,32 +1,32 @@
+import * as vi from 'vitest';
 import ndarray from 'ndarray';
-import { describe, expect, it } from 'vitest';
 import ndarrayToList from '../app/scripts/utils/ndarray-to-list';
 
-describe('ndarrayToList()', () => {
-  it('should work with numerical', () => {
-    expect(ndarrayToList(ndarray([0, 1, 2]))).to.deep.equal([0, 1, 2]);
+vi.describe('ndarrayToList()', () => {
+  vi.it('should work with numerical', () => {
+    vi.expect(ndarrayToList(ndarray([0, 1, 2]))).to.deep.equal([0, 1, 2]);
   });
 
-  it('should work with structured data', () => {
+  vi.it('should work with structured data', () => {
     const m = ndarray([[[[0]]], [[1]], [2]]);
-    expect(ndarrayToList(m)).to.deep.equal([[[[0]]], [[1]], [2]]);
+    vi.expect(ndarrayToList(m)).to.deep.equal([[[[0]]], [[1]], [2]]);
   });
 
-  it('should work with matrices', () => {
+  vi.it('should work with matrices', () => {
     const m = ndarray(
       new Array(4).fill(0).map((x, i) => i),
       [2, 2],
     );
-    expect(ndarrayToList(m)).to.deep.equal([0, 1, 2, 3]);
+    vi.expect(ndarrayToList(m)).to.deep.equal([0, 1, 2, 3]);
   });
 
-  it('should work with slided matrices', () => {
+  vi.it('should work with slided matrices', () => {
     const m = ndarray(
       new Array(16).fill(0).map((x, i) => i),
       [4, 4],
     )
       .hi(3, 3)
       .lo(1, 1);
-    expect(ndarrayToList(m)).to.deep.equal([5, 6, 9, 10]);
+    vi.expect(ndarrayToList(m)).to.deep.equal([5, 6, 9, 10]);
   });
 });

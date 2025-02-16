@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { afterAll, beforeAll, describe, expect, it } from 'vitest';
+import * as vi from 'vitest';
 
 import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
 import Enzyme from 'enzyme';
@@ -13,11 +13,11 @@ import { invalidTrackConfig } from '../view-configs';
 
 Enzyme.configure({ adapter: new Adapter() });
 
-describe('Division track', () => {
+vi.describe('Division track', () => {
   let hgc = null;
   let div = null;
 
-  beforeAll(async () => {
+  vi.beforeAll(async () => {
     [div, hgc] = await mountHGComponentAsync(div, hgc, invalidTrackConfig, {
       style: 'width:800px; height:400px; background-color: lightgreen',
       bounded: false,
@@ -26,11 +26,11 @@ describe('Division track', () => {
     // to the left
   });
 
-  afterAll(async () => {
+  vi.afterAll(async () => {
     removeHGComponent(div);
   });
 
-  it('Opens the track type menu', () => {
+  vi.it('Opens the track type menu', () => {
     const clickPosition = {
       bottom: 85,
       height: 28,
@@ -79,11 +79,11 @@ describe('Division track', () => {
 
     const trackTypeItems = seriesObj.getTrackTypeItems(position, bbox, series);
 
-    expect(trackTypeItems.props.menuItems.line).to.be.undefined;
-    expect(trackTypeItems.props.menuItems.point).to.be.undefined;
+    vi.expect(trackTypeItems.props.menuItems.line).to.be.undefined;
+    vi.expect(trackTypeItems.props.menuItems.point).to.be.undefined;
   });
 
-  it('Opens the close track menu', () => {
+  vi.it('Opens the close track menu', () => {
     const clickPosition = {
       bottom: 85,
       height: 28,

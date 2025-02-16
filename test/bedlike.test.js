@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { afterAll, beforeAll, describe, expect, it } from 'vitest';
+import * as vi from 'vitest';
 
 import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
 import Enzyme from 'enzyme';
@@ -16,16 +16,16 @@ import { smallViewconf } from './view-configs';
 
 Enzyme.configure({ adapter: new Adapter() });
 
-describe('BedLikeTrack |', () => {
+vi.describe('BedLikeTrack |', () => {
   let hgc = null;
   let div = null;
 
-  describe('inline annotations', () => {
-    beforeAll(async () => {
+  vi.describe('inline annotations', () => {
+    vi.beforeAll(async () => {
       [div, hgc] = await mountHGComponentAsync(div, hgc, smallViewconf);
     });
 
-    it('checks that the rectangles are strand separated or not', () => {
+    vi.it('checks that the rectangles are strand separated or not', () => {
       const trackObj = getTrackObjectFromHGC(hgc.instance(), 'aa', 'a');
 
       const ys = new Set();
@@ -35,7 +35,7 @@ describe('BedLikeTrack |', () => {
       }
 
       // make sure that annotations are at different y positions
-      expect(ys.size).to.eql(2);
+      vi.expect(ys.size).to.eql(2);
 
       ys.clear();
       hgc.instance().state.views.aa.tracks.top[0].options.separatePlusMinusStrands = false;
@@ -47,48 +47,48 @@ describe('BedLikeTrack |', () => {
       }
 
       // make sure that annotations are at the same y position
-      expect(ys.size).to.eql(1);
+      vi.expect(ys.size).to.eql(1);
     });
 
-    afterAll(() => {
+    vi.afterAll(() => {
       // removeHGComponent(div);
       // div = null;
       // hgc = null;
     });
   });
 
-  describe('Options', () => {
-    beforeAll(async () => {
+  vi.describe('Options', () => {
+    vi.beforeAll(async () => {
       [div, hgc] = await mountHGComponentAsync(div, hgc, coloredBarsViewConf);
     });
 
-    it('checks that the rectangles are colored', () => {
+    vi.it('checks that the rectangles are colored', () => {
       const svg = hgc.instance().createSVGString();
 
       // check to make sure that we have non-standard color bar
-      expect(svg.indexOf('rgb(152, 251, 152)')).to.be.above(0);
+      vi.expect(svg.indexOf('rgb(152, 251, 152)')).to.be.above(0);
     });
 
-    afterAll(() => {
+    vi.afterAll(() => {
       removeHGComponent(div);
       div = null;
       hgc = null;
     });
   });
 
-  describe('Options', () => {
-    beforeAll(async () => {
+  vi.describe('Options', () => {
+    vi.beforeAll(async () => {
       [div, hgc] = await mountHGComponentAsync(div, hgc, viewConf1);
     });
 
-    it('Changes text color independent of fill', () => {
+    vi.it('Changes text color independent of fill', () => {
       let svg = hgc.instance().createSVGString();
 
       // make sure the first time we export there's no black texts
       let textIx = svg.indexOf('text');
-      expect(textIx).to.be.above(0);
+      vi.expect(textIx).to.be.above(0);
       let otherIx = svg.indexOf('fill="0"');
-      expect(otherIx).to.be.below(0);
+      vi.expect(otherIx).to.be.below(0);
 
       hgc.instance().state.views.aa.tracks.top[1].options.fontColor = 'black';
       hgc.setState(hgc.instance().state);
@@ -98,18 +98,18 @@ describe('BedLikeTrack |', () => {
 
       // we should still have textx and they should be black
       textIx = svg.indexOf('text');
-      expect(textIx).to.be.above(0);
+      vi.expect(textIx).to.be.above(0);
       otherIx = svg.indexOf('fill="0"');
-      expect(otherIx).to.be.above(0);
+      vi.expect(otherIx).to.be.above(0);
     });
 
-    it('Changes font size independent of fill', () => {
+    vi.it('Changes font size independent of fill', () => {
       let svg = hgc.instance().createSVGString();
       // make sure the first time we export there's no black texts
       let textIx = svg.indexOf('text');
-      expect(textIx).to.be.above(0);
+      vi.expect(textIx).to.be.above(0);
       let changedIx = svg.indexOf('font-size="20"');
-      expect(changedIx).to.be.below(0);
+      vi.expect(changedIx).to.be.below(0);
 
       hgc.instance().state.views.aa.tracks.top[1].options.fontSize = 20;
       hgc.setState(hgc.instance().state);
@@ -119,24 +119,24 @@ describe('BedLikeTrack |', () => {
 
       // we should still have textx and they should be black
       textIx = svg.indexOf('text');
-      expect(textIx).to.be.above(0);
+      vi.expect(textIx).to.be.above(0);
       changedIx = svg.indexOf('font-size="20"');
-      expect(changedIx).to.be.above(0);
+      vi.expect(changedIx).to.be.above(0);
     });
 
-    afterAll(() => {
+    vi.afterAll(() => {
       removeHGComponent(div);
       div = null;
       hgc = null;
     });
   });
 
-  describe('vertical scaling', () => {
-    beforeAll(async () => {
+  vi.describe('vertical scaling', () => {
+    vi.beforeAll(async () => {
       [div, hgc] = await mountHGComponentAsync(div, hgc, viewConf1);
     });
 
-    it('Zooms vertically', async () => {
+    vi.it('Zooms vertically', async () => {
       const trackObj = getTrackObjectFromHGC(hgc.instance(), 'aa', 'a');
 
       // because we're loading tiles synchronously, they'll be loaded
@@ -148,7 +148,7 @@ describe('BedLikeTrack |', () => {
       await new Promise((done) => {
         waitForTilesLoaded(hgc.instance(), () => {
           trackObj.zoomedY(100, 0.8);
-          expect(trackObj.fetchedTiles['0.0'].rectGraphics.scale.y).to.eql(
+          vi.expect(trackObj.fetchedTiles['0.0'].rectGraphics.scale.y).to.eql(
             1.25,
           );
           done(null);
@@ -156,30 +156,30 @@ describe('BedLikeTrack |', () => {
       });
     });
 
-    afterAll(() => {
+    vi.afterAll(() => {
       removeHGComponent(div);
       div = null;
       hgc = null;
     });
   });
 
-  describe('Normal tests', () => {
-    beforeAll(async () => {
+  vi.describe('Normal tests', () => {
+    vi.beforeAll(async () => {
       [div, hgc] = await mountHGComponentAsync(div, hgc, viewConf);
     });
 
-    it('Ensures that the track was rendered', () => {
-      expect(hgc.instance().state.viewConfig.editable).to.eql(true);
+    vi.it('Ensures that the track was rendered', () => {
+      vi.expect(hgc.instance().state.viewConfig.editable).to.eql(true);
       const trackObj = getTrackObjectFromHGC(
         hgc.instance(),
         viewConf.views[0].uid,
         viewConf.views[0].tracks.top[0].uid,
       );
 
-      expect(Object.keys(trackObj.drawnRects).length).to.be.above(0);
+      vi.expect(Object.keys(trackObj.drawnRects).length).to.be.above(0);
     });
 
-    it('Checks that + and - strand entries are at different heights', () => {
+    vi.it('Checks that + and - strand entries are at different heights', () => {
       const trackObj = getTrackObjectFromHGC(
         hgc.instance(),
         viewConf.views[0].uid,
@@ -195,20 +195,20 @@ describe('BedLikeTrack |', () => {
         }
       }
 
-      expect(rectHeights.size).to.eql(2);
+      vi.expect(rectHeights.size).to.eql(2);
     });
 
-    it('Exports to SVG', () => {
+    vi.it('Exports to SVG', () => {
       const svgText = hgc.instance().createSVGString();
 
       const textIx = svgText.indexOf('text');
       const greenIx = svgText.indexOf('green');
 
-      expect(textIx).to.be.above(0);
-      expect(greenIx).to.be.below(0);
+      vi.expect(textIx).to.be.above(0);
+      vi.expect(greenIx).to.be.below(0);
     });
 
-    it('Checks minusStrandColor', () => {
+    vi.it('Checks minusStrandColor', () => {
       hgc.instance().state.views.aa.tracks.top[0].options.minusStrandColor =
         'green';
 
@@ -218,10 +218,10 @@ describe('BedLikeTrack |', () => {
       const svgText = hgc.instance().createSVGString();
       const greenIx = svgText.indexOf('green');
 
-      expect(greenIx).to.be.above(0);
+      vi.expect(greenIx).to.be.above(0);
     });
 
-    it('Checks segment polygons', () => {
+    vi.it('Checks segment polygons', () => {
       hgc.instance().state.views.aa.tracks.top[0].options.annotationStyle =
         'segment';
 
@@ -239,62 +239,65 @@ describe('BedLikeTrack |', () => {
           const rect = trackObj.drawnRects[tileId][uid];
 
           // the segment polygons have 12 vertices
-          expect(rect[0].length).to.eql(24);
+          vi.expect(rect[0].length).to.eql(24);
         }
       }
     });
 
-    it('Checks to make sure that scaled height changes the height of drawn rects', () => {
-      // const currentHeight =
-      const trackObj = getTrackObjectFromHGC(
-        hgc.instance(),
-        viewConf.views[0].uid,
-        viewConf.views[0].tracks.top[0].uid,
-      );
+    vi.it(
+      'Checks to make sure that scaled height changes the height of drawn rects',
+      () => {
+        // const currentHeight =
+        const trackObj = getTrackObjectFromHGC(
+          hgc.instance(),
+          viewConf.views[0].uid,
+          viewConf.views[0].tracks.top[0].uid,
+        );
 
-      let drawnRects = Object.values(trackObj.drawnRects[13])[0][0];
-      const prevHeight = drawnRects[5] - drawnRects[3];
+        let drawnRects = Object.values(trackObj.drawnRects[13])[0][0];
+        const prevHeight = drawnRects[5] - drawnRects[3];
 
-      // switch to scaled height
-      hgc.instance().state.views.aa.tracks.top[0].options.annotationHeight =
-        'scaled';
+        // switch to scaled height
+        hgc.instance().state.views.aa.tracks.top[0].options.annotationHeight =
+          'scaled';
 
-      hgc.setState(hgc.instance().state);
-      hgc.update();
+        hgc.setState(hgc.instance().state);
+        hgc.update();
 
-      drawnRects = Object.values(trackObj.drawnRects[13])[0][0];
-      const nextHeight = drawnRects[5] - drawnRects[3];
+        drawnRects = Object.values(trackObj.drawnRects[13])[0][0];
+        const nextHeight = drawnRects[5] - drawnRects[3];
 
-      // make sure the height of the drawn rects actually changed
-      expect(nextHeight).to.not.eql(prevHeight);
+        // make sure the height of the drawn rects actually changed
+        vi.expect(nextHeight).to.not.eql(prevHeight);
 
-      // switch back to the original height
-      hgc.instance().state.views.aa.tracks.top[0].options.annotationHeight = 8;
+        // switch back to the original height
+        hgc.instance().state.views.aa.tracks.top[0].options.annotationHeight = 8;
 
-      hgc.setState(hgc.instance().state);
-      hgc.update();
+        hgc.setState(hgc.instance().state);
+        hgc.update();
 
-      drawnRects = Object.values(trackObj.drawnRects[13])[0][0];
-      const finalHeight = drawnRects[5] - drawnRects[3];
+        drawnRects = Object.values(trackObj.drawnRects[13])[0][0];
+        const finalHeight = drawnRects[5] - drawnRects[3];
 
-      expect(finalHeight).to.eql(prevHeight);
+        vi.expect(finalHeight).to.eql(prevHeight);
 
-      // set the maximum annotation height
-      //
-      hgc.instance().state.views.aa.tracks.top[0].options.maxAnnotationHeight = 8;
-      hgc.instance().state.views.aa.tracks.top[0].options.annotationHeight =
-        'scaled';
+        // set the maximum annotation height
+        //
+        hgc.instance().state.views.aa.tracks.top[0].options.maxAnnotationHeight = 8;
+        hgc.instance().state.views.aa.tracks.top[0].options.annotationHeight =
+          'scaled';
 
-      hgc.setState(hgc.instance().state);
-      hgc.update();
+        hgc.setState(hgc.instance().state);
+        hgc.update();
 
-      drawnRects = Object.values(trackObj.drawnRects[13])[0][0];
-      const finalestHeight = drawnRects[5] - drawnRects[3];
+        drawnRects = Object.values(trackObj.drawnRects[13])[0][0];
+        const finalestHeight = drawnRects[5] - drawnRects[3];
 
-      expect(finalestHeight).to.eql(prevHeight);
-    });
+        vi.expect(finalestHeight).to.eql(prevHeight);
+      },
+    );
 
-    it('Checks to make sure font size increases', () => {
+    vi.it('Checks to make sure font size increases', () => {
       const trackObj = getTrackObjectFromHGC(
         hgc.instance(),
         viewConf.views[0].uid,
@@ -311,10 +314,10 @@ describe('BedLikeTrack |', () => {
       const newHeight = Object.values(trackObj.fetchedTiles)[0].textHeights
         .CTCF_known1;
 
-      expect(newHeight).to.be.above(prevHeight);
+      vi.expect(newHeight).to.be.above(prevHeight);
     });
 
-    it('Changes the color encoding of the annotations', () => {
+    vi.it('Changes the color encoding of the annotations', () => {
       hgc.instance().state.views.aa.tracks.top[0].options.colorEncoding = 5;
 
       hgc.setState(hgc.instance().state);
@@ -322,10 +325,10 @@ describe('BedLikeTrack |', () => {
 
       const svgString = hgc.instance().createSVGString();
 
-      expect(svgString.indexOf('rgba(252,186,144,255)')).to.be.above(1);
+      vi.expect(svgString.indexOf('rgba(252,186,144,255)')).to.be.above(1);
     });
 
-    it('Zooms in and ensures that rectangles are rerendered', () => {
+    vi.it('Zooms in and ensures that rectangles are rerendered', () => {
       const { trackRenderer } = hgc.instance().tiledPlots.aa;
       const trackObj = getTrackObjectFromHGC(
         hgc.instance(),
@@ -350,10 +353,10 @@ describe('BedLikeTrack |', () => {
       const newScaleWidth =
         tile.drawnAtScale.domain()[1] - tile.drawnAtScale.domain()[0];
 
-      expect(newScaleWidth).to.be.below(scaleWidth);
+      vi.expect(newScaleWidth).to.be.below(scaleWidth);
     });
 
-    afterAll(() => {
+    vi.afterAll(() => {
       removeHGComponent(div);
     });
   });

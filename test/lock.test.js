@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { afterAll, beforeAll, describe, expect, it } from 'vitest';
+import * as vi from 'vitest';
 
 import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
 import Ajv from 'ajv';
@@ -15,38 +15,38 @@ import {
 
 Enzyme.configure({ adapter: new Adapter() });
 
-describe('Lock tests', () => {
+vi.describe('Lock tests', () => {
   let hgc = null;
   let div = null;
 
-  beforeAll(async () => {
+  vi.beforeAll(async () => {
     [div, hgc] = await mountHGComponentAsync(div, hgc, viewconf, {
       style: 'width:800px; height:400px; background-color: lightgreen',
       bounded: true,
     });
   });
 
-  afterAll(() => {
+  vi.afterAll(() => {
     removeHGComponent(div);
   });
 
-  it('should viewconfig be valid', () => {
+  vi.it('should viewconfig be valid', () => {
     const validate = new Ajv().compile(schema);
     const valid = validate(viewconf);
-    expect(valid).eql(true);
+    vi.expect(valid).eql(true);
   });
 
-  it('should have no location locks', () => {
-    expect(hgc.instance().locationLocks).to.have.property('v1');
-    expect(hgc.instance().locationLocks).not.to.have.property('v2');
+  vi.it('should have no location locks', () => {
+    vi.expect(hgc.instance().locationLocks).to.have.property('v1');
+    vi.expect(hgc.instance().locationLocks).not.to.have.property('v2');
   });
 
-  it('should export as SVG', () => {
+  vi.it('should export as SVG', () => {
     const svg = hgc.instance().createSVGString();
-    expect(svg.length).to.be.above(1);
+    vi.expect(svg.length).to.be.above(1);
   });
 
-  it('should change the viewconf', () => {
+  vi.it('should change the viewconf', () => {
     const { views } = hgc.instance().state;
 
     const trackUid = views.v1.tracks.top[0].uid;
@@ -58,7 +58,7 @@ describe('Lock tests', () => {
       .instance()
       .tiledPlots.v1.trackRenderer.getTrackObject(trackUid);
 
-    expect(trackObj).not.to.eql(null);
+    vi.expect(trackObj).not.to.eql(null);
   });
 });
 

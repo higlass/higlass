@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { afterAll, beforeAll, describe, expect, it } from 'vitest';
+import * as vi from 'vitest';
 
 import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
 import Enzyme from 'enzyme';
@@ -14,11 +14,11 @@ import { twoViewConfig } from '../view-configs';
 
 Enzyme.configure({ adapter: new Adapter() });
 
-describe('Close view', () => {
+vi.describe('Close view', () => {
   let hgc = null;
   let div = null;
 
-  beforeAll(async () => {
+  vi.beforeAll(async () => {
     [div, hgc] = await mountHGComponentAsync(div, hgc, twoViewConfig, {
       style: 'width:800px; height:400px; background-color: lightgreen',
       bounded: true,
@@ -27,14 +27,17 @@ describe('Close view', () => {
     // to the left
   });
 
-  afterAll(() => {
+  vi.afterAll(() => {
     removeHGComponent(div);
   });
 
-  it('Ensures that when a view is closed, the PIXI graphics are removed', async () => {
-    hgc.instance().handleCloseView('view2');
-    // since we removed one of the children, there should be only one left
-    expect(hgc.instance().pixiStage.children.length).to.equal(1);
-    await new Promise((done) => waitForTilesLoaded(hgc.instance(), done));
-  });
+  vi.it(
+    'Ensures that when a view is closed, the PIXI graphics are removed',
+    async () => {
+      hgc.instance().handleCloseView('view2');
+      // since we removed one of the children, there should be only one left
+      vi.expect(hgc.instance().pixiStage.children.length).to.equal(1);
+      await new Promise((done) => waitForTilesLoaded(hgc.instance(), done));
+    },
+  );
 });

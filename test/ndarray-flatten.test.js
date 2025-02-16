@@ -1,13 +1,15 @@
+import * as vi from 'vitest';
 import ndarray from 'ndarray';
-import { describe, expect, it } from 'vitest';
 import ndarrayFlatten from '../app/scripts/utils/ndarray-flatten';
 
-describe('ndarrayFlatten()', () => {
-  it('should work on vectors', () => {
-    expect(ndarrayFlatten(ndarray([[0], [1], [2]])).shape).to.deep.equal([3]);
+vi.describe('ndarrayFlatten()', () => {
+  vi.it('should work on vectors', () => {
+    vi.expect(ndarrayFlatten(ndarray([[0], [1], [2]])).shape).to.deep.equal([
+      3,
+    ]);
   });
 
-  it('should work on slided matrix', () => {
+  vi.it('should work on slided matrix', () => {
     const m = ndarray(
       new Array(16).fill(0).map((x, i) => i),
       [4, 4],
@@ -15,6 +17,6 @@ describe('ndarrayFlatten()', () => {
       .hi(3, 3)
       .lo(1, 1);
     const flat = ndarrayFlatten(m);
-    expect(flat.shape).to.deep.equal([4]);
+    vi.expect(flat.shape).to.deep.equal([4]);
   });
 });

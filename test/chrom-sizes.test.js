@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { afterAll, beforeAll, describe, expect, it } from 'vitest';
+import * as vi from 'vitest';
 
 import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
 import Enzyme from 'enzyme';
@@ -13,28 +13,28 @@ import { getTrackObjectFromHGC } from '../app/scripts/utils';
 
 Enzyme.configure({ adapter: new Adapter() });
 
-describe('Chromsizes tests', () => {
+vi.describe('Chromsizes tests', () => {
   let hgc = null;
   let div = null;
 
-  describe('Chromosome Grid Tests', () => {
-    beforeAll(async () => {
+  vi.describe('Chromosome Grid Tests', () => {
+    vi.beforeAll(async () => {
       [div, hgc] = await mountHGComponentAsync(div, hgc, viewconf, {
         style: 'width:800px; height:800px; background-color: lightgreen',
         bounded: true,
       });
     });
 
-    it("Ensure that the viewport projection's borders are grey", () => {
+    vi.it("Ensure that the viewport projection's borders are grey", () => {
       const trackObject = getTrackObjectFromHGC(
         hgc.instance(),
         'Mw2aWH9TTcu38t5OZlCYyA',
       );
 
-      expect(trackObject.options.lineStrokeColor).to.eql('grey');
+      vi.expect(trackObject.options.lineStrokeColor).to.eql('grey');
     });
 
-    afterAll(() => {
+    vi.afterAll(() => {
       removeHGComponent(div);
     });
   });

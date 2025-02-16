@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { describe, it } from 'vitest';
+import * as vi from 'vitest';
 
 import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
 import Enzyme from 'enzyme';
@@ -13,8 +13,8 @@ import { divisionViewConfig } from '../view-configs';
 
 Enzyme.configure({ adapter: new Adapter() });
 
-describe('Division track', () => {
-  it('clones itself', async () => {
+vi.describe('Division track', () => {
+  vi.it('clones itself', async () => {
     let div = null;
     let hgc = null;
     [div, hgc] = await mountHGComponentAsync(div, hgc, divisionViewConfig, {

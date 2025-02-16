@@ -1,6 +1,6 @@
 // @ts-nocheck
+import * as vi from 'vitest';
 import { page } from '@vitest/browser/context';
-import { describe, expect, it, vi } from 'vitest';
 
 // Utils
 import { getTrackRenderer } from '../app/scripts/utils';
@@ -8,8 +8,8 @@ import { getTrackRenderer } from '../app/scripts/utils';
 import createElementAndApi from './utils/create-element-and-api';
 import viewConfig from './view-configs/two-bars-and-a-heatmap.json';
 
-describe('Context menu tests', () => {
-  it('opens a context menu', async () => {
+vi.describe('Context menu tests', () => {
+  vi.it('opens a context menu', async () => {
     const [_, api] = createElementAndApi(viewConfig);
     const contextmenu = new MouseEvent('contextmenu', {
       clientX: 348,
@@ -20,15 +20,15 @@ describe('Context menu tests', () => {
 
     const trackRenderer = getTrackRenderer(api.getComponent(), 'aa');
     const trackObj = trackRenderer.getTrackObject('cc');
-    const spy = vi.spyOn(trackObj, 'contextMenuItems');
+    const spy = vi.vi.spyOn(trackObj, 'contextMenuItems');
     trackRenderer.eventTracker.dispatchEvent(contextmenu);
 
     const node = page.getByText('Dekker Lab HFFc6 DpnII');
-    await expect.element(node).toBeInTheDocument();
+    await vi.expect.element(node).toBeInTheDocument();
     await node.hover();
-    await expect
+    await vi.expect
       .element(page.getByText('Configure Series'))
       .toBeInTheDocument();
-    expect(spy).toHaveBeenCalled();
+    vi.expect(spy).toHaveBeenCalled();
   });
 });

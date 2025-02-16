@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { afterAll, beforeAll, describe, expect, it } from 'vitest';
+import * as vi from 'vitest';
 
 import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
 import Enzyme from 'enzyme';
@@ -12,12 +12,12 @@ import {
 
 Enzyme.configure({ adapter: new Adapter() });
 
-describe('SVG Export', () => {
-  describe('color bars 0-1 log', () => {
+vi.describe('SVG Export', () => {
+  vi.describe('color bars 0-1 log', () => {
     let hgc = null;
     let div = null;
 
-    beforeAll(async () => {
+    vi.beforeAll(async () => {
       const viewConf = JSON.parse(JSON.stringify(baseConf));
       const options = viewConf.views[0].tracks.center[0].contents[0].options;
       options.scaleStartPercent = 0;
@@ -26,29 +26,29 @@ describe('SVG Export', () => {
       [div, hgc] = await mountHGComponentAsync(div, hgc, viewConf);
     });
 
-    afterAll(() => {
+    vi.afterAll(() => {
       removeHGComponent(div);
     });
 
-    it('scales correctly', () => {
+    vi.it('scales correctly', () => {
       const svg = hgc.instance().createSVG();
       const colorBar = svg.getElementsByClassName('color-bar')[0];
       const rects = colorBar.getElementsByTagName('rect');
-      expect(rects.length).to.equal(257);
-      expect(rects[1].getAttribute('style')).to.equal('fill: rgb(1, 1, 1)');
-      expect(rects[127].getAttribute('style')).to.equal(
+      vi.expect(rects.length).to.equal(257);
+      vi.expect(rects[1].getAttribute('style')).to.equal('fill: rgb(1, 1, 1)');
+      vi.expect(rects[127].getAttribute('style')).to.equal(
         'fill: rgb(127, 127, 127)',
       );
-      expect(rects[255].getAttribute('style')).to.equal(
+      vi.expect(rects[255].getAttribute('style')).to.equal(
         'fill: rgb(255, 255, 255)',
       );
     });
   });
 
-  describe('color bars 0.5-1 log', () => {
+  vi.describe('color bars 0.5-1 log', () => {
     let hgc = null;
     let div = null;
-    beforeAll(async () => {
+    vi.beforeAll(async () => {
       const viewConf = JSON.parse(JSON.stringify(baseConf));
       const options = viewConf.views[0].tracks.center[0].contents[0].options;
       options.scaleStartPercent = 0.5;
@@ -57,26 +57,26 @@ describe('SVG Export', () => {
       [div, hgc] = await mountHGComponentAsync(div, hgc, viewConf);
     });
 
-    afterAll(() => {
+    vi.afterAll(() => {
       removeHGComponent(div);
     });
 
-    it('scales correctly', () => {
+    vi.it('scales correctly', () => {
       const svg = hgc.instance().createSVG();
       const colorBar = svg.getElementsByClassName('color-bar')[0];
       const rects = colorBar.getElementsByTagName('rect');
-      expect(rects.length).to.equal(257);
-      expect(rects[1].getAttribute('style')).to.equal('fill: rgb(1, 1, 1)');
-      expect(rects[127].getAttribute('style')).to.equal(
+      vi.expect(rects.length).to.equal(257);
+      vi.expect(rects[1].getAttribute('style')).to.equal('fill: rgb(1, 1, 1)');
+      vi.expect(rects[127].getAttribute('style')).to.equal(
         'fill: rgb(255, 255, 255)',
       );
-      expect(rects[255].getAttribute('style')).to.equal(
+      vi.expect(rects[255].getAttribute('style')).to.equal(
         'fill: rgb(255, 255, 255)',
       );
     });
   });
 
-  describe('horizontal, vertical, and cross rules', () => {
+  vi.describe('horizontal, vertical, and cross rules', () => {
     let hgc = null;
     let div = null;
 
@@ -131,7 +131,7 @@ describe('SVG Export', () => {
       ],
     };
 
-    beforeAll(async () => {
+    vi.beforeAll(async () => {
       const viewConf = JSON.parse(JSON.stringify(addedRulesConf));
       const options = viewConf.views[0].tracks.center[0].contents[0].options;
       options.scaleStartPercent = 0;
@@ -140,41 +140,41 @@ describe('SVG Export', () => {
       [div, hgc] = await mountHGComponentAsync(div, hgc, viewConf);
     });
 
-    afterAll(() => {
+    vi.afterAll(() => {
       removeHGComponent(div);
     });
 
-    it('includes line for added vertical rule', () => {
+    vi.it('includes line for added vertical rule', () => {
       const svg = hgc.instance().createSVG();
       const group = svg.getElementsByClassName('vertical-rule')[0];
       const line = group.getElementsByTagName('line');
-      expect(line.length).to.equal(1);
-      expect(Number(line[0].getAttribute('y1'))).to.equal(0);
-      expect(Number(line[0].getAttribute('y2'))).to.be.greaterThan(0);
-      expect(Number(line[0].getAttribute('x1'))).to.equal(649.2246915865658);
+      vi.expect(line.length).to.equal(1);
+      vi.expect(Number(line[0].getAttribute('y1'))).to.equal(0);
+      vi.expect(Number(line[0].getAttribute('y2'))).to.be.greaterThan(0);
+      vi.expect(Number(line[0].getAttribute('x1'))).to.equal(649.2246915865658);
     });
 
-    it('includes line for added horizontal rule', () => {
+    vi.it('includes line for added horizontal rule', () => {
       const svg = hgc.instance().createSVG();
       const group = svg.getElementsByClassName('horizontal-rule')[0];
       const line = group.getElementsByTagName('line');
-      expect(line.length).to.equal(1);
-      expect(Number(line[0].getAttribute('x1'))).to.equal(0);
-      expect(Number(line[0].getAttribute('x2'))).to.be.greaterThan(0);
-      expect(Number(line[0].getAttribute('y1'))).to.equal(307.4996050186234);
+      vi.expect(line.length).to.equal(1);
+      vi.expect(Number(line[0].getAttribute('x1'))).to.equal(0);
+      vi.expect(Number(line[0].getAttribute('x2'))).to.be.greaterThan(0);
+      vi.expect(Number(line[0].getAttribute('y1'))).to.equal(307.4996050186234);
     });
 
-    it('includes lines for added cross rule', () => {
+    vi.it('includes lines for added cross rule', () => {
       const svg = hgc.instance().createSVG();
       const group = svg.getElementsByClassName('cross-rule')[0];
       const line = group.getElementsByTagName('line');
-      expect(line.length).to.equal(2);
-      expect(Number(line[0].getAttribute('y1'))).to.equal(0);
-      expect(Number(line[0].getAttribute('y2'))).to.be.greaterThan(0);
-      expect(Number(line[0].getAttribute('x1'))).to.equal(649.1616968074917);
-      expect(Number(line[1].getAttribute('x1'))).to.equal(0);
-      expect(Number(line[1].getAttribute('x2'))).to.be.greaterThan(0);
-      expect(Number(line[1].getAttribute('y1'))).to.equal(307.2001108175058);
+      vi.expect(line.length).to.equal(2);
+      vi.expect(Number(line[0].getAttribute('y1'))).to.equal(0);
+      vi.expect(Number(line[0].getAttribute('y2'))).to.be.greaterThan(0);
+      vi.expect(Number(line[0].getAttribute('x1'))).to.equal(649.1616968074917);
+      vi.expect(Number(line[1].getAttribute('x1'))).to.equal(0);
+      vi.expect(Number(line[1].getAttribute('x2'))).to.be.greaterThan(0);
+      vi.expect(Number(line[1].getAttribute('y1'))).to.equal(307.2001108175058);
     });
   });
 });

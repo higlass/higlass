@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { afterAll, beforeAll, describe, it } from 'vitest';
+import * as vi from 'vitest';
 
 import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
 import Enzyme from 'enzyme';
@@ -16,11 +16,11 @@ import { twoViewConfig } from '../view-configs';
 
 Enzyme.configure({ adapter: new Adapter() });
 
-describe('Colormap', () => {
+vi.describe('Colormap', () => {
   let hgc = null;
   let div = null;
 
-  beforeAll(async () => {
+  vi.beforeAll(async () => {
     [div, hgc] = await mountHGComponentAsync(div, hgc, twoViewConfig, {
       style: 'width:800px; height:400px; background-color: lightgreen',
       bounded: true,
@@ -29,11 +29,11 @@ describe('Colormap', () => {
     // to the left
   });
 
-  afterAll(async () => {
+  vi.afterAll(async () => {
     removeHGComponent(div);
   });
 
-  it('Ensures that the custom color map loads properly', async (done) => {
+  vi.it('Ensures that the custom color map loads properly', async (done) => {
     hgc
       .instance()
       .tiledPlots.aa.handleConfigureTrack(

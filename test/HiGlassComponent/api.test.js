@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { afterAll, beforeAll, describe, expect, it } from 'vitest';
+import * as vi from 'vitest';
 
 import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
 import Enzyme from 'enzyme';
@@ -13,11 +13,11 @@ import { simpleCenterViewConfig, twoViewConfig } from '../view-configs';
 
 Enzyme.configure({ adapter: new Adapter() });
 
-describe('View positioning', () => {
+vi.describe('View positioning', () => {
   let hgc = null;
   let div = null;
 
-  beforeAll(async () => {
+  vi.beforeAll(async () => {
     [div, hgc] = await mountHGComponentAsync(div, hgc, simpleCenterViewConfig, {
       style: 'width:800px; height:400px; background-color: lightgreen',
       bounded: true,
@@ -27,21 +27,21 @@ describe('View positioning', () => {
     // to the left
   });
 
-  afterAll(async () => {
+  vi.afterAll(async () => {
     removeHGComponent(div);
   });
 
-  it('Sets a new viewconfig', async () => {
+  vi.it('Sets a new viewconfig', async () => {
     await hgc.instance().api.setViewConfig(twoViewConfig);
   });
 
-  it('Zooms one of the views to the center', () => {
+  vi.it('Zooms one of the views to the center', () => {
     hgc.instance().api.zoomToDataExtent('view2');
   });
 
-  it('Zooms a nonexistant view to the center', () => {
+  vi.it('Zooms a nonexistant view to the center', () => {
     const badFn = () => hgc.instance().api.zoomToDataExtent('xxx');
 
-    expect(badFn).to.throw;
+    vi.expect(badFn).to.throw;
   });
 });

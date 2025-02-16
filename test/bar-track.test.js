@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { afterAll, beforeAll, describe, expect, it } from 'vitest';
+import * as vi from 'vitest';
 
 import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
 import Enzyme from 'enzyme';
@@ -16,16 +16,16 @@ import viewConf from './view-configs/bar.json';
 
 Enzyme.configure({ adapter: new Adapter() });
 
-describe('BarTrack tests', () => {
+vi.describe('BarTrack tests', () => {
   let hgc = null;
   let div = null;
 
-  beforeAll(async () => {
+  vi.beforeAll(async () => {
     [div, hgc] = await mountHGComponentAsync(div, hgc, viewConf);
   });
 
-  it('Ensures that the track was rendered', async () => {
-    expect(hgc.instance().state.viewConfig.editable).to.eql(true);
+  vi.it('Ensures that the track was rendered', async () => {
+    vi.expect(hgc.instance().state.viewConfig.editable).to.eql(true);
 
     const trackConf = viewConf.views[0].tracks.top[0];
 
@@ -37,15 +37,15 @@ describe('BarTrack tests', () => {
 
     await new Promise((done) => {
       waitForTilesLoaded(hgc.instance(), () => {
-        expect(trackObj.zeroLine.fill.color).to.eql(
+        vi.expect(trackObj.zeroLine.fill.color).to.eql(
           colorToHex(trackConf.options.zeroLineColor),
         );
 
-        expect(trackObj.zeroLine.fill.alpha).to.eql(
+        vi.expect(trackObj.zeroLine.fill.alpha).to.eql(
           trackConf.options.zeroLineOpacity,
         );
 
-        expect(
+        vi.expect(
           Object.values(trackObj.fetchedTiles).every((tile) => tile.svgData),
         ).to.eql(true);
         done(null);
@@ -53,7 +53,7 @@ describe('BarTrack tests', () => {
     });
   });
 
-  it('Ensures that the cross section bar track was rendered', async () => {
+  vi.it('Ensures that the cross section bar track was rendered', async () => {
     const trackConf = viewConf.views[0].tracks.left[0];
 
     const trackObj = getTrackObjectFromHGC(
@@ -64,7 +64,7 @@ describe('BarTrack tests', () => {
 
     await new Promise((done) => {
       waitForTilesLoaded(hgc.instance(), () => {
-        expect(
+        vi.expect(
           Object.values(trackObj.originalTrack.fetchedTiles).every(
             (tile) => tile.svgData,
           ),
@@ -74,7 +74,7 @@ describe('BarTrack tests', () => {
     });
   });
 
-  afterAll(() => {
+  vi.afterAll(() => {
     removeHGComponent(div);
   });
 });

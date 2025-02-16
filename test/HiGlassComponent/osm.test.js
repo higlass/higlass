@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { afterAll, beforeAll, describe, it } from 'vitest';
+import * as vi from 'vitest';
 
 import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
 import Enzyme from 'enzyme';
@@ -13,22 +13,22 @@ import { osmConf } from '../view-configs';
 
 Enzyme.configure({ adapter: new Adapter() });
 
-describe('osm', () => {
+vi.describe('osm', () => {
   let hgc = null;
   let div = null;
 
-  beforeAll(async () => {
+  vi.beforeAll(async () => {
     [div, hgc] = await mountHGComponentAsync(div, hgc, osmConf, {
       style: 'width:800px; height:400px; background-color: lightgreen',
       bounded: false,
     });
   });
 
-  afterAll(() => {
+  vi.afterAll(() => {
     removeHGComponent(div);
   });
 
-  it('Switches to the osm tiles track', () => {
+  vi.it('Switches to the osm tiles track', () => {
     const { views } = hgc.instance().state;
     const view = views.aa;
 

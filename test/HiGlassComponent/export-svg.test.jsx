@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { afterAll, beforeAll, describe, expect, it } from 'vitest';
+import * as vi from 'vitest';
 
 import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
 import Enzyme from 'enzyme';
@@ -22,11 +22,11 @@ const waitForTilesLoadedAsync = (hgcInstance) =>
     waitForTilesLoaded(hgcInstance, resolve);
   });
 
-describe('SVG Export', () => {
+vi.describe('SVG Export', () => {
   let hgc = null;
   let div = null;
 
-  beforeAll(async () => {
+  vi.beforeAll(async () => {
     [div, hgc] = await mountHGComponentAsync(div, hgc, testViewConfX1, {
       style: 'width:800px; height:400px; background-color: lightgreen',
       bounded: false,
@@ -35,44 +35,50 @@ describe('SVG Export', () => {
     // to the left
   });
 
-  afterAll(() => {
+  vi.afterAll(() => {
     removeHGComponent(div);
   });
 
-  it('Exports to SVG', () => {
+  vi.it('Exports to SVG', () => {
     const svg = hgc.instance().createSVG();
     const svgText = new XMLSerializer().serializeToString(svg);
 
-    expect(svgText.indexOf('rect')).to.be.greaterThan(0);
+    vi.expect(svgText.indexOf('rect')).to.be.greaterThan(0);
     // hgc.instance().handleExportSVG();
   });
 
-  it('Cleans up previously created instances and mounts a new component', async () => {
-    if (hgc) {
-      hgc.unmount();
-      hgc.detach();
-    }
+  vi.it(
+    'Cleans up previously created instances and mounts a new component',
+    async () => {
+      if (hgc) {
+        hgc.unmount();
+        hgc.detach();
+      }
 
-    if (div) {
-      global.document.body.removeChild(div);
-    }
+      if (div) {
+        global.document.body.removeChild(div);
+      }
 
-    div = global.document.createElement('div');
-    global.document.body.appendChild(div);
+      div = global.document.createElement('div');
+      global.document.body.appendChild(div);
 
-    div.setAttribute('style', 'width:800px;background-color: lightgreen');
-    div.setAttribute('id', 'simple-hg-component');
+      div.setAttribute('style', 'width:800px;background-color: lightgreen');
+      div.setAttribute('id', 'simple-hg-component');
 
-    hgc = Enzyme.mount(
-      <HiGlassComponent options={{ bounded: false }} viewConfig={project1D} />,
-      { attachTo: div },
-    );
+      hgc = Enzyme.mount(
+        <HiGlassComponent
+          options={{ bounded: false }}
+          viewConfig={project1D}
+        />,
+        { attachTo: div },
+      );
 
-    hgc.update();
-    await waitForTilesLoadedAsync(hgc.instance());
-  });
+      hgc.update();
+      await waitForTilesLoadedAsync(hgc.instance());
+    },
+  );
 
-  it('Replaces one of the views and tries to export again', () => {
+  vi.it('Replaces one of the views and tries to export again', () => {
     let { views } = hgc.instance().state;
 
     const newView = JSON.parse(JSON.stringify(views.aa));
@@ -95,45 +101,51 @@ describe('SVG Export', () => {
     // hgc.instance().createSVG();
   });
 
-  it('Cleans up previously created instances and mounts a new component', async () => {
-    if (hgc) {
-      hgc.unmount();
-      hgc.detach();
-    }
+  vi.it(
+    'Cleans up previously created instances and mounts a new component',
+    async () => {
+      if (hgc) {
+        hgc.unmount();
+        hgc.detach();
+      }
 
-    if (div) {
-      global.document.body.removeChild(div);
-    }
+      if (div) {
+        global.document.body.removeChild(div);
+      }
 
-    div = global.document.createElement('div');
-    global.document.body.appendChild(div);
+      div = global.document.createElement('div');
+      global.document.body.appendChild(div);
 
-    div.setAttribute('style', 'width:800px;background-color: lightgreen');
-    div.setAttribute('id', 'simple-hg-component');
+      div.setAttribute('style', 'width:800px;background-color: lightgreen');
+      div.setAttribute('id', 'simple-hg-component');
 
-    hgc = Enzyme.mount(
-      <HiGlassComponent options={{ bounded: false }} viewConfig={project1D} />,
-      { attachTo: div },
-    );
+      hgc = Enzyme.mount(
+        <HiGlassComponent
+          options={{ bounded: false }}
+          viewConfig={project1D}
+        />,
+        { attachTo: div },
+      );
 
-    hgc.update();
-    await waitForTilesLoadedAsync(hgc.instance());
-  });
+      hgc.update();
+      await waitForTilesLoadedAsync(hgc.instance());
+    },
+  );
 
-  it('Exports to SVG', () => {
+  vi.it('Exports to SVG', () => {
     const svg = hgc.instance().createSVG();
     const svgText = new XMLSerializer().serializeToString(svg);
 
     // check to make sure that the horizontal labels shifted down
     // the horizontal lines' labels should be shifted down
-    expect(svgText.indexOf('dy="14"')).to.be.greaterThan(0);
+    vi.expect(svgText.indexOf('dy="14"')).to.be.greaterThan(0);
 
     // check to make sure that chromosome tick labels are there
-    expect(svgText.indexOf('chr17: 40,500,000')).to.be.greaterThan(0);
+    vi.expect(svgText.indexOf('chr17: 40,500,000')).to.be.greaterThan(0);
 
     // check to make sure that the chromosome ticks are present
-    expect(svgText.indexOf('line x1')).to.be.greaterThan(0);
-    expect(svgText.indexOf('#808080')).to.be.greaterThan(0);
+    vi.expect(svgText.indexOf('line x1')).to.be.greaterThan(0);
+    vi.expect(svgText.indexOf('#808080')).to.be.greaterThan(0);
 
     // hgc.instance().handleExportSVG();
   });

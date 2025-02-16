@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { afterAll, beforeAll, describe, it } from 'vitest';
+import * as vi from 'vitest';
 
 import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
 import Enzyme from 'enzyme';
@@ -18,12 +18,12 @@ import { simpleCenterViewConfig } from './view-configs';
 
 Enzyme.configure({ adapter: new Adapter() });
 
-describe('Simple HiGlassComponent', () => {
+vi.describe('Simple HiGlassComponent', () => {
   let hgc = null;
   let div = null;
 
-  describe('Tiled Pixi Track Tests', () => {
-    beforeAll(async () => {
+  vi.describe('Tiled Pixi Track Tests', () => {
+    vi.beforeAll(async () => {
       [div, hgc] = await mountHGComponentAsync(
         div,
         hgc,
@@ -35,11 +35,11 @@ describe('Simple HiGlassComponent', () => {
       );
     });
 
-    afterAll(() => {
+    vi.afterAll(() => {
       removeHGComponent(div);
     });
 
-    it('Ensure we can set a dataChanged listener', async () => {
+    vi.it('Ensure we can set a dataChanged listener', async () => {
       const trackObject = getTrackObjectFromHGC(hgc.instance(), 'heatmap1');
 
       const dataChangedCb = () => {};

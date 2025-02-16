@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { afterAll, beforeAll, describe, expect, it } from 'vitest';
+import * as vi from 'vitest';
 
 import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
 import Enzyme from 'enzyme';
@@ -13,11 +13,11 @@ import { divergentTrackConfig } from '../view-configs';
 
 Enzyme.configure({ adapter: new Adapter() });
 
-describe('Divergent tracks', () => {
+vi.describe('Divergent tracks', () => {
   let hgc = null;
   let div = null;
 
-  beforeAll(async () => {
+  vi.beforeAll(async () => {
     // await fetchMockHelper.activateFetchMock();
     [div, hgc] = await mountHGComponentAsync(div, hgc, divergentTrackConfig, {
       style: 'width:800px; height:400px; background-color: lightgreen',
@@ -27,18 +27,18 @@ describe('Divergent tracks', () => {
     // to the left
   });
 
-  afterAll(() => {
+  vi.afterAll(() => {
     removeHGComponent(div);
   });
 
-  it('Check that there are green and red rects', async () => {
+  vi.it('Check that there are green and red rects', async () => {
     const svg = hgc.instance().createSVG();
-    expect(
+    vi.expect(
       svg.querySelector(
         "rect[fill='green'][stroke='green'][x^='11.24963759567']",
       ),
     ).to.exist;
-    expect(
+    vi.expect(
       svg.querySelector("rect[fill='red'][stroke='red'][x^='29.81875448954']"),
     ).to.exist;
   });

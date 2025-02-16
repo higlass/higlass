@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { afterAll, beforeAll, describe, expect, it } from 'vitest';
+import * as vi from 'vitest';
 
 import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
 import Enzyme from 'enzyme';
@@ -14,22 +14,22 @@ import { oneTrackConfig } from '../view-configs';
 
 Enzyme.configure({ adapter: new Adapter() });
 
-describe('Track type menu tests', () => {
+vi.describe('Track type menu tests', () => {
   let hgc = null;
   let div = null;
 
-  beforeAll(async () => {
+  vi.beforeAll(async () => {
     [div, hgc] = await mountHGComponentAsync(div, hgc, oneTrackConfig, {
       style: 'width:800px; height:400px; background-color: lightgreen',
       bounded: true,
     });
   });
 
-  afterAll(() => {
+  vi.afterAll(() => {
     removeHGComponent(div);
   });
 
-  it('Opens the track type menu', () => {
+  vi.it('Opens the track type menu', () => {
     const clickPosition = {
       bottom: 85,
       height: 28,
@@ -84,18 +84,18 @@ describe('Track type menu tests', () => {
       validSeries,
     );
 
-    expect(trackTypeItems.props.menuItems.line).to.exist;
-    expect(trackTypeItems.props.menuItems.point).to.exist;
+    vi.expect(trackTypeItems.props.menuItems.line).to.exist;
+    vi.expect(trackTypeItems.props.menuItems.point).to.exist;
   });
 
-  it('Changes the track type', () => {
+  vi.it('Changes the track type', () => {
     // make sure that this doesn't error
     hgc.instance().tiledPlots.aa.handleChangeTrackType('line1', 'bar');
 
     // make sure that the uid of the top track has been changed
-    expect(hgc.instance().state.views.aa.tracks.top[0].uid).not.to.equal(
+    vi.expect(hgc.instance().state.views.aa.tracks.top[0].uid).not.to.equal(
       'line1',
     );
-    expect(hgc.instance().state.views.aa.tracks.top[0].type).to.equal('bar');
+    vi.expect(hgc.instance().state.views.aa.tracks.top[0].type).to.equal('bar');
   });
 });

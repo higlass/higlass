@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { afterAll, beforeAll, describe, expect, it } from 'vitest';
+import * as vi from 'vitest';
 
 import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
 import Enzyme from 'enzyme';
@@ -13,29 +13,29 @@ import { getTrackObjectFromHGC } from '../app/scripts/utils';
 
 Enzyme.configure({ adapter: new Adapter() });
 
-describe('Left track modifier', () => {
+vi.describe('Left track modifier', () => {
   let hgc = null;
   let div = null;
 
-  beforeAll(async () => {
+  vi.beforeAll(async () => {
     [div, hgc] = await mountHGComponentAsync(div, hgc, zoomLimitViewConf, {
       style: 'width:800px; height:400px; background-color: lightgreen',
       bounded: true,
     });
   });
 
-  afterAll(() => {
+  vi.afterAll(() => {
     removeHGComponent(div);
   });
 
-  it('should respect zoom limits', () => {
+  vi.it('should respect zoom limits', () => {
     // add your tests here
 
     const trackObj = getTrackObjectFromHGC(hgc.instance(), 'vv', 'tt');
 
     // trackObj is a LeftTrackModifier that contains the
     // original track
-    expect(trackObj.originalTrack.id).to.eql('tt');
+    vi.expect(trackObj.originalTrack.id).to.eql('tt');
   });
 });
 

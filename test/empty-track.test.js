@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { afterAll, beforeAll, describe, expect, it } from 'vitest';
+import * as vi from 'vitest';
 
 import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
 import Enzyme from 'enzyme';
@@ -13,29 +13,29 @@ import { getTrackObjectFromHGC } from '../app/scripts/utils';
 
 Enzyme.configure({ adapter: new Adapter() });
 
-describe('Empty Tracks', () => {
+vi.describe('Empty Tracks', () => {
   let hgc = null;
   let div = null;
 
-  beforeAll(async () => {
+  vi.beforeAll(async () => {
     [div, hgc] = await mountHGComponentAsync(div, hgc, viewconf, {
       style: 'width:800px; height:400px; background-color: lightgreen',
       bounded: true,
     });
   });
 
-  afterAll(() => {
+  vi.afterAll(() => {
     removeHGComponent(div);
   });
 
-  it('should respect zoom limits', () => {
+  vi.it('should respect zoom limits', () => {
     // add your tests here
 
     const trackObj1 = getTrackObjectFromHGC(hgc.instance(), 'vv', 't1');
-    expect(trackObj1.dimensions[0]).to.eql(73);
+    vi.expect(trackObj1.dimensions[0]).to.eql(73);
 
     const trackObj2 = getTrackObjectFromHGC(hgc.instance(), 'vv', 't2');
-    expect(trackObj2.dimensions[1]).to.eql(42);
+    vi.expect(trackObj2.dimensions[1]).to.eql(42);
   });
 });
 

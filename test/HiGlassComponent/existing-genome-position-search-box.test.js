@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { afterAll, beforeAll, describe, expect, it } from 'vitest';
+import * as vi from 'vitest';
 
 import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
 import Enzyme from 'enzyme';
@@ -14,11 +14,11 @@ import { onlyGPSB } from '../view-configs';
 
 Enzyme.configure({ adapter: new Adapter() });
 
-describe('Exising genome position search box', () => {
+vi.describe('Exising genome position search box', () => {
   let hgc = null;
   let div = null;
 
-  beforeAll(async () => {
+  vi.beforeAll(async () => {
     [div, hgc] = await mountHGComponentAsync(div, hgc, onlyGPSB, {
       style: 'width:800px; height:400px; background-color: lightgreen',
       bounded: true,
@@ -27,70 +27,73 @@ describe('Exising genome position search box', () => {
     // to the left
   });
 
-  afterAll(async () => {
+  vi.afterAll(async () => {
     removeHGComponent(div);
   });
 
-  it('Makes the search box invisible', async () => {
+  vi.it('Makes the search box invisible', async () => {
     hgc.instance().handleTogglePositionSearchBox('aa');
     await new Promise((done) => waitForJsonComplete(done));
   });
 
-  it('Makes the search box visible again', async () => {
+  vi.it('Makes the search box visible again', async () => {
     hgc.instance().handleTogglePositionSearchBox('aa');
     await new Promise((done) => waitForJsonComplete(done));
   });
 
-  it('Searches for strings with spaces at the beginning', () => {
+  vi.it('Searches for strings with spaces at the beginning', () => {
     const gpsb = hgc.instance().genomePositionSearchBoxes.aa;
 
     let [range1, range2] = gpsb.searchField.searchPosition(
       '  chr1:1-1000 & chr1:2001-3000',
     );
 
-    expect(range1[0]).to.equal(1);
-    expect(range1[1]).to.equal(1000);
+    vi.expect(range1[0]).to.equal(1);
+    vi.expect(range1[1]).to.equal(1000);
 
-    expect(range2[0]).to.equal(2001);
-    expect(range2[1]).to.equal(3000);
+    vi.expect(range2[0]).to.equal(2001);
+    vi.expect(range2[1]).to.equal(3000);
 
     [range1, range2] = gpsb.searchField.searchPosition(
       'chr1:1-1000 & chr1:2001-3000',
     );
 
-    expect(range1[0]).to.equal(1);
-    expect(range1[1]).to.equal(1000);
+    vi.expect(range1[0]).to.equal(1);
+    vi.expect(range1[1]).to.equal(1000);
   });
 
-  it('Ensures that hg38 is in the list of available assemblies', () => {
-    expect(
+  vi.it('Ensures that hg38 is in the list of available assemblies', () => {
+    vi.expect(
       hgc
         .instance()
         .genomePositionSearchBoxes.aa.state.availableAssemblies.indexOf('hg38'),
     ).to.be.greaterThanOrEqual(0);
   });
 
-  it('Selects mm9', async () => {
+  vi.it('Selects mm9', async () => {
     hgc.instance().genomePositionSearchBoxes.aa.handleAssemblySelect('mm9');
     await new Promise((done) => waitForJsonComplete(done));
   });
 
-  it('Checks that mm9 was properly set and switches back to hg19', async () => {
+  vi.it(
+    'Checks that mm9 was properly set and switches back to hg19',
+    async () => {
+      hgc.update();
+      const button =
+        hgc.instance().genomePositionSearchBoxes.aa.assemblyPickButton;
+
+      vi.expect(button.value).to.equal('mm9');
+
+      hgc.instance().genomePositionSearchBoxes.aa.handleAssemblySelect('hg19');
+      await new Promise((done) => waitForJsonComplete(done));
+    },
+  );
+
+  vi.it('Checks that hg19 was properly', async () => {
     hgc.update();
     const button =
       hgc.instance().genomePositionSearchBoxes.aa.assemblyPickButton;
-
-    expect(button.value).to.equal('mm9');
-
-    hgc.instance().genomePositionSearchBoxes.aa.handleAssemblySelect('hg19');
-    await new Promise((done) => waitForJsonComplete(done));
-  });
-
-  it('Checks that hg19 was properly', async () => {
-    hgc.update();
-    const button =
-      hgc.instance().genomePositionSearchBoxes.aa.assemblyPickButton;
-    expect(button.value).to.equal('hg19');
+    vi.expect(button.value).to.equal('hg19');
     await new Promise((done) => waitForJsonComplete(done));
   });
 });

@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { afterAll, beforeAll, describe, expect, it } from 'vitest';
+import * as vi from 'vitest';
 
 import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
 import Enzyme from 'enzyme';
@@ -12,12 +12,12 @@ import {
 
 Enzyme.configure({ adapter: new Adapter() });
 
-describe('HiGlass component creation tests', () => {
+vi.describe('HiGlass component creation tests', () => {
   let hgc = null;
   let div = null;
 
-  describe('API tests', () => {
-    beforeAll(async () => {
+  vi.describe('API tests', () => {
+    vi.beforeAll(async () => {
       [div, hgc] = await mountHGComponentAsync(
         div,
         hgc,
@@ -25,12 +25,12 @@ describe('HiGlass component creation tests', () => {
       );
     });
 
-    afterAll(() => {
+    vi.afterAll(() => {
       removeHGComponent(div);
     });
 
-    it('Ensures that the viewconf state is editable', () => {
-      expect(hgc.instance().state.viewConfig.editable).to.eql(true);
+    vi.it('Ensures that the viewconf state is editable', () => {
+      vi.expect(hgc.instance().state.viewConfig.editable).to.eql(true);
     });
   });
 });

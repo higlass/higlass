@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { afterAll, beforeAll, describe, expect, it } from 'vitest';
+import * as vi from 'vitest';
 
 import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
 import Enzyme from 'enzyme';
@@ -14,11 +14,11 @@ import { chromosomeGridTrack, oneZoomedOutViewConf } from '../view-configs';
 
 Enzyme.configure({ adapter: new Adapter() });
 
-describe('Add overlay tracks', () => {
+vi.describe('Add overlay tracks', () => {
   let hgc = null;
   let div = null;
 
-  beforeAll(async () => {
+  vi.beforeAll(async () => {
     [div, hgc] = await mountHGComponentAsync(div, hgc, oneZoomedOutViewConf, {
       style: 'width:800px; height:400px; background-color: lightgreen',
       bounded: false,
@@ -27,11 +27,11 @@ describe('Add overlay tracks', () => {
     // to the left
   });
 
-  afterAll(() => {
+  vi.afterAll(() => {
     removeHGComponent(div);
   });
 
-  it('Add the grid', async () => {
+  vi.it('Add the grid', async () => {
     hgc.instance().handleTracksAdded('aa', [chromosomeGridTrack], 'center');
 
     hgc.instance().setState(hgc.instance().state);
@@ -39,13 +39,13 @@ describe('Add overlay tracks', () => {
     await new Promise((done) => waitForJsonComplete(done));
   });
 
-  it('Should show a grid', async () => {
+  vi.it('Should show a grid', async () => {
     const outputJSON = JSON.parse(hgc.instance().getViewsAsString());
 
-    expect(outputJSON.views[0].tracks.center[0].contents).to.exist;
+    vi.expect(outputJSON.views[0].tracks.center[0].contents).to.exist;
 
     // should have two tracks
-    expect(
+    vi.expect(
       outputJSON.views[0].tracks.center[0].contents.length,
     ).to.be.greaterThan(1);
 

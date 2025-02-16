@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { afterAll, beforeAll, describe, expect, it } from 'vitest';
+import * as vi from 'vitest';
 
 import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
 import Enzyme from 'enzyme';
@@ -14,11 +14,11 @@ import { heatmapTrack, project1D } from '../view-configs';
 
 Enzyme.configure({ adapter: new Adapter() });
 
-describe('Window resizing', () => {
+vi.describe('Window resizing', () => {
   let hgc = null;
   let div = null;
 
-  beforeAll(async () => {
+  vi.beforeAll(async () => {
     const newViewConf = JSON.parse(JSON.stringify(project1D));
 
     const center1 = JSON.parse(JSON.stringify(heatmapTrack));
@@ -36,19 +36,22 @@ describe('Window resizing', () => {
     });
   });
 
-  afterAll(() => {
+  vi.afterAll(() => {
     removeHGComponent(div);
   });
 
-  it('Sends a resize event to fit the current view into the window', async () => {
-    const resizeEvent = new Event('resize');
+  vi.it(
+    'Sends a resize event to fit the current view into the window',
+    async () => {
+      const resizeEvent = new Event('resize');
 
-    window.dispatchEvent(resizeEvent);
+      window.dispatchEvent(resizeEvent);
 
-    await new Promise((done) => waitForTilesLoaded(hgc.instance(), done));
-  });
+      await new Promise((done) => waitForTilesLoaded(hgc.instance(), done));
+    },
+  );
 
-  it('Resize the view', async () => {
+  vi.it('Resize the view', async () => {
     div.setAttribute(
       'style',
       'width: 600px; height: 600px; background-color: lightgreen',
@@ -60,8 +63,8 @@ describe('Window resizing', () => {
     await new Promise((done) => waitForTilesLoaded(hgc.instance(), done));
   });
 
-  it('Expect the the chosen rowHeight to be less than 24', async () => {
-    expect(hgc.instance().state.rowHeight).to.be.lessThan(24);
+  vi.it('Expect the the chosen rowHeight to be less than 24', async () => {
+    vi.expect(hgc.instance().state.rowHeight).to.be.lessThan(24);
 
     await new Promise((done) => waitForTilesLoaded(hgc.instance(), done));
   });

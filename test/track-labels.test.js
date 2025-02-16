@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { afterAll, beforeAll, describe, expect, it } from 'vitest';
+import * as vi from 'vitest';
 
 import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
 import Enzyme from 'enzyme';
@@ -12,8 +12,8 @@ import {
 
 Enzyme.configure({ adapter: new Adapter() });
 
-describe('Track Labels Test', () => {
-  describe('Minimal with CrossRule', () => {
+vi.describe('Track Labels Test', () => {
+  vi.describe('Minimal with CrossRule', () => {
     const viewconf = {
       editable: true,
       views: [
@@ -45,18 +45,18 @@ describe('Track Labels Test', () => {
     };
     let hgc = null;
     let div = null;
-    beforeAll(async () => {
+    vi.beforeAll(async () => {
       [div, hgc] = await mountHGComponentAsync(div, hgc, viewconf);
     });
 
-    afterAll(() => {
+    vi.afterAll(() => {
       removeHGComponent(div);
     });
 
-    it('sets the label to the color of the bars', () => {
+    vi.it('sets the label to the color of the bars', () => {
       const obj = hgc.instance().getTrackObject('aa', 'a');
 
-      expect(obj.labelText._style._fill).to.eql('#ff0000');
+      vi.expect(obj.labelText._style._fill).to.eql('#ff0000');
     });
   });
 });

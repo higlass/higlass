@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { afterAll, beforeAll, describe, expect, it } from 'vitest';
+import * as vi from 'vitest';
 
 import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
 import Enzyme from 'enzyme';
@@ -13,42 +13,42 @@ import { getTrackObjectFromHGC, getTrackRenderer } from '../app/scripts/utils';
 
 Enzyme.configure({ adapter: new Adapter() });
 
-describe('Chromosome labels', () => {
+vi.describe('Chromosome labels', () => {
   let hgc = null;
   let div = null;
 
-  beforeAll(async () => {
+  vi.beforeAll(async () => {
     [div, hgc] = await mountHGComponentAsync(div, hgc, viewconf, {
       style: 'width:800px; height:400px; background-color: lightgreen',
       bounded: true,
     });
   });
 
-  afterAll(() => {
+  vi.afterAll(() => {
     removeHGComponent(div);
   });
 
-  it('should have two ticks for end positions', () => {
+  vi.it('should have two ticks for end positions', () => {
     // add your tests here
 
     const trackObj = getTrackObjectFromHGC(hgc.instance(), 'v1', 't1');
     const trackRenderer = getTrackRenderer(hgc.instance(), 'v1');
 
-    expect(trackRenderer.trackDefObjects.t1.trackDef.track).to.have.property(
+    vi.expect(trackRenderer.trackDefObjects.t1.trackDef.track).to.have.property(
       'position',
     );
 
-    expect(trackObj.tickTexts).not.to.have.property('chr17');
-    expect(trackObj.tickTexts.all.length).to.eql(2);
+    vi.expect(trackObj.tickTexts).not.to.have.property('chr17');
+    vi.expect(trackObj.tickTexts.all.length).to.eql(2);
   });
 
-  it('should have more than two ticks for other positions', () => {
+  vi.it('should have more than two ticks for other positions', () => {
     hgc.instance().state.views.v1.tracks.top[0].options.tickPositions = 'even';
     hgc.setState(hgc.instance().state);
     hgc.update();
 
     const trackObj = getTrackObjectFromHGC(hgc.instance(), 'v1', 't1');
-    expect(trackObj.tickTexts).to.have.property('chr17');
+    vi.expect(trackObj.tickTexts).to.have.property('chr17');
   });
 });
 

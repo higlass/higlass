@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { afterAll, beforeAll, describe, expect, it } from 'vitest';
+import * as vi from 'vitest';
 
 import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
 import Enzyme from 'enzyme';
@@ -15,25 +15,25 @@ import viewconf from './view-configs/loop-annotations';
 
 Enzyme.configure({ adapter: new Adapter() });
 
-describe('2D Rectangular Domains', () => {
+vi.describe('2D Rectangular Domains', () => {
   /** @type {import('enzyme').ReactWrapper} */
   let hgc = null;
   /** @type {HTMLElement | null} */
   let div = null;
 
-  beforeAll(async () => {
+  vi.beforeAll(async () => {
     [div, hgc] = await mountHGComponentAsync(div, hgc, viewconf, {
       style: 'width:800px; height:400px; background-color: lightgreen',
       bounded: true,
     });
   });
 
-  it('export rectangles in the same color that they are in the view', () => {
+  vi.it('export rectangles in the same color that they are in the view', () => {
     const svgString = hgc.instance().createSVGString();
-    expect(svgString.indexOf('cyan')).to.be.above(-1);
+    vi.expect(svgString.indexOf('cyan')).to.be.above(-1);
   });
 
-  it('mirrors loops', () => {
+  vi.it('mirrors loops', () => {
     const { views } = hgc.instance().state;
     const track = getTrackByUid(views.aa.tracks, 't1');
     const trackObj = getTrackObjectFromHGC(hgc.instance(), 'aa', 't1');
@@ -48,10 +48,10 @@ describe('2D Rectangular Domains', () => {
 
     const xVal2 = trackObj.drawnRects['CVV-O3_TTw-Jda38HzJPtgtrue'];
 
-    expect(xVal1.x).to.not.eql(xVal2.x);
-    expect(xVal1.y).to.not.eql(xVal2.y);
+    vi.expect(xVal1.x).to.not.eql(xVal2.x);
+    vi.expect(xVal1.y).to.not.eql(xVal2.y);
 
-    expect(Object.keys(trackObj.drawnRects).length).to.eql(3);
+    vi.expect(Object.keys(trackObj.drawnRects).length).to.eql(3);
 
     track.options.flipDiagonal = 'copy';
 
@@ -59,10 +59,10 @@ describe('2D Rectangular Domains', () => {
       views,
     });
 
-    expect(Object.keys(trackObj.drawnRects).length).to.eql(6);
+    vi.expect(Object.keys(trackObj.drawnRects).length).to.eql(6);
   });
 
-  afterAll(() => {
+  vi.afterAll(() => {
     removeHGComponent(div);
   });
 });
