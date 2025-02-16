@@ -6,7 +6,7 @@ import { workerGetTiles, workerSetPix } from './worker';
 import sleep from '../utils/timeout';
 import tts from '../utils/trim-trailing-slash';
 
-/** @import { Scale, TilesetInfo, TilesRequest as BaseTilesRequest }  from '../types'*/
+/** @import { Scale, TilesetInfo, TilesRequest }  from '../types' */
 /** @import { CompletedTileData, TileResponse, SelectedRowsOptions } from './worker' */
 
 // Config
@@ -23,12 +23,14 @@ export let requestsInFlight = 0;
 /** @type {string | null} */
 export let authHeader = null;
 
-/** @typedef {BaseTilesRequest & { ids: Array<string>; done: (value: Record<string, CompletedTileData<TileResponse>>) => void; }} TilesRequest */
+/**
+ * @typedef {TilesRequest & { ids: Array<string>; done: (value: Record<string, CompletedTileData<TileResponse>>) => void; }} WrappedTilesRequest
+ */
 
 /**
  * @typedef RequestContext
  * @property {string} sessionId
- * @property {Array<TilesRequest & { ids: Array<string> }>} requests
+ * @property {Array<WrappedTilesRequest & { ids: Array<string> }>} requests
  */
 
 /**
@@ -41,7 +43,7 @@ export let authHeader = null;
 const throttleAndDebounce = (func, interval, finalWait) => {
   /** @type {ReturnType<typeof setTimeout> | undefined} */
   let timeout = undefined;
-  /** @type {Array<TilesRequest>} */
+  /** @type {Array<WrappedTilesRequest>} */
   let bundledRequest = [];
   /** @type {Record<string, number>} */
   let requestMapper = {};
@@ -49,7 +51,7 @@ const throttleAndDebounce = (func, interval, finalWait) => {
   let blockedCalls = 0;
 
   /**
-   * @param {TilesRequest} request
+   * @param {WrappedTilesRequest} request
    * @returns {void}
    */
   const bundleRequests = (request) => {
@@ -72,7 +74,7 @@ const throttleAndDebounce = (func, interval, finalWait) => {
   };
 
   /**
-   * @param {TilesRequest} _request
+   * @param {WrappedTilesRequest} _request
    * @param {Args} args
    */
   const callFunc = (_request, ...args) => {
@@ -91,7 +93,7 @@ const throttleAndDebounce = (func, interval, finalWait) => {
   };
 
   /**
-   * @param {TilesRequest} request
+   * @param {WrappedTilesRequest} request
    * @param {Args} args
    */
   const debounced = (request, ...args) => {
@@ -125,7 +127,7 @@ const throttleAndDebounce = (func, interval, finalWait) => {
 
   let wait = false;
   /**
-   * @param {TilesRequest} request
+   * @param {WrappedTilesRequest} request
    * @param {Args} args
    */
   const throttled = (request, ...args) => {
@@ -700,7 +702,6 @@ async function json(url, callback, pubSub) {
   if (url.indexOf('hg19') >= 0) {
     await sleep(1);
   }
-  // console.log('url:', url);
   return fetchEither(url, callback, 'json', pubSub);
 }
 
@@ -723,16 +724,12 @@ export const trackInfo = (server, tilesetUid, doneCb, errorCb, pubSub) => {
     (error, data) => {
       pubSub.publish('requestReceived', url);
       if (error) {
-        // console.log('error:', error);
-        // don't do anything
-        // no tileset info just means we can't do anything with this file...
         if (errorCb) {
           errorCb(`Error retrieving tilesetInfo from: ${server}`);
         } else {
           console.warn('Error retrieving: ', url);
         }
       } else {
-        // console.log('got data', data);
         doneCb(data);
       }
     },
