@@ -11,9 +11,9 @@ import selectedItemsToSize from '../utils/selected-items-to-size';
  * when selectedRowsOptions have been passed to workerSetPix().
  *
  * @param {ArrayLike<number>} data - The (2D) tile data array.
- * @param {[numRows: number, numCols: number]} shape - Array shape (number of rows and columns).
+ * @param {readonly [numRows: number, numCols: number]} shape - Array shape (number of rows and columns).
  * @param {(pixDataIndex: number, dataPoint: number) => void} setPixData - The setPixData function created by workerSetPix().
- * @param {number[] | number[][]} selectedRows - Row indices, for ordering and filtering rows. Used by the HorizontalMultivecTrack.
+ * @param {Array<number | Array<number>>} selectedRows - Row indices, for ordering and filtering rows. Used by the HorizontalMultivecTrack.
  * @param {'mean' | 'sum' | 'variance' | 'deviation'} selectedRowsAggregationMode - The aggregation function to use ("mean", "sum", etc).
  * @param {boolean} selectedRowsAggregationWithRelativeHeight - Whether the height of row groups should be relative to the size of the group.
  * @param {'client' | 'server'} selectedRowsAggregationMethod - Where will the aggregation be performed? Possible values: "client", "server".
@@ -98,7 +98,7 @@ function setPixDataForSelectedRows(
 
 /**
  * @typedef SelectedRowsOptions
- * @property {number[] | number[][]} selectedRows - Row indices, for ordering and filtering rows. Used by the HorizontalMultivecTrack.
+ * @property {Array<number | Array<number>>} selectedRows - Row indices, for ordering and filtering rows. Used by the HorizontalMultivecTrack.
  * @property {'mean' | 'sum' | 'variance' | 'deviation'} selectedRowsAggregationMode - The aggregation function to use ("mean", "sum", etc).
  * @property {boolean} selectedRowsAggregationWithRelativeHeight - Whether the height of row groups should be relative to the size of the group.
  * @property {'client' | 'server'} selectedRowsAggregationMethod - Where will the aggregation be performed? Possible values: "client", "server".
@@ -110,15 +110,15 @@ function setPixDataForSelectedRows(
  * (and subsequently passed to a PIXI sprite).
  *
  * @param {number} size - `data` parameter length. Often set to a tile's `tile.tileData.dense.length` value.
- * @param {Array<number>} data - The tile data array.
+ * @param {Array<number> | Float32Array} data - The tile data array.
  * @param {'log' | 'linear'} valueScaleType 'log' or 'linear'.
  * @param {[number, number]} valueScaleDomain
  * @param {number} pseudocount - The pseudocount is generally the minimum non-zero value and is
  * used so that our log scaling doesn't lead to NaN values.
- * @param {Array<[r: number, g: number, b: number, a: number]>} colorScale
+ * @param {ReadonlyArray<readonly [r: number, g: number, b: number, a: number]>} colorScale
  * @param {boolean} ignoreUpperRight
  * @param {boolean} ignoreLowerLeft
- * @param {[numRows: number, numCols: number] | null} shape - Array `[numRows, numCols]`, used when iterating over a subset of rows,
+ * @param {readonly [numRows: number, numCols: number] | null} shape - Array `[numRows, numCols]`, used when iterating over a subset of rows,
  * when one needs to know the width of each column.
  * @param {[r: number, g: number, b: number, a: number] | null} zeroValueColor - The color to use for rendering zero data values, [r, g, b, a].
  * @param {Partial<SelectedRowsOptions> | null} selectedRowsOptions - Rendering options when using a `selectRows` track option.
