@@ -380,7 +380,7 @@ function uint16ArrayToFloat32Array(uint16array) {
 
 /**
  * @typedef TileResponse
- * @property {string=} dense - a base64 encoded string
+ * @property {string} [dense] - a base64 encoded string
  */
 
 /**
@@ -468,12 +468,14 @@ export function tileResponseToData(inputData, server, theseTileIds) {
 /**
  * Fetch tiles from the server.
  *
+ * @template {TileResponse} T
+ *
  * @param {string} outUrl
  * @param {string} server
  * @param {string[]} theseTileIds
- * @param {string} authHeader
- * @param {(data: Record<string, CompletedTileData<TileResponse>>) => void} done
- * @param {Record<string, unknown>} requestBody
+ * @param {string | null} authHeader
+ * @param {(data: Record<string, CompletedTileData<T>>) => void} done
+ * @param {Array<Record<string, unknown>>} requestBody
  */
 export function workerGetTiles(
   outUrl,

@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { range } from 'd3-array';
 import slugid from 'slugid';
 
@@ -7,63 +6,54 @@ import { workerGetTiles, workerSetPix } from './worker';
 import sleep from '../utils/timeout';
 import tts from '../utils/trim-trailing-slash';
 
+/** @import { Scale, TilesetInfo, TilesRequest }  from '../types' */
+/** @import { CompletedTileData, TileResponse, SelectedRowsOptions } from './worker' */
+
 // Config
 import { TILE_FETCH_DEBOUNCE } from '../configs/primitives';
+import { isLegacyTilesetInfo } from '../utils/type-guards';
 
+/** @type {number} */
 const MAX_FETCH_TILES = 15;
 
-/*
-const str = document.currentScript.src
-const pathName = str.substring(0, str.lastIndexOf("/"));
-const workerPath = `${pathName}/worker.js`;
-
-const setPixPool = new Pool(1);
-
-setPixPool.run(function(params, done) {
-  try {
-    const array = new Float32Array(params.data);
-    const pixData = worker.workerSetPix(
-      params.size,
-      array,
-      params.valueScaleType,
-      params.valueScaleDomain,
-      params.pseudocount,
-      params.colorScale,
-    );
-
-    done.transfer({
-      pixData: pixData
-    }, [pixData.buffer]);
-  } catch (err) {
-    console.log('err:', err);
-  }
-}, [workerPath]);
-
-
-const fetchTilesPool = new Pool(10);
-fetchTilesPool.run(function(params, done) {
-  try {
-    worker.workerGetTiles(params.outUrl, params.server, params.theseTileIds,
-    params.authHeader, done);
-    // done.transfer({
-    // pixData: pixData
-    // }, [pixData.buffer]);
-  } catch (err) {
-    console.log('err:', err);
-  }
-}, [workerPath]);
-*/
-
+/** @type {string} */
 const sessionId = import.meta.env.DEV ? 'dev' : slugid.nice();
+/** @type {number} */
 export let requestsInFlight = 0;
+/** @type {string | null} */
 export let authHeader = null;
 
+/**
+ * @typedef {TilesRequest & { ids: Array<string>; done: (value: Record<string, CompletedTileData<TileResponse>>) => void; }} WrappedTilesRequest
+ */
+
+/**
+ * @typedef RequestContext
+ * @property {string} sessionId
+ * @property {Array<WrappedTilesRequest & { ids: Array<string> }>} requests
+ */
+
+/**
+ * @template {Array<unknown>} Args
+ *
+ * @param {(ctx: RequestContext, ...args: Args) => void} func
+ * @param {number} interval
+ * @param {number} finalWait
+ */
 const throttleAndDebounce = (func, interval, finalWait) => {
-  let timeout;
+  /** @type {ReturnType<typeof setTimeout> | undefined} */
+  let timeout = undefined;
+  /** @type {Array<WrappedTilesRequest>} */
   let bundledRequest = [];
+  /** @type {Record<string, number>} */
   let requestMapper = {};
+  /** @type {number} */
   let blockedCalls = 0;
 
+  /**
+   * @param {WrappedTilesRequest} request
+   * @returns {void}
+   */
   const bundleRequests = (request) => {
     const requestId = requestMapper[request.id];
 
@@ -78,16 +68,20 @@ const throttleAndDebounce = (func, interval, finalWait) => {
   };
 
   const reset = () => {
-    timeout = null;
+    timeout = undefined;
     bundledRequest = [];
     requestMapper = {};
   };
 
-  // In a normal situation we would just call `func(...args)` but since we
-  // modify the first argument and always trigger `reset()` afterwards I created
-  // this helper function to avoid code duplication. Think of this function
-  // as the actual function call that is being throttled and debounced.
-  const callFunc = (request, ...args) => {
+  /**
+   * @param {WrappedTilesRequest} _request
+   * @param {Args} args
+   */
+  const callFunc = (_request, ...args) => {
+    // NB: In a normal situation we would just call `func(...args)` but since we
+    // modify the first argument and always trigger `reset()` afterwards I created
+    // this helper function to avoid code duplication. Think of this function
+    // as the actual function call that is being throttled and debounced.
     func(
       {
         sessionId,
@@ -98,6 +92,10 @@ const throttleAndDebounce = (func, interval, finalWait) => {
     reset();
   };
 
+  /**
+   * @param {WrappedTilesRequest} request
+   * @param {Args} args
+   */
   const debounced = (request, ...args) => {
     const later = () => {
       // Since we throttle and debounce we should check whether there were
@@ -120,6 +118,7 @@ const throttleAndDebounce = (func, interval, finalWait) => {
   };
 
   debounced.immediate = () => {
+    // @ts-expect-error - Does not pass in `args` to function. Fine for functions without additional args... but not type safe!
     func({
       sessionId,
       requests: bundledRequest,
@@ -127,6 +126,10 @@ const throttleAndDebounce = (func, interval, finalWait) => {
   };
 
   let wait = false;
+  /**
+   * @param {WrappedTilesRequest} request
+   * @param {Args} args
+   */
   const throttled = (request, ...args) => {
     bundleRequests(request);
 
@@ -146,19 +149,27 @@ const throttleAndDebounce = (func, interval, finalWait) => {
   return throttled;
 };
 
+/** @param {string} newHeader */
 export const setTileProxyAuthHeader = (newHeader) => {
   authHeader = newHeader;
 };
 
+/** @returns {string | null} */
 export const getTileProxyAuthHeader = () => authHeader;
 
-// Fritz: is this function used anywhere?
+/**
+ * @param {RequestContext} req
+ * @param {import("pub-sub-es").PubSub} pubSub
+ */
 export function fetchMultiRequestTiles(req, pubSub) {
   const requests = req.requests;
 
   const fetchPromises = [];
 
+  /** @type {Record<string, Record<string, boolean>>} */
   const requestsByServer = {};
+
+  /** @type {Record<string, Array<{ tilesetUid: string, tileIds: Array<string>, options: unknown}>>} */
   const requestBodyByServer = {};
 
   // We're converting the array of IDs into an object in order to filter out duplicated requests.
@@ -210,7 +221,8 @@ export function fetchMultiRequestTiles(req, pubSub) {
       const renderParams = theseTileIds.map((x) => `d=${x}`).join('&');
       const outUrl = `${server}/tiles/?${renderParams}&s=${sessionId}`;
 
-      const p = new Promise((resolve, reject) => {
+      /** @type {Promise<Record<string, CompletedTileData<TileResponse>>>} */
+      const p = new Promise((resolve) => {
         pubSub.publish('requestSent', outUrl);
         const params = {};
 
@@ -228,13 +240,6 @@ export function fetchMultiRequestTiles(req, pubSub) {
           requestBody,
         );
 
-        /*
-        fetchTilesPool.send(params)
-          .promise()
-          .then(ret => {
-            resolve(ret);
-          });
-        */
         pubSub.publish('requestReceived', outUrl);
       });
 
@@ -243,6 +248,7 @@ export function fetchMultiRequestTiles(req, pubSub) {
   }
 
   Promise.all(fetchPromises).then((datas) => {
+    /** @type {Record<string, CompletedTileData<TileResponse>>} */
     const tiles = {};
 
     // merge back all the tile requests
@@ -256,6 +262,7 @@ export function fetchMultiRequestTiles(req, pubSub) {
 
     // trigger the callback for every request
     for (const request of requests) {
+      /** @type {Record<string, CompletedTileData<TileResponse>>} */
       const reqDate = {};
       const { server } = request;
 
@@ -271,11 +278,6 @@ export function fetchMultiRequestTiles(req, pubSub) {
 
 /**
  * Retrieve a set of tiles from the server
- *
- * Plenty of room for optimization and caching here.
- *
- * @param server: A string with the server's url (e.g. "http://127.0.0.1")
- * @param tileIds: The ids of the tiles to fetch (e.g. asdf-sdfs-sdfs.0.0.0)
  */
 export const fetchTilesDebounced = throttleAndDebounce(
   fetchMultiRequestTiles,
@@ -285,6 +287,10 @@ export const fetchTilesDebounced = throttleAndDebounce(
 
 /**
  * Calculate the zoom level from a list of available resolutions
+ *
+ * @param {Array<string>} resolutions
+ * @param {Scale} scale
+ * @returns {number}
  */
 export const calculateZoomLevelFromResolutions = (resolutions, scale) => {
   const sortedResolutions = resolutions.map((x) => +x).sort((a, b) => b - a);
@@ -307,8 +313,13 @@ export const calculateZoomLevelFromResolutions = (resolutions, scale) => {
   );
 };
 
+/**
+ * @param {TilesetInfo} tilesetInfo
+ * @param {number} zoomLevel
+ * @returns {number}
+ */
 export const calculateResolution = (tilesetInfo, zoomLevel) => {
-  if (tilesetInfo.resolutions) {
+  if ('resolutions' in tilesetInfo) {
     const sortedResolutions = tilesetInfo.resolutions
       .map((x) => +x)
       .sort((a, b) => b - a);
@@ -318,7 +329,7 @@ export const calculateResolution = (tilesetInfo, zoomLevel) => {
   }
 
   const maxWidth = tilesetInfo.max_width;
-  const binsPerDimension = +tilesetInfo.bins_per_dimension;
+  const binsPerDimension = +(tilesetInfo?.bins_per_dimension ?? 256);
   const resolution = maxWidth / (2 ** zoomLevel * binsPerDimension);
 
   return resolution;
@@ -326,6 +337,12 @@ export const calculateResolution = (tilesetInfo, zoomLevel) => {
 
 /**
  * Calculate the current zoom level.
+ *
+ * @param {Scale} scale
+ * @param {number} minX
+ * @param {number} maxX
+ * @param {number} binsPerTile
+ * @returns {number}
  */
 export const calculateZoomLevel = (scale, minX, maxX, binsPerTile) => {
   const rangeWidth = scale.range()[1] - scale.range()[0];
@@ -365,13 +382,13 @@ export const calculateZoomLevel = (scale, minX, maxX, binsPerTile) => {
  * Returns the tile position and position within the tile for
  * the given element.
  *
- * @param {object} tilesetInfo: The information about this tileset
- * @param {Number} maxDim: The maximum width of the dataset (only used for
- *        tilesets without resolutions)
- * @param {Number} dataStartPos: The position where the data begins
- * @param {int} zoomLevel: The current zoomLevel
- * @param {Number} position: The position (in absolute coordinates) to caculate
- *                 the tile and position in tile for
+ * @param {TilesetInfo} tilesetInfo - The information about this tileset
+ * @param {number} maxDim - The maximum width of the dataset (only used for tilesets without resolutions)
+ * @param {number} dataStartPos - The position where the data begins
+ * @param {number} zoomLevel - The (integer) current zoomLevel
+ * @param {number} position -The position (in absolute coordinates) to caculate the tile and position in tile for
+ *
+ * @returns {Array<number>}
  */
 export function calculateTileAndPosInTile(
   tilesetInfo,
@@ -381,17 +398,20 @@ export function calculateTileAndPosInTile(
   position,
 ) {
   let tileWidth = null;
-  const PIXELS_PER_TILE = tilesetInfo.bins_per_dimension || 256;
 
-  if (tilesetInfo.resolutions) {
-    tileWidth = tilesetInfo.resolutions[zoomLevel] * PIXELS_PER_TILE;
+  const pixelsPerTile = isLegacyTilesetInfo(tilesetInfo)
+    ? (tilesetInfo.bins_per_dimension ?? 256)
+    : 256;
+
+  if (!isLegacyTilesetInfo(tilesetInfo)) {
+    tileWidth = tilesetInfo.resolutions[zoomLevel] * pixelsPerTile;
   } else {
     tileWidth = maxDim / 2 ** zoomLevel;
   }
 
   const tilePos = Math.floor((position - dataStartPos) / tileWidth);
   const posInTile = Math.floor(
-    (PIXELS_PER_TILE * (position - tilePos * tileWidth)) / tileWidth,
+    (pixelsPerTile * (position - tilePos * tileWidth)) / tileWidth,
   );
 
   return [tilePos, posInTile];
@@ -407,19 +427,19 @@ export function calculateTileAndPosInTile(
  * @param {number} zoomLevel - The zoom level at which to find the tiles (can be
  *   calculated using this.calcaulteZoomLevel, but needs to synchronized across
  *   both x and y scales so should be calculated externally)
- * @param {import('../type').Scale} scale - A d3 scale mapping data domain to visible values
+ * @param {Scale} scale - A d3 scale mapping data domain to visible values
  * @param {number} minX - The minimum possible value in the dataset
- * @param {number} maxX - The maximum possible value in the dataset
+ * @param {number} _maxX - The maximum possible value in the dataset
  * @param {number} maxZoom - The maximum zoom value in this dataset
  * @param {number} maxDim - The largest dimension of the tileset (e.g., width or height)
  *   (roughlty equal to 2 ** maxZoom * tileSize * tileResolution)
- * @returns {number[]} The indices of the tiles that should be visible
+ * @returns {Array<number>} The indices of the tiles that should be visible
  */
 export const calculateTiles = (
   zoomLevel,
   scale,
   minX,
-  maxX,
+  _maxX,
   maxZoom,
   maxDim,
 ) => {
@@ -430,15 +450,7 @@ export const calculateTiles = (
   // be calculated according to cumulative width
 
   const tileWidth = maxDim / 2 ** zoomLevelFinal;
-  // console.log('maxDim:', maxDim);
-
   const epsilon = 0.0000001;
-
-  /*
-  console.log('minX:', minX, 'zoomLevel:', zoomLevel);
-  console.log('domain:', scale.domain(), scale.domain()[0] - minX,
-  ((scale.domain()[0] - minX) / tileWidth))
-  */
 
   return range(
     Math.max(0, Math.floor((scale.domain()[0] - minX) / tileWidth)),
@@ -449,8 +461,13 @@ export const calculateTiles = (
   );
 };
 
+/**
+ * @param {TilesetInfo} tilesetInfo
+ * @param {number} zoomLevel
+ * @param {number} binsPerTile
+ */
 export const calculateTileWidth = (tilesetInfo, zoomLevel, binsPerTile) => {
-  if (tilesetInfo.resolutions) {
+  if (!isLegacyTilesetInfo(tilesetInfo)) {
     const sortedResolutions = tilesetInfo.resolutions
       .map((x) => +x)
       .sort((a, b) => b - a);
@@ -464,7 +481,7 @@ export const calculateTileWidth = (tilesetInfo, zoomLevel, binsPerTile) => {
  * the minX and maxX values for the region
  *
  * @param {number} resolution - The number of base pairs per bin
- * @param {import('../type').Scale} scale - The scale to use to calculate the currently visible tiles
+ * @param {Scale} scale - The scale to use to calculate the currently visible tiles
  * @param {number} minX - The minimum x position of the tileset
  * @param {number} maxX - The maximum x position of the tileset
  * @param {number=} pixelsPerTile - The number of pixels per tile
@@ -512,21 +529,16 @@ export const calculateTilesFromResolution = (
  * Render 2D tile data. Convert the raw values to an array of
  * color values
  *
- * @param finished: A callback to let the caller know that the worker thread
- *   has converted tileData to pixData
- * @param minVisibleValue: The minimum visible value (used for setting the color
- *   scale)
- * @param maxVisibleValue: The maximum visible value
- * @param valueScaleType: Either 'log' or 'linear'
- * @param valueScaleDomain: The domain of the scale (the range is always [254,0])
- * @param colorScale: a 255 x 4 rgba array used as a color scale
- * @param synchronous: Render this tile synchronously or pass it on to the threadpool (which doesn't exist yet).
- * @param ignoreUpperRight: If this is a tile along the diagonal and there will
- * be mirrored tiles present ignore the upper right values
- * @param ignoreLowerLeft: If this is a tile along the diagonal and there will be
- * mirrored tiles present ignore the lower left values
- * @param {array} zeroValueColor: The color to use for rendering zero data values, [r, g, b, a].
- * @param {object} selectedRowsOptions Rendering options when using a `selectRows` track option.
+ * @param {{ mirrored?: boolean, isMirrored?: boolean, tileData: { dense: Array<number>, tilePos: [number, number], shape: [number, number] }}} tile
+ * @param {"log" | "linear"} valueScaleType - Either 'log' or 'linear'
+ * @param {[min: number, max: number]} valueScaleDomain - The domain of the scale (the range is always [254,0])
+ * @param {number} pseudocount
+ * @param {Array<[r: number, g: number, b: number, a: number]>} colorScale - a 255 x 4 rgba array used as a color scale
+ * @param {(x: null | { pixData: Uint8ClampedArray }) => void} finished
+ * @param {boolean | undefined} ignoreUpperRight - If this is a tile along the diagonal and there will be mirrored tiles present ignore the upper right values
+ * @param {boolean | undefined} ignoreLowerLeft - If this is a tile along the diagonal and there will be mirrored tiles present ignore the lower left values
+ * @param {[r: number, g:number, b: number, a: number]} zeroValueColor - The color to use for rendering zero data values
+ * @param {Partial<SelectedRowsOptions>} selectedRowsOptions Rendering options when using a `selectRows` track option.
  */
 export const tileDataToPixData = (
   tile,
@@ -578,12 +590,6 @@ export const tileDataToPixData = (
     tile.isMirrored = true;
   }
 
-  // console.log('tile', tile);
-  // clone the tileData so that the original array doesn't get neutered
-  // when being passed to the worker script
-  // const newTileData = tileData.dense;
-
-  // comment this and uncomment the code afterwards to enable threading
   const pixData = workerSetPix(
     tileData.dense.length,
     tileData.dense,
@@ -599,31 +605,35 @@ export const tileDataToPixData = (
   );
 
   finished({ pixData });
-
-  // const newTileData = new Float32Array(tileData.dense.length);
-  // newTileData.set(tileData.dense);
-  /*
-  var params = {
-    size: newTileData.length,
-    data: newTileData,
-    valueScaleType: valueScaleType,
-    valueScaleDomain: valueScaleDomain,
-    pseudocount: pseudocount,
-    colorScale: colorScale
-  };
-
-  setPixPool.send(params, [ newTileData.buffer ])
-    .promise()
-    .then(returned => {
-      finished(returned);
-    })
-    .catch(reason => {
-      finished(null);
-    });
-  ;
-  */
 };
 
+/**
+ * @template T
+ * @overload
+ * @param {string | URL} url
+ * @param {(err: Error | undefined, value: T | undefined) => void} callback
+ * @param {"json"} textOrJson
+ * @param {import("pub-sub-es").PubSub} pubSub
+ * @returns {Promise<T>}
+ */
+
+/**
+ * @overload
+ * @param {string | URL} url
+ * @param {(err: Error | undefined, value: string | undefined) => void} callback
+ * @param {"text"} textOrJson
+ * @param {import("pub-sub-es").PubSub} pubSub
+ * @returns {Promise<string>}
+ */
+
+/**
+ * @template T
+ * @param {string | URL} url
+ * @param {(err: Error | undefined, value: T | undefined) => void} callback
+ * @param {"text" | "json"} textOrJson
+ * @param {import("pub-sub-es").PubSub} pubSub
+ * @returns {Promise<T>}
+ */
 function fetchEither(url, callback, textOrJson, pubSub) {
   requestsInFlight += 1;
   pubSub.publish('requestSent', url);
@@ -636,6 +646,7 @@ function fetchEither(url, callback, textOrJson, pubSub) {
   } else {
     throw new Error(`fetch either "text" or "json", not "${textOrJson}"`);
   }
+  /** @type {Record<string, string>} */
   const headers = {};
 
   if (mime) {
@@ -670,8 +681,9 @@ function fetchEither(url, callback, textOrJson, pubSub) {
 /**
  * Send a text request and mark it so that we can tell how many are in flight
  *
- * @param url: URL to fetch
- * @param callback: Callback to execute with content from fetch
+ * @param {string | URL} url
+ * @param {(err: Error | undefined, value: string | undefined) => void} callback
+ * @param {import("pub-sub-es").PubSub} pubSub
  */
 function text(url, callback, pubSub) {
   return fetchEither(url, callback, 'text', pubSub);
@@ -680,15 +692,16 @@ function text(url, callback, pubSub) {
 /**
  * Send a JSON request and mark it so that we can tell how many are in flight
  *
- * @param url: URL to fetch
- * @param callback: Callback to execute with content from fetch
+ * @template T
+ * @param {string} url
+ * @param {(err: Error | undefined, value: T | undefined) => void} callback
+ * @param {import("pub-sub-es").PubSub} pubSub
  */
 async function json(url, callback, pubSub) {
   // Fritz: What is going on here? Can someone explain?
   if (url.indexOf('hg19') >= 0) {
     await sleep(1);
   }
-  // console.log('url:', url);
   return fetchEither(url, callback, 'json', pubSub);
 }
 
@@ -697,8 +710,10 @@ async function json(url, callback, pubSub) {
  *
  * @param {string} server: The server where the data resides
  * @param {string} tilesetUid: The identifier for the dataset
- * @param {func} doneCb: A callback that gets called when the data is retrieved
- * @param {func} errorCb: A callback that gets called when there is an error
+ * @param {(info: Record<string, TilesetInfo>) => void} doneCb: A callback that gets called when the data is retrieved
+ * @param {(error: string) => void} errorCb: A callback that gets called when there is an error
+ * @param {import("pub-sub-es").PubSub} pubSub
+ * @returns {void}
  */
 export const trackInfo = (server, tilesetUid, doneCb, errorCb, pubSub) => {
   const url = `${tts(server)}/tileset_info/?d=${tilesetUid}&s=${sessionId}`;
@@ -709,16 +724,12 @@ export const trackInfo = (server, tilesetUid, doneCb, errorCb, pubSub) => {
     (error, data) => {
       pubSub.publish('requestReceived', url);
       if (error) {
-        // console.log('error:', error);
-        // don't do anything
-        // no tileset info just means we can't do anything with this file...
         if (errorCb) {
           errorCb(`Error retrieving tilesetInfo from: ${server}`);
         } else {
           console.warn('Error retrieving: ', url);
         }
       } else {
-        // console.log('got data', data);
         doneCb(data);
       }
     },
