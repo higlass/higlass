@@ -529,11 +529,11 @@ export const calculateTilesFromResolution = (
  * Render 2D tile data. Convert the raw values to an array of
  * color values
  *
- * @param {{ mirrored?: boolean, isMirrored?: boolean, tileData: { dense: Array<number>, tilePos: [number, number], shape: [number, number] }}} tile
+ * @param {{ mirrored?: boolean, isMirrored?: boolean, tileData: { dense: Float32Array, tilePos: readonly [a: number, b?: number], shape: readonly [number, number] }}} tile
  * @param {"log" | "linear"} valueScaleType - Either 'log' or 'linear'
  * @param {[min: number, max: number]} valueScaleDomain - The domain of the scale (the range is always [254,0])
  * @param {number} pseudocount
- * @param {Array<[r: number, g: number, b: number, a: number]>} colorScale - a 255 x 4 rgba array used as a color scale
+ * @param {ReadonlyArray<readonly [r: number, g: number, b: number, a: number]>} colorScale - a 255 x 4 rgba array used as a color scale
  * @param {(x: null | { pixData: Uint8ClampedArray }) => void} finished
  * @param {boolean | undefined} ignoreUpperRight - If this is a tile along the diagonal and there will be mirrored tiles present ignore the upper right values
  * @param {boolean | undefined} ignoreLowerLeft - If this is a tile along the diagonal and there will be mirrored tiles present ignore the lower left values

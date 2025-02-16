@@ -98,7 +98,7 @@ function setPixDataForSelectedRows(
 
 /**
  * @typedef SelectedRowsOptions
- * @property {number[] | number[][]} selectedRows - Row indices, for ordering and filtering rows. Used by the HorizontalMultivecTrack.
+ * @property {Array<number | Array<number>>} selectedRows - Row indices, for ordering and filtering rows. Used by the HorizontalMultivecTrack.
  * @property {'mean' | 'sum' | 'variance' | 'deviation'} selectedRowsAggregationMode - The aggregation function to use ("mean", "sum", etc).
  * @property {boolean} selectedRowsAggregationWithRelativeHeight - Whether the height of row groups should be relative to the size of the group.
  * @property {'client' | 'server'} selectedRowsAggregationMethod - Where will the aggregation be performed? Possible values: "client", "server".
