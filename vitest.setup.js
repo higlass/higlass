@@ -1,10 +1,11 @@
-import { server } from '@vitest/browser/context';
-import { http, HttpResponse, bypass } from 'msw';
+import * as msw from 'msw';
 import { setupWorker } from 'msw/browser';
 import { afterAll, afterEach, beforeAll } from 'vitest';
 
-/** @type {import('./scripts/vitest-browser-commands.mjs').Commands} */
-const commands = /** @type {any} */ (server.commands);
+import { server } from '@vitest/browser/context';
+
+/** @type {import('./scripts/vitest-browser-commands.mjs').ServerCache} */
+const CACHE = /** @type {any} */ (server.commands);
 
 /**
  * @template {unknown} T
@@ -16,7 +17,7 @@ const commands = /** @type {any} */ (server.commands);
  */
 async function tryFetchCached(ids, { origin, route, transform }) {
   const results = await Promise.all(
-    ids.map((id) => commands.getCache([origin, route, id])),
+    ids.map((id) => CACHE.get([origin, route, id])),
   );
   if (results.some((i) => i === undefined)) {
     return undefined;
@@ -29,9 +30,9 @@ async function tryFetchCached(ids, { origin, route, transform }) {
 /**
  * @param {string} origin
  * @param {"tiles" | "tileset_info"} route
+ * @returns {msw.ResponseResolver}
  */
-function createTilesOrTilesetInfoHandler(origin, route) {
-  /** @param {{ request: Request }} ctx */
+function tilesOrTilesetInfo(origin, route) {
   return async ({ request }) => {
     const url = new URL(request.url);
     const ids = url.searchParams.getAll('d');
@@ -42,16 +43,15 @@ function createTilesOrTilesetInfoHandler(origin, route) {
     });
 
     if (cached) {
-      return HttpResponse.json(cached);
+      return msw.HttpResponse.json(cached);
     }
 
     // Persist request to our cache for next time.
-    // TODO: Have an enviroment variable to control this behavior?
-    const response = await fetch(bypass(request));
+    const response = await fetch(msw.bypass(request));
     const data = await response.json();
     await Promise.all(
       Object.entries(data).map(([k, v]) =>
-        commands.setCache([origin, route, k], JSON.stringify(v)),
+        CACHE.set([origin, route, k], JSON.stringify(v)),
       ),
     );
   };
@@ -60,46 +60,29 @@ function createTilesOrTilesetInfoHandler(origin, route) {
 /**
  * @param {string} origin
  * @param {"chrom-sizes"} route
+ * @returns {msw.ResponseResolver}
  */
-function createChromsizesHandler(origin, route) {
-  /** @param {{ request: Request }} ctx */
+function chromsizes(origin, route) {
   return async ({ request }) => {
     const url = new URL(request.url);
     const id = url.searchParams.get('id');
     if (!id) return;
-    const maybeTsv = await commands.getCache([origin, route, id]);
+    const maybeTsv = await CACHE.get([origin, route, id]);
     if (maybeTsv) {
-      return HttpResponse.text(maybeTsv);
+      return msw.HttpResponse.text(maybeTsv);
     }
-    const response = await fetch(bypass(request));
+    const response = await fetch(msw.bypass(request));
     const tsv = await response.text();
-    await commands.setCache([origin, route, id], tsv);
-  };
-}
-
-/**
- * @param {string} origin
- * @param {"available-chrom-sizes"} route
- */
-function createAvailableChromsizesHandler(origin, route) {
-  /** @param {{ request: Request }} ctx */
-  return async ({ request }) => {
-    const maybeJson = await commands.getCache([origin, route]);
-    if (maybeJson) {
-      return new HttpResponse(maybeJson);
-    }
-    const response = await fetch(bypass(request));
-    const json = await response.text();
-    await commands.setCache([origin, route], json);
+    await CACHE.set([origin, route, id], tsv);
   };
 }
 
 /**
  * @param {string} origin
  * @param {"tilesets"} route
+ * @returns {msw.ResponseResolver}
  */
-function createTilesetsHandler(origin, route) {
-  /** @param {{ request: Request }} ctx */
+function tilesets(origin, route) {
   return async ({ request }) => {
     const url = new URL(request.url);
     const limit = url.searchParams.get('limit');
@@ -107,30 +90,27 @@ function createTilesetsHandler(origin, route) {
     if (!limit || !dt) {
       return;
     }
-    const maybeJson = await commands.getCache([
+    const maybeJson = await CACHE.get([
       origin,
       route,
       `dt_${dt}`,
       `limit_${limit}`,
     ]);
     if (maybeJson) {
-      return new HttpResponse(maybeJson);
+      return new msw.HttpResponse(maybeJson);
     }
-    const response = await fetch(bypass(request));
+    const response = await fetch(msw.bypass(request));
     const json = await response.text();
-    await commands.setCache(
-      [origin, route, `limit_${limit}`, `dt_${dt}`],
-      json,
-    );
+    await CACHE.set([origin, route, `limit_${limit}`, `dt_${dt}`], json);
   };
 }
 
 /**
  * @param {string} origin
  * @param {"suggest"} route
+ * @returns {msw.ResponseResolver}
  */
-function createSuggestHandler(origin, route) {
-  /** @param {{ request: Request }} ctx */
+function suggest(origin, route) {
   return async ({ request }) => {
     const url = new URL(request.url);
     const d = url.searchParams.get('d');
@@ -138,26 +118,22 @@ function createSuggestHandler(origin, route) {
     if (!d || !ac) {
       return;
     }
-    const maybeJson = await commands.getCache([
-      origin,
-      route,
-      `d_${d}`,
-      `ac_${ac}`,
-    ]);
+    const maybeJson = await CACHE.get([origin, route, `d_${d}`, `ac_${ac}`]);
     if (maybeJson) {
-      return new HttpResponse(maybeJson);
+      return new msw.HttpResponse(maybeJson);
     }
-    const response = await fetch(bypass(request));
+    const response = await fetch(msw.bypass(request));
     const json = await response.text();
-    await commands.setCache([origin, route, `d_${d}`, `ac_${ac}`], json);
+    await CACHE.set([origin, route, `d_${d}`, `ac_${ac}`], json);
   };
 }
 
 /**
  * @param {string} origin
  * @param {"viewconfs"} route
+ * @returns {msw.ResponseResolver}
  */
-function createViewconfHandler(origin, route) {
+function viewconfs(origin, route) {
   /** @param {{ request: Request }} ctx */
   return async ({ request }) => {
     const url = new URL(request.url);
@@ -165,55 +141,74 @@ function createViewconfHandler(origin, route) {
     if (!d) {
       return;
     }
-    const maybeJson = await commands.getCache([origin, route, d]);
+    const maybeJson = await CACHE.get([origin, route, d]);
     if (maybeJson) {
-      return new HttpResponse(maybeJson);
+      return new msw.HttpResponse(maybeJson);
     }
-    const response = await fetch(bypass(request));
+    const response = await fetch(msw.bypass(request));
     const json = await response.text();
-    await commands.setCache([origin, route, d], json);
+    await CACHE.set([origin, route, d], json);
   };
 }
 
-/** @param {string} origin */
-function createHiGlassServerHandlers(origin) {
-  const tiles = createTilesOrTilesetInfoHandler(origin, 'tiles');
-  const tilesetInfo = createTilesOrTilesetInfoHandler(origin, 'tileset_info');
-  const chromsizes = createChromsizesHandler(origin, 'chrom-sizes');
-  const tilesets = createTilesetsHandler(origin, 'tilesets');
-  const suggest = createSuggestHandler(origin, 'suggest');
-  const viewconfs = createViewconfHandler(origin, 'viewconfs');
-  const availableChromsizes = createAvailableChromsizesHandler(
-    origin,
-    'available-chrom-sizes',
-  );
+/**
+ * @param {string} origin
+ * @param {"available-chrom-sizes"} route
+ * @returns {msw.ResponseResolver}
+ */
+function availableChromsizes(origin, route) {
+  return async ({ request }) => {
+    const maybeJson = await CACHE.get([origin, route]);
+    if (maybeJson) {
+      return new msw.HttpResponse(maybeJson);
+    }
+    const response = await fetch(msw.bypass(request));
+    const json = await response.text();
+    await CACHE.set([origin, route], json);
+  };
+}
+
+/**
+ * Create a set of msw handlers for a given HiGlass server.
+ *
+ * @param {string} origin
+ * @returns {Array<msw.HttpHandler>}
+ */
+function higlassServer(origin) {
+  /**
+   * Create a pair of HTTP/HTTPS resolvers for a given higlass origin and route.
+   *
+   * @template {string} R
+   * @param {string} origin
+   * @param {R} route
+   * @param {(base: string, route: R) => msw.ResponseResolver} resolver
+   * @returns {Array<msw.HttpHandler>}
+   */
+  function get(origin, route, resolver) {
+    return [
+      msw.http.get(`http://${origin}/${route}`, resolver(origin, route)),
+      msw.http.get(`https://${origin}/${route}`, resolver(origin, route)),
+    ];
+  }
   return [
-    // HTTP
-    http.get(`http://${origin}/tiles`, tiles),
-    http.get(`http://${origin}/tileset_info`, tilesetInfo),
-    http.get(`http://${origin}/chrom-sizes`, chromsizes),
-    http.get(`http://${origin}/tilesets`, tilesets),
-    http.get(`http://${origin}/suggest`, suggest),
-    http.get(`http://${origin}/viewconfs`, viewconfs),
-    http.get(`http://${origin}/available-chrom-sizes`, availableChromsizes),
-    // HTTPS
-    http.get(`https://${origin}/tiles`, tiles),
-    http.get(`https://${origin}/tileset_info`, tilesetInfo),
-    http.get(`https://${origin}/chrom-sizes`, chromsizes),
-    http.get(`https://${origin}/tilesets`, tilesets),
-    http.get(`https://${origin}/suggest`, suggest),
-    http.get(`https://${origin}/viewconfs`, viewconfs),
-    http.get(`https://${origin}/available-chrom-sizes`, availableChromsizes),
+    ...get(origin, 'tiles', tilesOrTilesetInfo),
+    ...get(origin, 'tileset_info', tilesOrTilesetInfo),
+    ...get(origin, 'chrom-sizes', chromsizes),
+    ...get(origin, 'tilesets', tilesets),
+    ...get(origin, 'suggest', suggest),
+    ...get(origin, 'viewconfs', viewconfs),
+    ...get(origin, 'available-chrom-sizes', availableChromsizes),
   ];
 }
 
-if (import.meta.env.VITE_USE_MOCKS === '1') {
-  const worker = setupWorker(
-    ...createHiGlassServerHandlers('higlass.io/api/v1'),
-    ...createHiGlassServerHandlers('resgen.io/api/v1'),
-    ...createHiGlassServerHandlers('resgen.io/api/v1/gt/paper-data'),
-    http.get('http://s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv', () =>
-      HttpResponse.text(
+/**
+ * Create a set of msw handlers for various static assets relied on by the test suite.
+ * @returns {Array<msw.HttpHandler>}
+ */
+function staticAssets() {
+  return [
+    msw.http.get('http://s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv', () =>
+      msw.HttpResponse.text(
         `
 chr1	249250621
 chr2	243199373
@@ -242,15 +237,24 @@ chrY	59373566
 chrM	16571`.trim(),
       ),
     ),
-    http.get(
+    msw.http.get(
       'https://s3.amazonaws.com/pkerp/public/gpsb/small.chrom.sizes',
       () =>
-        HttpResponse.text(
+        msw.HttpResponse.text(
           `
 foo	249250621
 bar	243199373`.trim(),
         ),
     ),
+  ];
+}
+
+if (import.meta.env.VITE_USE_MOCKS === '1') {
+  const worker = setupWorker(
+    ...higlassServer('higlass.io/api/v1'),
+    ...higlassServer('resgen.io/api/v1'),
+    ...higlassServer('resgen.io/api/v1/gt/paper-data'),
+    ...staticAssets(),
   );
 
   beforeAll(() => worker.start());

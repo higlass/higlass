@@ -13,8 +13,8 @@ import * as path from 'node:path';
 
 /**
  * @typedef {{
- *   [K in keyof typeof commands]: (...args: Tail<Parameters<commands[K]>>) => ReturnType<commands[K]>
- * }} Commands
+ *   [K in keyof typeof commands]: (...args: Tail<Parameters<typeof commands[K]>>) => ReturnType<typeof commands[K]>
+ * }} ServerCache
  */
 
 /** @satisfies {Record<string, import("vitest/node").BrowserCommand<any>>}*/
@@ -24,7 +24,7 @@ export const commands = {
    * @param {ReadonlyArray<string>} pathArgs
    */
   // biome-ignore lint/correctness/noEmptyPattern: empty object needed for vitest
-  async getCache({}, pathArgs) {
+  async get({}, pathArgs) {
     const filepath = path.resolve(
       import.meta.dirname,
       './test/mocks',
@@ -46,7 +46,7 @@ export const commands = {
    * @param {string} contents
    */
   // biome-ignore lint/correctness/noEmptyPattern: empty object needed for vitest
-  async setCache({}, pathArgs, contents) {
+  async set({}, pathArgs, contents) {
     const filepath = path.resolve(
       import.meta.dirname,
       './test/mocks',
