@@ -9,26 +9,19 @@ import * as path from 'node:path';
  * }} Commands
  */
 
-/**
- * @param {string} origin
- * @param {string} folder
- * @param {string} id
- */
-function resolveCacheItemLocation(origin, folder, id) {
-  return path.resolve(import.meta.dirname, './test/mocks', origin, folder, id);
-}
-
 /** @satisfies {Record<string, import("vitest/node").BrowserCommand<any>>}*/
 export const commands = {
   /**
    * @param {{ }} context
-   * @param {string} origin
-   * @param {string} route
-   * @param {string} id
+   * @param {ReadonlyArray<string>} pathArgs
    */
   // biome-ignore lint/correctness/noEmptyPattern: empty object needed for vitest
-  async getCache({}, origin, route, id) {
-    const filepath = resolveCacheItemLocation(origin, route, id);
+  async getCache({}, pathArgs) {
+    const filepath = path.resolve(
+      import.meta.dirname,
+      './test/mocks',
+      ...pathArgs,
+    );
     return fs.promises
       .readFile(filepath, { encoding: 'utf-8' })
       .catch((err) => {
@@ -41,14 +34,16 @@ export const commands = {
   },
   /**
    * @param {{ }} context
-   * @param {string} origin
-   * @param {string} route
-   * @param {string} id
+   * @param {ReadonlyArray<string>} pathArgs
    * @param {string} contents
    */
   // biome-ignore lint/correctness/noEmptyPattern: empty object needed for vitest
-  async setCache({}, origin, route, id, contents) {
-    const filepath = resolveCacheItemLocation(origin, route, id);
+  async setCache({}, pathArgs, contents) {
+    const filepath = path.resolve(
+      import.meta.dirname,
+      './test/mocks',
+      ...pathArgs,
+    );
     const dir = path.dirname(filepath);
     if (!fs.existsSync(dir)) {
       await fs.promises.mkdir(dir, { recursive: true });

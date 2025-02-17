@@ -21,10 +21,10 @@ export default ({ mode }) => ({
   },
   test: {
     silent: true,
-    setupFiles: [path.resolve(__dirname, './vitest.setup.js')],
+    setupFiles: path.resolve(__dirname, './vitest.setup.js'),
     browser: {
       provider: 'playwright',
-      headless: false,
+      headless: true,
       enabled: true,
       instances: [{ browser: 'chromium' }],
       // Custom server-side commands exposed to the front end http://vitest.dev/guide/browser/commands#custom-commands
