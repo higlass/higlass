@@ -7,20 +7,31 @@
 
 ### Introduction
 
-HiGlass is a web-based viewer for datasets too large to view at once.
-It features synchronized navigation of multiple views as well as continuous zooming and panning
-for navigation across genomic loci and resolutions. It supports visual comparison of
-genomic (e.g., Hi-C, ChIP-seq, or bed annotations) and other data (e.g., geographic maps, gigapixel images, or abstract 1D and 2D sequential data) from different experimental conditions and can be used to efficiently
-identify salient outcomes of experimental perturbations, generate new hypotheses, and share
-the results with the community.
+HiGlass is a web-based viewer for datasets too large to view at once. It
+features synchronized navigation of multiple views as well as continuous
+zooming and panning for navigation across genomic loci and resolutions. It
+supports visual comparison of genomic (e.g., Hi-C, ChIP-seq, or bed
+annotations) and other data (e.g., geographic maps, gigapixel images, or
+abstract 1D and 2D sequential data) from different experimental conditions and
+can be used to efficiently identify salient outcomes of experimental
+perturbations, generate new hypotheses, and share the results with the
+community.
 
-A live instance can be found at [https://higlass.io](https://higlass.io). A [Docker container](https://github.com/higlass/higlass-docker) is available for running an instance locally, although we recommend using the [higlass-manage](https://github.com/pkerpedjiev/higlass-manage) package to start, stop and configure local instances.
+A live instance can be found at [https://higlass.io](https://higlass.io). A
+[Docker container](https://github.com/higlass/higlass-docker) is available for
+running an instance locally, although we recommend using the
+[higlass-manage](https://github.com/pkerpedjiev/higlass-manage) package to
+start, stop and configure local instances.
 
-For documentation about how to use and install HiGlass, please visit [https://docs.higlass.io](https://docs.higlass.io).
+For documentation about how to use and install HiGlass, please visit
+[https://docs.higlass.io](https://docs.higlass.io).
 
 ### Citation
 
-Kerpedjiev, P., Abdennur, N., Lekschas, F., McCallum, C., Dinkla, K., Strobelt, H., ... & Gehlenborg, N. *HiGlass: Web-based Visual Exploration and Analysis of Genome Interaction Maps.* Genome Biology (2018): 19:125. https://doi.org/10.1186/s13059-018-1486-1
+Kerpedjiev, P., Abdennur, N., Lekschas, F., McCallum, C., Dinkla, K., Strobelt,
+H., ... & Gehlenborg, N. *HiGlass: Web-based Visual Exploration and Analysis of
+Genome Interaction Maps.* Genome Biology (2018): 19:125.
+https://doi.org/10.1186/s13059-018-1486-1
 
 ### Example
 
@@ -34,7 +45,7 @@ To run higlass from its source code simply run the following:
 
 ```
 npm clean-install // use --legacy-peer-deps if you get peer dependency errors
-npm run start
+npm start
 ```
 
 This starts a server in development mode at http://localhost:5173/.
@@ -44,23 +55,16 @@ This starts a server in development mode at http://localhost:5173/.
 > Once started, a list of the examples can be found at [http://localhost:8080/examples.html](http://localhost:8080/examples.html).
 > Template viewconfs located at `/docs/examples/viewconfs` can viewed directly at urls such as  [http://localhost:8080/apis/svg.html?/viewconfs/overlay-tracks.json](http://localhost:8080/apis/svg.html?/viewconfs/overlay-tracks.json).
 
-
 ### Tests
 
-The tests for the React components and API functions are located in the `test` directory.
-Tests are run with [`vitest`](https://vitest.dev/).
+The tests for the React components and API functions are located in the `test`
+directory. Tests are run with [`vitest`](https://vitest.dev/).
 
 Useful commands:
 
-- Run all tests in the browser: `npm test`
+- Run all tests in the browser: `npm test -- --browser.headless=false`
 
-**Troubleshooting:**
-
-- If the installation fails due to `sharp` > `node-gyp` try installing the node packages using `python2`:
-
-  ```
-  npm ci --python=/usr/bin/python2 && rm -rf node_modules/node-sass && npm ci
-  ```
+See the [contributing guide](./CONTRIBUTING.md) to learn more.
 
 ### API
 
@@ -68,34 +72,27 @@ HiGlass provides an API for controlling the component from with JavaScript. Belo
 
 ```html
 <!DOCTYPE html>
-<head>
-  <meta charset="utf-8">
-  <title>Minimal Working Example &middot; HiGlass</title>
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-  <link rel="stylesheet" href="https://unpkg.com/higlass@1.6.6/dist/hglib.css">
+  <head>
+    <meta charset="utf-8">
+    <title>Minimal Working Example &middot; HiGlass</title>
+    <style type="text/css">
+      html, body {
+        width: 100vw;
+        height: 100vh;
+        overflow: hidden;
+      }
+    </style>
+  </head>
+  <body></body>
+  <script type="module">
+    import * as hglib from "https://esm.sh/higlass@1.13";
 
-  <style type="text/css">
-    html, body {
-      width: 100vw;
-      height: 100vh;
-      overflow: hidden;
-    }
-  </style>
-
-  <script crossorigin src="https://unpkg.com/react@16/umd/react.production.min.js"></script>
-  <script crossorigin src="https://unpkg.com/react-dom@16/umd/react-dom.production.min.js"></script>
-  <script crossorigin src="https://unpkg.com/pixi.js@5/dist/pixi.min.js"></script>
-  <script crossorigin src="https://unpkg.com/react-bootstrap@0.32.1/dist/react-bootstrap.min.js"></script>
-  <script crossorigin src="https://unpkg.com/higlass@1.6.6/dist/hglib.min.js"></script>
-</head>
-<body></body>
-<script>
-const hgApi = window.hglib.viewer(
-  document.body,
-  'https://higlass.io/api/v1/viewconfs/?d=default',
-  { bounded: true },
-);
-</script>
+    const api = hglib.viewer(
+      document.body,
+      'https://higlass.io/api/v1/viewconfs/?d=default',
+      { bounded: true },
+    );
+  </script>
 </html>
 ```
 
