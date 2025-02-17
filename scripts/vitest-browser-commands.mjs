@@ -17,6 +17,14 @@ import * as path from 'node:path';
  * }} ServerCache
  */
 
+/** Where to save the mocks. In CI we set this to `higlass-test-mocks` repo. */
+const mockDataDir = process.env.HIGLASS_MOCKS_DIR
+  ? path.resolve(process.env.HIGLASS_MOCKS_DIR)
+  : path.resolve(import.meta.dirname, './test/mocks');
+
+// biome-ignore lint/suspicious/noConsole: Logging during tests
+console.log(`[higlass] Using mock data directory: ${mockDataDir}`);
+
 /** @satisfies {Record<string, import("vitest/node").BrowserCommand<any>>}*/
 export const commands = {
   /**
@@ -25,11 +33,7 @@ export const commands = {
    */
   // biome-ignore lint/correctness/noEmptyPattern: empty object needed for vitest
   async get({}, pathArgs) {
-    const filepath = path.resolve(
-      import.meta.dirname,
-      './test/mocks',
-      ...pathArgs,
-    );
+    const filepath = path.resolve(mockDataDir, ...pathArgs);
     return fs.promises
       .readFile(filepath, { encoding: 'utf-8' })
       .catch((err) => {
@@ -47,11 +51,7 @@ export const commands = {
    */
   // biome-ignore lint/correctness/noEmptyPattern: empty object needed for vitest
   async set({}, pathArgs, contents) {
-    const filepath = path.resolve(
-      import.meta.dirname,
-      './test/mocks',
-      ...pathArgs,
-    );
+    const filepath = path.resolve(mockDataDir, ...pathArgs);
     const dir = path.dirname(filepath);
     if (!fs.existsSync(dir)) {
       await fs.promises.mkdir(dir, { recursive: true });
