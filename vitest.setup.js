@@ -1,7 +1,7 @@
 import { server } from '@vitest/browser/context';
 import { http, HttpResponse, bypass } from 'msw';
 import { setupWorker } from 'msw/browser';
-import { beforeAll } from 'vitest';
+import { afterAll, afterEach, beforeAll } from 'vitest';
 
 /** @type {import('./scripts/vitest-browser-commands.mjs').Commands} */
 const commands = /** @type {any} */ (server.commands);
@@ -207,13 +207,14 @@ function createHiGlassServerHandlers(origin) {
   ];
 }
 
-const worker = setupWorker(
-  ...createHiGlassServerHandlers('higlass.io/api/v1'),
-  ...createHiGlassServerHandlers('resgen.io/api/v1'),
-  ...createHiGlassServerHandlers('resgen.io/api/v1/gt/paper-data'),
-  http.get('http://s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv', () =>
-    HttpResponse.text(
-      `
+if (import.meta.env.VITE_USE_MOCKS === '1') {
+  const worker = setupWorker(
+    ...createHiGlassServerHandlers('higlass.io/api/v1'),
+    ...createHiGlassServerHandlers('resgen.io/api/v1'),
+    ...createHiGlassServerHandlers('resgen.io/api/v1/gt/paper-data'),
+    http.get('http://s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv', () =>
+      HttpResponse.text(
+        `
 chr1	249250621
 chr2	243199373
 chr3	198022430
@@ -239,18 +240,20 @@ chr22	51304566
 chrX	155270560
 chrY	59373566
 chrM	16571`.trim(),
+      ),
     ),
-  ),
-  http.get('https://s3.amazonaws.com/pkerp/public/gpsb/small.chrom.sizes', () =>
-    HttpResponse.text(
-      `
+    http.get(
+      'https://s3.amazonaws.com/pkerp/public/gpsb/small.chrom.sizes',
+      () =>
+        HttpResponse.text(
+          `
 foo	249250621
 bar	243199373`.trim(),
+        ),
     ),
-  ),
-);
+  );
 
-beforeAll(async () => {
-  await worker.start();
-  return () => worker.stop();
-});
+  beforeAll(() => worker.start());
+  afterAll(() => worker.stop());
+  afterEach(() => worker.resetHandlers());
+}
