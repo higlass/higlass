@@ -1,3 +1,4 @@
+import * as crypto from 'node:crypto';
 /**
  * @module vitest-browser-commands
  *
@@ -20,7 +21,10 @@ import * as path from 'node:path';
 /** Where to save the mocks. In CI we set this to `higlass-test-mocks` repo. */
 const mockDataDir = process.env.HIGLASS_MOCKS_DIR
   ? path.resolve(process.env.HIGLASS_MOCKS_DIR)
-  : path.resolve(import.meta.dirname, './test/mocks');
+  : path.resolve(import.meta.dirname, './test/cache');
+
+/** @param {string} key */
+const md5 = (key) => crypto.createHash('md5').update(key).digest('hex');
 
 // biome-ignore lint/suspicious/noConsole: Logging during tests
 console.log(`[higlass] Using mock data directory: ${mockDataDir}`);
@@ -29,11 +33,11 @@ console.log(`[higlass] Using mock data directory: ${mockDataDir}`);
 export const commands = {
   /**
    * @param {{ }} context
-   * @param {ReadonlyArray<string>} pathArgs
+   * @param {string} key
    */
   // biome-ignore lint/correctness/noEmptyPattern: empty object needed for vitest
-  async get({}, pathArgs) {
-    const filepath = path.resolve(mockDataDir, ...pathArgs);
+  async get({}, key) {
+    const filepath = path.resolve(mockDataDir, md5(key));
     return fs.promises
       .readFile(filepath, { encoding: 'utf-8' })
       .catch((err) => {
@@ -46,16 +50,16 @@ export const commands = {
   },
   /**
    * @param {{ }} context
-   * @param {ReadonlyArray<string>} pathArgs
-   * @param {string} contents
+   * @param {string} key
+   * @param {string} value
    */
   // biome-ignore lint/correctness/noEmptyPattern: empty object needed for vitest
-  async set({}, pathArgs, contents) {
-    const filepath = path.resolve(mockDataDir, ...pathArgs);
+  async set({}, key, value) {
+    const filepath = path.resolve(mockDataDir, md5(key));
     const dir = path.dirname(filepath);
     if (!fs.existsSync(dir)) {
       await fs.promises.mkdir(dir, { recursive: true });
     }
-    await fs.promises.writeFile(filepath, contents);
+    await fs.promises.writeFile(filepath, value);
   },
 };

@@ -55,13 +55,4 @@ jobs:
           cache: 'npm'
       - run: npm ci --legacy-peer-deps
       - run: npx playwright install chromium --with-deps
-
-      - name: Clone higlass-test-mocks
-        run: |
-          git clone --depth=1 https://github.com/higlass/higlass-test-mocks.git higlass-test-mocks
-          echo "HIGLASS_MOCKS_DIR=$(pwd)/higlass-test-mocks" >> $GITHUB_ENV
-
       - run: npm test -- --maxWorkers=1 --no-file-parallelism --shard ${{ matrix.shard }}
-        env:
-          VITE_USE_MOCKS: 1
-          HIGLASS_MOCKS_DIR: ${{ env.HIGLASS_MOCKS_DIR }}
