@@ -33,10 +33,21 @@ To enable mocking, set the environment variable:
 
     VITE_USE_MOCKS=1 npx vitest
 
-A cache of mock fixtures is stored under `test/mocks/`. Since we do not
-currently persist these fixtures, the first run with `VITE_USE_MOCKS=1` will
-make real requests and save responses to disk. Subsequent runs will use the
-cached data.
+By default, mock fixture data is cached in the `./test/mocks/` directory. To
+change this location, set the `HIGLASS_MOCKS_DIR` environment variable. In
+CI, we configure `HIGLASS_MOCKS_DIR` to point to a versioned set of mock
+fixtures stored in the
+[`higlass-test-mocks`](https://github.com/higlass/higlass-test-mocks)
+repository.
+
+.. code-block:: bash
+
+    HIGLASS_MOCKS_DIR=/path/to/higlass-test-mocks VITE_USE_MOCKS=1 npx vitest
+
+If the specified directory is empty, the first test run with
+`VITE_USE_MOCKS=1` will make real requests and save the responses to the mock
+directory. Subsequent runs will use the cached data instead of making network
+requests, ensuring tests are reliable and reproducible.
 
 JSON Schema
 -----------
