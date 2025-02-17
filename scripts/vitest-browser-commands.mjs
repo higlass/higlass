@@ -1,3 +1,11 @@
+/**
+ * @module vitest-browser-commands
+ *
+ * Server-side commands for tests running in the browser.
+ * Exposes file system access for our mocking helpers.
+ *
+ * @see vitest.setup.js for usage.
+ */
 import * as fs from 'node:fs';
 import * as path from 'node:path';
 

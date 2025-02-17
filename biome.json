@@ -10,7 +10,7 @@
   },
   "files": {
     "ignoreUnknown": false,
-    "ignore": ["test/mocked-responses/*", "test/mocks"]
+    "ignore": ["test/mocks"]
   },
   "formatter": {
     "enabled": true,
