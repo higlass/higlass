@@ -38,6 +38,8 @@ export const commands = {
       .readFile(filepath, { encoding: 'utf-8' })
       .catch((err) => {
         if (err.code === 'ENOENT') {
+          // biome-ignore lint/suspicious/noConsole: Logging during tests
+          console.log(`[higlass] Cache miss ${pathArgs.join('/')}`);
           // file not found
           return undefined;
         }

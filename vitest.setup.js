@@ -101,7 +101,7 @@ function tilesets(origin, route) {
     }
     const response = await fetch(msw.bypass(request));
     const json = await response.text();
-    await CACHE.set([origin, route, `limit_${limit}`, `dt_${dt}`], json);
+    await CACHE.set([origin, route, `dt_${dt}`, `limit_${limit}`], json);
   };
 }
 
