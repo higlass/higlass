@@ -129,7 +129,7 @@ const SCROLL_TIMEOUT = 100;
  * @property {() => void} onValueScaleChanged
  * @property {(newOption: Record<string, unknown>) => void} onTrackOptionsChanged
  * @property {() => void} onMouseMoveZoom
- * @property {string} chromInfoPath
+ * @property {string=} chromInfoPath
  * @property {() => boolean} isShowGlobalMousePosition
  * @property {() => import('./types').Theme} getTheme
  * @property {unknown=} AVAILABLE_FOR_PLUGINS
@@ -1738,7 +1738,7 @@ class TrackRenderer extends React.Component {
             return new pluginTrack.track(
               this.availableForPlugins,
               context,
-              track.options,
+              track.options ?? {},
             );
           } catch (e) {
             console.error(
@@ -1780,7 +1780,7 @@ class TrackRenderer extends React.Component {
     let dataConfig = track.data;
     if (!dataConfig) {
       dataConfig = {
-        server: trimTrailingSlash(track.server),
+        server: trimTrailingSlash(track.server ?? ''),
         tilesetUid: track.tilesetUid,
       };
     }
@@ -2090,7 +2090,7 @@ class TrackRenderer extends React.Component {
             return new pluginTrack.track(
               this.availableForPlugins,
               context,
-              track.options,
+              track.options ?? {},
             );
           } catch (e) {
             console.error(

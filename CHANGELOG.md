@@ -1,5 +1,7 @@
 # Release notes
 
+- Fix: Add missing initializer value to `utils.reduce`
+
 ## v1.13.5
 
 - Allow tracks to pass in custom context menu items
