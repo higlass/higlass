@@ -1,5 +1,6 @@
 # Release notes
 
+- Remove unused `utils.reduce` and `utils.flatten` utilities
 - Fix: Add missing initializer value to `utils.reduce`
 
 ## v1.13.5

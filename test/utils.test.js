@@ -1,7 +1,5 @@
 import { describe, expect, it } from 'vitest';
 
-import flatten from '../app/scripts/utils/flatten';
-import reduce from '../app/scripts/utils/reduce';
 import selectedItemsToCumWeights from '../app/scripts/utils/selected-items-to-cum-weights';
 import selectedItemsToSize from '../app/scripts/utils/selected-items-to-size';
 import visitPositionedTracks from '../app/scripts/utils/visit-positioned-tracks';
@@ -60,23 +58,5 @@ describe('selectedItemsToCumWeights', () => {
     expect(weights[2]).to.be.closeTo(0.6, delta);
     expect(weights[3]).to.be.closeTo(0.8, delta);
     expect(weights[4]).to.be.closeTo(1, delta);
-  });
-});
-
-describe('reduce', () => {
-  it('should sum array elements starting from 0', () => {
-    const sumFrom0 = reduce((a, b) => a + b, 0);
-    expect(sumFrom0([1, 2, 3, 4])).toBe(10);
-  });
-
-  it('should sum array elements starting from a given number', () => {
-    const sumFrom10 = reduce((a, b) => a + b, 10);
-    expect(sumFrom10([1, 2, 3, 4])).toBe(20);
-  });
-});
-
-describe('flatten', () => {
-  it('should flatten a nested array into a single-level array', () => {
-    expect(flatten([[1, 2], [3, 4, 5], [6]])).toEqual([1, 2, 3, 4, 5, 6]);
   });
 });
