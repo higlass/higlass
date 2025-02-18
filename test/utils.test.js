@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
+import colorDomainToRgbaArray from '../app/scripts/utils/color-domain-to-rgba-array';
 import flatten from '../app/scripts/utils/flatten';
 import reduce from '../app/scripts/utils/reduce';
 import selectedItemsToCumWeights from '../app/scripts/utils/selected-items-to-cum-weights';
@@ -78,5 +79,32 @@ describe('reduce', () => {
 describe('flatten', () => {
   it('should flatten a nested array into a single-level array', () => {
     expect(flatten([[1, 2], [3, 4, 5], [6]])).toEqual([1, 2, 3, 4, 5, 6]);
+  });
+});
+
+describe('colorDomainToRgbaArray', () => {
+  it.each(
+    /** @type {const} */ ([
+      { colors: ['red', 'blue'], description: 'named' },
+      { colors: ['#ff0000', '#0000ff'], description: 'hex' },
+      { colors: ['rgba(255,0,0,1)', 'rgba(0,0,255,1)'], description: 'RGBA' },
+    ]),
+  )('generates RGBA array with transparency for $description', ({ colors }) => {
+    const range = colorDomainToRgbaArray(colors);
+    expect(range.length).toBe(256);
+    expect(range.at(2)).toEqual([3, 0, 252, 255]);
+    expect(range.at(50)).toEqual([51, 0, 204, 255]);
+    expect(range.at(-10)).toEqual([247, 0, 8, 255]);
+    expect(range.at(-1)).toEqual([255, 255, 255, 0]);
+  });
+
+  it('generates correct RGBA array without transparency', () => {
+    const noTransparent = true;
+    const range = colorDomainToRgbaArray(['yellow', 'green'], noTransparent);
+    expect(range.length).toBe(256);
+    expect(range.at(2)).toEqual([2, 129, 0, 255]);
+    expect(range.at(50)).toEqual([50, 153, 0, 255]);
+    expect(range.at(-10)).toEqual([246, 251, 0, 255]);
+    expect(range.at(-1)).toEqual([255, 255, 0, 255]);
   });
 });
