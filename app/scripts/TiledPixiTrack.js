@@ -11,7 +11,7 @@ import backgroundTaskScheduler from './utils/background-task-scheduler';
 
 // Configs
 import { GLOBALS, ZOOM_DEBOUNCE } from './configs';
-import { isResolutionsTilesetInfo, isTileSetInfo } from './utils/type-guards';
+import { isResolutionsTilesetInfo, isTilesetInfo } from './utils/type-guards';
 
 /**
  * Get a valueScale for a heatmap.
@@ -234,7 +234,7 @@ class TiledPixiTrack extends PixiTrack {
     this.dataFetcher.tilesetInfo((tilesetInfo, tilesetUid) => {
       if (!tilesetInfo) return;
 
-      if (isTileSetInfo(tilesetInfo)) {
+      if (isTilesetInfo(tilesetInfo)) {
         this.tilesetInfo = tilesetInfo;
       } else {
         // no tileset info for this track

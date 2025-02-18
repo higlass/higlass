@@ -1,6 +1,8 @@
+/** @import * as t from '../types' */
+
 /**
- * @param {import('../types').TrackConfig} trackConfig
- * @return {trackConfig is import('../types').CombinedTrackConfig}
+ * @param {t.TrackConfig} trackConfig
+ * @return {trackConfig is t.CombinedTrackConfig}
  */
 export function isCombinedTrackConfig(trackConfig) {
   return trackConfig.type === 'combined';
@@ -23,24 +25,24 @@ export function isObject(obj) {
 }
 
 /**
- * @param {import('../types').TilesetInfo | undefined} info
- * @returns {info is import('../types').LegacyTilesetInfo}
+ * @param {t.TilesetInfo | undefined} info
+ * @returns {info is t.LegacyTilesetInfo}
  */
 export function isLegacyTilesetInfo(info) {
   return isObject(info) && 'max_width' in info;
 }
 
 /**
- * @param {import('../types').TilesetInfo | undefined | {error: string}} info
- * @returns {info is import('../types').ResolutionsTilesetInfo}
+ * @param {t.TilesetInfo | undefined | { error: string }} info
+ * @returns {info is t.ResolutionsTilesetInfo}
  */
 export function isResolutionsTilesetInfo(info) {
   return isObject(info) && 'resolutions' in info;
 }
 /**
- * @param {import('../types').TilesetInfo | undefined | {error: string}} info
- * @returns {info is import('../types').TilesetInfo}
+ * @param {t.TilesetInfo | undefined | { error: string }} info
+ * @returns {info is t.TilesetInfo}
  */
-export function isTileSetInfo(info) {
+export function isTilesetInfo(info) {
   return isObject(info) && !('error' in info);
 }
