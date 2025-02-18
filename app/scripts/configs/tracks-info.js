@@ -332,6 +332,7 @@ export const TRACKS_INFO = [
       'axisMargin',
       'lineStrokeWidth',
       'lineStrokeColor',
+      'nanAsZero',
       'valueScaling',
       'valueScaleMin',
       'valueScaleMax',
