@@ -1,21 +1,28 @@
-// @ts-nocheck
-
 import React from 'react';
+import * as themes from '../configs/themes';
 
-import { toVoid } from '../utils';
+/** @typedef {themes.THEME_LIGHT | themes.THEME_DARK} Theme */
 
-const { Provider, Consumer } = React.createContext({
-  close: toVoid,
-  open: toVoid,
-});
+const { Provider, Consumer } = React.createContext(
+  /** @type {Theme} */ (themes.THEME_DEFAULT),
+);
 
-// Higher order component
-const withTheme = (Component) =>
-  React.forwardRef((props, ref) => (
-    <Consumer>
-      {(theme) => <Component ref={ref} {...props} theme={theme} />}
-    </Consumer>
-  ));
+// Trevor: Not sure how to type these HOCs correctly.
+// This is a workaround. See ./with-modal for more information.
+
+/**
+ * @template {typeof React.Component<{ theme?: Theme }>} T
+ * @param {T} Component
+ * @returns {T}
+ */
+function withTheme(Component) {
+  // @ts-expect-error See comment in ./with-modal
+  return React.forwardRef((props, ref) =>
+    React.createElement(Consumer, null, (/** @type {Theme} */ theme) =>
+      React.createElement(Component, { ref, ...props, theme }),
+    ),
+  );
+}
 
 export default withTheme;
 
