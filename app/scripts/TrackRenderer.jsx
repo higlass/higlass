@@ -221,7 +221,7 @@ const SCROLL_TIMEOUT = 100;
 /**
  * @extends {React.Component<TrackRendererProps>}
  */
-class TrackRenderer extends React.Component {
+export class TrackRenderer extends React.Component {
   /**
    * Maintain a list of tracks, and re-render them whenever either
    * their size changes or the zoom level changes

@@ -50,7 +50,7 @@ import stylesCenterTrack from '../styles/CenterTrack.module.scss';
 // Styles
 import styles from '../styles/TiledPlot.module.scss';
 
-class TiledPlot extends React.Component {
+export class TiledPlot extends React.Component {
   constructor(props) {
     super(props);
 
