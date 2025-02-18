@@ -12,9 +12,9 @@ import tts from '../utils/trim-trailing-slash';
 // Services
 import * as tileProxy from '../services/tile-proxy';
 
-/** @import { DataConfig, TilesetInfo, AbstractDataFetcher, TileSource } from '../types' */
+/** @import { PubSub } from 'pub-sub-es' */
+/** @import { TilesetInfo, AbstractDataFetcher, TileSource, DataConfig, HandleTilesetInfoFinished } from '../types' */
 /** @import { CompletedTileData, TileResponse } from '../services/worker' */
-/**
 
 /**
  * @typedef Tile
@@ -47,7 +47,7 @@ function isTuple(x) {
 }
 
 /**
- * @param {import("pub-sub-es").PubSub} pubSub
+ * @param {PubSub} pubSub
  * @returns {TileSource<Tile>}
  */
 function createDefaultTileSource(pubSub) {
@@ -91,8 +91,8 @@ function createDefaultTileSource(pubSub) {
 /** @implements {AbstractDataFetcher<Tile | DividedTile, ResolvedDataConfig>} */
 export default class DataFetcher {
   /**
-   * @param {import('../types').DataConfig} dataConfig
-   * @param {import('pub-sub-es').PubSub} pubSub
+   * @param {DataConfig} dataConfig
+   * @param {PubSub} pubSub
    * @param {TileSource<Tile>} [tileSource]
    */
   constructor(dataConfig, pubSub, tileSource) {
@@ -113,7 +113,7 @@ export default class DataFetcher {
     this.dataConfig = JSON.parse(JSON.stringify(dataConfig));
     /** @type {string} */
     this.uuid = slugid.nice();
-    /** @type {import('pub-sub-es').PubSub} */
+    /** @type {PubSub} */
     this.pubSub = pubSub;
 
     if (dataConfig.children) {
@@ -146,7 +146,7 @@ export default class DataFetcher {
 
   /**
    * Obtain tileset infos for all of the tilesets listed
-   * @param {import('../types').HandleTilesetInfoFinished} finished - A callback that will be called
+   * @param {HandleTilesetInfoFinished} finished - A callback that will be called
    */
   tilesetInfo(finished) {
     // if this track has a url, server and filetype
@@ -177,7 +177,7 @@ export default class DataFetcher {
    * infos have the same dimensions and then return a common
    * one.
    *
-   * @param {import('../types').HandleTilesetInfoFinished} finished - A callback that will be called
+   * @param {HandleTilesetInfoFinished} finished - A callback that will be called
    *  when all tileset infos are loaded
    */
   tilesetInfoAfterRegister(finished) {

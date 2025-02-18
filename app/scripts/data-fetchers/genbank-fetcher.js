@@ -2,11 +2,7 @@ import genbankParser from 'genbank-parser';
 import pako from 'pako';
 import slugid from 'slugid';
 
-/**
- * @template T, B
- * @typedef {import('../types').AbstractDataFetcher<T, B>} AbstractDataFetcher
- */
-
+/** @import { AbstractDataFetcher } from '../types' */
 /** @typedef {{ start: number, end: number, type: 'filler', strand: "+" | "-" }} FillerSegment */
 
 /**

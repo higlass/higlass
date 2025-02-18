@@ -1,10 +1,6 @@
 import { tileResponseToData } from '../services';
 
-/** @typedef {import('../types').TilesetInfo} TilesetInfo */
-/**
- * @template T, B
- * @typedef {import('../types').AbstractDataFetcher<T, B>} AbstractDataFetcher
- */
+/** @import { AbstractDataFetcher, TilesetInfo } from '../types' */
 
 // TODO: Add type for LocalTile
 /** @typedef {{}} LocalTile */

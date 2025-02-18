@@ -5,13 +5,17 @@ import slugid from 'slugid';
 import PixiTrack from './PixiTrack';
 import { DataFetcher } from './data-fetchers';
 
-// Utils
-import { parseChromsizesRows, throttleAndDebounce } from './utils';
 import backgroundTaskScheduler from './utils/background-task-scheduler';
+// Utils
+import parseChromsizesRows from './utils/parse-chromsizes-rows.js';
+import throttleAndDebounce from './utils/throttle-and-debounce.js';
+import { isResolutionsTilesetInfo, isTilesetInfo } from './utils/type-guards';
 
 // Configs
-import { GLOBALS, ZOOM_DEBOUNCE } from './configs';
-import { isResolutionsTilesetInfo, isTilesetInfo } from './utils/type-guards';
+import GLOBALS from './configs/globals';
+import { ZOOM_DEBOUNCE } from './configs/primitives';
+
+/** @import * as t from './types' */
 
 /**
  * Get a valueScale for a heatmap.
@@ -58,8 +62,6 @@ export function getValueScale(
   return ['linear', scaleLinear().range([254, 0]).domain([minValue, maxValue])];
 }
 
-/** @typedef {import('./types').TilesetInfo} TilesetInfo */
-
 /**
  * @typedef Scale
  * @property {number | null} [minValue]
@@ -97,7 +99,7 @@ export function getValueScale(
 /**
  * @typedef TiledPixiTrackContextBase
  * @property {DataFetcher} dataFetcher
- * @property {import('./types').DataConfig} dataConfig
+ * @property {t.DataConfig} dataConfig
  * @property {function} animate A function to redraw this track. Typically called when an
  *  asynchronous event occurs (i.e. tiles loaded)
  * @property {() => void} onValueScaleChanged The range of values has changed so we need to inform
@@ -209,7 +211,7 @@ class TiledPixiTrack extends PixiTrack {
     }
 
     // To indicate that this track is requiring a tileset info
-    /** @type {TilesetInfo} */
+    /** @type {t.TilesetInfo} */
     // @ts-expect-error This has to be initialized to null
     this.tilesetInfo = null;
     this.uuid = slugid.nice();
@@ -526,8 +528,8 @@ class TiledPixiTrack extends PixiTrack {
   }
 
   /**
-   * @param {import('./types').Scale} newXScale
-   * @param {import('./types').Scale} newYScale
+   * @param {t.Scale} newXScale
+   * @param {t.Scale} newYScale
    */
   zoomed(newXScale, newYScale, k = 1, tx = 0, ty = 0) {
     this.xScale(newXScale);
