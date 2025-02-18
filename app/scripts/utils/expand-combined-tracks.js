@@ -1,19 +1,21 @@
-// @ts-nocheck
+/** @import {TrackConfig, UnknownTrackConfig} from '../types' */
+
 /**
  * Go through a list of tracks and expand combined
  * tracks.
  *
- * @param {list} tracks: A list of tracks some of which might be combined
- * @returns {list} tracks: A list of tracks without combined
+ * @param {Array<TrackConfig>} trackList - A list of tracks some of which might be combined
+ * @returns tracks: A list of tracks without combined
  */
 const expandCombinedTracks = (trackList) => {
-  let newTracks = [];
+  /** @type {Array<UnknownTrackConfig>} */
+  const newTracks = [];
 
-  for (let i = 0; i < trackList.length; i++) {
-    if (trackList[i].contents) {
-      newTracks = newTracks.concat(trackList[i].contents);
+  for (const track of trackList) {
+    if ('contents' in track) {
+      newTracks.concat(track.contents);
     } else {
-      newTracks.push(trackList[i]);
+      newTracks.push(track);
     }
   }
 

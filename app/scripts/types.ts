@@ -35,7 +35,7 @@ export type UnknownTrackConfig = {
 export type CombinedTrackConfig = {
   uid: string;
   options: Record<string, unknown>;
-  contents: TrackConfig[];
+  contents: Array<UnknownTrackConfig>;
   type: 'combined';
   position: TrackPosition;
   data?: Record<string, unknown>;
