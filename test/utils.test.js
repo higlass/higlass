@@ -208,3 +208,36 @@ describe('fillInMinWidths', () => {
     `);
   });
 });
+
+describe('getDefaultTrackForDatatype', () => {
+  it('finds fails to find track without any available', () => {
+    expect(
+      utils.getDefaultTrackForDatatype('vector', 'top', []),
+    ).toBeUndefined();
+  });
+
+  // Trevor: Weird behavior of the method
+  it('picks first track only one available, regardless of type', () => {
+    expect(
+      utils.getDefaultTrackForDatatype('vector', 'top', [{ type: 'blah' }]),
+    ).toEqual({ type: 'blah' });
+  });
+
+  it('picks first available track with matching type', () => {
+    expect(
+      utils.getDefaultTrackForDatatype('vector', 'top', [
+        {
+          type: 'blah',
+        },
+        {
+          type: 'bar',
+          tag: 'first',
+        },
+        {
+          type: 'bar',
+          tag: 'second',
+        },
+      ]),
+    ).toEqual({ type: 'bar', tag: 'first' });
+  });
+});
