@@ -2,11 +2,7 @@ import genbankParser from 'genbank-parser';
 import pako from 'pako';
 import slugid from 'slugid';
 
-/**
- * @template T
- * @typedef {import('../types').AbstractDataFetcher<T>} AbstractDataFetcher
- */
-
+/** @import { AbstractDataFetcher } from '../types' */
 /** @typedef {{ start: number, end: number, type: 'filler', strand: "+" | "-" }} FillerSegment */
 
 /**
@@ -227,7 +223,7 @@ async function extractResponse(response, { gzipped }) {
  * @typedef {Array<GeneAnnotation> & { tilePositionId?: string }} GenbankTile
  */
 
-/** @implements {AbstractDataFetcher<GenbankTile>} */
+/** @implements {AbstractDataFetcher<GenbankTile, GenbankDataConfig>} */
 class GBKDataFetcher {
   /** @param {GenbankDataConfig} dataConfig */
   constructor(dataConfig) {
