@@ -116,6 +116,7 @@ class HiGlassComponent extends React.Component {
     this.resizeSensor = null;
 
     this.uid = slugid.nice();
+    /** @type {Record<string, import('./TiledPlot').TiledPlot> */
     this.tiledPlots = {};
     this.genomePositionSearchBoxes = {};
 
