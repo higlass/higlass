@@ -34,7 +34,7 @@ export type UnknownTrackConfig = {
 
 export type CombinedTrackConfig = {
   type: 'combined';
-  contents: TrackConfig[];
+  contents: Array<UnknownTrackConfig>;
   uid: string;
   server?: string;
   tilesetUid?: string;

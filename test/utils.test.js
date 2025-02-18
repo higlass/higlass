@@ -1,11 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
-import colorDomainToRgbaArray from '../app/scripts/utils/color-domain-to-rgba-array';
-import flatten from '../app/scripts/utils/flatten';
-import reduce from '../app/scripts/utils/reduce';
+import * as utils from '../app/scripts/utils';
 import selectedItemsToCumWeights from '../app/scripts/utils/selected-items-to-cum-weights';
-import selectedItemsToSize from '../app/scripts/utils/selected-items-to-size';
-import visitPositionedTracks from '../app/scripts/utils/visit-positioned-tracks';
 
 import { oneViewConfig } from './view-configs';
 
@@ -18,7 +14,7 @@ describe('visitPositionedTracks', () => {
     /** @type {{ [K in t.TrackPosition]?: Array<t.TrackConfig> }} */
     // @ts-expect-error - `.json` imports cannot be @const, meaning 'type' is always string.
     const tracks = oneViewConfig.views[0].tracks;
-    visitPositionedTracks(tracks, (track) => {
+    utils.visitPositionedTracks(tracks, (track) => {
       if (track.uid === 'c1') {
         found = true;
       }
@@ -33,11 +29,11 @@ describe('selectedItemsToSize', () => {
   const selectRows = [1, [2, 3, 4], [5], 6, 7];
 
   it('should return total item count when counting nested arrays', () => {
-    expect(selectedItemsToSize(selectRows, true)).toBe(7);
+    expect(utils.selectedItemsToSize(selectRows, true)).toBe(7);
   });
 
   it('should return top-level item count when ignoring nested arrays', () => {
-    expect(selectedItemsToSize(selectRows, false)).toBe(5);
+    expect(utils.selectedItemsToSize(selectRows, false)).toBe(5);
   });
 });
 
@@ -66,19 +62,19 @@ describe('selectedItemsToCumWeights', () => {
 
 describe('reduce', () => {
   it('should sum array elements starting from 0', () => {
-    const sumFrom0 = reduce((a, b) => a + b, 0);
+    const sumFrom0 = utils.reduce((a, b) => a + b, 0);
     expect(sumFrom0([1, 2, 3, 4])).toBe(10);
   });
 
   it('should sum array elements starting from a given number', () => {
-    const sumFrom10 = reduce((a, b) => a + b, 10);
+    const sumFrom10 = utils.reduce((a, b) => a + b, 10);
     expect(sumFrom10([1, 2, 3, 4])).toBe(20);
   });
 });
 
 describe('flatten', () => {
   it('should flatten a nested array into a single-level array', () => {
-    expect(flatten([[1, 2], [3, 4, 5], [6]])).toEqual([1, 2, 3, 4, 5, 6]);
+    expect(utils.flatten([[1, 2], [3, 4, 5], [6]])).toEqual([1, 2, 3, 4, 5, 6]);
   });
 });
 
@@ -90,7 +86,7 @@ describe('colorDomainToRgbaArray', () => {
       { colors: ['rgba(255,0,0,1)', 'rgba(0,0,255,1)'], description: 'RGBA' },
     ]),
   )('generates RGBA array with transparency for $description', ({ colors }) => {
-    const range = colorDomainToRgbaArray(colors);
+    const range = utils.colorDomainToRgbaArray(colors);
     expect(range.length).toBe(256);
     expect(range.at(2)).toEqual([3, 0, 252, 255]);
     expect(range.at(50)).toEqual([51, 0, 204, 255]);
@@ -99,12 +95,28 @@ describe('colorDomainToRgbaArray', () => {
   });
 
   it('generates correct RGBA array without transparency', () => {
-    const noTransparent = true;
-    const range = colorDomainToRgbaArray(['yellow', 'green'], noTransparent);
+    const range = utils.colorDomainToRgbaArray(
+      ['yellow', 'green'],
+      /* noTransparent */ true,
+    );
     expect(range.length).toBe(256);
     expect(range.at(2)).toEqual([2, 129, 0, 255]);
     expect(range.at(50)).toEqual([50, 153, 0, 255]);
     expect(range.at(-10)).toEqual([246, 251, 0, 255]);
     expect(range.at(-1)).toEqual([255, 255, 0, 255]);
+  });
+});
+
+describe('expandCombinedTracks', () => {
+  it('expands nested tracks', () => {
+    /** @type {Array<t.TrackConfig>} */
+    const trackList = [
+      oneViewConfig.views[0].tracks.top[0],
+      oneViewConfig.views[0].tracks.left[0],
+      // @ts-expect-error - `.json` imports cannot be @const, meaning 'type' is always string.
+      ...oneViewConfig.views[0].tracks.center, // combined
+    ];
+    const tracks = utils.expandCombinedTracks(trackList);
+    expect(tracks.length).toBe(4);
   });
 });

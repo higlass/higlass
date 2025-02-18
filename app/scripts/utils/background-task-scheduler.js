@@ -41,6 +41,7 @@ class BackgroundTaskScheduler {
    * @param {string | null=} trackId
    * @return {void}
    */
+
   /**
    * If `taskData` is `null` the `taskHandler` will eventaully be called without any arguments.
    *
@@ -50,6 +51,7 @@ class BackgroundTaskScheduler {
    * @param {string | null=} trackId
    * @return {void}
    */
+
   /**
    * @param {(data: any) => void} taskHandler
    * @param {any} taskData
