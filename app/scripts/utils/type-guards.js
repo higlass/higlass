@@ -5,7 +5,7 @@
  * @return {trackConfig is t.CombinedTrackConfig}
  */
 export function isCombinedTrackConfig(trackConfig) {
-  return trackConfig.type === 'combined';
+  return 'contents' in trackConfig && trackConfig.type === 'combined';
 }
 
 /**
