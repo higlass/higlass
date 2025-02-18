@@ -241,3 +241,15 @@ describe('getDefaultTrackForDatatype', () => {
     ).toEqual({ type: 'bar', tag: 'first' });
   });
 });
+
+describe('getTrackPositionByUid', () => {
+  /** @type {{ [K in t.TrackPosition]?: Array<t.TrackConfig> }} */
+  // @ts-expect-error - `.json` imports cannot be @const, meaning 'type' is always string.
+  const tracks = oneViewConfig.views[0].tracks;
+  it('finds track position for uid', () => {
+    expect(utils.getTrackPositionByUid(tracks, 'vline1')).toBe('left');
+  });
+  it('returns null when missing uid', () => {
+    expect(utils.getTrackPositionByUid(tracks, 'blah')).toBe(null);
+  });
+});
