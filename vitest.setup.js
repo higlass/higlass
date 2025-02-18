@@ -8,26 +8,6 @@ import { server } from '@vitest/browser/context';
 const CACHE = /** @type {any} */ (server.commands);
 
 /**
- * @template {unknown} T
- *
- * @param {ReadonlyArray<string>} ids
- * @param {{ origin: string, route: string, transform: (x: string) => T }} options
- *
- * @returns {Promise<undefined | Record<string, T>>}
- */
-async function tryFetchCached(ids, { origin, route, transform }) {
-  const results = await Promise.all(
-    ids.map((id) => CACHE.get([origin, route, id])),
-  );
-  if (results.some((i) => i === undefined)) {
-    return undefined;
-  }
-  return Object.fromEntries(
-    results.map((text, i) => [ids[i], transform(/** @type {string} */ (text))]),
-  );
-}
-
-/**
  * @param {string} origin
  * @param {"tiles" | "tileset_info"} route
  * @returns {msw.ResponseResolver}
@@ -36,22 +16,30 @@ function tilesOrTilesetInfo(origin, route) {
   return async ({ request }) => {
     const url = new URL(request.url);
     const ids = url.searchParams.getAll('d');
-    const cached = await tryFetchCached(ids, {
-      origin,
-      route,
-      transform: JSON.parse,
-    });
 
-    if (cached) {
-      return msw.HttpResponse.json(cached);
+    const results = await Promise.all(
+      ids.map((id) => CACHE.get([origin, route, id])),
+    );
+
+    if (results.every((v) => v !== undefined)) {
+      /** @type {Record<string, unknown>} */
+      const entries = {};
+      results.forEach((text, i) => {
+        const data = JSON.parse(text);
+        if (data !== null) {
+          // omit null keys
+          entries[ids[i]] = data;
+        }
+      });
+      return msw.HttpResponse.json(entries);
     }
 
     // Persist request to our cache for next time.
     const response = await fetch(msw.bypass(request));
     const data = await response.json();
     await Promise.all(
-      Object.entries(data).map(([k, v]) =>
-        CACHE.set([origin, route, k], JSON.stringify(v)),
+      ids.map((id) =>
+        CACHE.set([origin, route, id], JSON.stringify(data[id] ?? null)),
       ),
     );
   };
