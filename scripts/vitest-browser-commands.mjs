@@ -22,6 +22,9 @@ const mockDataDir = process.env.HIGLASS_MOCKS_DIR
   ? path.resolve(process.env.HIGLASS_MOCKS_DIR)
   : path.resolve(import.meta.dirname, './test/mocks');
 
+/** In-memory (to avoid repeated fs operations) */
+const local = new Map();
+
 // biome-ignore lint/suspicious/noConsole: Logging during tests
 console.log(`[higlass] Using mock data directory: ${mockDataDir}`);
 
@@ -33,9 +36,17 @@ export const commands = {
    */
   // biome-ignore lint/correctness/noEmptyPattern: empty object needed for vitest
   async get({}, pathArgs) {
+    const key = pathArgs.join('::');
     const filepath = path.resolve(mockDataDir, ...pathArgs);
+    if (local.has(key)) {
+      return local.get(key);
+    }
     return fs.promises
       .readFile(filepath, { encoding: 'utf-8' })
+      .then((text) => {
+        local.set(key, text);
+        return text;
+      })
       .catch((err) => {
         if (err.code === 'ENOENT') {
           // biome-ignore lint/suspicious/noConsole: Logging during tests
@@ -53,11 +64,13 @@ export const commands = {
    */
   // biome-ignore lint/correctness/noEmptyPattern: empty object needed for vitest
   async set({}, pathArgs, contents) {
+    const key = pathArgs.join('::');
     const filepath = path.resolve(mockDataDir, ...pathArgs);
     const dir = path.dirname(filepath);
     if (!fs.existsSync(dir)) {
       await fs.promises.mkdir(dir, { recursive: true });
     }
     await fs.promises.writeFile(filepath, contents);
+    local.set(key, contents);
   },
 };
