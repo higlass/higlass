@@ -126,9 +126,10 @@ export type DataConfig = {
   slicePos?: number;
 };
 
-export type HandleTilesetInfoFinished = {
-  (info: TilesetInfo | null | { error: string }, tilesetUid?: string): void;
-};
+export type HandleTilesetInfoFinished = (
+  info: TilesetInfo | null | { error: string },
+  tilesetUid?: string,
+) => void;
 
 export interface AbstractDataFetcher<TileType, DataConfig> {
   tilesetInfo(

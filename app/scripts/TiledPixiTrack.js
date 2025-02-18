@@ -1,12 +1,12 @@
-import { scaleLinear, scaleLog, scaleQuantile } from 'd3-scale';
 import { median, range, ticks } from 'd3-array';
+import { scaleLinear, scaleLog, scaleQuantile } from 'd3-scale';
 import slugid from 'slugid';
 
-import { DataFetcher } from './data-fetchers';
 import PixiTrack from './PixiTrack';
+import { DataFetcher } from './data-fetchers';
 
 // Utils
-import { throttleAndDebounce, parseChromsizesRows } from './utils';
+import { parseChromsizesRows, throttleAndDebounce } from './utils';
 import backgroundTaskScheduler from './utils/background-task-scheduler';
 
 // Configs
