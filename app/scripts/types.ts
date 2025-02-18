@@ -22,6 +22,8 @@ export type UnknownTrackConfig = {
   position?: TrackPosition;
   data?: Record<string, unknown>;
   coordSystem?: unknown;
+  height?: number;
+  width?: number;
   x?: number;
   y?: number;
   chromInfoPath?: string;
@@ -37,6 +39,8 @@ export type CombinedTrackConfig = {
   contents: Array<UnknownTrackConfig>;
   uid: string;
   server?: string;
+  height?: number;
+  width?: number;
   tilesetUid?: string;
   options?: Record<string, unknown>;
   position?: TrackPosition;

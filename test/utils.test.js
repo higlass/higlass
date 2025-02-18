@@ -120,3 +120,91 @@ describe('expandCombinedTracks', () => {
     expect(tracks.length).toBe(4);
   });
 });
+
+describe('fillInMinWidths', () => {
+  it('fills in tracks with default min width and min height', () => {
+    const tracks = utils.fillInMinWidths({
+      top: [
+        {
+          uid: '1',
+          type: 'horizontal-line',
+          server: 'http://higlass.io/api/v1',
+          tilesetUid: 'F2vbUeqhS86XkxuO1j2rPA',
+        },
+        {
+          uid: '3',
+          type: 'horizontal-line',
+          server: 'http://higlass.io/api/v1',
+          tilesetUid: 'F2vbUeqhS86XkxuO1j2rPA',
+          options: {
+            minHeight: 100,
+          },
+        },
+      ],
+      right: [
+        {
+          uid: '2',
+          type: 'vertical-line',
+          server: 'http://higlass.io/api/v1',
+          tilesetUid: 'F2vbUeqhS86XkxuO1j2rPA',
+        },
+        {
+          uid: '4',
+          type: 'vertical-line',
+          server: 'http://higlass.io/api/v1',
+          tilesetUid: 'F2vbUeqhS86XkxuO1j2rPA',
+          options: {
+            minWidth: 100,
+          },
+        },
+      ],
+    });
+    expect(tracks).toMatchInlineSnapshot(`
+      {
+        "bottom": [],
+        "center": [],
+        "gallery": [],
+        "left": [],
+        "right": [
+          {
+            "server": "http://higlass.io/api/v1",
+            "tilesetUid": "F2vbUeqhS86XkxuO1j2rPA",
+            "type": "vertical-line",
+            "uid": "2",
+            "width": 20,
+          },
+          {
+            "options": {
+              "minWidth": 100,
+            },
+            "server": "http://higlass.io/api/v1",
+            "tilesetUid": "F2vbUeqhS86XkxuO1j2rPA",
+            "type": "vertical-line",
+            "uid": "4",
+            "width": 100,
+          },
+        ],
+        "top": [
+          {
+            "height": 20,
+            "server": "http://higlass.io/api/v1",
+            "tilesetUid": "F2vbUeqhS86XkxuO1j2rPA",
+            "type": "horizontal-line",
+            "uid": "1",
+          },
+          {
+            "height": 100,
+            "options": {
+              "minHeight": 100,
+            },
+            "server": "http://higlass.io/api/v1",
+            "tilesetUid": "F2vbUeqhS86XkxuO1j2rPA",
+            "type": "horizontal-line",
+            "uid": "3",
+          },
+        ],
+        "whole": [],
+      }
+    `);
+  });
+});
