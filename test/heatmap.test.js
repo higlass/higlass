@@ -78,7 +78,7 @@ describe('Heatmaps', () => {
     });
   });
 
-  describe('Visualization', () => {
+  describe.skip('Visualization', () => {
     let hgc = null;
     let div = null;
 

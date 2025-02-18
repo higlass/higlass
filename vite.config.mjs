@@ -1,8 +1,10 @@
+import * as path from 'node:path';
 import react from '@vitejs/plugin-react';
-import { defineConfig } from 'vite';
 import { version } from './package.json';
+import { commands } from './scripts/vitest-browser-commands.mjs';
 
-export default defineConfig(({ mode }) => ({
+/** @type {import("vite").UserConfigFnObject} */
+export default ({ mode }) => ({
   plugins: [react()],
   resolve: {
     alias: {
@@ -19,11 +21,14 @@ export default defineConfig(({ mode }) => ({
   },
   test: {
     silent: true,
+    setupFiles: path.resolve(__dirname, './vitest.setup.js'),
     browser: {
       provider: 'playwright',
       headless: true,
       enabled: true,
       instances: [{ browser: 'chromium' }],
+      // Custom server-side commands exposed to the front end http://vitest.dev/guide/browser/commands#custom-commands
+      commands: commands,
     },
   },
-}));
+});

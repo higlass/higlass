@@ -28,3 +28,4 @@ dist
 lib/vendor
 app/test*.html
 response-cache.json
+test/mocks

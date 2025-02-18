@@ -4,8 +4,9 @@ Developer
 Cheat Codes
 ===========
 
-Cheat codes are meant to expose functionality that shouldn't otherwise be available. They can be activated by passing `cheatCodesEnabled` as an option to the HiGlassComponent and
-then typing a string when a higlass window is visible.
+Cheat codes are meant to expose functionality that shouldn't otherwise be
+available. They can be activated by passing `cheatCodesEnabled` as an option to
+the HiGlassComponent and then typing a string when a higlass window is visible.
 
 - "hgedit": Toggle the header and make the higlass component editable.
 
@@ -16,14 +17,37 @@ To run the tests use:
 
 .. code-block:: bash
 
-    npm run test-watch
+    npx vitest # headless mode
+    npx vitest --browser.headless=false # open tests in browser
 
-To only run specific test suites, open ``karma.conf.js`` and
-select which tests to run.
+Many view configs (and thus tests) rely on external API requests to a HiGlass
+server (`resgen.io`, `higlass.io`). These requests are slow and can be flaky,
+so we use mock service worker (msw) to mock them at the browser network level.
 
-All http requests can be automatically mocked and their responses stored in ``test/mocked-responses``. This makes it possible to use a local higlass server when adding new tests. New tests that use data which has not been already stored, should be run a few times locally in order to mock all occuring http requests.
+Handlers are defined in `vitest.setup.js`, intercepting requests before they
+reach the server.
 
-Please note: When adding new viewConfigs that make use of mocked responses, make sure that links do not start with ``//`` but with ``http(s)://``. The mocking library ``fetch-mock`` that we are using, does not support links without protocol. In order get started with mocked responses, follow the setup of ``FetchMockHelper`` as in ``DenseDataExtremaTests``.
+To enable mocking, set the environment variable:
+
+.. code-block:: bash
+
+    VITE_USE_MOCKS=1 npx vitest
+
+By default, mock fixture data is cached in the `./test/mocks/` directory. To
+change this location, set the `HIGLASS_MOCKS_DIR` environment variable. In
+CI, we configure `HIGLASS_MOCKS_DIR` to point to a versioned set of mock
+fixtures stored in the
+[`higlass-test-mocks`](https://github.com/higlass/higlass-test-mocks)
+repository.
+
+.. code-block:: bash
+
+    HIGLASS_MOCKS_DIR=/path/to/higlass-test-mocks VITE_USE_MOCKS=1 npx vitest
+
+If the specified directory is empty, the first test run with
+`VITE_USE_MOCKS=1` will make real requests and save the responses to the mock
+directory. Subsequent runs will use the cached data instead of making network
+requests, ensuring tests are reliable and reproducible.
 
 JSON Schema
 -----------
