@@ -1,4 +1,5 @@
 import type { THEME_DARK, THEME_LIGHT } from './configs';
+import type { ChromsizeRow } from './utils/parse-chromsizes-rows';
 
 export type Scale = import('d3-scale').ScaleContinuousNumeric<number, number>;
 
@@ -98,6 +99,8 @@ export type TilesetInfoShared = {
   tile_size?: number;
   max_tile_width?: number;
   transforms?: { name: string; value: string }[];
+  chromsizes?: ArrayLike<ChromsizeRow>;
+  error?: string;
 };
 
 export type LegacyTilesetInfo = TilesetInfoShared & {
@@ -123,13 +126,12 @@ export type DataConfig = {
   slicePos?: number;
 };
 
-export type HandleTilesetInfoFinished = {
-  (info: null): void;
-  (info: TilesetInfo, tilesetUid?: string): void;
-  (error: { error: string }): void;
-};
+export type HandleTilesetInfoFinished = (
+  info: TilesetInfo | null | { error: string },
+  tilesetUid?: string,
+) => void;
 
-export interface AbstractDataFetcher<TileType> {
+export interface AbstractDataFetcher<TileType, DataConfig> {
   tilesetInfo(
     callback?: HandleTilesetInfoFinished,
   ): Promise<TilesetInfo | undefined>;
@@ -137,6 +139,7 @@ export interface AbstractDataFetcher<TileType> {
     receivedTiles: (tiles: Record<string, TileType>) => void,
     tileIds: string[],
   ): Promise<Record<string, TileType>>;
+  dataConfig: DataConfig;
 }
 
 // Tileset API

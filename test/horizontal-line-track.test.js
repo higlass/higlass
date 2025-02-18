@@ -1,14 +1,14 @@
-// @ts-nocheck
-import { describe, beforeAll, afterAll, expect, it } from 'vitest';
 import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
 import Enzyme from 'enzyme';
+// @ts-nocheck
+import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 
 // Utils
 import {
-  removeHGComponent,
   getTrackObjectFromHGC,
-  waitForTilesLoaded,
   mountHGComponentAsync,
+  removeHGComponent,
+  waitForTilesLoaded,
 } from '../app/scripts/utils';
 
 import viewConf from './view-configs/line-with-nans.json';
