@@ -1,30 +1,39 @@
-// @ts-nocheck
-function IntervalTreeNode(start, end, left, right) {
+/** @typedef {[start: number, end: number]} Interval */
+
+class IntervalTreeNode {
   /**
-   * Node interval.
-   * @member {Array}
+   * @param {number} start
+   * @param {number} end
+   * @param {IntervalTreeNode} [left]
+   * @param {IntervalTreeNode} [right]
    */
-  this.interval = [start, end];
-  /**
-   * Max endpoint in subtree which starts from this node.
-   * @member {Number}
-   */
-  this.max = Number.NEGATIVE_INFINITY;
-  /**
-   * Parent node.
-   * @member {IntervalTreeNode}
-   */
-  this.parentNode = null;
-  /**
-   * Left child node.
-   * @member {IntervalTreeNode}
-   */
-  this.left = left;
-  /**
-   * Right child node.
-   * @member {IntervalTreeNode}
-   */
-  this.right = right;
+  constructor(start, end, left, right) {
+    /**
+     * Node interval.
+     * @type {Interval}
+     */
+    this.interval = [start, end];
+    /**
+     * Max endpoint in subtree which starts from this node.
+     * @type {number}
+     */
+    this.max = Number.NEGATIVE_INFINITY;
+    /**
+     * Parent node.
+     * @type {IntervalTreeNode | null}
+     */
+    this.parentNode = null;
+    /**
+     * Left child node.
+     * @type {IntervalTreeNode | null}
+     */
+    this.left = left ?? null;
+    /**
+     * Right child node.
+     * @type {IntervalTreeNode | null}
+     */
+    this.right = right ?? null;
+  }
 }
 
 /**
@@ -33,15 +42,180 @@ function IntervalTreeNode(start, end, left, right) {
  * @public
  * @constructor
  */
-export default function IntervalTree() {
+export class IntervalTree {
+  constructor() {
+    /**
+     * Root node of the tree.
+     * @type {IntervalTreeNode | null}
+     */
+    this.root = null;
+  }
   /**
-   * Root node of the tree.
-   * @member {IntervalTreeNode}
+   * Add new interval to the tree.
+   *
+   * @public
+   * @param {Interval} interval - Array with start and end points of the interval.
    */
-  this.root = null;
+  add(interval) {
+    if (!this.root) {
+      this.root = new IntervalTreeNode(interval[0], interval[1]);
+      this.root.max = interval[1];
+      return;
+    }
+    addHelper(this.root, interval);
+  }
+  /**
+   * Checks or point belongs to at least one intarval from the tree.<br><br>
+   * Complexity: O(log N).
+   *
+   * @public
+   * @method
+   * @param {Number} point Point which should be checked.
+   * @return {Boolean} True if point belongs to one of the intervals.
+   */
+  contains(point) {
+    return contains(point, this.root);
+  }
+  /**
+   * Checks or interval belongs to at least one intarval from the tree.<br><br>
+   * Complexity: O(log N).
+   *
+   * @public
+   * @method
+   * @param {Interval} interval Interval which should be checked.
+   * @return {boolean} True if interval intersects with one of the intervals.
+   */
+  intersects(interval) {
+    return intersectsHelper(interval, this.root);
+  }
+  /**
+   * Returns height of the tree.
+   *
+   * @public
+   * @method
+   * @return {Number} Height of the tree.
+   */
+  height() {
+    return heightHelper(this.root);
+  }
+  /**
+   * Returns node with the max endpoint in subtree.
+   *
+   * @public
+   * @method
+   * @param {IntervalTreeNode} node Root node of subtree.
+   * @return {IntervalTreeNode | null} IntervalTreeNode with the largest endpoint.
+   */
+  findMax(node) {
+    const stack = [node];
+    let current;
+    let max = Number.NEGATIVE_INFINITY;
+    let maxNode;
+    while (stack.length) {
+      current = stack.pop();
+      if (current?.left) {
+        stack.push(current.left);
+      }
+      if (current?.right) {
+        stack.push(current.right);
+      }
+      // @ts-expect-error - ok assertion
+      if (current?.interval[1] > max) {
+        // @ts-expect-error - only ok if above assertion succeeds
+        max = current.interval[1];
+        maxNode = current;
+      }
+    }
+    return maxNode ?? null;
+  }
+
+  /**
+   * Adjust the max value.
+   *
+   * @param {Interval} interval
+   * @param {IntervalTreeNode | null} node
+   */
+  _removeHelper(interval, node) {
+    if (!node) {
+      return;
+    }
+    if (node.interval[0] === interval[0] && node.interval[1] === interval[1]) {
+      // When left and right children exists
+      if (node.left && node.right) {
+        let replacement = node.left;
+        while (replacement.left) {
+          replacement = replacement.left;
+        }
+        const temp = replacement.interval;
+        replacement.interval = node.interval;
+        node.interval = temp;
+        this._removeHelper(replacement.interval, node);
+      } else {
+        // When only left or right child exists
+        /** @type {"left" | "right"} */
+        let side = 'left';
+        if (node.right) {
+          side = 'right';
+        }
+        const parentNode = node.parentNode;
+        if (parentNode) {
+          if (parentNode.left === node) {
+            parentNode.left = node[side];
+          } else {
+            parentNode.right = node[side];
+          }
+          if (node[side]) {
+            // @ts-expect-error - ok to set to a node
+            node[side].parentNode = parentNode;
+          }
+        } else {
+          this.root = node[side];
+          // last node removed
+          if (this.root) {
+            this.root.parentNode = null;
+          }
+        }
+      }
+      // Adjust the max value
+      const p = node.parentNode;
+      if (p) {
+        let maxNode = this.findMax(p);
+        const max = maxNode?.interval[1] ?? Number.NEGATIVE_INFINITY;
+        while (maxNode) {
+          if (maxNode.max === node.interval[1]) {
+            maxNode.max = max;
+            maxNode = maxNode.parentNode;
+          } else {
+            maxNode = null;
+          }
+        }
+      }
+    } else {
+      // could be optimized
+      this._removeHelper(interval, node.left);
+      this._removeHelper(interval, node.right);
+    }
+  }
+  /**
+   * Remove interval from the tree.
+   *
+   * @public
+   * @method
+   * @param {Interval} interval - Array with start and end of the interval.
+   */
+  remove(interval) {
+    return this._removeHelper(interval, this.root);
+  }
 }
 
+/**
+ * @param {IntervalTreeNode} node
+ * @param {"left"| "right"} side
+ * @param {Interval} interval
+ * @returns {void}
+ */
 function addNode(node, side, interval) {
+  /** @type {IntervalTreeNode | null} */
   let child = new IntervalTreeNode(interval[0], interval[1]);
   child.max = interval[1];
   child.parentNode = node;
@@ -56,6 +230,11 @@ function addNode(node, side, interval) {
   }
 }
 
+/**
+ * @param {IntervalTreeNode} node
+ * @param {Interval} interval
+ * @returns {void}
+ */
 function addHelper(node, interval) {
   if (node.interval[0] > interval[0]) {
     if (node.left) {
@@ -71,20 +250,10 @@ function addHelper(node, interval) {
 }
 
 /**
- * Add new interval to the tree.
- *
- * @public
- * @param {Array} intreval Array with start and end points of the interval.
+ * @param {number} point
+ * @param {IntervalTreeNode | null} node
+ * @returns {boolean}
  */
-IntervalTree.prototype.add = function add(interval) {
-  if (!this.root) {
-    this.root = new IntervalTreeNode(interval[0], interval[1]);
-    this.root.max = interval[1];
-    return;
-  }
-  addHelper(this.root, interval);
-};
-
 function contains(point, node) {
   if (!node) {
     return false;
@@ -94,7 +263,7 @@ function contains(point, node) {
   }
   let result = false;
   let temp;
-  ['left', 'right'].forEach((key) => {
+  /** @type {const} */ (['left', 'right']).forEach((key) => {
     temp = node[key];
     if (temp) {
       if (temp.max > point) {
@@ -106,18 +275,10 @@ function contains(point, node) {
 }
 
 /**
- * Checks or point belongs to at least one intarval from the tree.<br><br>
- * Complexity: O(log N).
- *
- * @public
- * @method
- * @param {Number} point Point which should be checked.
- * @return {Boolean} True if point belongs to one of the intervals.
+ * @param {Interval} a
+ * @param {Interval} b
+ * @returns {boolean}
  */
-IntervalTree.prototype.contains = function _contains(point) {
-  return contains(point, this.root);
-};
-
 function intersects(a, b) {
   return (
     // The first case checks for completely overlapping
@@ -132,6 +293,11 @@ function intersects(a, b) {
   );
 }
 
+/**
+ * @param {Interval} interval
+ * @param {IntervalTreeNode | null} node
+ * @returns {boolean}
+ */
 function intersectsHelper(interval, node) {
   if (!node) {
     return false;
@@ -141,7 +307,7 @@ function intersectsHelper(interval, node) {
   }
   let result = false;
   let temp;
-  ['left', 'right'].forEach((side) => {
+  /** @type {const} */ (['left', 'right']).forEach((side) => {
     temp = node[side];
     if (temp && temp.max >= interval[0]) {
       result = result || intersectsHelper(interval, temp);
@@ -151,133 +317,12 @@ function intersectsHelper(interval, node) {
 }
 
 /**
- * Checks or interval belongs to at least one intarval from the tree.<br><br>
- * Complexity: O(log N).
- *
- * @public
- * @method
- * @param {Array} interval Interval which should be checked.
- * @return {Boolean} True if interval intersects with one of the intervals.
+ * @param {IntervalTreeNode | null} node
+ * @returns {number}
  */
-IntervalTree.prototype.intersects = function _intersects(interval) {
-  return intersectsHelper(interval, this.root);
-};
-
 function heightHelper(node) {
   if (!node) {
     return 0;
   }
   return 1 + Math.max(heightHelper(node.left), heightHelper(node.right));
 }
-
-/**
- * Returns height of the tree.
- *
- * @public
- * @method
- * @return {Number} Height of the tree.
- */
-IntervalTree.prototype.height = function height() {
-  return heightHelper(this.root);
-};
-
-/**
- * Returns node with the max endpoint in subtree.
- *
- * @public
- * @method
- * @param {IntervalTreeNode} node Root node of subtree.
- * @return {IntervalTreeNode} IntervalTreeNode with the largest endpoint.
- */
-IntervalTree.prototype.findMax = function findMax(node) {
-  const stack = [node];
-  let current;
-  let max = Number.NEGATIVE_INFINITY;
-  let maxNode;
-  while (stack.length) {
-    current = stack.pop();
-    if (current.left) {
-      stack.push(current.left);
-    }
-    if (current.right) {
-      stack.push(current.right);
-    }
-    if (current.interval[1] > max) {
-      max = current.interval[1];
-      maxNode = current;
-    }
-  }
-  return maxNode;
-};
-
-// adjust the max value
-IntervalTree.prototype._removeHelper = function _removeHelper(interval, node) {
-  if (!node) {
-    return;
-  }
-  if (node.interval[0] === interval[0] && node.interval[1] === interval[1]) {
-    // When left and right children exists
-    if (node.left && node.right) {
-      let replacement = node.left;
-      while (replacement.left) {
-        replacement = replacement.left;
-      }
-      const temp = replacement.interval;
-      replacement.interval = node.interval;
-      node.interval = temp;
-      this._removeHelper(replacement.interval, node);
-    } else {
-      // When only left or right child exists
-      let side = 'left';
-      if (node.right) {
-        side = 'right';
-      }
-      const parentNode = node.parentNode;
-      if (parentNode) {
-        if (parentNode.left === node) {
-          parentNode.left = node[side];
-        } else {
-          parentNode.right = node[side];
-        }
-        if (node[side]) {
-          node[side].parentNode = parentNode;
-        }
-      } else {
-        this.root = node[side];
-        // last node removed
-        if (this.root) {
-          this.root.parentNode = null;
-        }
-      }
-    }
-    // Adjust the max value
-    const p = node.parentNode;
-    if (p) {
-      let maxNode = this.findMax(p);
-      const max = maxNode.interval[1];
-      while (maxNode) {
-        if (maxNode.max === node.interval[1]) {
-          maxNode.max = max;
-          maxNode = maxNode.parentNode;
-        } else {
-          maxNode = false;
-        }
-      }
-    }
-  } else {
-    // could be optimized
-    this._removeHelper(interval, node.left);
-    this._removeHelper(interval, node.right);
-  }
-};
-
-/**
- * Remove interval from the tree.
- *
- * @public
- * @method
- * @param {Array} intreval Array with start and end of the interval.
- */
-IntervalTree.prototype.remove = function remove(interval) {
-  return this._removeHelper(interval, this.root);
-};

@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
 import * as utils from '../app/scripts/utils';
+import { IntervalTree } from '../app/scripts/utils/interval-tree';
 import selectedItemsToCumWeights from '../app/scripts/utils/selected-items-to-cum-weights';
 
 import { oneViewConfig } from './view-configs';
@@ -251,5 +252,65 @@ describe('getTrackPositionByUid', () => {
   });
   it('returns null when missing uid', () => {
     expect(utils.getTrackPositionByUid(tracks, 'blah')).toBe(null);
+  });
+});
+
+describe('segmentsToRows', () => {
+  it('partitions segments into non-overlapping rows', () => {
+    const segments = [
+      { from: 10, to: 20 },
+      { from: 18, to: 30 },
+      { from: 5, to: 15 },
+      { from: 25, to: 35 },
+    ];
+    expect(utils.segmentsToRows(segments)).toEqual([
+      [
+        { from: 18, to: 30 },
+        { from: 5, to: 15 },
+      ],
+      [
+        { from: 10, to: 20 },
+        { from: 25, to: 35 },
+      ],
+    ]);
+  });
+
+  it('handles an empty array', () => {
+    expect(utils.segmentsToRows([])).toEqual([[]]);
+  });
+
+  it('handles non-overlapping segments', () => {
+    const segments = [
+      { from: 1, to: 5 },
+      { from: 10, to: 15 },
+      { from: 20, to: 25 },
+    ];
+    expect(utils.segmentsToRows(segments)).toEqual([
+      [
+        { from: 10, to: 15 },
+        { from: 20, to: 25 },
+        { from: 1, to: 5 },
+      ],
+    ]);
+  });
+});
+
+describe('IntervalTree', () => {
+  it('adds and contains intervals correctly', () => {
+    const tree = new IntervalTree();
+    tree.add([10, 20]);
+    tree.add([30, 40]);
+
+    expect(tree.contains(15)).toBe(true);
+    expect(tree.contains(25)).toBe(false);
+  });
+
+  it('detects intersections correctly', () => {
+    const tree = new IntervalTree();
+    tree.add([10, 20]);
+    tree.add([30, 40]);
+
+    expect(tree.intersects([15, 25])).toBe(true);
+    expect(tree.intersects([25, 29])).toBe(false);
   });
 });
