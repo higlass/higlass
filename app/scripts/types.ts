@@ -14,17 +14,17 @@ export type ChromInfo<Name extends string = string> = {
 };
 
 export type UnknownTrackConfig = {
-  uid: string;
-  options: Record<string, unknown>;
   type: string;
-  position: TrackPosition;
-  data?: Record<string, unknown>;
+  uid: string;
   server: string;
   tilesetUid: string;
+  options?: Record<string, unknown>;
+  position?: TrackPosition;
+  data?: Record<string, unknown>;
   coordSystem?: unknown;
   x?: number;
   y?: number;
-  chromInfoPath: string;
+  chromInfoPath?: string;
   projectionXDomain?: [number, number];
   projectionYDomain?: [number, number];
   registerViewportChanged?: unknown;
@@ -33,18 +33,18 @@ export type UnknownTrackConfig = {
 };
 
 export type CombinedTrackConfig = {
-  uid: string;
-  options: Record<string, unknown>;
-  contents: TrackConfig[];
   type: 'combined';
-  position: TrackPosition;
+  contents: TrackConfig[];
+  uid: string;
+  server?: string;
+  tilesetUid?: string;
+  options?: Record<string, unknown>;
+  position?: TrackPosition;
   data?: Record<string, unknown>;
-  server: string;
-  tilesetUid: string;
   coordSystem?: unknown;
   x?: number;
   y?: number;
-  chromInfoPath: string;
+  chromInfoPath?: string;
   projectionXDomain?: [number, number];
   projectionYDomain?: [number, number];
   registerViewportChanged?: unknown;
