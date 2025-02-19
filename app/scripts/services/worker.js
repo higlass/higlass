@@ -468,43 +468,35 @@ export function tileResponseToData(inputData, server, theseTileIds) {
 /**
  * Fetch tiles from the server.
  *
- * @template {TileResponse} T
- *
- * @param {string} outUrl
- * @param {string} server
- * @param {string[]} theseTileIds
- * @param {string | null} authHeader
- * @param {(data: Record<string, CompletedTileData<T>>) => void} done
- * @param {Array<Record<string, unknown>>} requestBody
+ * @param {{ server: string, tileIds: Array<string>, body: any, authHeader: string | null, sessionId: string }} request
  */
-export function workerGetTiles(
-  outUrl,
-  server,
-  theseTileIds,
-  authHeader,
-  done,
-  requestBody,
-) {
+export function fetchTiles(request) {
   /** @type {Record<string, string>} */
   const headers = {
     'content-type': 'application/json',
   };
 
-  if (authHeader) headers.Authorization = authHeader;
+  if (request.authHeader) {
+    headers.Authorization = request.authHeader;
+  }
 
-  fetch(outUrl, {
+  const renderedParams = request.tileIds.map((x) => `d=${x}`).join('&');
+  const href = `${request.server}/tiles/?${renderedParams}&s=${request.sessionId}`;
+
+  return fetch(href, {
     credentials: 'same-origin',
     headers,
-    ...(requestBody && Object.keys(requestBody).length > 0
+    ...(request.body && Object.keys(request.body)?.length > 0
       ? {
           method: 'POST',
-          body: JSON.stringify(requestBody),
+          body: JSON.stringify(request.body),
         }
       : {}),
   })
     .then((response) => response.json())
-    .then((data) => {
-      done(tileResponseToData(data, server, theseTileIds));
-    })
-    .catch((err) => console.warn('err:', err));
+    .then((data) => tileResponseToData(data, request.server, request.tileIds))
+    .catch((err) => {
+      console.warn('err:', err);
+      return undefined;
+    });
 }

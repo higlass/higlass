@@ -54,15 +54,11 @@ function createDefaultTileSource(pubSub) {
   return {
     fetchTiles(request) {
       return new Promise((done) => {
-        tileProxy.fetchTilesDebounced(
-          {
-            ...request,
-            ids: request.tileIds ?? [],
-            // @ts-expect-error - This is just really hard to type correctly
-            done,
-          },
-          pubSub,
-        );
+        tileProxy.fetchTilesDebounced({
+          ...request,
+          // @ts-expect-error - This is just really hard to type correctly
+          done,
+        });
       });
     },
     fetchTilesetInfo({ server, tilesetUid }) {
@@ -265,22 +261,20 @@ export default class DataFetcher {
         tileIds: tileIds.map((x) => `${this.dataConfig.tilesetUid}.${x}`),
         options: this.dataConfig.options,
       });
-      return /** @type {Promise<Record<string, Tile>>} */ (promise).then(
-        (returnedTiles) => {
-          const tilesetUid = dictValues(returnedTiles)[0].tilesetUid;
-          /** @type {Record<string, Tile>} */
-          const newTiles = {};
+      return promise.then((returnedTiles) => {
+        const tilesetUid = dictValues(returnedTiles)[0].tilesetUid;
+        /** @type {Record<string, Tile>} */
+        const newTiles = {};
 
-          for (let i = 0; i < tileIds.length; i++) {
-            const fullTileId = this.fullTileId(tilesetUid, tileIds[i]);
+        for (let i = 0; i < tileIds.length; i++) {
+          const fullTileId = this.fullTileId(tilesetUid, tileIds[i]);
 
-            returnedTiles[fullTileId].tilePositionId = tileIds[i];
-            newTiles[tileIds[i]] = returnedTiles[fullTileId];
-          }
-          receivedTiles(newTiles);
-          return newTiles;
-        },
-      );
+          returnedTiles[fullTileId].tilePositionId = tileIds[i];
+          newTiles[tileIds[i]] = returnedTiles[fullTileId];
+        }
+        receivedTiles(newTiles);
+        return newTiles;
+      });
     }
 
     // multiple child tracks, need to wait for all of them to

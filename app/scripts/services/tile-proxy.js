@@ -1,16 +1,15 @@
 import { range } from 'd3-array';
 import slugid from 'slugid';
 
-import { workerGetTiles, workerSetPix } from './worker';
+import { fetchTiles, workerSetPix } from './worker';
 
 import sleep from '../utils/timeout';
 import tts from '../utils/trim-trailing-slash';
 
-/** @import { Scale, TilesetInfo, TilesRequest }  from '../types' */
+/** @import * as types  from '../types' */
 /** @import { CompletedTileData, TileResponse, SelectedRowsOptions } from './worker' */
 
 // Config
-import { TILE_FETCH_DEBOUNCE } from '../configs/primitives';
 import { isLegacyTilesetInfo } from '../utils/type-guards';
 
 /** @type {number} */
@@ -23,132 +22,6 @@ export let requestsInFlight = 0;
 /** @type {string | null} */
 export let authHeader = null;
 
-/**
- * @typedef {TilesRequest & { ids: Array<string>; done: (value: Record<string, CompletedTileData<TileResponse>>) => void; }} WrappedTilesRequest
- */
-
-/**
- * @typedef RequestContext
- * @property {string} sessionId
- * @property {Array<WrappedTilesRequest & { ids: Array<string> }>} requests
- */
-
-/**
- * @template {Array<unknown>} Args
- *
- * @param {(ctx: RequestContext, ...args: Args) => void} func
- * @param {number} interval
- * @param {number} finalWait
- */
-const throttleAndDebounce = (func, interval, finalWait) => {
-  /** @type {ReturnType<typeof setTimeout> | undefined} */
-  let timeout = undefined;
-  /** @type {Array<WrappedTilesRequest>} */
-  let bundledRequest = [];
-  /** @type {Record<string, number>} */
-  let requestMapper = {};
-  /** @type {number} */
-  let blockedCalls = 0;
-
-  /**
-   * @param {WrappedTilesRequest} request
-   * @returns {void}
-   */
-  const bundleRequests = (request) => {
-    const requestId = requestMapper[request.id];
-
-    if (requestId && bundledRequest[requestId]) {
-      bundledRequest[requestId].ids = bundledRequest[requestId].ids.concat(
-        request.ids,
-      );
-    } else {
-      requestMapper[request.id] = bundledRequest.length;
-      bundledRequest.push(request);
-    }
-  };
-
-  const reset = () => {
-    timeout = undefined;
-    bundledRequest = [];
-    requestMapper = {};
-  };
-
-  /**
-   * @param {WrappedTilesRequest} _request
-   * @param {Args} args
-   */
-  const callFunc = (_request, ...args) => {
-    // NB: In a normal situation we would just call `func(...args)` but since we
-    // modify the first argument and always trigger `reset()` afterwards I created
-    // this helper function to avoid code duplication. Think of this function
-    // as the actual function call that is being throttled and debounced.
-    func(
-      {
-        sessionId,
-        requests: bundledRequest,
-      },
-      ...args,
-    );
-    reset();
-  };
-
-  /**
-   * @param {WrappedTilesRequest} request
-   * @param {Args} args
-   */
-  const debounced = (request, ...args) => {
-    const later = () => {
-      // Since we throttle and debounce we should check whether there were
-      // actually multiple attempts to call this function after the most recent
-      // throttled call. If there were no more calls we don't have to call
-      // the function again.
-      if (blockedCalls > 0) {
-        callFunc(request, ...args);
-        blockedCalls = 0;
-      }
-    };
-
-    clearTimeout(timeout);
-    timeout = setTimeout(later, finalWait);
-  };
-
-  debounced.cancel = () => {
-    clearTimeout(timeout);
-    reset();
-  };
-
-  debounced.immediate = () => {
-    // @ts-expect-error - Does not pass in `args` to function. Fine for functions without additional args... but not type safe!
-    func({
-      sessionId,
-      requests: bundledRequest,
-    });
-  };
-
-  let wait = false;
-  /**
-   * @param {WrappedTilesRequest} request
-   * @param {Args} args
-   */
-  const throttled = (request, ...args) => {
-    bundleRequests(request);
-
-    if (!wait) {
-      callFunc(request, ...args);
-      debounced(request, ...args);
-      wait = true;
-      blockedCalls = 0;
-      setTimeout(() => {
-        wait = false;
-      }, interval);
-    } else {
-      blockedCalls++;
-    }
-  };
-
-  return throttled;
-};
-
 /** @param {string} newHeader */
 export const setTileProxyAuthHeader = (newHeader) => {
   authHeader = newHeader;
@@ -158,138 +31,153 @@ export const setTileProxyAuthHeader = (newHeader) => {
 export const getTileProxyAuthHeader = () => authHeader;
 
 /**
- * @param {RequestContext} req
- * @param {import("pub-sub-es").PubSub} pubSub
+ * @typedef Request
+ * @property {Array<string>} ids
+ * @property {string} server
+ * @property {Array<{ tilesetUid: string, tileIds: Array<string>, options: Record<string, unknown> }>} [body]
  */
-export function fetchMultiRequestTiles(req, pubSub) {
-  const requests = req.requests;
 
-  const fetchPromises = [];
+/**
+ * Bundle requests by Request ID
+ *
+ * @param {Array<types.TilesRequest>} requests
+ * @params {Array<Omit<types.TilesRequest, "tilesetUid">>} requests
+ */
+function bundleRequestsByRequestId(requests) {
+  /** @type {Array<Omit<types.TilesRequest, "tilesetUid">>} requests */
+  const bundle = [];
+  /** @type {Record<string, number>} */
+  const mapper = {};
 
-  /** @type {Record<string, Record<string, boolean>>} */
-  const requestsByServer = {};
+  for (const request of requests) {
+    if (mapper[request.id] === undefined) {
+      mapper[request.id] = bundle.length;
+      bundle.push({
+        id: request.id,
+        tileIds: [],
+        server: request.server,
+        options: request.options,
+      });
+    }
+    bundle[mapper[request.id]].tileIds.push(...request.tileIds);
+  }
 
-  /** @type {Record<string, Array<{ tilesetUid: string, tileIds: Array<string>, options: unknown}>>} */
-  const requestBodyByServer = {};
+  return bundle;
+}
+
+/**
+ * @template T
+ * @template U
+ * @typedef {T & { done: (value: U) => void; }} WithResolver
+ */
+
+/**
+ * @param {Array<Omit<types.TilesRequest, "tilesetUid" | "id">>} requests
+ * @returns {Array<Omit<types.TilesRequest, "tilesetUid" | "id"> & { body: unknown }>}
+ */
+function bundleRequestsByServer(requests) {
+  /** @typedef {{ tileIds: Array<string>, options: Record<string, unknown> }} TilesetOptions >} */
+  /** @type {Record<string, {ids: Set<string>, optionsByTilesetUids: Record<string, TilesetOptions>}>} */
+  const servers = {};
 
   // We're converting the array of IDs into an object in order to filter out duplicated requests.
   // In case different instances request the same data it won't be loaded twice.
   for (const request of requests) {
-    if (!requestsByServer[request.server]) {
-      requestsByServer[request.server] = {};
-      requestBodyByServer[request.server] = [];
-    }
-    for (const id of request.ids) {
-      requestsByServer[request.server][id] = true;
-
-      if (request.options) {
-        const firstSepIndex = id.indexOf('.');
-        const tilesetUuid = id.substring(0, firstSepIndex);
-        const tileId = id.substring(firstSepIndex + 1);
-        const tilesetObject = requestBodyByServer[request.server].find(
-          (t) => t.tilesetUid === tilesetUuid,
-        );
-        if (tilesetObject) {
-          tilesetObject.tileIds.push(tileId);
-        } else {
-          requestBodyByServer[request.server].push({
-            tilesetUid: tilesetUuid,
-            tileIds: [tileId],
-            options: request.options,
-          });
-        }
+    servers[request.server] ??= { ids: new Set(), optionsByTilesetUids: {} };
+    const server = servers[request.server];
+    for (const id of request.tileIds) {
+      server.ids.add(id);
+      if (!request.options) {
+        continue;
       }
+      const { tilesetUid, tileId } = parseTileRequestId(id);
+      server.optionsByTilesetUids[tilesetUid] ??= {
+        tileIds: [],
+        options: request.options,
+      };
+      server.optionsByTilesetUids[tilesetUid].tileIds.push(tileId);
     }
   }
+  return Object.entries(servers).map(
+    ([server, { ids, optionsByTilesetUids }]) => ({
+      server,
+      tileIds: [...ids],
+      body: Object.entries(optionsByTilesetUids).map(
+        ([tilesetUid, { tileIds, options }]) => ({
+          tilesetUid,
+          tileIds,
+          options,
+        }),
+      ),
+    }),
+  );
+}
 
-  const servers = Object.keys(requestsByServer);
-
-  for (const server of servers) {
-    const ids = Object.keys(requestsByServer[server]);
-    // console.log('ids:', ids);
-
-    const requestBody = requestBodyByServer[server];
-
+/**
+ * @param {Array<types.TilesRequest>} requests
+ * @returns {Generator<ReturnType<typeof bundleRequestsByServer>[number], void, void>}
+ */
+function* bundleRequests(requests) {
+  const consolidated = bundleRequestsByRequestId(requests);
+  for (const request of bundleRequestsByServer(consolidated)) {
     // if we request too many tiles, then the URL can get too long and fail
     // so we'll break up the requests into smaller subsets
-    for (let i = 0; i < ids.length; i += MAX_FETCH_TILES) {
-      const theseTileIds = ids.slice(
-        i,
-        i + Math.min(ids.length - i, MAX_FETCH_TILES),
-      );
-
-      const renderParams = theseTileIds.map((x) => `d=${x}`).join('&');
-      const outUrl = `${server}/tiles/?${renderParams}&s=${sessionId}`;
-
-      /** @type {Promise<Record<string, CompletedTileData<TileResponse>>>} */
-      const p = new Promise((resolve) => {
-        pubSub.publish('requestSent', outUrl);
-        const params = {};
-
-        params.outUrl = outUrl;
-        params.server = server;
-        params.theseTileIds = theseTileIds;
-        params.authHeader = authHeader;
-
-        workerGetTiles(
-          params.outUrl,
-          params.server,
-          params.theseTileIds,
-          params.authHeader,
-          resolve,
-          requestBody,
-        );
-
-        pubSub.publish('requestReceived', outUrl);
-      });
-
-      fetchPromises.push(p);
+    for (const tileIds of chunkIterable(request.tileIds, MAX_FETCH_TILES)) {
+      yield { ...request, tileIds };
     }
   }
+}
 
-  Promise.all(fetchPromises).then((datas) => {
-    /** @type {Record<string, CompletedTileData<TileResponse>>} */
+/** @typedef {CompletedTileData<TileResponse>} Tile */
+
+/**
+ * @type {(request: WithResolver<types.TilesRequest, Record<string, Tile>>) => void}
+ */
+export const fetchTilesDebounced = bufferedBatcher(fetchMultiRequestTiles);
+
+/**
+ * @param {Array<WithResolver<types.TilesRequest, Record<string, Tile>>>} requests
+ */
+async function fetchMultiRequestTiles(requests) {
+  const promises = Array.from(bundleRequests(requests), async (request) => {
+    requestsInFlight += 1;
+    return fetchTiles({ ...request, authHeader, sessionId }).then((data) => {
+      if (requestsInFlight > 0) requestsInFlight -= 1;
+      return data;
+    });
+  });
+  return Promise.all(promises).then((allTileData) => {
+    /** @type {(request: { server: string }, id: string) => string} */
+    const keyFor = (request, id) => `${request.server}/${id}`;
+    /** @type {Record<string, Tile>} */
     const tiles = {};
-
-    // merge back all the tile requests
-    for (const data of datas) {
-      const tileIds = Object.keys(data);
-
-      for (const tileId of tileIds) {
-        tiles[`${data[tileId].server}/${tileId}`] = data[tileId];
+    for (const tileDataGroup of allTileData) {
+      if (!tileDataGroup) {
+        // failed request
+        continue;
+      }
+      for (const [tileId, tileData] of Object.entries(tileDataGroup)) {
+        tiles[keyFor(tileData, tileId)] = tileData;
       }
     }
-
-    // trigger the callback for every request
     for (const request of requests) {
-      /** @type {Record<string, CompletedTileData<TileResponse>>} */
-      const reqDate = {};
-      const { server } = request;
-
-      // pull together the data per request
-      for (const id of request.ids) {
-        reqDate[id] = tiles[`${server}/${id}`];
+      /** @type {Record<string, Tile>} */
+      const requestData = {};
+      for (const id of request.tileIds) {
+        const tileData = tiles[keyFor(request, id)];
+        if (!tileData) return;
+        requestData[id] = tileData;
       }
-
-      request.done(reqDate);
+      request.done(requestData);
     }
   });
 }
 
 /**
- * Retrieve a set of tiles from the server
- */
-export const fetchTilesDebounced = throttleAndDebounce(
-  fetchMultiRequestTiles,
-  TILE_FETCH_DEBOUNCE,
-  TILE_FETCH_DEBOUNCE,
-);
-
-/**
  * Calculate the zoom level from a list of available resolutions
  *
  * @param {Array<string>} resolutions
- * @param {Scale} scale
+ * @param {types.Scale} scale
  * @returns {number}
  */
 export const calculateZoomLevelFromResolutions = (resolutions, scale) => {
@@ -314,7 +202,7 @@ export const calculateZoomLevelFromResolutions = (resolutions, scale) => {
 };
 
 /**
- * @param {TilesetInfo} tilesetInfo
+ * @param {types.TilesetInfo} tilesetInfo
  * @param {number} zoomLevel
  * @returns {number}
  */
@@ -338,7 +226,7 @@ export const calculateResolution = (tilesetInfo, zoomLevel) => {
 /**
  * Calculate the current zoom level.
  *
- * @param {Scale} scale
+ * @param {types.Scale} scale
  * @param {number} minX
  * @param {number} maxX
  * @param {number} binsPerTile
@@ -382,7 +270,7 @@ export const calculateZoomLevel = (scale, minX, maxX, binsPerTile) => {
  * Returns the tile position and position within the tile for
  * the given element.
  *
- * @param {TilesetInfo} tilesetInfo - The information about this tileset
+ * @param {types.TilesetInfo} tilesetInfo - The information about this tileset
  * @param {number} maxDim - The maximum width of the dataset (only used for tilesets without resolutions)
  * @param {number} dataStartPos - The position where the data begins
  * @param {number} zoomLevel - The (integer) current zoomLevel
@@ -427,7 +315,7 @@ export function calculateTileAndPosInTile(
  * @param {number} zoomLevel - The zoom level at which to find the tiles (can be
  *   calculated using this.calcaulteZoomLevel, but needs to synchronized across
  *   both x and y scales so should be calculated externally)
- * @param {Scale} scale - A d3 scale mapping data domain to visible values
+ * @param {types.Scale} scale - A d3 scale mapping data domain to visible values
  * @param {number} minX - The minimum possible value in the dataset
  * @param {number} _maxX - The maximum possible value in the dataset
  * @param {number} maxZoom - The maximum zoom value in this dataset
@@ -462,7 +350,7 @@ export const calculateTiles = (
 };
 
 /**
- * @param {TilesetInfo} tilesetInfo
+ * @param {types.TilesetInfo} tilesetInfo
  * @param {number} zoomLevel
  * @param {number} binsPerTile
  */
@@ -481,7 +369,7 @@ export const calculateTileWidth = (tilesetInfo, zoomLevel, binsPerTile) => {
  * the minX and maxX values for the region
  *
  * @param {number} resolution - The number of base pairs per bin
- * @param {Scale} scale - The scale to use to calculate the currently visible tiles
+ * @param {types.Scale} scale - The scale to use to calculate the currently visible tiles
  * @param {number} minX - The minimum x position of the tileset
  * @param {number} maxX - The maximum x position of the tileset
  * @param {number=} pixelsPerTile - The number of pixels per tile
@@ -710,7 +598,7 @@ async function json(url, callback, pubSub) {
  *
  * @param {string} server: The server where the data resides
  * @param {string} tilesetUid: The identifier for the dataset
- * @param {(info: Record<string, TilesetInfo>) => void} doneCb: A callback that gets called when the data is retrieved
+ * @param {(info: Record<string, types.TilesetInfo>) => void} doneCb: A callback that gets called when the data is retrieved
  * @param {(error: string) => void} errorCb: A callback that gets called when there is an error
  * @param {import("pub-sub-es").PubSub} pubSub
  * @returns {void}
@@ -753,3 +641,75 @@ const api = {
 };
 
 export default api;
+
+/** @param {string} id */
+function parseTileRequestId(id) {
+  const firstSepIndex = id.indexOf('.');
+  return {
+    tilesetUid: id.substring(0, firstSepIndex),
+    tileId: id.substring(firstSepIndex + 1),
+  };
+}
+
+/**
+ * Creates a buffered batch processor.
+ *
+ * Collects items and processes them in batches based on size and delay.
+ *
+ * @template T
+ * @param {(batch: Array<T>) => void} processBatch - A function to process each batch.
+ * @param {{ batchSize?: number, delay?: number }} [options] - Batch size and delay settings.
+ * @returns {(item: T) => void} - A function to enqueue items.
+ */
+function bufferedBatcher(processBatch, { batchSize = 5, delay = 10 } = {}) {
+  /** @type {ReturnType<typeof setTimeout> | undefined} */
+  let timer;
+
+  /** @type {Array<T>} */
+  const queue = [];
+
+  /** @type {() => void} */
+  const flush = () => {
+    if (!queue.length) return;
+
+    processBatch(queue.splice(0, batchSize));
+
+    timer = queue.length ? setTimeout(flush, delay) : undefined;
+  };
+
+  /** @type {(item: T) => void} */
+  const enqueue = (item) => {
+    queue.push(item);
+    if (queue.length >= batchSize) {
+      flush();
+      return;
+    }
+    if (!timer) {
+      timer = setTimeout(flush, delay);
+    }
+  };
+
+  return enqueue;
+}
+
+/**
+ * Iterator helper to chunk an array into smaller arrways of a fixed size.
+ *
+ * @template T
+ * @param {Array<T>} iterable
+ * @param {number} size
+ * @returns {Generator<Array<T>, void, unknown>}
+ */
+function* chunkIterable(iterable, size) {
+  let chunk = [];
+  for (const item of iterable) {
+    chunk.push(item);
+    if (chunk.length === size) {
+      yield chunk;
+      chunk = [];
+    }
+  }
+  if (chunk.length) {
+    yield chunk;
+  }
+}
