@@ -34,76 +34,50 @@ export let authHeader = null;
  */
 
 /**
+ * Create a function that batches calls at intervals, with a final debounce.
+ *
+ * The returned function collects individual items and executes `processBatch` at the specified interval.
+ * If additional calls occur after the last batch, a final debounce ensures they are included.
+ *
+ * @template T
  * @template {Array<unknown>} Args
  *
- * @param {(ctx: RequestContext, ...args: Args) => void} func
+ * @param {(items: Array<T>, ...args: Args) => void} processBatch
  * @param {number} interval
  * @param {number} finalWait
  */
-const throttleAndDebounce = (func, interval, finalWait) => {
+const delayedBatchExecutor = (processBatch, interval, finalWait) => {
   /** @type {ReturnType<typeof setTimeout> | undefined} */
   let timeout = undefined;
-  /** @type {Array<WrappedTilesRequest>} */
-  let bundledRequest = [];
-  /** @type {Record<string, number>} */
-  let requestMapper = {};
+  /** @type {Array<T>} */
+  let items = [];
   /** @type {number} */
   let blockedCalls = 0;
 
-  /**
-   * @param {WrappedTilesRequest} request
-   * @returns {void}
-   */
-  const bundleRequests = (request) => {
-    const requestId = requestMapper[request.id];
-
-    if (requestId && bundledRequest[requestId]) {
-      bundledRequest[requestId].ids = bundledRequest[requestId].ids.concat(
-        request.ids,
-      );
-    } else {
-      requestMapper[request.id] = bundledRequest.length;
-      bundledRequest.push(request);
-    }
-  };
-
   const reset = () => {
     timeout = undefined;
-    bundledRequest = [];
-    requestMapper = {};
+    items = [];
   };
 
-  /**
-   * @param {WrappedTilesRequest} _request
-   * @param {Args} args
-   */
-  const callFunc = (_request, ...args) => {
+  /** @param {Args} args */
+  const callFunc = (...args) => {
     // NB: In a normal situation we would just call `func(...args)` but since we
-    // modify the first argument and always trigger `reset()` afterwards I created
+    // always trigger `reset()` afterwards I created
     // this helper function to avoid code duplication. Think of this function
     // as the actual function call that is being throttled and debounced.
-    func(
-      {
-        sessionId,
-        requests: bundledRequest,
-      },
-      ...args,
-    );
+    processBatch(items, ...args);
     reset();
   };
 
-  /**
-   * @param {WrappedTilesRequest} request
-   * @param {Args} args
-   */
-  const debounced = (request, ...args) => {
+  /** @param {Args} args */
+  const debounced = (...args) => {
     const later = () => {
       // Since we throttle and debounce we should check whether there were
       // actually multiple attempts to call this function after the most recent
       // throttled call. If there were no more calls we don't have to call
       // the function again.
       if (blockedCalls > 0) {
-        callFunc(request, ...args);
+        callFunc(...args);
         blockedCalls = 0;
       }
     };
@@ -117,25 +91,17 @@ const throttleAndDebounce = (func, interval, finalWait) => {
     reset();
   };
 
-  debounced.immediate = () => {
-    // @ts-expect-error - Does not pass in `args` to function. Fine for functions without additional args... but not type safe!
-    func({
-      sessionId,
-      requests: bundledRequest,
-    });
-  };
-
   let wait = false;
   /**
-   * @param {WrappedTilesRequest} request
+   * @param {T} item
    * @param {Args} args
    */
-  const throttled = (request, ...args) => {
-    bundleRequests(request);
+  const throttled = (item, ...args) => {
+    items.push(item);
 
     if (!wait) {
-      callFunc(request, ...args);
-      debounced(request, ...args);
+      callFunc(...args);
+      debounced(...args);
       wait = true;
       blockedCalls = 0;
       setTimeout(() => {
@@ -158,11 +124,37 @@ export const setTileProxyAuthHeader = (newHeader) => {
 export const getTileProxyAuthHeader = () => authHeader;
 
 /**
- * @param {RequestContext} req
+ * @param {Array<WrappedTilesRequest>} requests
+ * @param {Array<WrappedTilesRequest>} requests
+ */
+const bundleRequests = (requests) => {
+  /** @type {Array<WrappedTilesRequest>} */
+  const bundledRequest = [];
+  /** @type {Record<string, number>} */
+  const requestMapper = {};
+
+  for (const request of requests) {
+    const requestId = requestMapper[request.id];
+
+    if (requestId && bundledRequest[requestId]) {
+      bundledRequest[requestId].ids = bundledRequest[requestId].ids.concat(
+        request.ids,
+      );
+    } else {
+      requestMapper[request.id] = bundledRequest.length;
+      bundledRequest.push(request);
+    }
+  }
+
+  return bundledRequest;
+};
+
+/**
+ * @param {Array<WrappedTilesRequest>} batch
  * @param {import("pub-sub-es").PubSub} pubSub
  */
-export function fetchMultiRequestTiles(req, pubSub) {
-  const requests = req.requests;
+export function fetchMultiRequestTiles(batch, pubSub) {
+  const requests = bundleRequests(batch);
 
   const fetchPromises = [];
 
@@ -206,7 +198,6 @@ export function fetchMultiRequestTiles(req, pubSub) {
 
   for (const server of servers) {
     const ids = Object.keys(requestsByServer[server]);
-    // console.log('ids:', ids);
 
     const requestBody = requestBodyByServer[server];
 
@@ -277,9 +268,11 @@ export function fetchMultiRequestTiles(req, pubSub) {
 }
 
 /**
- * Retrieve a set of tiles from the server
+ * Retrieve a set of tiles from the server.
+ *
+ * @type {(request: WrappedTilesRequest, pubSub: import('pub-sub-es').PubSub) => void}
  */
-export const fetchTilesDebounced = throttleAndDebounce(
+export const fetchTilesDebounced = delayedBatchExecutor(
   fetchMultiRequestTiles,
   TILE_FETCH_DEBOUNCE,
   TILE_FETCH_DEBOUNCE,
