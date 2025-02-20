@@ -28,7 +28,7 @@ export let authHeader = null;
  */
 
 /**
- * Iterator helper to chunk an array into smaller arrways of a fixed size.
+ * Iterator helper to chunk an array into smaller arrays of a fixed size.
  *
  * @template T
  * @param {Iterable<T>} iterable
