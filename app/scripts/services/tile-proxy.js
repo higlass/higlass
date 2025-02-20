@@ -124,37 +124,58 @@ export const setTileProxyAuthHeader = (newHeader) => {
 export const getTileProxyAuthHeader = () => authHeader;
 
 /**
- * @param {Array<WrappedTilesRequest>} requests
- * @param {Array<WrappedTilesRequest>} requests
+ * Merges an array of request objects by combining requests
+ * that share the same `id`, reducing the total number of requests.
+ *
+ * If multiple requests have the same `id`, their `ids` arrays are merged
+ * into a single request entry in the output array.
+ *
+ * @example
+ * ```js
+ * const requests = [
+ *   { id: "A", ids: ["1", "2"] },
+ *   { id: "B", ids: ["3"] },
+ *   { id: "A", ids: ["4", "5"] },
+ * ];
+ *
+ * const bundled = bundleRequests(requests);
+ * console.log(bundled);
+ * // Output:
+ * // [
+ * //   { id: "A", ids: ["1", "2", "4", "5"] },
+ * //   { id: "B", ids: ["3"] }
+ * // ]
+ * ```
+ *
+ * @template {{ id: string, ids: Array<string> }} T
+ * @param {Array<T>} requests - The list of requests to bundle
+ * @returns {Array<T>} - A new array with merged requests
  */
-const bundleRequests = (requests) => {
-  /** @type {Array<WrappedTilesRequest>} */
+export function bundleRequestsById(requests) {
+  /** @type {Array<T>} */
   const bundledRequest = [];
   /** @type {Record<string, number>} */
   const requestMapper = {};
 
   for (const request of requests) {
     const requestId = requestMapper[request.id];
-
-    if (requestId && bundledRequest[requestId]) {
-      bundledRequest[requestId].ids = bundledRequest[requestId].ids.concat(
-        request.ids,
-      );
-    } else {
+    if (requestId === undefined) {
       requestMapper[request.id] = bundledRequest.length;
       bundledRequest.push(request);
+    } else {
+      bundledRequest[requestId].ids.push(...request.ids);
     }
   }
 
   return bundledRequest;
-};
+}
 
 /**
  * @param {Array<WrappedTilesRequest>} batch
  * @param {import("pub-sub-es").PubSub} pubSub
  */
 export function fetchMultiRequestTiles(batch, pubSub) {
-  const requests = bundleRequests(batch);
+  const requests = bundleRequestsById(batch);
 
   const fetchPromises = [];
 
