@@ -132,13 +132,13 @@ describe('bundleRequestsById', () => {
   it('merges requests with the same id', () => {
     expect(
       bundleRequestsById([
-        { id: 'A', ids: ['1', '2'] },
-        { id: 'B', ids: ['3'] },
-        { id: 'A', ids: ['4', '5'] },
+        { id: 'A', ids: ['1', '2'], answer: 42 },
+        { id: 'B', ids: ['3'], bar: 'baz' },
+        { id: 'A', ids: ['4', '5'], answer: 123 },
       ]),
     ).toEqual([
-      { id: 'A', ids: ['1', '2', '4', '5'] },
-      { id: 'B', ids: ['3'] },
+      { id: 'A', ids: ['1', '2', '4', '5'], answer: 42 },
+      { id: 'B', ids: ['3'], bar: 'baz' },
     ]);
   });
 

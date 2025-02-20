@@ -145,21 +145,19 @@ export const getTileProxyAuthHeader = () => authHeader;
  */
 export function bundleRequestsById(requests) {
   /** @type {Array<T>} */
-  const bundledRequest = [];
+  const bundle = [];
   /** @type {Record<string, number>} */
-  const requestMapper = {};
+  const mapper = {};
 
   for (const request of requests) {
-    const requestId = requestMapper[request.id];
-    if (requestId === undefined) {
-      requestMapper[request.id] = bundledRequest.length;
-      bundledRequest.push(request);
-    } else {
-      bundledRequest[requestId].ids.push(...request.ids);
+    if (mapper[request.id] === undefined) {
+      mapper[request.id] = bundle.length;
+      bundle.push({ ...request, ids: [] });
     }
+    bundle[mapper[request.id]].ids.push(...request.ids);
   }
 
-  return bundledRequest;
+  return bundle;
 }
 
 /**
