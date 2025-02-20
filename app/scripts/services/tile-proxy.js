@@ -165,46 +165,53 @@ export function bundleRequestsById(requests) {
  * @param {Array<T>} requests
  */
 export function bundleRequestsByServer(requests) {
-  /** @type {Record<string, Record<string, boolean>>} */
-  const requestsByServer = {};
-
-  /** @type {Record<string, Array<{ tilesetUid: string, tileIds: Array<string>, options: unknown}>>} */
-  const requestBodyByServer = {};
+  /** @typedef {{ tilesetUid: string, tileIds: Array<string>, options: Record<string, any> }} ServerTilesetBody */
+  /** @type {Array<T & { body: Array<ServerTilesetBody> }>} */
+  const bundle = [];
+  /** @type {Record<string, number>} */
+  const mapper = {};
 
   // We're converting the array of IDs into an object in order to filter out duplicated requests.
   // In case different instances request the same data it won't be loaded twice.
   for (const request of requests) {
-    if (!requestsByServer[request.server]) {
-      requestsByServer[request.server] = {};
-      requestBodyByServer[request.server] = [];
+    if (mapper[request.server] === undefined) {
+      mapper[request.server] = bundle.length;
+      bundle.push({ ...request, ids: [], body: [] });
     }
+    const server = bundle[mapper[request.server]];
     for (const id of request.ids) {
-      requestsByServer[request.server][id] = true;
-
+      server.ids.push(id);
       if (request.options) {
         const firstSepIndex = id.indexOf('.');
-        const tilesetUuid = id.substring(0, firstSepIndex);
+        const tilesetUid = id.substring(0, firstSepIndex);
         const tileId = id.substring(firstSepIndex + 1);
-        const tilesetObject = requestBodyByServer[request.server].find(
-          (t) => t.tilesetUid === tilesetUuid,
+        let tilesetObject = server.body.find(
+          (t) => t.tilesetUid === tilesetUid,
         );
-        if (tilesetObject) {
-          tilesetObject.tileIds.push(tileId);
-        } else {
-          requestBodyByServer[request.server].push({
-            tilesetUid: tilesetUuid,
-            tileIds: [tileId],
+        if (!tilesetObject) {
+          tilesetObject = {
+            tilesetUid: tilesetUid,
+            tileIds: [],
             options: request.options,
-          });
+          };
+          server.body.push(tilesetObject);
         }
+        tilesetObject.tileIds.push(tileId);
       }
     }
   }
 
-  return {
-    requestsByServer,
-    requestBodyByServer,
-  };
+  return bundle;
+}
+
+/**
+ * @template {{ id: string, ids: Array<string>, server: string, options?: Record<string, any> }} T
+ * @param {Array<T>} requests
+ */
+function optimizeRequests(requests) {
+  const byRequestId = bundleRequestsById(requests);
+  const byServer = bundleRequestsByServer(byRequestId);
+  return byServer;
 }
 
 /**
@@ -212,15 +219,9 @@ export function bundleRequestsByServer(requests) {
  * @param {import("pub-sub-es").PubSub} pubSub
  */
 export function fetchMultiRequestTiles(requests, pubSub) {
-  const { requestsByServer, requestBodyByServer } = bundleRequestsByServer(
-    bundleRequestsById(requests),
-  );
-
   const fetchPromises = [];
-  for (const server of Object.keys(requestsByServer)) {
-    const ids = Object.keys(requestsByServer[server]);
-
-    const requestBody = requestBodyByServer[server];
+  for (const request of optimizeRequests(requests)) {
+    const ids = [...new Set(request.ids)];
 
     // if we request too many tiles, then the URL can get too long and fail
     // so we'll break up the requests into smaller subsets
@@ -231,7 +232,7 @@ export function fetchMultiRequestTiles(requests, pubSub) {
       );
 
       const renderParams = theseTileIds.map((x) => `d=${x}`).join('&');
-      const outUrl = `${server}/tiles/?${renderParams}&s=${sessionId}`;
+      const outUrl = `${request.server}/tiles/?${renderParams}&s=${sessionId}`;
 
       /** @type {Promise<Record<string, CompletedTileData<TileResponse>>>} */
       const p = new Promise((resolve) => {
@@ -239,17 +240,17 @@ export function fetchMultiRequestTiles(requests, pubSub) {
         const params = {};
 
         params.outUrl = outUrl;
-        params.server = server;
+        params.server = request;
         params.theseTileIds = theseTileIds;
         params.authHeader = authHeader;
 
         workerGetTiles(
           params.outUrl,
-          params.server,
+          request.server,
           params.theseTileIds,
           params.authHeader,
           resolve,
-          requestBody,
+          request.body,
         );
 
         pubSub.publish('requestReceived', outUrl);

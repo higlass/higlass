@@ -161,15 +161,32 @@ describe('bundleRequestsById', () => {
 });
 
 describe('bundleRequestsByServer', () => {
+  /**
+   * @param {ReturnType<typeof bundleRequestsByServer>} requests
+   */
+  function toLegacy(requests) {
+    return {
+      requestsByServer: Object.fromEntries(
+        requests.map((r) => [
+          r.server,
+          Object.fromEntries(r.ids.map((id) => [id, true])),
+        ]),
+      ),
+      requestBodyByServer: Object.fromEntries(
+        requests.map((r) => [r.server, r.body]),
+      ),
+    };
+  }
+
   it('merges requests for the same server and combines ids', () => {
-    expect(
-      bundleRequestsByServer([
-        { server: 'A', ids: ['AA.1', 'AA.2'] },
-        { server: 'B', ids: ['BB.3'] },
-        { server: 'A', ids: ['AA.4', 'AA.5'] },
-        { server: 'A', ids: ['BB.4', 'BB.5'] },
-      ]),
-    ).toMatchInlineSnapshot(`
+    const result = bundleRequestsByServer([
+      { server: 'A', ids: ['AA.1', 'AA.2'] },
+      { server: 'B', ids: ['BB.3'] },
+      { server: 'A', ids: ['AA.4', 'AA.5'] },
+      { server: 'A', ids: ['BB.4', 'BB.5'] },
+    ]);
+    expect(result).toMatchInlineSnapshot();
+    expect(toLegacy(result)).toMatchInlineSnapshot(`
       {
         "requestBodyByServer": {
           "A": [],
@@ -193,14 +210,14 @@ describe('bundleRequestsByServer', () => {
   });
 
   it('creates and appends body entries for request with options', () => {
-    expect(
-      bundleRequestsByServer([
-        { server: 'A', ids: ['AA.1', 'AA.2'], options: { answer: 42 } },
-        { server: 'B', ids: ['BB.3'], options: { name: 'monty' } },
-        { server: 'A', ids: ['AA.4', 'AA.5'] },
-        { server: 'A', ids: ['BB.4', 'BB.5'], options: { name: 'python' } },
-      ]),
-    ).toEqual({
+    const result = bundleRequestsByServer([
+      { server: 'A', ids: ['AA.1', 'AA.2'], options: { answer: 42 } },
+      { server: 'B', ids: ['BB.3'], options: { name: 'monty' } },
+      { server: 'A', ids: ['AA.4', 'AA.5'] },
+      { server: 'A', ids: ['BB.4', 'BB.5'], options: { name: 'python' } },
+    ]);
+    expect(result).toMatchInlineSnapshot();
+    expect(toLegacy(result)).toEqual({
       requestBodyByServer: {
         A: [
           {
@@ -239,12 +256,12 @@ describe('bundleRequestsByServer', () => {
   });
 
   it('returns the same array when all servers are unique', () => {
-    expect(
-      bundleRequestsByServer([
-        { server: 'X', ids: ['foo.10'] },
-        { server: 'Y', ids: ['bar.20', 'bar.30'] },
-      ]),
-    ).toEqual({
+    const result = bundleRequestsByServer([
+      { server: 'X', ids: ['foo.10'] },
+      { server: 'Y', ids: ['bar.20', 'bar.30'] },
+    ]);
+    expect(result).toMatchInlineSnapshot();
+    expect(toLegacy(result)).toEqual({
       requestBodyByServer: {
         X: [],
         Y: [],
@@ -257,11 +274,6 @@ describe('bundleRequestsByServer', () => {
   });
 
   it('returns an empty array when input is empty', () => {
-    expect(bundleRequestsByServer([])).toMatchInlineSnapshot(`
-      {
-        "requestBodyByServer": {},
-        "requestsByServer": {},
-      }
-    `);
+    expect(bundleRequestsByServer([])).toMatchInlineSnapshot([]);
   });
 });
