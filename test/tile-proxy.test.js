@@ -185,7 +185,29 @@ describe('bundleRequestsByServer', () => {
       { server: 'A', ids: ['AA.4', 'AA.5'] },
       { server: 'A', ids: ['BB.4', 'BB.5'] },
     ]);
-    expect(result).toMatchInlineSnapshot();
+    expect(result).toMatchInlineSnapshot(`
+      [
+        {
+          "body": [],
+          "ids": [
+            "AA.1",
+            "AA.2",
+            "AA.4",
+            "AA.5",
+            "BB.4",
+            "BB.5",
+          ],
+          "server": "A",
+        },
+        {
+          "body": [],
+          "ids": [
+            "BB.3",
+          ],
+          "server": "B",
+        },
+      ]
+    `);
     expect(toLegacy(result)).toMatchInlineSnapshot(`
       {
         "requestBodyByServer": {
@@ -214,15 +236,46 @@ describe('bundleRequestsByServer', () => {
       { server: 'A', ids: ['AA.1', 'AA.2'], options: { answer: 42 } },
       { server: 'B', ids: ['BB.3'], options: { name: 'monty' } },
       { server: 'A', ids: ['AA.4', 'AA.5'] },
+      { server: 'A', ids: ['AA.6'], options: { answer: 51 } },
       { server: 'A', ids: ['BB.4', 'BB.5'], options: { name: 'python' } },
     ]);
-    expect(result).toMatchInlineSnapshot();
+    expect(result).toEqual([
+      {
+        ids: ['AA.1', 'AA.2', 'AA.4', 'AA.5', 'AA.6', 'BB.4', 'BB.5'],
+        server: 'A',
+        options: { answer: 42 },
+        body: [
+          {
+            tilesetUid: 'AA',
+            tileIds: ['1', '2', '6'],
+            options: { answer: 42 },
+          },
+          {
+            tilesetUid: 'BB',
+            tileIds: ['4', '5'],
+            options: { name: 'python' },
+          },
+        ],
+      },
+      {
+        ids: ['BB.3'],
+        server: 'B',
+        options: { name: 'monty' },
+        body: [
+          {
+            tilesetUid: 'BB',
+            tileIds: ['3'],
+            options: { name: 'monty' },
+          },
+        ],
+      },
+    ]);
     expect(toLegacy(result)).toEqual({
       requestBodyByServer: {
         A: [
           {
             tilesetUid: 'AA',
-            tileIds: ['1', '2'],
+            tileIds: ['1', '2', '6'],
             options: { answer: 42 },
           },
           {
@@ -245,6 +298,7 @@ describe('bundleRequestsByServer', () => {
           'AA.2': true,
           'AA.4': true,
           'AA.5': true,
+          'AA.6': true,
           'BB.4': true,
           'BB.5': true,
         },
@@ -260,7 +314,18 @@ describe('bundleRequestsByServer', () => {
       { server: 'X', ids: ['foo.10'] },
       { server: 'Y', ids: ['bar.20', 'bar.30'] },
     ]);
-    expect(result).toMatchInlineSnapshot();
+    expect(result).toEqual([
+      {
+        ids: ['foo.10'],
+        server: 'X',
+        body: [],
+      },
+      {
+        ids: ['bar.20', 'bar.30'],
+        server: 'Y',
+        body: [],
+      },
+    ]);
     expect(toLegacy(result)).toEqual({
       requestBodyByServer: {
         X: [],
