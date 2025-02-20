@@ -3,6 +3,7 @@ import { assert, describe, expect, it } from 'vitest';
 import tileProxy, {
   tileDataToPixData,
   bundleRequestsById,
+  bundleRequestsByServer,
 } from '../app/scripts/services/tile-proxy';
 import fakePubSub from '../app/scripts/utils/fake-pub-sub';
 import { defaultColorScale } from './testdata/colorscale-data';
@@ -156,5 +157,111 @@ describe('bundleRequestsById', () => {
 
   it('returns an empty array when input is empty', () => {
     expect(bundleRequestsById([])).toEqual([]);
+  });
+});
+
+describe('bundleRequestsByServer', () => {
+  it('merges requests for the same server and combines ids', () => {
+    expect(
+      bundleRequestsByServer([
+        { server: 'A', ids: ['AA.1', 'AA.2'] },
+        { server: 'B', ids: ['BB.3'] },
+        { server: 'A', ids: ['AA.4', 'AA.5'] },
+        { server: 'A', ids: ['BB.4', 'BB.5'] },
+      ]),
+    ).toMatchInlineSnapshot(`
+      {
+        "requestBodyByServer": {
+          "A": [],
+          "B": [],
+        },
+        "requestsByServer": {
+          "A": {
+            "AA.1": true,
+            "AA.2": true,
+            "AA.4": true,
+            "AA.5": true,
+            "BB.4": true,
+            "BB.5": true,
+          },
+          "B": {
+            "BB.3": true,
+          },
+        },
+      }
+    `);
+  });
+
+  it('creates and appends body entries for request with options', () => {
+    expect(
+      bundleRequestsByServer([
+        { server: 'A', ids: ['AA.1', 'AA.2'], options: { answer: 42 } },
+        { server: 'B', ids: ['BB.3'], options: { name: 'monty' } },
+        { server: 'A', ids: ['AA.4', 'AA.5'] },
+        { server: 'A', ids: ['BB.4', 'BB.5'], options: { name: 'python' } },
+      ]),
+    ).toEqual({
+      requestBodyByServer: {
+        A: [
+          {
+            tilesetUid: 'AA',
+            tileIds: ['1', '2'],
+            options: { answer: 42 },
+          },
+          {
+            tilesetUid: 'BB',
+            tileIds: ['4', '5'],
+            options: { name: 'python' },
+          },
+        ],
+        B: [
+          {
+            tilesetUid: 'BB',
+            tileIds: ['3'],
+            options: { name: 'monty' },
+          },
+        ],
+      },
+      requestsByServer: {
+        A: {
+          'AA.1': true,
+          'AA.2': true,
+          'AA.4': true,
+          'AA.5': true,
+          'BB.4': true,
+          'BB.5': true,
+        },
+        B: {
+          'BB.3': true,
+        },
+      },
+    });
+  });
+
+  it('returns the same array when all servers are unique', () => {
+    expect(
+      bundleRequestsByServer([
+        { server: 'X', ids: ['foo.10'] },
+        { server: 'Y', ids: ['bar.20', 'bar.30'] },
+      ]),
+    ).toEqual({
+      requestBodyByServer: {
+        X: [],
+        Y: [],
+      },
+      requestsByServer: {
+        X: { 'foo.10': true },
+        Y: { 'bar.20': true, 'bar.30': true },
+      },
+    });
+  });
+
+  it('returns an empty array when input is empty', () => {
+    expect(bundleRequestsByServer([])).toMatchInlineSnapshot(`
+      {
+        "requestBodyByServer": {},
+        "requestsByServer": {},
+      }
+    `);
   });
 });

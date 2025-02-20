@@ -161,14 +161,10 @@ export function bundleRequestsById(requests) {
 }
 
 /**
- * @param {Array<WrappedTilesRequest>} batch
- * @param {import("pub-sub-es").PubSub} pubSub
+ * @template {{ ids: Array<string>, server: string, options?: Record<string, any> }} T
+ * @param {Array<T>} requests
  */
-export function fetchMultiRequestTiles(batch, pubSub) {
-  const requests = bundleRequestsById(batch);
-
-  const fetchPromises = [];
-
+export function bundleRequestsByServer(requests) {
   /** @type {Record<string, Record<string, boolean>>} */
   const requestsByServer = {};
 
@@ -205,9 +201,23 @@ export function fetchMultiRequestTiles(batch, pubSub) {
     }
   }
 
-  const servers = Object.keys(requestsByServer);
+  return {
+    requestsByServer,
+    requestBodyByServer,
+  };
+}
 
-  for (const server of servers) {
+/**
+ * @param {Array<WrappedTilesRequest>} requests
+ * @param {import("pub-sub-es").PubSub} pubSub
+ */
+export function fetchMultiRequestTiles(requests, pubSub) {
+  const { requestsByServer, requestBodyByServer } = bundleRequestsByServer(
+    bundleRequestsById(requests),
+  );
+
+  const fetchPromises = [];
+  for (const server of Object.keys(requestsByServer)) {
     const ids = Object.keys(requestsByServer[server]);
 
     const requestBody = requestBodyByServer[server];
@@ -263,7 +273,7 @@ export function fetchMultiRequestTiles(batch, pubSub) {
     }
 
     // trigger the callback for every request
-    for (const request of batch) {
+    for (const request of requests) {
       /** @type {Record<string, CompletedTileData<TileResponse>>} */
       const reqDate = {};
       const { server } = request;
