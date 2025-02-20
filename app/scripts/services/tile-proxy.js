@@ -263,7 +263,7 @@ export function fetchMultiRequestTiles(batch, pubSub) {
     }
 
     // trigger the callback for every request
-    for (const request of requests) {
+    for (const request of batch) {
       /** @type {Record<string, CompletedTileData<TileResponse>>} */
       const reqDate = {};
       const { server } = request;
