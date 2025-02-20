@@ -28,10 +28,26 @@ export let authHeader = null;
  */
 
 /**
- * @typedef RequestContext
- * @property {string} sessionId
- * @property {Array<WrappedTilesRequest & { ids: Array<string> }>} requests
+ * Iterator helper to chunk an array into smaller arrways of a fixed size.
+ *
+ * @template T
+ * @param {Iterable<T>} iterable
+ * @param {number} size
+ * @returns {Generator<Array<T>, void, unknown>}
  */
+function* chunkIterable(iterable, size) {
+  let chunk = [];
+  for (const item of iterable) {
+    chunk.push(item);
+    if (chunk.length === size) {
+      yield chunk;
+      chunk = [];
+    }
+  }
+  if (chunk.length) {
+    yield chunk;
+  }
+}
 
 /**
  * Create a function that batches calls at intervals, with a final debounce.
@@ -161,8 +177,51 @@ export function bundleRequestsById(requests) {
 }
 
 /**
+ * Groups request objects by `server`, merging their `ids` and structuring tileset-related
+ * data into `body`.
+ *
+ * **Note:** The first request for each `server` sets the `options` for all grouped requests.
+ * Each tileset in `body` also inherits these `options`. A tileset is only added to `body`
+ * if the request includes `options`.
+ *
+ * Trevor (2025-02-20): This follows the original "server bundling" logic. It’s unclear if `body` is
+ * actually used in practice. Omitting requests without `options` might be an unintended
+ * behavior, but we're maintaining it for now.
+ *
+ * @example
+ * ```js
+ * const requests = [
+ *   { server: "A", ids: ["tileset1.1", "tileset2.2"], options: { foo: "bar" } },
+ *   { server: "B", ids: ["tileset3.3"], options: { baz: "qux" } },
+ *   { server: "A", ids: ["tileset1.4"] },
+ * ];
+ *
+ * const bundled = bundleRequestsByServer(requests);
+ * console.log(bundled);
+ * // [
+ * //   {
+ * //     server: "A",
+ * //     ids: ["tileset1.1", "tileset2.2", "tileset1.4"],
+ * //     options: { foo: "bar" },
+ * //     body: [
+ * //       { tilesetUid: "tileset1", tileIds: ["1"], options: { foo: "bar" } },
+ * //       { tilesetUid: "tileset2", tileIds: ["2"], options: { foo: "bar" } }
+ * //     ]
+ * //   },
+ * //   {
+ * //     server: "B",
+ * //     ids: ["tileset3.3"],
+ * //     options: { baz: "qux" },
+ * //     body: [
+ * //       { tilesetUid: "tileset3", tileIds: ["3"], options: { baz: "qux" } }
+ * //     ]
+ * //   }
+ * // ]
+ * ```
+ *
  * @template {{ ids: Array<string>, server: string, options?: Record<string, any> }} T
- * @param {Array<T>} requests
+ * @param {Array<T>} requests - The list of requests to bundle
+ * @returns {Array<T & { body: Array<{ tilesetUid: string, tileIds: Array<string>, options: Record<string, any> }> }>} - A new array with merged requests per server
  */
 export function bundleRequestsByServer(requests) {
   /** @typedef {{ tilesetUid: string, tileIds: Array<string>, options: Record<string, any> }} ServerTilesetBody */
@@ -205,13 +264,24 @@ export function bundleRequestsByServer(requests) {
 }
 
 /**
+ * Consolidates requests into a (potentially) smaller, optimized set
+ *
+ * Requests are first bundled to merge duplicates, then grouped by `server` to
+ * consolidate requests targeting the same endpoint. The resulting set is split
+ * into smaller batches based on `maxSize`.
+ *
  * @template {{ id: string, ids: Array<string>, server: string, options?: Record<string, any> }} T
- * @param {Array<T>} requests
+ * @param {Array<T>} requests - The list of requests to optimize.
+ * @param {{ maxSize?: number }} [options] - Configuration options.
  */
-function optimizeRequests(requests) {
+function* optimizeRequests(requests, { maxSize = MAX_FETCH_TILES } = {}) {
   const byRequestId = bundleRequestsById(requests);
   const byServer = bundleRequestsByServer(byRequestId);
-  return byServer;
+  for (const request of byServer) {
+    for (const ids of chunkIterable(new Set(request.ids), maxSize)) {
+      yield { ...request, ids };
+    }
+  }
 }
 
 /**
@@ -221,43 +291,26 @@ function optimizeRequests(requests) {
 export function fetchMultiRequestTiles(requests, pubSub) {
   const fetchPromises = [];
   for (const request of optimizeRequests(requests)) {
-    const ids = [...new Set(request.ids)];
+    const renderParams = request.ids.map((x) => `d=${x}`).join('&');
+    const outUrl = `${request.server}/tiles/?${renderParams}&s=${sessionId}`;
 
-    // if we request too many tiles, then the URL can get too long and fail
-    // so we'll break up the requests into smaller subsets
-    for (let i = 0; i < ids.length; i += MAX_FETCH_TILES) {
-      const theseTileIds = ids.slice(
-        i,
-        i + Math.min(ids.length - i, MAX_FETCH_TILES),
+    /** @type {Promise<Record<string, CompletedTileData<TileResponse>>>} */
+    const p = new Promise((resolve) => {
+      pubSub.publish('requestSent', outUrl);
+
+      workerGetTiles(
+        outUrl,
+        request.server,
+        request.ids,
+        authHeader,
+        resolve,
+        request.body,
       );
 
-      const renderParams = theseTileIds.map((x) => `d=${x}`).join('&');
-      const outUrl = `${request.server}/tiles/?${renderParams}&s=${sessionId}`;
+      pubSub.publish('requestReceived', outUrl);
+    });
 
-      /** @type {Promise<Record<string, CompletedTileData<TileResponse>>>} */
-      const p = new Promise((resolve) => {
-        pubSub.publish('requestSent', outUrl);
-        const params = {};
-
-        params.outUrl = outUrl;
-        params.server = request;
-        params.theseTileIds = theseTileIds;
-        params.authHeader = authHeader;
-
-        workerGetTiles(
-          params.outUrl,
-          request.server,
-          params.theseTileIds,
-          params.authHeader,
-          resolve,
-          request.body,
-        );
-
-        pubSub.publish('requestReceived', outUrl);
-      });
-
-      fetchPromises.push(p);
-    }
+    fetchPromises.push(p);
   }
 
   Promise.all(fetchPromises).then((datas) => {

@@ -12,7 +12,7 @@ import {
   multivecTileDataWithServerAggregation,
 } from './testdata/multivec-data';
 
-describe('tileProxy.json()', () => {
+describe('json', () => {
   it('is a function', () => {
     expect(typeof tileProxy.json).to.eql('function');
   });
@@ -30,7 +30,7 @@ describe('tileProxy.json()', () => {
     }));
 });
 
-describe('tile-proxy text', () => {
+describe('text', () => {
   it('is a function', () => {
     expect(typeof tileProxy.json).to.eql('function');
   });
@@ -178,6 +178,37 @@ describe('bundleRequestsByServer', () => {
     };
   }
 
+  it('bundles requests by server', () => {
+    const result = bundleRequestsByServer([
+      {
+        server: 'A',
+        ids: ['tileset1.1', 'tileset2.2'],
+        options: { foo: 'bar' },
+      },
+      { server: 'B', ids: ['tileset3.3'], options: { baz: 'qux' } },
+      { server: 'A', ids: ['tileset1.4'] },
+    ]);
+    expect(result).toEqual([
+      {
+        server: 'A',
+        ids: ['tileset1.1', 'tileset2.2', 'tileset1.4'],
+        options: { foo: 'bar' },
+        body: [
+          { options: { foo: 'bar' }, tileIds: ['1'], tilesetUid: 'tileset1' },
+          { options: { foo: 'bar' }, tileIds: ['2'], tilesetUid: 'tileset2' },
+        ],
+      },
+      {
+        server: 'B',
+        ids: ['tileset3.3'],
+        options: { baz: 'qux' },
+        body: [
+          { options: { baz: 'qux' }, tileIds: ['3'], tilesetUid: 'tileset3' },
+        ],
+      },
+    ]);
+  });
+
   it('merges requests for the same server and combines ids', () => {
     const result = bundleRequestsByServer([
       { server: 'A', ids: ['AA.1', 'AA.2'] },
@@ -185,50 +216,37 @@ describe('bundleRequestsByServer', () => {
       { server: 'A', ids: ['AA.4', 'AA.5'] },
       { server: 'A', ids: ['BB.4', 'BB.5'] },
     ]);
-    expect(result).toMatchInlineSnapshot(`
-      [
-        {
-          "body": [],
-          "ids": [
-            "AA.1",
-            "AA.2",
-            "AA.4",
-            "AA.5",
-            "BB.4",
-            "BB.5",
-          ],
-          "server": "A",
-        },
-        {
-          "body": [],
-          "ids": [
-            "BB.3",
-          ],
-          "server": "B",
-        },
-      ]
-    `);
-    expect(toLegacy(result)).toMatchInlineSnapshot(`
+    expect(result).toEqual([
       {
-        "requestBodyByServer": {
-          "A": [],
-          "B": [],
+        body: [],
+        ids: ['AA.1', 'AA.2', 'AA.4', 'AA.5', 'BB.4', 'BB.5'],
+        server: 'A',
+      },
+      {
+        body: [],
+        ids: ['BB.3'],
+        server: 'B',
+      },
+    ]);
+    expect(toLegacy(result)).toEqual({
+      requestBodyByServer: {
+        A: [],
+        B: [],
+      },
+      requestsByServer: {
+        A: {
+          'AA.1': true,
+          'AA.2': true,
+          'AA.4': true,
+          'AA.5': true,
+          'BB.4': true,
+          'BB.5': true,
         },
-        "requestsByServer": {
-          "A": {
-            "AA.1": true,
-            "AA.2": true,
-            "AA.4": true,
-            "AA.5": true,
-            "BB.4": true,
-            "BB.5": true,
-          },
-          "B": {
-            "BB.3": true,
-          },
+        B: {
+          'BB.3': true,
         },
-      }
-    `);
+      },
+    });
   });
 
   it('creates and appends body entries for request with options', () => {
@@ -339,6 +357,6 @@ describe('bundleRequestsByServer', () => {
   });
 
   it('returns an empty array when input is empty', () => {
-    expect(bundleRequestsByServer([])).toMatchInlineSnapshot([]);
+    expect(bundleRequestsByServer([])).toEqual([]);
   });
 });
