@@ -2,6 +2,7 @@ import { assert, describe, expect, it } from 'vitest';
 
 import tileProxy, {
   tileDataToPixData,
+  bundleRequestsById,
 } from '../app/scripts/services/tile-proxy';
 import fakePubSub from '../app/scripts/utils/fake-pub-sub';
 import { defaultColorScale } from './testdata/colorscale-data';
@@ -125,4 +126,35 @@ describe('tile-proxy text', () => {
         selectedRowsOptions,
       );
     }));
+});
+
+describe('bundleRequestsById', () => {
+  it('merges requests with the same id', () => {
+    expect(
+      bundleRequestsById([
+        { id: 'A', ids: ['1', '2'], answer: 42 },
+        { id: 'B', ids: ['3'], bar: 'baz' },
+        { id: 'A', ids: ['4', '5'], answer: 123 },
+      ]),
+    ).toEqual([
+      { id: 'A', ids: ['1', '2', '4', '5'], answer: 42 },
+      { id: 'B', ids: ['3'], bar: 'baz' },
+    ]);
+  });
+
+  it('returns the same array when all ids are unique', () => {
+    expect(
+      bundleRequestsById([
+        { id: 'X', ids: ['10'] },
+        { id: 'Y', ids: ['20', '30'] },
+      ]),
+    ).toEqual([
+      { id: 'X', ids: ['10'] },
+      { id: 'Y', ids: ['20', '30'] },
+    ]);
+  });
+
+  it('returns an empty array when input is empty', () => {
+    expect(bundleRequestsById([])).toEqual([]);
+  });
 });
