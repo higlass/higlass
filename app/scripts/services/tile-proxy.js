@@ -61,10 +61,7 @@ const delayedBatchExecutor = (processBatch, interval, finalWait) => {
 
   /** @param {Args} args */
   const callFunc = (...args) => {
-    // NB: In a normal situation we would just call `func(...args)` but since we
-    // always trigger `reset()` afterwards I created
-    // this helper function to avoid code duplication. Think of this function
-    // as the actual function call that is being throttled and debounced.
+    // Flush the "bundle" (of collected items) to the processor
     processBatch(items, ...args);
     reset();
   };
@@ -86,17 +83,13 @@ const delayedBatchExecutor = (processBatch, interval, finalWait) => {
     timeout = setTimeout(later, finalWait);
   };
 
-  debounced.cancel = () => {
-    clearTimeout(timeout);
-    reset();
-  };
-
   let wait = false;
   /**
    * @param {T} item
    * @param {Args} args
    */
   const throttled = (item, ...args) => {
+    // Collect items into the current queue any time the caller makes a request
     items.push(item);
 
     if (!wait) {
@@ -140,7 +133,6 @@ export const getTileProxyAuthHeader = () => authHeader;
  *
  * const bundled = bundleRequests(requests);
  * console.log(bundled);
- * // Output:
  * // [
  * //   { id: "A", ids: ["1", "2", "4", "5"] },
  * //   { id: "B", ids: ["3"] }
