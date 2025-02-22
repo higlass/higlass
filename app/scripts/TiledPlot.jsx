@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { brush, brushX, brushY } from 'd3-brush';
 import { format } from 'd3-format';
 import { pointer, select } from 'd3-selection';
@@ -31,13 +32,13 @@ import withTheme from './hocs/with-theme';
 // Utils
 import {
   dataToGenomicLoci,
-  getDefaultTracksForDatatype,
   getTrackByUid,
   getTrackPositionByUid,
   isWithin,
   sum,
   visitPositionedTracks,
 } from './utils';
+import getDefaultTracksForDatatype from './utils/get-default-track-for-datatype';
 
 // Configs
 import {
@@ -47,11 +48,12 @@ import {
   TRACK_LOCATIONS,
 } from './configs';
 
-import stylesCenterTrack from '../styles/CenterTrack.module.scss'; // eslint-disable-line no-unused-vars
+import clsx from 'clsx';
+import stylesCenterTrack from '../styles/CenterTrack.module.scss';
 // Styles
-import styles from '../styles/TiledPlot.module.scss'; // eslint-disable-line no-unused-vars
+import styles from '../styles/TiledPlot.module.scss';
 
-class TiledPlot extends React.Component {
+export class TiledPlot extends React.Component {
   constructor(props) {
     super(props);
 
@@ -668,7 +670,6 @@ class TiledPlot extends React.Component {
     // .attr('x', d => d.)
   }
 
-  // eslint-disable-next-line camelcase
   UNSAFE_componentWillReceiveProps(newProps) {
     this.addUidsToTracks(newProps.tracks);
 
@@ -719,14 +720,6 @@ class TiledPlot extends React.Component {
     return toUpdate;
   }
 
-  // eslint-disable-next-line camelcase
-  UNSAFE_componentWillUpdate() {
-    /**
-     * Need to determine the offset of this element relative to the canvas on which stuff
-     * will be drawn
-     */
-  }
-
   componentDidUpdate(prevProps, prevState) {
     if (prevState.rangeSelection !== this.state.rangeSelection) {
       let genomicRange = [null, null]; // Default range
@@ -771,9 +764,7 @@ class TiledPlot extends React.Component {
           datatype={TRACKS_INFO_BY_TYPE[series.type].datatype[0]}
           host={this.state.addTrackHost}
           onCancel={() => {
-            this.setState({
-              addDivisorDialog: null,
-            });
+            this.setState({ addDivisorDialog: null });
           }}
           onTracksChosen={(newTrack) => {
             this.handleDivisorChosen(series, newTrack);
@@ -968,9 +959,7 @@ class TiledPlot extends React.Component {
     ).length;
 
     if (allTracksWithTilesetInfos.length === loadedTilesetInfos) {
-      this.setState({
-        init: true,
-      });
+      this.setState({ init: true });
       this.reset = false;
       this.handleZoomToData();
     }
@@ -993,9 +982,7 @@ class TiledPlot extends React.Component {
   }
 
   handleTrackPositionChosen(pTrack, evt) {
-    this.setState({
-      mouseOverOverlayUid: null,
-    });
+    this.setState({ mouseOverOverlayUid: null });
     this.props.chooseTrackHandler(pTrack.track.uid, evt);
   }
 
@@ -1489,7 +1476,8 @@ class TiledPlot extends React.Component {
             ? `overlay-${overlayTrack.type}-track`
             : 'overlay-track';
 
-          const overlayDef = Object.assign({}, overlayTrack, {
+          const overlayDef = {
+            ...overlayTrack,
             uid: overlayTrack.uid || slugid.nice(),
             includes: overlayTrack.includes,
             type,
@@ -1558,7 +1546,7 @@ class TiledPlot extends React.Component {
                 })
                 .filter((x) => x), // filter out null entries
             }),
-          });
+          };
 
           // the 2 * verticalMargin is to make up for the space taken away
           // in render(): this.centerHeight = this.state.height...
@@ -1840,7 +1828,7 @@ class TiledPlot extends React.Component {
       initialYDomain: props.initialYDomain,
       trackSourceServers: props.trackSourceServers,
       zoomable: props.zoomable,
-      draggingHappending: props.draggingHappening,
+      draggingHappening: props.draggingHappening,
     });
   }
 
@@ -2483,7 +2471,10 @@ class TiledPlot extends React.Component {
 
     let centerTrack = (
       <div
-        className="center-track-container"
+        className={clsx(
+          'center-track-container',
+          stylesCenterTrack['center-track-container'],
+        )}
         style={{
           left: this.leftWidth + this.props.paddingLeft,
           top: this.topHeight + this.props.paddingTop,
@@ -2491,14 +2482,16 @@ class TiledPlot extends React.Component {
           height: this.bottomHeight,
           outline: trackOutline,
         }}
-        styleName="stylesCenterTrack.center-track-container"
       />
     );
 
     if (this.props.tracks.center.length) {
       centerTrack = (
         <div
-          className="center-track-container"
+          className={clsx(
+            'center-track-container',
+            stylesCenterTrack['center-track-container'],
+          )}
           style={{
             left: this.leftWidth + this.props.paddingLeft,
             top: this.topHeight + this.props.paddingTop,
@@ -2506,7 +2499,6 @@ class TiledPlot extends React.Component {
             height: this.centerHeight,
             outline: trackOutline,
           }}
-          styleName="stylesCenterTrack.center-track-container"
         >
           <CenterTrack
             configTrackMenuId={this.state.configTrackMenuId}
@@ -2696,6 +2688,7 @@ class TiledPlot extends React.Component {
 
           return (
             <div
+              className={styles[className]}
               key={pTrack.track.uid}
               // we want to remove the mouseOverOverlayUid so that next time we try
               // to choose an overlay track, the previously selected one isn't
@@ -2722,7 +2715,6 @@ class TiledPlot extends React.Component {
                 height: pTrack.height,
                 zIndex: 1,
               }}
-              styleName={`styles.${className}`}
             />
           );
         });
@@ -2768,7 +2760,7 @@ class TiledPlot extends React.Component {
         ref={(c) => {
           this.divTiledPlot = c;
         }}
-        className="tiled-plot-div"
+        className={clsx('tiled-plot-div', styles['tiled-plot'])}
         onClick={this.handleClickBound}
         style={{
           marginBottom: this.props.marginBottom,
@@ -2776,7 +2768,6 @@ class TiledPlot extends React.Component {
           marginRight: this.props.marginRight,
           marginTop: this.props.marginTop,
         }}
-        styleName="styles.tiled-plot"
       >
         {trackRenderer}
         {overlays}
