@@ -104,7 +104,7 @@ export function getValueScale(
  *  asynchronous event occurs (i.e. tiles loaded)
  * @property {() => void} onValueScaleChanged The range of values has changed so we need to inform
  *  the higher ups that the value scale has changed. Only occurs on tracks with ``dense`` data.
- * @property {function} handleTilesetInfoReceived A callback to do something once once the tileset
+ * @property {(t: t.TilesetInfo) => void} [handleTilesetInfoReceived] A callback to do something once once the tileset
  *  info is received. Usually it registers some information about the tileset with its definition
  */
 /**
@@ -235,30 +235,37 @@ class TiledPixiTrack extends PixiTrack {
       ZOOM_DEBOUNCE,
     );
 
-    this.dataFetcher.tilesetInfo((tilesetInfoResult) => {
-      if (!tilesetInfoResult || 'error' in tilesetInfoResult) {
+    this.dataFetcher.tilesetInfo((tilesetInfoResult, tilesetUid) => {
+      if (!tilesetInfoResult) return;
+
+      if (isTilesetInfo(tilesetInfoResult)) {
+        this.tilesetInfo = tilesetInfoResult;
+      } else {
         // no tileset info for this track
         console.warn(
           'Error retrieving tilesetInfo:',
           dataConfig,
-          tilesetInfoResult?.error,
+          tilesetInfoResult.error,
         );
 
-        if (tilesetInfoResult?.error) {
-          this.tilesetInfoError = tilesetInfoResult.error;
-          this.setError(this.tilesetInfoError, 'tilesetInfo');
-        }
-
+        this.setError(tilesetInfoResult.error, 'dataFetcher.tilesetInfo');
         // Fritz: Not sure why it's reset
         // this.trackNotFoundText = '';
-        // @ts-expect-error - From fritz previously
-        this.tilesetInfo = null;
-
+        this.tilesetInfo = undefined;
         return;
       }
 
-      this.tilesetInfo = tilesetInfoResult;
-      if (this.tilesetInfo.chromsizes) {
+      // If the dataConfig contained a fileUrl, then
+      // we need to update the tilesetUid based
+      // on the registration of the fileUrl.
+      if (!this.dataFetcher.dataConfig.tilesetUid) {
+        this.dataFetcher.dataConfig.tilesetUid = tilesetUid;
+      }
+
+      this.tilesetUid = this.dataFetcher.dataConfig.tilesetUid;
+      this.server = this.dataFetcher.dataConfig.server || 'unknown';
+
+      if (this.tilesetInfo?.chromsizes) {
         this.chromInfo = parseChromsizesRows(this.tilesetInfo.chromsizes);
       }
 
@@ -268,20 +275,20 @@ class TiledPixiTrack extends PixiTrack {
         this.maxZoom = +this.tilesetInfo.max_zoom;
       }
 
-      if (this.maxZoom >= 0) {
-        this.maxZoom = Math.min(this.options.maxZoom, this.maxZoom);
-      } else {
-        console.error('Invalid maxZoom on track:', this);
+      if (this.options?.maxZoom) {
+        if (this.options.maxZoom >= 0) {
+          this.maxZoom = Math.min(this.options.maxZoom, this.maxZoom);
+        } else {
+          console.error('Invalid maxZoom on track:', this);
+        }
       }
 
       this.refreshTiles();
 
-      if (handleTilesetInfoReceived)
-        handleTilesetInfoReceived(this.tilesetInfo);
+      handleTilesetInfoReceived?.(this.tilesetInfo);
 
       // @ts-expect-error This should never happen since options is set in Track
-      if (!this.options) this.options = {};
-
+      this.options ??= {};
       this.options.name = this.options.name || this.tilesetInfo.name;
 
       this.checkValueScaleLimits();
