@@ -1,3 +1,5 @@
+// @ts-nocheck
+import clsx from 'clsx';
 import { format } from 'd3-format';
 import PropTypes from 'prop-types';
 import React from 'react';
@@ -15,7 +17,7 @@ import SeriesListSubmenuMixin from './SeriesListSubmenuMixin';
 import { THEME_DARK } from './configs/themes';
 
 // Styles
-import styles from '../styles/ContextMenu.module.scss';
+import classes from '../styles/ContextMenu.module.scss';
 
 class ViewContextMenu extends mix(ContextMenuContainer).with(
   SeriesListSubmenuMixin,
@@ -37,10 +39,11 @@ class ViewContextMenu extends mix(ContextMenuContainer).with(
         )
       : null;
 
-    let styleNames = 'context-menu';
-    if (this.props.theme === THEME_DARK) styleNames += ' context-menu-dark';
     return (
       <div
+        className={clsx(classes['context-menu'], {
+          [classes['context-menu-dark']]: this.props.theme === THEME_DARK,
+        })}
         ref={(c) => {
           this.div = c;
         }}
@@ -49,15 +52,14 @@ class ViewContextMenu extends mix(ContextMenuContainer).with(
           left: this.state.left,
           top: this.state.top,
         }}
-        styleName={styleNames}
       >
         {customItemsWrapped}
 
-        {customItemsWrapped && <hr styleName="context-menu-hr" />}
+        {customItemsWrapped && <hr className={classes['context-menu-hr']} />}
 
         {seriesItems}
 
-        {seriesItems && <hr styleName="context-menu-hr" />}
+        {seriesItems && <hr className={classes['context-menu-hr']} />}
 
         {this.props.genomePositionSearchBox && (
           <ContextMenuItem
@@ -68,7 +70,7 @@ class ViewContextMenu extends mix(ContextMenuContainer).with(
           </ContextMenuItem>
         )}
 
-        <hr styleName="context-menu-hr" />
+        <hr className={classes['context-menu-hr']} />
 
         <ContextMenuItem
           onClick={() =>
@@ -110,7 +112,7 @@ class ViewContextMenu extends mix(ContextMenuContainer).with(
           Add Cross Rule
         </ContextMenuItem>
 
-        <hr styleName="context-menu-hr" />
+        <hr className={classes['context-menu-hr']} />
 
         {this.hasMatrixTrack(this.props.tracks) && (
           <ContextMenuItem
