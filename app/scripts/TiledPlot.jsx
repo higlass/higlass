@@ -15,6 +15,7 @@ import ConfigTrackMenu from './ConfigTrackMenu';
 import ContextMenuContainer from './ContextMenuContainer';
 // Components
 import ContextMenuItem from './ContextMenuItem';
+import CustomTrackDialog from './CustomTrackDialog';
 import DragListeningDiv from './DragListeningDiv';
 import GalleryTracks from './GalleryTracks';
 import HorizontalTiledPlot from './HorizontalTiledPlot';
@@ -113,6 +114,7 @@ export class TiledPlot extends React.Component {
       tracks,
       init: false,
       addTrackPosition: null,
+      customDialog: null,
       mouseOverOverlayUid: null,
       // trackOptions: null
       // trackOptions: trackOptions
@@ -688,7 +690,8 @@ export class TiledPlot extends React.Component {
     const toUpdate =
       thisPropsStr !== nextPropsStr ||
       thisStateStr !== nextStateStr ||
-      this.props.chooseTrackHandler !== nextProps.chooseTrackHandler;
+      this.props.chooseTrackHandler !== nextProps.chooseTrackHandler ||
+      this.props.customDialog !== nextProps.customDialog;
 
     if (toUpdate) this.previousPropsStr = nextPropsStr;
 
@@ -738,6 +741,28 @@ export class TiledPlot extends React.Component {
         dataRange: this.state.rangeSelection,
         genomicRange,
       });
+    }
+
+    if (this.state.customDialog || this.props.customDialog) {
+      const dialogData = this.state.customDialog || this.props.customDialog;
+      if (dialogData.length > 0) {
+        const componentArray = [];
+        const bodyPropsArray = [];
+        dialogData.forEach((dd) => {
+          componentArray.push(dd.bodyComponent);
+          bodyPropsArray.push(dd.bodyProps);
+        });
+
+        this.props.modal.open(
+          <CustomTrackDialog
+            // biome-ignore lint/correctness/noChildrenProp: We should consider refactoring
+            children={componentArray}
+            bodyProps={bodyPropsArray}
+            onCancel={this.props.closeCustomDialog}
+            title={dialogData[0].title}
+          />,
+        );
+      }
     }
 
     if (prevProps.tracks.center !== this.props.tracks.center) {
