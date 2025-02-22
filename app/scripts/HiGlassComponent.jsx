@@ -527,18 +527,16 @@ class HiGlassComponent extends React.Component {
           this.pixiRenderer = new GLOBALS.PIXI.WebGLRenderer(rendererOptions);
         }
         break;
-      case '5':
+      // case '5':
+      // case '6':
+      // case '7': // Gosling uses PIXI.js v7
+      default:
         if (this.props.options.renderer === 'canvas') {
           this.pixiRenderer = new GLOBALS.PIXI.CanvasRenderer(rendererOptions);
         } else {
           this.pixiRenderer = new GLOBALS.PIXI.Renderer(rendererOptions);
         }
         break;
-      default:
-        console.warn(
-          'Deprecation warning: please update Pixi.js to version 5! ' +
-            'This version of Pixi.js is unsupported. Good luck 🤞',
-        );
     }
 
     // PIXI.RESOLUTION=2;
