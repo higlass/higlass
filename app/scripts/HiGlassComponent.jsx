@@ -57,11 +57,11 @@ import {
   // loadChromInfos,
   numericifyVersion,
   objVals,
-  positionedTracksToAllTracks,
   scalesCenterAndK,
   scalesToGenomeLoci,
   visitPositionedTracks,
 } from './utils';
+import positionedTracksToAllTracks from './utils/positioned-tracks-to-all-tracks';
 
 // Configs
 import {
