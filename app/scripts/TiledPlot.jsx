@@ -38,7 +38,7 @@ import {
   sum,
   visitPositionedTracks,
 } from './utils';
-import getDefaultTracksForDatatype from './utils/get-default-track-for-datatype';
+import getDefaultTracksForDataType from './utils/get-default-tracks-for-datatype';
 
 // Configs
 import {
@@ -2071,7 +2071,7 @@ export class TiledPlot extends React.Component {
     const evtJson = this.props.draggingHappening;
     const { datatype } = evtJson;
 
-    const defaultTracks = getDefaultTracksForDatatype(
+    const defaultTracks = getDefaultTracksForDataType(
       datatype,
       evtJson.defaultTracks,
     );
