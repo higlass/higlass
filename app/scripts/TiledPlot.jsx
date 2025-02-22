@@ -2834,6 +2834,8 @@ TiledPlot.propTypes = {
   canvasElement: PropTypes.object,
   chooseTrackHandler: PropTypes.func,
   chromInfoPath: PropTypes.string,
+  customDialog: PropTypes.array,
+  closeCustomDialog: PropTypes.func,
   disableTrackMenu: PropTypes.bool,
   dragging: PropTypes.bool,
   draggingHappening: PropTypes.bool,
