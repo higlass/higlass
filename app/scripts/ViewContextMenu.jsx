@@ -41,12 +41,12 @@ class ViewContextMenu extends mix(ContextMenuContainer).with(
 
     return (
       <div
-        className={clsx(classes['context-menu'], {
-          [classes['context-menu-dark']]: this.props.theme === THEME_DARK,
-        })}
         ref={(c) => {
           this.div = c;
         }}
+        className={clsx(classes['context-menu'], {
+          [classes['context-menu-dark']]: this.props.theme === THEME_DARK,
+        })}
         data-menu-type="ViewContextMenu"
         style={{
           left: this.state.left,
