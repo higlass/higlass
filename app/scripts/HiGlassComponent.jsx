@@ -527,12 +527,6 @@ class HiGlassComponent extends React.Component {
           this.pixiRenderer = new GLOBALS.PIXI.WebGLRenderer(rendererOptions);
         }
         break;
-
-      default:
-        console.warn(
-          'Deprecation warning: please update Pixi.js to version 5! ' +
-            'This version of Pixi.js is unsupported. Good luck 🤞',
-        );
       case '5':
         if (this.props.options.renderer === 'canvas') {
           this.pixiRenderer = new GLOBALS.PIXI.CanvasRenderer(rendererOptions);
@@ -540,6 +534,11 @@ class HiGlassComponent extends React.Component {
           this.pixiRenderer = new GLOBALS.PIXI.Renderer(rendererOptions);
         }
         break;
+      default:
+        console.warn(
+          'Deprecation warning: please update Pixi.js to version 5! ' +
+            'This version of Pixi.js is unsupported. Good luck 🤞',
+        );
     }
 
     // PIXI.RESOLUTION=2;
@@ -842,11 +841,10 @@ class HiGlassComponent extends React.Component {
         ? trackInfo.defaultOptionsByTheme[this.theme]
         : {};
 
-      const defaultOptions = Object.assign(
-        {},
-        trackInfo.defaultOptions,
-        defaultThemeOptions,
-      );
+      const defaultOptions = {
+        ...trackInfo.defaultOptions,
+        ...defaultThemeOptions,
+      };
 
       if (!track.options) {
         track.options = JSON.parse(JSON.stringify(defaultOptions));
@@ -926,16 +924,12 @@ class HiGlassComponent extends React.Component {
 
   closeModal() {
     this.modalRef = null;
-    this.setState({
-      modal: null,
-    });
+    this.setState({ modal: null });
   }
 
   handleEditViewConfig() {
     const { viewConfig: viewConfigTmp } = this.state;
-    this.setState({
-      viewConfigTmp,
-    });
+    this.setState({ viewConfigTmp });
     this.openModal(
       <ViewConfigEditor
         onCancel={() => {
@@ -956,10 +950,7 @@ class HiGlassComponent extends React.Component {
           for (const view of dictValues(views)) {
             this.adjustLayoutToTrackSizes(view);
           }
-          this.setState({
-            views,
-            viewConfig,
-          });
+          this.setState({ views, viewConfig });
         }}
         onSave={(viewConfigJson) => {
           const viewConfig = JSON.parse(viewConfigJson);
@@ -1131,18 +1122,10 @@ class HiGlassComponent extends React.Component {
       for (const track of tracks[trackType]) {
         if (track.type === 'combined' && track.contents) {
           for (const subTrack of track.contents) {
-            allTracks.push({
-              viewId,
-              trackId: subTrack.uid,
-              track: subTrack,
-            });
+            allTracks.push({ viewId, trackId: subTrack.uid, track: subTrack });
           }
         } else {
-          allTracks.push({
-            viewId,
-            trackId: track.uid,
-            track,
-          });
+          allTracks.push({ viewId, trackId: track.uid, track });
         }
       }
     }
@@ -1169,11 +1152,7 @@ class HiGlassComponent extends React.Component {
               });
             }
           } else {
-            allTracks.push({
-              viewId,
-              trackId: track.uid,
-              track,
-            });
+            allTracks.push({ viewId, trackId: track.uid, track });
           }
         }
       }
@@ -1183,15 +1162,11 @@ class HiGlassComponent extends React.Component {
   }
 
   setMouseTool(mouseTool) {
-    this.setState({
-      mouseTool,
-    });
+    this.setState({ mouseTool });
   }
 
   setSizeMode(sizeMode) {
-    this.setState({
-      sizeMode,
-    });
+    this.setState({ sizeMode });
   }
 
   /**
@@ -1427,7 +1402,7 @@ class HiGlassComponent extends React.Component {
    *    Event handler is called with parameters (xScale, yScale)
    */
   addDraggingChangedListener(viewUid, listenerUid, eventHandler) {
-    if (!this.draggingChangedListeners.hasOwnProperty(viewUid)) {
+    if (!(viewUid in this.draggingChangedListeners)) {
       this.draggingChangedListeners[viewUid] = {};
     }
 
@@ -1444,10 +1419,10 @@ class HiGlassComponent extends React.Component {
    * @param listenerUid: The uid of the listener itself.
    */
   removeDraggingChangedListener(viewUid, listenerUid) {
-    if (this.draggingChangedListeners.hasOwnProperty(viewUid)) {
+    if (viewUid in this.draggingChangedListeners) {
       const listeners = this.draggingChangedListeners[viewUid];
 
-      if (listeners.hasOwnProperty(listenerUid)) {
+      if (listenerUid in listeners) {
         // make sure the listener doesn't think we're still
         // dragging
         listeners[listenerUid](false);
@@ -1561,9 +1536,7 @@ class HiGlassComponent extends React.Component {
   handleExportSVG() {
     download(
       'export.svg',
-      new Blob([this.createSVGString()], {
-        type: 'image/svg+xml',
-      }),
+      new Blob([this.createSVGString()], { type: 'image/svg+xml' }),
     );
   }
 
@@ -1691,7 +1664,7 @@ class HiGlassComponent extends React.Component {
 
         // notify the listeners of all locked views that the scales of
         // this view have changed
-        if (this.scalesChangedListeners.hasOwnProperty(key)) {
+        if (key in this.scalesChangedListeners) {
           dictValues(this.scalesChangedListeners[key]).forEach((x) => {
             x(newXScale, newYScale);
           });
@@ -1751,7 +1724,7 @@ class HiGlassComponent extends React.Component {
 
         // notify the listeners of all locked views that the scales of
         // this view have changed
-        if (this.scalesChangedListeners.hasOwnProperty(key)) {
+        if (key in this.scalesChangedListeners) {
           dictValues(this.scalesChangedListeners[key]).forEach((x) => {
             x(newXScale, newYScale);
           });
@@ -2036,6 +2009,7 @@ class HiGlassComponent extends React.Component {
       targetXScale,
       targetYScale,
     );
+
     const [sourceCenterX, sourceCenterY, sourceK] = scalesCenterAndK(
       sourceXScale,
       sourceYScale,
@@ -2064,6 +2038,7 @@ class HiGlassComponent extends React.Component {
       targetXScale,
       targetYScale,
     );
+
     const [sourceCenterX, sourceCenterY, sourceK] = scalesCenterAndK(
       sourceXScale,
       sourceYScale,
@@ -2752,6 +2727,7 @@ class HiGlassComponent extends React.Component {
     }
 
     newTrack.position = position;
+
     const trackInfo = this.getTrackInfo(newTrack.type);
 
     newTrack.width =
@@ -2978,10 +2954,7 @@ class HiGlassComponent extends React.Component {
     // see if we've already created a uid for this view / track combo
     const uid = `${viewUid}.${trackUid}`;
 
-    this.combinedUidToViewTrack[uid] = {
-      view: viewUid,
-      track: trackUid,
-    };
+    this.combinedUidToViewTrack[uid] = { view: viewUid, track: trackUid };
 
     if (this.viewTrackUidsToCombinedUid[viewUid]) {
       if (this.viewTrackUidsToCombinedUid[trackUid]) {
@@ -3312,10 +3285,7 @@ class HiGlassComponent extends React.Component {
     //   }
     // }
 
-    return {
-      locksByViewUid,
-      locksDict,
-    };
+    return { locksByViewUid, locksDict };
   }
 
   getViewsAsJson(views) {
@@ -3493,9 +3463,7 @@ class HiGlassComponent extends React.Component {
       }
     }
 
-    this.setState({
-      views,
-    });
+    this.setState({ views });
   }
 
   /**
@@ -3817,18 +3785,20 @@ class HiGlassComponent extends React.Component {
           ) {
             // Automatically change the extent of the other track to
             // `lower-left``
-            const otherNewOptions = Object.assign({}, otherTrack.options, {
+            const otherNewOptions = {
+              ...otherTrack.options,
               extent: 'lower-left',
               labelPosition: 'bottomLeft',
               colorbarPosition: 'bottomLeft',
-            });
+            };
 
             // Automatically set positions of label and colorbar of the current track
             // to the opposite corner. We don't want overlapping labels.
-            const originalNewOptions = Object.assign({}, options, {
+            const originalNewOptions = {
+              ...options,
               labelPosition: 'topRight',
               colorbarPosition: 'topRight',
-            });
+            };
 
             this.handleTrackOptionsChanged(
               viewUid,
@@ -3860,18 +3830,20 @@ class HiGlassComponent extends React.Component {
             ) {
               // Automatically change the extent of the other track to
               // `upper-right``
-              const otherNewOptions = Object.assign({}, otherTrack.options, {
+              const otherNewOptions = {
+                ...otherTrack.options,
                 extent: 'upper-right',
                 labelPosition: 'topRight',
                 colorbarPosition: 'topRight',
-              });
+              };
 
               // Automatically set positions of label and colorbar of the current track
               // to the opposite corner. We don't want overlapping labels.
-              const originalNewOptions = Object.assign({}, options, {
+              const originalNewOptions = {
+                ...options,
                 labelPosition: 'bottomLeft',
                 colorbarPosition: 'bottomLeft',
-              });
+              };
 
               this.handleTrackOptionsChanged(
                 viewUid,
@@ -3943,7 +3915,7 @@ class HiGlassComponent extends React.Component {
         'right',
         'bottom',
       ]) {
-        if (v.tracks?.hasOwnProperty(trackOrientation)) {
+        if (trackOrientation in (v.tracks ?? {})) {
           // filter out invalid tracks
           v.tracks[trackOrientation] = v.tracks[trackOrientation].filter((t) =>
             this.isTrackValid(t, viewUidsSet),
@@ -4339,9 +4311,7 @@ class HiGlassComponent extends React.Component {
       // (i.e., another browser window or tab).
       // This is also the reason why created some derived boolean variables,
       // like `noHoveredTracks`.
-      const eventDataOnly = {
-        ...evt,
-      };
+      const eventDataOnly = { ...evt };
       eventDataOnly.origEvt = undefined;
       eventDataOnly.track = undefined;
       eventDataOnly.hoveredTracks = undefined;
@@ -4507,6 +4477,10 @@ class HiGlassComponent extends React.Component {
       (track) => !track.isAugmentationTrack,
     );
 
+    // Get the position of the click event relative to the
+    // the track. This is passed on to the track's click handler
+    // so that the track can handle it and potentially return
+    // any additional information (i.e. annotations under the cursor)
     const relTrackPos = hoveredTrack
       ? [
           relPos[0] - hoveredTrack.position[0],
@@ -4525,6 +4499,9 @@ class HiGlassComponent extends React.Component {
       );
 
       if (!trackObj.respondsToPosition(relPos[0], relPos[1])) {
+        // Some tracks may want to click event even if it's outside
+        // of their bounds (an annotation track may want to deselect
+        // an annotation, for example)
         trackObj.clickOutside();
       }
     }
@@ -4533,6 +4510,8 @@ class HiGlassComponent extends React.Component {
 
     for (const track of hoveredTracks) {
       if (track.childTracks) {
+        // This is a combined track so add events for all child
+        // tracks
         for (const subtrack of track.childTracks) {
           clickReturns.push({
             trackUid: subtrack.context.trackUid,
@@ -4542,7 +4521,7 @@ class HiGlassComponent extends React.Component {
           });
         }
 
-        // add an event for the combined track
+        // Add an event for the combined track itself
         clickReturns.push({
           trackUid: track.context.trackUid,
           viewUid: track.context.viewUid,
@@ -4553,6 +4532,8 @@ class HiGlassComponent extends React.Component {
           },
         });
       } else {
+        // Not a combined track so just add an event for
+        // this track
         clickReturns.push({
           trackUid: track.context.trackUid,
           viewUid: track.context.viewUid,
@@ -4736,6 +4717,8 @@ class HiGlassComponent extends React.Component {
 
   render() {
     this.tiledAreasDivs = {};
+    this.tiledAreas = <div className={styles['tiled-area']} />;
+
     this.tiledAreas = <div styleName="styles.tiled-area" />;
 
     // The component needs to be mounted in order for the initial view to have
