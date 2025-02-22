@@ -6,10 +6,11 @@
  * i^T = column * i + row
  * where column: `Math.floor(i / x)` and row: `Math.floor(i / x)`
  *
- * @param {number} x - X dimension of the 2D matrix
- * @param {number} y - Y dimension of the 2D matrix
- * @return {(index: number) => number} Accessor function converting the orignal 1D index into the transposed index
+ * @param  {Integer}  x  X dimension of the 2D matrix
+ * @param  {Integer}  y  Y dimension of the 2D matrix
+ * @return  {Function}   Acessor function converting the orignal 1D index into
+ *   the transposed index
  */
-const accessorTransposition = (x, y) => (i) => (i % x) * y + Math.floor(i / x);
+const accessorTransposition = (x, y) => i => (i % x) * y + Math.floor(i / x);
 
 export default accessorTransposition;

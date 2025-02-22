@@ -1,15 +1,13 @@
-import { deviation, mean, sum, variance } from 'd3-array';
-
-/** @typedef {(values: number[]) => number | undefined} Aggregation */
+import { mean, sum, variance, deviation } from 'd3-array';
 
 /**
  * Get an aggregation function from a function name.
- * @param {'mean' | 'sum' | 'variance' | 'deviation'} name - The type of aggregation.
- * If an unknown string is passed, the mean function will be used (and a warning will be logged).
- * @returns {Aggregation} The function of interest as determined by the string,
+ * @param {string} name The name of an aggregation function
+ * ('mean', 'sum', 'variance', 'deviation'). If an unknown string is passed,
+ * the mean function will be used, and a console warning will be thrown.
+ * @returns {function} The function of interest as determined by the string,
  */
-const getAggregationFunction = (name) => {
-  /** @type {Aggregation} */
+const getAggregationFunction = name => {
   let aggFunc;
   const lowerCaseName = name ? name.toLowerCase() : name;
   switch (lowerCaseName) {
@@ -28,7 +26,7 @@ const getAggregationFunction = (name) => {
     default:
       aggFunc = mean;
       console.warn(
-        'Encountered an unsupported selectedRowsAggregationMode option.',
+        'Encountered an unsupported selectedRowsAggregationMode option.'
       );
   }
   return aggFunc;

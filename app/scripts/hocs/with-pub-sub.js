@@ -1,28 +1,24 @@
 import React from 'react';
 
-import fakePubSub from '../utils/fake-pub-sub';
+import toVoid from '../utils/to-void';
 
-const { Provider, Consumer } = React.createContext(fakePubSub);
+const fake = {
+  __fake__: true,
+  publish: toVoid,
+  subscribe: toVoid,
+  unsubscribe: toVoid
+};
 
-// Trevor: Not sure how to type these HOCs correctly.
-// This is a workaround. See ./with-modal for more information.
+const { Provider, Consumer } = React.createContext(fake);
 
-/** @import { PubSub } from 'pub-sub-es' */
-
-/**
- * @template {typeof React.Component<{ pubSub?: PubSub }>} T
- * @param {T} Component
- * @returns {T}
- */
-function withPubSub(Component) {
-  // @ts-expect-error See comment in ./with-modal
-  return React.forwardRef((props, ref) =>
-    React.createElement(Consumer, null, (/** @type {PubSub} */ pubSub) =>
-      React.createElement(Component, { ref, ...props, pubSub }),
-    ),
-  );
-}
+// Higher order component
+const withPubSub = Component =>
+  React.forwardRef((props, ref) => (
+    <Consumer>
+      {pubSub => <Component ref={ref} {...props} pubSub={pubSub} />}
+    </Consumer>
+  ));
 
 export default withPubSub;
 
-export { Provider };
+export { fake, Provider };

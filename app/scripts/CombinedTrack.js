@@ -1,11 +1,9 @@
-// @ts-nocheck
 import slugid from 'slugid';
 
 class CombinedTrack {
   constructor(context) {
     this.context = context;
     const { tracks, createTrackObject } = context;
-
     this.childTracks = tracks.map(createTrackObject);
     this.createdTracks = {};
     this.uid = slugid.nice();
@@ -27,7 +25,7 @@ class CombinedTrack {
 
     // go through the new track list and create tracks which we don't
     // already have
-    newContents.forEach((nc) => {
+    newContents.forEach(nc => {
       currentTracks.add(nc.uid);
 
       if (nc.uid in this.createdTracks) {
@@ -49,9 +47,9 @@ class CombinedTrack {
     // remove the ones that were previously, but no longer, present
     const knownTracks = new Set(Object.keys(this.createdTracks));
     const exitTracks = new Set(
-      [...knownTracks].filter((x) => !currentTracks.has(x)),
+      [...knownTracks].filter(x => !currentTracks.has(x)),
     );
-    [...exitTracks].forEach((trackUid) => {
+    [...exitTracks].forEach(trackUid => {
       this.createdTracks[trackUid].remove();
       delete this.createdTracks[trackUid];
     });
@@ -109,15 +107,9 @@ class CombinedTrack {
   //   }
   // }
 
-  clickOutside() {
+  click(x, y, evt) {
     for (let i = 0; i < this.childTracks.length; i++) {
-      this.childTracks[i].clickOutside();
-    }
-  }
-
-  click(...args) {
-    for (let i = 0; i < this.childTracks.length; i++) {
-      this.childTracks[i].click(...args);
+      this.childTracks[i].click(x, y, evt);
     }
   }
 
@@ -175,12 +167,11 @@ class CombinedTrack {
   }
 
   minValue(_) {
-    // biome-ignore lint/style/noArguments: Getter/Setter
     if (arguments.length === 0) {
       const minValues = this.childTracks
-        .filter((x) => x.minValue) // filter for tracks which have the minValue function
-        .map((x) => x.minValue()) // get the minValue for each track
-        .filter((x) => x); // filter out undefineds
+        .filter(x => x.minValue) // filter for tracks which have the minValue function
+        .map(x => x.minValue()) // get the minValue for each track
+        .filter(x => x); // filter out undefineds
 
       return Math.min(...minValues);
     }
@@ -193,12 +184,11 @@ class CombinedTrack {
   }
 
   maxValue(_) {
-    // biome-ignore lint/style/noArguments: Getter/Setter
     if (arguments.length === 0) {
       const maxValues = this.childTracks
-        .filter((x) => x.maxValue) // filter for tracks which have the minValue function
-        .map((x) => x.maxValue()) // get the minValue for each track
-        .filter((x) => x); // filter out undefineds
+        .filter(x => x.maxValue) // filter for tracks which have the minValue function
+        .map(x => x.maxValue()) // get the minValue for each track
+        .filter(x => x); // filter out undefineds
 
       return Math.max(...maxValues);
     }
@@ -232,7 +222,7 @@ class CombinedTrack {
       if (childTrack.getMouseOverHtml) {
         const trackHtml = childTrack.getMouseOverHtml(trackX, trackY);
 
-        if (trackHtml?.length) {
+        if (trackHtml && trackHtml.length) {
           mouseOverHtml += trackHtml;
           mouseOverHtml += '<br/>';
         }

@@ -1,17 +1,9 @@
 /**
- * Pure functional reducer. Can be used for currying stuff.
- *
- * @see {@link ./flatten.js}
- *
- * @template T
- * @template U
- *
- * @param {(previousValue: U, currentValue: T, currentIndex: number, array: Array<T>) => U} callbackfn
- * @param {U} initialValue
- * @return {(x: Array<T>) => U}  Curried function that accepts an array to be reduced.
+ * Pure functional reducer. Can be used for currying stuff. Check out
+ *   `flatten.js`.
+ * @param   {function}  f  Reducer function.
+ * @return  {array}  Curried function that accepts an array to be reduced.
  */
-const reduce = (callbackfn, initialValue) => (x) =>
-  x.reduce(callbackfn, initialValue);
+const reduce = f => x => Array.prototype.reduce.call(x, f);
 
-// TODO(Trevor): Not referenced anywhere. Remove?
 export default reduce;

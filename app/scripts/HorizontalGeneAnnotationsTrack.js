@@ -1,4 +1,3 @@
-// @ts-nocheck
 import boxIntersect from 'box-intersect';
 import classifyPoint from 'robust-point-in-polygon';
 
@@ -11,15 +10,14 @@ import HorizontalTiled1DPixiTrack from './HorizontalTiled1DPixiTrack';
 // Services
 import { tileProxy } from './services';
 
-import trackUtils from './track-utils';
 // Utils
-import { colorToHex } from './utils';
+import { colorToHex, trackUtils } from './utils';
 
 // these are default values that are overwritten by the track's options
 const FONT_SIZE = 11;
 const FONT_FAMILY = 'Arial';
 const GENE_LABEL_POS = 'outside';
-const GENE_RECT_HEIGHT = 10;
+const GENE_RECT_HEIGHT = 16;
 const GENE_STRAND_SPACING = 4;
 const MAX_TEXTS = 20;
 const WHITE_HEX = colorToHex('#ffffff');
@@ -60,7 +58,7 @@ const geneClickFunc = (event, track, payload) => {
  */
 const flagOverlappingFillers = (genes, fillers) => {
   const regions = genes.concat(fillers);
-  const boxes = regions.map((x) => [x.xStart, 1, x.xEnd, 1]);
+  const boxes = regions.map(x => [x.xStart, 1, x.xEnd, 1]);
   boxIntersect(boxes, (i, j) => {
     let filler = null;
     let gene = null;
@@ -125,10 +123,10 @@ function externalInitTile(track, tile, options) {
   tile.tileData.sort((a, b) => b.importance - a.importance);
 
   const geneEntries = tile.tileData
-    .filter((td) => td.type !== 'filler')
+    .filter(td => td.type !== 'filler')
     .slice(0, maxGeneEntries);
   const fillerEntries = tile.tileData
-    .filter((td) => td.type === 'filler')
+    .filter(td => td.type === 'filler')
     .slice(0, maxFillerEntries);
 
   tile.tileData = geneEntries.concat(fillerEntries);
@@ -142,8 +140,6 @@ function externalInitTile(track, tile, options) {
     const geneName = geneInfo[3];
     const geneId = track.geneId(geneInfo, td.type);
     const strand = td.strand || geneInfo[5];
-
-    td.strand = td.strand || strand;
 
     let fill = plusStrandColor || DEFAULT_PLUS_STRAND_COLOR;
 
@@ -191,7 +187,7 @@ function renderRects(
   const topY = centerY - height / 2;
   const FILLER_PADDING = 0;
 
-  rects.forEach((td) => {
+  rects.forEach(td => {
     const graphics = new GLOBALS.PIXI.Graphics();
 
     tile.rectGraphics.addChild(graphics);
@@ -215,7 +211,7 @@ function renderRects(
     graphics.interactive = true;
     graphics.buttonMode = true;
 
-    graphics.mouseup = (event) => geneClickFunc(event, track, td);
+    graphics.mouseup = event => geneClickFunc(event, track, td);
     graphics.drawPolygon(poly);
     tile.allRects.push([poly, td.strand, td]);
   });
@@ -236,8 +232,8 @@ function drawExons(
 ) {
   const topY = centerY - height / 2;
 
-  const exonOffsetStarts = exonStarts.split(',').map((x) => +x + chrOffset);
-  const exonOffsetEnds = exonEnds.split(',').map((x) => +x + chrOffset);
+  const exonOffsetStarts = exonStarts.split(',').map(x => +x + chrOffset);
+  const exonOffsetEnds = exonEnds.split(',').map(x => +x + chrOffset);
 
   const xStartPos = track._xScale(txStart);
   const xEndPos = track._xScale(txEnd);
@@ -363,7 +359,7 @@ function renderGeneSymbols(
 ) {
   const topY = centerY - height / 2;
 
-  genes.forEach((gene) => {
+  genes.forEach(gene => {
     const xStart = track._xScale(gene.xStart);
     const xEnd = track._xScale(gene.xEnd);
 
@@ -373,7 +369,7 @@ function renderGeneSymbols(
     graphics.beginFill(color, alpha);
     graphics.interactive = true;
     graphics.buttonMode = true;
-    graphics.mouseup = (evt) => geneClickFunc(evt, track, gene);
+    graphics.mouseup = evt => geneClickFunc(evt, track, gene);
 
     const pointerWidth = track.geneRectHeight / 2;
 
@@ -420,7 +416,7 @@ function renderGeneExons(
   centerY,
   height,
 ) {
-  genes.forEach((gene) => {
+  genes.forEach(gene => {
     const geneInfo = gene.fields;
     const chrOffset = +gene.chrOffset;
 
@@ -432,7 +428,7 @@ function renderGeneExons(
     graphics.beginFill(color, alpha);
     graphics.interactive = true;
     graphics.buttonMode = true;
-    graphics.mouseup = (evt) => geneClickFunc(evt, track, gene);
+    graphics.mouseup = evt => geneClickFunc(evt, track, gene);
 
     tile.allRects = tile.allRects.concat(
       drawExons(
@@ -446,7 +442,7 @@ function renderGeneExons(
         centerY,
         height,
         gene.strand || gene.fields[5],
-      ).map((x) => [x, gene.strand, gene]),
+      ).map(x => [x, gene.strand, gene]),
     );
   });
 }
@@ -524,6 +520,11 @@ class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
     this.animate = animate;
     this.options = options;
 
+    // we're setting these functions to null so that value scale
+    // locking doesn't try to get values from them
+    this.minRawValue = null;
+    this.maxRawValue = null;
+
     this.fontSize = +this.options.fontSize || FONT_SIZE;
     this.geneLabelPos = this.options.geneLabelPosition || GENE_LABEL_POS;
     this.geneRectHeight =
@@ -582,7 +583,7 @@ class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
 
     this.prevOptions = strOptions;
 
-    this.visibleAndFetchedTiles().forEach((tile) => {
+    this.visibleAndFetchedTiles().forEach(tile => {
       this.renderTile(tile);
     });
   }
@@ -616,27 +617,25 @@ class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
     );
 
     let plusFillerRects = tile.tileData.filter(
-      (td) => td.type === 'filler' && td.strand === '+',
+      td => td.type === 'filler' && td.strand === '+',
     );
     let minusFillerRects = tile.tileData.filter(
-      (td) => td.type === 'filler' && td.strand === '-',
+      td => td.type === 'filler' && td.strand === '-',
     );
 
     const plusGenes = tile.tileData.filter(
-      (td) =>
-        td.type !== 'filler' && (td.strand === '+' || td.fields[5] === '+'),
+      td => td.type !== 'filler' && (td.strand === '+' || td.fields[5] === '+'),
     );
     const minusGenes = tile.tileData.filter(
-      (td) =>
-        td.type !== 'filler' && (td.strand === '-' || td.fields[5] === '-'),
+      td => td.type !== 'filler' && (td.strand === '-' || td.fields[5] === '-'),
     );
 
     flagOverlappingFillers(plusGenes, plusFillerRects);
     flagOverlappingFillers(minusGenes, minusFillerRects);
 
     // remove the fillers that are contained within a gene
-    plusFillerRects = plusFillerRects.filter((x) => !x.hide);
-    minusFillerRects = minusFillerRects.filter((x) => !x.hide);
+    plusFillerRects = plusFillerRects.filter(x => !x.hide);
+    minusFillerRects = minusFillerRects.filter(x => !x.hide);
 
     const yMiddle = this.dimensions[1] / 2;
 
@@ -679,8 +678,8 @@ class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
     renderMask(this, tile);
 
     trackUtils.stretchRects(this, [
-      (x) => x.rectGraphics,
-      (x) => x.rectMaskGraphics,
+      x => x.rectGraphics,
+      x => x.rectMaskGraphics,
     ]);
 
     for (const text of Object.values(tile.texts)) {
@@ -722,15 +721,15 @@ class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
     const fontSizeHalf = this.fontSize / 2;
 
     trackUtils.stretchRects(this, [
-      (x) => x.rectGraphics,
-      (x) => x.rectMaskGraphics,
+      x => x.rectGraphics,
+      x => x.rectMaskGraphics,
     ]);
 
     Object.values(this.fetchedTiles)
       // tile hasn't been drawn properly because we likely got some
       // bogus data from the server
-      .filter((tile) => tile.drawnAtScale)
-      .forEach((tile) => {
+      .filter(tile => tile.drawnAtScale)
+      .forEach(tile => {
         tile.textBgGraphics.clear();
         tile.textBgGraphics.beginFill(
           typeof this.options.labelBackgroundColor !== 'undefined'
@@ -743,7 +742,7 @@ class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
 
         if (!tile.initialized) return;
 
-        tile.tileData.forEach((td) => {
+        tile.tileData.forEach(td => {
           // tile probably hasn't been initialized yet
           if (!tile.texts) return;
           if (td.type === 'filler') return;
@@ -847,7 +846,6 @@ class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
         const [minX, minY, maxX, maxY] = allBoxes[i];
         const width = maxX - minX;
         const height = maxY - minY;
-
         allTiles[i].drawRect(
           minX - width / 2,
           minY - height / 2,
@@ -880,7 +878,7 @@ class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
     this.halfRectHHeight = this.dimensions[1] / 2;
 
     // redraw the contents
-    this.visibleAndFetchedTiles().forEach((tile) => {
+    this.visibleAndFetchedTiles().forEach(tile => {
       this.renderTile(tile);
     });
   }
@@ -892,6 +890,19 @@ class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
     this.refreshTiles();
 
     this.draw();
+  }
+
+  contextMenuItems(trackX, trackY) {
+    /* Get a list of context menu items to display and the actions
+       to take */
+
+    // return [
+    //   {
+    //     label: 'Gene Annotations Option 1',
+    //     onClick: () => console.warn('made ya click'),
+    //   },
+    // ];
+    return [];
   }
 
   getMouseOverHtml(trackX, trackY) {
@@ -929,9 +940,8 @@ class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
 
           return `
             <div>
-              <b>${gene.fields[3]}</b><br>
-              <b>Position:</b> ${gene.fields[0]}:${gene.fields[1]}-${gene.fields[2]}<br>
-              <b>Strand:</b> ${gene.fields[5]}
+              <p><b>${gene.fields[3]}</b></p>
+              <p>${gene.fields[0]}:${gene.fields[1]}-${gene.fields[2]} Strand: ${gene.strand}</p>
             </div>
           `;
         }
@@ -960,8 +970,8 @@ class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
     track.appendChild(output);
 
     this.visibleAndFetchedTiles()
-      .filter((tile) => tile.allRects)
-      .forEach((tile) => {
+      .filter(tile => tile.allRects)
+      .forEach(tile => {
         const gTile = document.createElement('g');
         gTile.setAttribute(
           'transform',
@@ -971,7 +981,7 @@ class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
           ${tile.rectGraphics.scale.y})`,
         );
 
-        tile.allRects.forEach((rect) => {
+        tile.allRects.forEach(rect => {
           const r = document.createElement('path');
 
           const poly = rect[0];
@@ -998,8 +1008,8 @@ class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
       });
 
     this.allTexts
-      .filter((text) => text.text.visible)
-      .forEach((text) => {
+      .filter(text => text.text.visible)
+      .forEach(text => {
         const g = document.createElement('g');
         const t = document.createElement('text');
         t.setAttribute('text-anchor', 'middle');

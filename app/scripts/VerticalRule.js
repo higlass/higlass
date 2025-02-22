@@ -1,6 +1,4 @@
-// @ts-nocheck
-
-import { Mixin, mix } from './mixwith';
+import { mix, Mixin } from './mixwith';
 
 import PixiTrack from './PixiTrack';
 import RuleMixin from './RuleMixin';
@@ -8,7 +6,7 @@ import RuleMixin from './RuleMixin';
 import { colorToHex } from './utils';
 
 export const VerticalRuleMixin = Mixin(
-  (superclass) =>
+  superclass =>
     class extends superclass {
       drawVerticalRule(graphics) {
         let stroke = colorToHex(this.options.color || 'black');

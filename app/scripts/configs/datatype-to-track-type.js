@@ -1,11 +1,10 @@
-// @ts-nocheck
-import { TRACKS_INFO } from './tracks-info';
+import { TRACKS_INFO } from '.';
 
-export const DATATYPE_TO_TRACK_TYPE = (orientation) => {
+export const DATATYPE_TO_TRACK_TYPE = orientation => {
   const localDatatypeToTrackType = {};
 
   // can a track be placed in a given orientation
-  const orientationMatches = (trackInfo) => {
+  const orientationMatches = trackInfo => {
     // if the track's orientation matches the given orientation, then yes
     if (trackInfo.orientation === orientation) {
       return true;
@@ -23,14 +22,14 @@ export const DATATYPE_TO_TRACK_TYPE = (orientation) => {
     return false;
   };
 
-  TRACKS_INFO.filter(orientationMatches).forEach((ti) => {
+  TRACKS_INFO.filter(orientationMatches).forEach(ti => {
     let datatypes = ti.datatype;
 
     if (!Array.isArray(ti.datatype)) {
       datatypes = [datatypes];
     }
 
-    datatypes.forEach((datatype) => {
+    datatypes.forEach(datatype => {
       if (!(datatype in localDatatypeToTrackType)) {
         localDatatypeToTrackType[datatype] = [];
       }

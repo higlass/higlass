@@ -1,18 +1,35 @@
-// @ts-nocheck
 import { scaleLinear } from 'd3-scale';
 
 import TiledPixiTrack from './TiledPixiTrack';
 
 import { tileProxy } from './services';
+import trackUtils from './utils/track-utils';
 
-const BINS_PER_TILE = 1024;
+const BINS_PER_TILE_1D = 1024;
+const BINS_PER_TILE_2D = 256;
+
+export function binsPerTile(tilesetInfo) {
+  const bpt =
+    tilesetInfo.bins_per_dimension ||
+    tilesetInfo.tile_size ||
+    // if min_pos.length == 2 then it's a 2D dataset and we're displaying
+    // it here because it's a cross section
+    (tilesetInfo.min_pos && tilesetInfo.min_pos.length === 2
+      ? BINS_PER_TILE_2D
+      : BINS_PER_TILE_1D);
+
+  return bpt;
+}
 
 class Tiled1DPixiTrack extends TiledPixiTrack {
   constructor(context, options) {
     super(context, options);
 
-    const { onMouseMoveZoom, isValueScaleLocked, getLockGroupExtrema } =
-      context;
+    const {
+      onMouseMoveZoom,
+      isValueScaleLocked,
+      getLockGroupExtrema,
+    } = context;
 
     this.onMouseMoveZoom = onMouseMoveZoom;
     this.isValueScaleLocked = isValueScaleLocked;
@@ -53,9 +70,12 @@ class Tiled1DPixiTrack extends TiledPixiTrack {
     /**
      * The tile identifier used on the server
      */
+    const remoteId = this.dataFetcher.dataConfig.chromOrderSource
+      ? `${tile.join('.')},cos:${this.dataFetcher.dataConfig.chromOrderSource}`
+      : `${tile.join('.')}`;
 
     // tile contains [zoomLevel, xPos]
-    return `${tile.join('.')}`;
+    return remoteId;
   }
 
   relevantScale() {
@@ -78,12 +98,12 @@ class Tiled1DPixiTrack extends TiledPixiTrack {
      * @param tiles: A set of tiles which will be considered the currently visible
      * tile positions.
      */
-    this.visibleTiles = tilePositions.map((x) => ({
+    this.visibleTiles = tilePositions.map(x => ({
       tileId: this.tileToLocalId(x),
       remoteId: this.tileToRemoteId(x),
     }));
 
-    this.visibleTileIds = new Set(this.visibleTiles.map((x) => x.tileId));
+    this.visibleTileIds = new Set(this.visibleTiles.map(x => x.tileId));
   }
 
   calculateVisibleTiles() {
@@ -98,7 +118,7 @@ class Tiled1DPixiTrack extends TiledPixiTrack {
 
     if (this.tilesetInfo.resolutions) {
       const sortedResolutions = this.tilesetInfo.resolutions
-        .map((x) => +x)
+        .map(x => +x)
         .sort((a, b) => b - a);
 
       const xTiles = tileProxy.calculateTilesFromResolution(
@@ -106,9 +126,10 @@ class Tiled1DPixiTrack extends TiledPixiTrack {
         this._xScale,
         this.tilesetInfo.min_pos[0],
         this.tilesetInfo.max_pos[0],
+        this.tilesetInfo.bins_per_dimension || this.tilesetInfo.tile_size,
       );
 
-      const tiles = xTiles.map((x) => [this.zoomLevel, x]);
+      const tiles = xTiles.map(x => [this.zoomLevel, x]);
       this.setVisibleTiles(tiles);
       return;
     }
@@ -124,7 +145,22 @@ class Tiled1DPixiTrack extends TiledPixiTrack {
       this.tilesetInfo.max_width,
     );
 
-    const tiles = xTiles.map((x) => [this.zoomLevel, x]);
+    const { tileWidth } = trackUtils.getTilePosAndDimensions(
+      this.tilesetInfo,
+      `${this.zoomLevel}.0`,
+      binsPerTile(this.tilesetInfo),
+    );
+
+    if (tileWidth > this.tilesetInfo.max_tile_width) {
+      this.setError('Zoom in to see details', 'Tiled1DPixiTrack');
+      this.drawError();
+      return;
+    }
+    this.setError('', 'Tiled1DPixiTrack');
+
+    this.drawError();
+
+    const tiles = xTiles.map(x => [this.zoomLevel, x]);
     this.setVisibleTiles(tiles);
   }
 
@@ -139,19 +175,19 @@ class Tiled1DPixiTrack extends TiledPixiTrack {
       // the default bins per tile which should
       // not be used because the right value should be in the tileset info
 
-      const binsPerTile = binsPerTileIn || BINS_PER_TILE;
+      const _binsPerTile = binsPerTileIn || BINS_PER_TILE_1D;
 
       const sortedResolutions = this.tilesetInfo.resolutions
-        .map((x) => +x)
+        .map(x => +x)
         .sort((a, b) => b - a);
 
       const chosenResolution = sortedResolutions[zoomLevel];
 
-      const tileWidth = chosenResolution * binsPerTile;
+      const tileWidth = chosenResolution * _binsPerTile;
       const tileHeight = tileWidth;
 
-      const tileX = chosenResolution * binsPerTile * tilePos[0];
-      const tileY = chosenResolution * binsPerTile * tilePos[1];
+      const tileX = chosenResolution * _binsPerTile * tilePos[0];
+      const tileY = chosenResolution * _binsPerTile * tilePos[1];
 
       return {
         tileX,
@@ -207,14 +243,11 @@ class Tiled1DPixiTrack extends TiledPixiTrack {
     const { tileX, tileWidth } = this.getTilePosAndDimensions(
       tile.tileData.zoomLevel,
       tile.tileData.tilePos,
-      this.tilesetInfo.bins_per_dimension || this.tilesetInfo.tile_size,
+      binsPerTile(this.tilesetInfo),
     );
 
     const tileXScale = scaleLinear()
-      .domain([
-        0,
-        this.tilesetInfo.tile_size || this.tilesetInfo.bins_per_dimension,
-      ])
+      .domain([0, binsPerTile(this.tilesetInfo)])
       .range([tileX, tileX + tileWidth]);
 
     const start = Math.max(
@@ -240,8 +273,11 @@ class Tiled1DPixiTrack extends TiledPixiTrack {
     }
 
     const minimumsPerTile = visibleAndFetchedIds
-      .map((x) => this.fetchedTiles[x])
-      .map((tile) => {
+      .map(x => this.fetchedTiles[x])
+      .map(tile => {
+        // See if tile is in error, because then there's no sense in trying to do anything
+        if (tile.tileData.error) return null;
+
         const ind = this.getIndicesOfVisibleDataInTile(tile);
         return tile.tileData.denseDataExtrema.getMinNonZeroInSubset(ind);
       });
@@ -264,8 +300,11 @@ class Tiled1DPixiTrack extends TiledPixiTrack {
     }
 
     const maximumsPerTile = visibleAndFetchedIds
-      .map((x) => this.fetchedTiles[x])
-      .map((tile) => {
+      .map(x => this.fetchedTiles[x])
+      .map(tile => {
+        // See if tile is in error, because then there's no sense in trying to do anything
+        if (tile.tileData.error) return null;
+
         const ind = this.getIndicesOfVisibleDataInTile(tile);
         return tile.tileData.denseDataExtrema.getMaxNonZeroInSubset(ind);
       });
@@ -293,10 +332,7 @@ class Tiled1DPixiTrack extends TiledPixiTrack {
    */
   getAggregatedVisibleValue(aggregator = 'max') {
     const aggregate = aggregator === 'min' ? Math.min : Math.max;
-    const limit =
-      aggregator === 'min'
-        ? Number.POSITIVE_INFINITY
-        : Number.NEGATIVE_INFINITY;
+    const limit = aggregator === 'min' ? Infinity : -Infinity;
 
     let visibleAndFetchedIds = this.visibleAndFetchedIds();
 
@@ -307,8 +343,8 @@ class Tiled1DPixiTrack extends TiledPixiTrack {
     const visible = this._xScale.range();
 
     return visibleAndFetchedIds
-      .map((x) => this.fetchedTiles[x])
-      .map((tile) => {
+      .map(x => this.fetchedTiles[x])
+      .map(tile => {
         if (!tile.tileData.tilePos) {
           return aggregator === 'min'
             ? this.minVisibleValue()
@@ -318,14 +354,11 @@ class Tiled1DPixiTrack extends TiledPixiTrack {
         const { tileX, tileWidth } = this.getTilePosAndDimensions(
           tile.tileData.zoomLevel,
           tile.tileData.tilePos,
-          this.tilesetInfo.bins_per_dimension || this.tilesetInfo.tile_size,
+          binsPerTile(this.tilesetInfo),
         );
 
         const tileXScale = scaleLinear()
-          .domain([
-            0,
-            this.tilesetInfo.tile_size || this.tilesetInfo.bins_per_dimension,
-          ])
+          .domain([0, binsPerTile(this.tilesetInfo)])
           .range([tileX, tileX + tileWidth]);
 
         const start = Math.max(
@@ -359,8 +392,6 @@ class Tiled1DPixiTrack extends TiledPixiTrack {
       zoomLevel,
       this.tilesetInfo.tile_size,
     );
-
-    // console.log('dataPos:', this._xScale.invert(relPos));
 
     const tilePos = this._xScale.invert(relPos) / tileWidth;
     const tileId = this.tileToLocalId([zoomLevel, Math.floor(tilePos)]);

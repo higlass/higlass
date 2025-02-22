@@ -1,4 +1,3 @@
-// @ts-nocheck
 import PixiTrack from './PixiTrack';
 
 class UnknownPixiTrack extends PixiTrack {
@@ -7,7 +6,7 @@ class UnknownPixiTrack extends PixiTrack {
     // so that the tests checking for retrieved tilesetInfo pass
     this.tilesetInfo = {};
 
-    this.setError(`Unknown track type: ${options.type}`);
+    this.errorTextText = `Unknown track type: ${options.type}`;
   }
 
   zoomed() {

@@ -1,4 +1,3 @@
-// @ts-nocheck
 // Configs
 import { GLOBALS } from './configs';
 
@@ -88,7 +87,6 @@ class LeftTrackModifier {
     /**
      * Either get or set the reference xScale
      */
-    // biome-ignore lint/style/noArguments: Getter/Setter
     if (!arguments.length) {
       return this.originalTrack._refYScale;
     }
@@ -102,7 +100,6 @@ class LeftTrackModifier {
     /**
      * Either get or set the reference yScale
      */
-    // biome-ignore lint/style/noArguments: Getter/Setter
     if (!arguments.length) {
       return this.originalTrack._refXScale;
     }
@@ -112,11 +109,17 @@ class LeftTrackModifier {
     return this;
   }
 
+  selectRect(uid) {
+    /**
+     * Used for annotation tracks to highlight a rectangle.
+     */
+    this.originalTrack.selectRect(uid);
+  }
+
   xScale(_) {
     /**
      * Either get or set the xScale
      */
-    // biome-ignore lint/style/noArguments: Getter/Setter
     if (!arguments.length) {
       return this.originalTrack._xScale;
     }
@@ -130,7 +133,6 @@ class LeftTrackModifier {
     /**
      * Either get or set the yScale
      */
-    // biome-ignore lint/style/noArguments: Getter/Setter
     if (!arguments.length) {
       return this.originalTrack._yScale;
     }
@@ -141,6 +143,10 @@ class LeftTrackModifier {
   }
 
   getMouseOverHtml(trackX, trackY) {
+    if (!this.originalTrack.getMouseOverHtml) {
+      return '';
+    }
+
     return this.originalTrack.getMouseOverHtml(trackY, trackX);
   }
 
@@ -219,8 +225,28 @@ class LeftTrackModifier {
     this.originalTrack.refScalesChanged(refYScale, refXScale);
   }
 
+  get context() {
+    return this.originalTrack.context;
+  }
+
+  get options() {
+    return this.originalTrack.options;
+  }
+
+  get tilesetInfo() {
+    return this.originalTrack.tilesetInfo;
+  }
+
+  get chromInfo() {
+    return this.originalTrack.chromInfo;
+  }
+
   rerender(options) {
     this.originalTrack.rerender(options);
+  }
+
+  animate() {
+    this.originalTrack.animate();
   }
 
   exportSVG() {
@@ -253,6 +279,10 @@ class LeftTrackModifier {
       y >= this.position[1] &&
       y <= this.dimensions[1] + this.position[1]
     );
+  }
+
+  visibleAndFetchedTiles() {
+    return this.originalTrack.visibleAndFetchedTiles();
   }
 }
 

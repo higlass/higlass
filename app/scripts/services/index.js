@@ -6,6 +6,5 @@ export {
   requestsInFlight,
   setTileProxyAuthHeader,
   getTileProxyAuthHeader,
-  authHeader,
+  authHeader
 } from './tile-proxy';
-export { tileResponseToData } from './worker';

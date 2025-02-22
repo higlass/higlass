@@ -1,4 +1,3 @@
-// @ts-nocheck
 import HorizontalTiled1DPixiTrack from './HorizontalTiled1DPixiTrack';
 
 // Configs
@@ -32,8 +31,8 @@ class IdHorizontal1DTiledPixiTrack extends HorizontalTiled1DPixiTrack {
         fontFamily: 'Arial',
         fontSize: 32,
         fill: 0xff1010,
-        align: 'center',
-      },
+        align: 'center'
+      }
     );
 
     // tile.text.y = 100;
@@ -60,7 +59,7 @@ class IdHorizontal1DTiledPixiTrack extends HorizontalTiled1DPixiTrack {
 
     const { tileX, tileWidth } = this.getTilePosAndDimensions(
       tile.tileData.zoomLevel,
-      tile.tileData.tilePos,
+      tile.tileData.tilePos
     );
 
     // the text needs to be scaled down so that it doesn't become huge

@@ -1,23 +1,16 @@
-// @ts-nocheck
-const ndarrayToList = (arr) => {
+import cwise from 'cwise';
+
+const ndarrayToList = arr => {
   const size = arr.shape.reduce((s, x) => s * x, 1);
   const list = new Array(size);
 
-  if (arr.dimension === 1) {
-    let l = 0;
-    for (let i = 0; i < arr.shape[0]; ++i) {
-      list[l] = arr.get(i);
-      l++;
+  cwise({
+    args: ['array', 'scalar', 'scalar'],
+    body: (a, l, i) => {
+      l[i] = a; // eslint-disable-line
+      i++; // eslint-disable-line
     }
-  } else {
-    let l = 0;
-    for (let i = 0; i < arr.shape[0]; ++i) {
-      for (let j = 0; j < arr.shape[1]; ++j) {
-        list[l] = arr.get(i, j);
-        l++;
-      }
-    }
-  }
+  })(arr, list, 0);
 
   return list;
 };

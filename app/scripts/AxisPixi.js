@@ -1,12 +1,9 @@
-// @ts-nocheck
 import { format } from 'd3-format';
 
 // Configs
-import GLOBALS from './configs/globals';
-import { THEME_DARK } from './configs/themes';
+import { GLOBALS, THEME_DARK } from './configs';
 
-// Utils
-import colorToHex from './utils/color-to-hex';
+import { colorToHex } from './utils';
 
 const TICK_HEIGHT = 40;
 const TICK_MARGIN = 0;
@@ -30,7 +27,7 @@ class AxisPixi {
     graphics.lineStyle(
       1,
       this.track.getTheme() === THEME_DARK ? colorToHex('#ffffff') : 0x000000,
-      1,
+      1
     );
 
     // draw the axis line
@@ -51,7 +48,7 @@ class AxisPixi {
     ) {
       this.tickFormat = format('.2');
     } else {
-      this.tickFormat = (x) => x;
+      this.tickFormat = x => x;
     }
 
     while (i < this.tickValues.length) {
@@ -61,7 +58,7 @@ class AxisPixi {
         const newText = new GLOBALS.PIXI.Text(tick, {
           fontSize: `${this.axisTextFontSize}px`,
           fontFamily: this.axisTextFontFamily,
-          fill: color,
+          fill: color
         });
         this.axisTexts.push(newText);
 
@@ -112,7 +109,7 @@ class AxisPixi {
     if (this.track.getTheme() === THEME_DARK) {
       graphics.lineStyle(
         graphics.lineWidth || graphics._lineStyle.width,
-        colorToHex('#ffffff'),
+        colorToHex('#ffffff')
       );
     }
 
@@ -138,7 +135,7 @@ class AxisPixi {
       graphics.moveTo(-TICK_MARGIN, valueScale(tick));
       graphics.lineTo(-(TICK_MARGIN + TICK_LENGTH), valueScale(tick));
 
-      if (this.track?.flipText) {
+      if (this.track && this.track.flipText) {
         this.axisTexts[i].scale.x = -1;
       }
     }
@@ -156,7 +153,7 @@ class AxisPixi {
     if (this.track.getTheme() === THEME_DARK) {
       graphics.lineStyle(
         graphics.lineWidth || graphics._lineStyle.width,
-        colorToHex('#ffffff'),
+        colorToHex('#ffffff')
       );
     }
 
@@ -180,7 +177,7 @@ class AxisPixi {
       graphics.moveTo(TICK_MARGIN, valueScale(tick));
       graphics.lineTo(TICK_MARGIN + TICK_LENGTH, valueScale(tick));
 
-      if (this.track?.flipText) {
+      if (this.track && this.track.flipText) {
         this.axisTexts[i].scale.x = -1;
       }
     }
@@ -228,7 +225,7 @@ class AxisPixi {
 
     let stroke = 'black';
 
-    if (this.track?.options.lineStrokeColor) {
+    if (this.track && this.track.options.lineStrokeColor) {
       stroke = this.track.options.lineStrokeColor;
     }
     // TODO: On the canvas, there is no vertical line beside the scale,
@@ -254,7 +251,7 @@ class AxisPixi {
     // factor out the styling for axis lines
     let stroke = 'black';
 
-    if (this.track?.options.lineStrokeColor) {
+    if (this.track && this.track.options.lineStrokeColor) {
       stroke = this.track.options.lineStrokeColor;
     }
 
@@ -293,7 +290,7 @@ class AxisPixi {
     gAxis.appendChild(bottomTickLine);
     bottomTickLine.setAttribute(
       'd',
-      `M0,${axisHeight} L${+(TICK_MARGIN + TICK_LENGTH)},${axisHeight}`,
+      `M0,${axisHeight} L${+(TICK_MARGIN + TICK_LENGTH)},${axisHeight}`
     );
 
     for (let i = 0; i < this.axisTexts.length; i++) {
@@ -306,7 +303,9 @@ class AxisPixi {
 
       tickLine.setAttribute(
         'd',
-        `M${+TICK_MARGIN},${valueScale(tick)} L${+(TICK_MARGIN + TICK_LENGTH)},${valueScale(tick)}`,
+        `M${+TICK_MARGIN},${valueScale(tick)} L${+(
+          TICK_MARGIN + TICK_LENGTH
+        )},${valueScale(tick)}`
       );
 
       const g = document.createElement('g');
@@ -319,7 +318,7 @@ class AxisPixi {
       g.setAttribute(
         'transform',
         `translate(${text.position.x},${text.position.y})
-             scale(${text.scale.x},${text.scale.y})`,
+             scale(${text.scale.x},${text.scale.y})`
       );
     }
 
@@ -337,7 +336,7 @@ class AxisPixi {
     gAxis.appendChild(bottomTickLine);
     bottomTickLine.setAttribute(
       'd',
-      `M0,${axisHeight} L${-(TICK_MARGIN + TICK_LENGTH)},${axisHeight}`,
+      `M0,${axisHeight} L${-(TICK_MARGIN + TICK_LENGTH)},${axisHeight}`
     );
 
     for (let i = 0; i < this.axisTexts.length; i++) {
@@ -350,7 +349,9 @@ class AxisPixi {
 
       tickLine.setAttribute(
         'd',
-        `M${-TICK_MARGIN},${valueScale(tick)} L${-(TICK_MARGIN + TICK_LENGTH)},${valueScale(tick)}`,
+        `M${-TICK_MARGIN},${valueScale(tick)} L${-(
+          TICK_MARGIN + TICK_LENGTH
+        )},${valueScale(tick)}`
       );
 
       const g = document.createElement('g');
@@ -364,7 +365,7 @@ class AxisPixi {
       g.setAttribute(
         'transform',
         `translate(${text.position.x},${text.position.y})
-             scale(${text.scale.x},${text.scale.y})`,
+             scale(${text.scale.x},${text.scale.y})`
       );
     }
 

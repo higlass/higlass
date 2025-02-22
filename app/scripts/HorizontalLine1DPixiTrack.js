@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { format } from 'd3-format';
 import { scaleLinear } from 'd3-scale';
 
@@ -7,6 +6,18 @@ import HorizontalTiled1DPixiTrack from './HorizontalTiled1DPixiTrack';
 import { colorToHex } from './utils';
 
 class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
+  constructor(context, options) {
+    // Fritz: this smells very hacky!
+    const newContext = {
+      ...context,
+    };
+    newContext.onValueScaleChanged = () => {
+      this.drawAxis(this.valueScale);
+      context.onValueScaleChanged();
+    };
+    super(newContext, options);
+  }
+
   stopHover() {
     this.pMouseOver.clear();
     this.animate();
@@ -51,6 +62,11 @@ class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
   initTile(tile) {
     super.initTile(tile);
 
+    if (tile.tileData?.error) {
+      this.setError(tile.error);
+      return;
+    }
+
     if (!tile.tileData || !tile.tileData.dense) {
       console.warn('emptyTile:', tile);
       return;
@@ -80,7 +96,7 @@ class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
 
     super.draw();
 
-    this.visibleAndFetchedTiles().forEach((tile) => {
+    this.visibleAndFetchedTiles().forEach(tile => {
       this.renderTile(tile);
     });
   }
@@ -88,6 +104,9 @@ class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
   renderTile(tile) {
     // this function is just so that we follow the same pattern as
     // HeatmapTiledPixiTrack.js
+    if (!tile.tileData) return;
+    if (tile.tileData.error) return;
+
     this.drawTile(tile);
     this.drawAxis(this.valueScale);
   }
@@ -168,16 +187,20 @@ class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
 
     for (let i = 0; i < tileValues.length; i++) {
       const xPos = this._xScale(tileXScale(i));
-      const yPos = this.valueScale(tileValues[i] + offsetValue);
+      let yPos = this.valueScale(tileValues[i] + offsetValue);
 
-      if (
+      if (Number.isNaN(tileValues[i]) && this.options.nanAsZero) {
+        yPos = this.valueScale(0 + offsetValue);
+      } else if (
+        Number.isNaN(tileValues[i]) ||
         (this.options.valueScaling === 'log' && tileValues[i] === 0) ||
         Number.isNaN(yPos)
       ) {
+        // Just ignore 1-element segments
         if (currentSegment.length > 1) {
           tile.segments.push(currentSegment);
         }
-        // Just ignore 1-element segments.
+
         currentSegment = [];
         continue;
       }
@@ -296,7 +319,7 @@ class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
       ? this.options.lineStrokeColor
       : 'blue';
 
-    this.visibleAndFetchedTiles().forEach((tile) => {
+    this.visibleAndFetchedTiles().forEach(tile => {
       const g = document.createElement('path');
       g.setAttribute('fill', 'transparent');
       g.setAttribute('stroke', stroke);

@@ -1,8 +1,7 @@
-// @ts-nocheck
 import { scaleLog } from 'd3-scale';
 
-import AxisPixi from './AxisPixi';
 import HorizontalLine1DPixiTrack from './HorizontalLine1DPixiTrack';
+import AxisPixi from './AxisPixi';
 
 import { colorToHex } from './utils';
 
@@ -48,7 +47,7 @@ class ValueIntervalTrack extends HorizontalLine1DPixiTrack {
 
     this.drawAxis(this.valueScale);
 
-    tile.tileData.forEach((td) => {
+    tile.tileData.forEach(td => {
       const fields = td.fields;
 
       const chrOffset = +td.chrOffset;
@@ -68,7 +67,7 @@ class ValueIntervalTrack extends HorizontalLine1DPixiTrack {
         midX - width / 2,
         midY - RECT_HEIGHT / 2,
         width,
-        RECT_HEIGHT,
+        RECT_HEIGHT
       );
     });
   }
@@ -83,13 +82,13 @@ class ValueIntervalTrack extends HorizontalLine1DPixiTrack {
     const min = Math.min.apply(
       null,
       visibleAndFetchedIds.map(
-        (x) =>
+        x =>
           +Math.min(
             ...this.fetchedTiles[x].tileData
-              .filter((y) => !Number.isNaN(y.fields[3]))
-              .map((y) => +y.fields[3]),
-          ),
-      ),
+              .filter(y => !Number.isNaN(y.fields[3]))
+              .map(y => +y.fields[3])
+          )
+      )
     );
 
     return min;
@@ -105,13 +104,13 @@ class ValueIntervalTrack extends HorizontalLine1DPixiTrack {
     const max = Math.max.apply(
       null,
       visibleAndFetchedIds.map(
-        (x) =>
+        x =>
           +Math.max(
             ...this.fetchedTiles[x].tileData
-              .filter((y) => !Number.isNaN(y.fields[3]))
-              .map((y) => +y.fields[3]),
-          ),
-      ),
+              .filter(y => !Number.isNaN(y.fields[3]))
+              .map(y => +y.fields[3])
+          )
+      )
     );
 
     return max;

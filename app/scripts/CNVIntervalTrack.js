@@ -1,6 +1,5 @@
-// @ts-nocheck
-import { range } from 'd3-array';
 import { scaleBand } from 'd3-scale';
+import { range } from 'd3-array';
 import { segmentsToRows } from './utils';
 
 import HorizontalTiled1DPixiTrack from './HorizontalTiled1DPixiTrack';
@@ -26,7 +25,7 @@ class CNVIntervalTrack extends HorizontalTiled1DPixiTrack {
     const seen = new Set();
 
     const segments = allTileData
-      .map((x) => {
+      .map(x => {
         if (seen.has(this.uid(x))) {
           return null;
         }
@@ -36,10 +35,10 @@ class CNVIntervalTrack extends HorizontalTiled1DPixiTrack {
           from: +x[1],
           to: +x[2],
           type: x[4],
-          uid: this.uid(x),
+          uid: this.uid(x)
         };
       })
-      .filter((x) => x); // filter out null values
+      .filter(x => x); // filter out null values
 
     const rows = segmentsToRows(segments);
     this.rows = rows;
@@ -89,7 +88,7 @@ class CNVIntervalTrack extends HorizontalTiled1DPixiTrack {
     const visibleAndFetchedIds = this.visibleAndFetchedIds();
 
     const tileDatas = visibleAndFetchedIds.map(
-      (x) => this.fetchedTiles[x].tileData.discrete,
+      x => this.fetchedTiles[x].tileData.discrete
     );
     const allTileData = [].concat(...tileDatas);
 
@@ -107,7 +106,7 @@ class CNVIntervalTrack extends HorizontalTiled1DPixiTrack {
   }
 
   destroyTile(tile) {
-    tile.tileData.discrete.forEach((x) => {
+    tile.tileData.discrete.forEach(x => {
       const uid = x[x.length - 2];
 
       if (this.seen.has(uid)) {

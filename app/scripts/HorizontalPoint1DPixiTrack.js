@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { scaleLinear, scaleLog } from 'd3-scale';
 import HorizontalLine1DPixiTrack from './HorizontalLine1DPixiTrack';
 import { colorToHex, dictValues } from './utils';
@@ -29,7 +28,7 @@ class HorizontalPoint1DPixiTrack extends HorizontalLine1DPixiTrack {
 
     const { tileX, tileWidth } = this.getTilePosAndDimensions(
       tile.tileData.zoomLevel,
-      tile.tileData.tilePos,
+      tile.tileData.tilePos
     );
     const tileValues = tile.tileData.dense;
 
@@ -70,13 +69,13 @@ class HorizontalPoint1DPixiTrack extends HorizontalLine1DPixiTrack {
     ) {
       console.warn(
         'Negative values present when using a log scale',
-        this.valueScale.domain(),
+        this.valueScale.domain()
       );
       return;
     }
 
     const stroke = colorToHex(
-      this.options.lineStrokeColor ? this.options.lineStrokeColor : 'blue',
+      this.options.lineStrokeColor ? this.options.lineStrokeColor : 'blue'
     );
     // this scale should go from an index in the data array to
     // a position in the genome coordinates
@@ -91,7 +90,7 @@ class HorizontalPoint1DPixiTrack extends HorizontalLine1DPixiTrack {
 
     const squareSide = this.options.pointSize ? this.options.pointSize : 3;
     const pointColor = colorToHex(
-      this.options.pointColor ? this.options.pointColor : 'red',
+      this.options.pointColor ? this.options.pointColor : 'red'
     );
 
     graphics.beginFill(pointColor, 1);
@@ -120,7 +119,7 @@ class HorizontalPoint1DPixiTrack extends HorizontalLine1DPixiTrack {
         xPos - squareSide / 2 / this.pMain.scale.x,
         yPos - squareSide / 2 / this.pMain.scale.y,
         squareSide / this.pMain.scale.x,
-        squareSide / this.pMain.scale.y,
+        squareSide / this.pMain.scale.y
       );
     }
   }
@@ -168,7 +167,7 @@ class HorizontalPoint1DPixiTrack extends HorizontalLine1DPixiTrack {
     track.appendChild(output);
     output.setAttribute(
       'transform',
-      `translate(${this.position[0]},${this.position[1]})`,
+      `translate(${this.position[0]},${this.position[1]})`
     );
 
     for (const tile of this.visibleAndFetchedTiles()) {
@@ -198,7 +197,7 @@ class HorizontalPoint1DPixiTrack extends HorizontalLine1DPixiTrack {
     base.appendChild(gAxis);
     gAxis.setAttribute(
       'transform',
-      `translate(${this.axis.pAxis.position.x}, ${this.axis.pAxis.position.y})`,
+      `translate(${this.axis.pAxis.position.x}, ${this.axis.pAxis.position.y})`
     );
 
     // add the axis to the export
@@ -209,7 +208,7 @@ class HorizontalPoint1DPixiTrack extends HorizontalLine1DPixiTrack {
       // left axis are shown at the beginning of the plot
       const gDrawnAxis = this.axis.exportAxisLeftSVG(
         this.valueScale,
-        this.dimensions[1],
+        this.dimensions[1]
       );
       gAxis.appendChild(gDrawnAxis);
     } else if (
@@ -218,7 +217,7 @@ class HorizontalPoint1DPixiTrack extends HorizontalLine1DPixiTrack {
     ) {
       const gDrawnAxis = this.axis.exportAxisRightSVG(
         this.valueScale,
-        this.dimensions[1],
+        this.dimensions[1]
       );
       gAxis.appendChild(gDrawnAxis);
     }

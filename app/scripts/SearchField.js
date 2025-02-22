@@ -1,12 +1,14 @@
-// @ts-nocheck
 import { bisector } from 'd3-array';
-import { format } from 'd3-format';
-import absToChr from './utils/abs-to-chr';
+import {
+  absToChr,
+  chrPosToPositionString,
+  convertNumberNotation,
+} from './utils';
 
 class SearchField {
   constructor(chromInfo) {
     this.chromInfo = chromInfo;
-    this.chromInfoBisector = bisector((d) => d.pos).left;
+    this.chromInfoBisector = bisector(d => d.pos).left;
   }
 
   scalesToPositionText(xScale, yScale, twoD = false) {
@@ -24,36 +26,7 @@ class SearchField {
     const y1 = absToChr(yScale.domain()[0], this.chromInfo);
     const y2 = absToChr(yScale.domain()[1], this.chromInfo);
 
-    let positionString = null;
-    const stringFormat = format(',d');
-
-    if (x1[0] !== x2[0]) {
-      // different chromosomes
-
-      positionString = `${x1[0]}:${stringFormat(Math.floor(x1[1]))}-${
-        x2[0]
-      }:${stringFormat(Math.ceil(x2[1]))}`;
-    } else {
-      // same chromosome
-
-      positionString = `${x1[0]}:${stringFormat(
-        Math.floor(x1[1]),
-      )}-${stringFormat(Math.ceil(x2[1]))}`;
-    }
-
-    if (twoD) {
-      if (y1[0] !== y2[0]) {
-        // different chromosomes
-        positionString += ` & ${y1[0]}:${stringFormat(Math.floor(y1[1]))}-${
-          y2[0]
-        }:${stringFormat(Math.ceil(y2[1]))}`;
-      } else {
-        // same chromosome
-        positionString += ` & ${y1[0]}:${stringFormat(
-          Math.floor(y1[1]),
-        )}-${stringFormat(Math.ceil(y2[1]))}`;
-      }
-    }
+    let positionString = chrPosToPositionString(x1, x2, y1, y2, twoD);
 
     if (x1[2] <= 0 || x2[2] > 0 || (twoD && (y1[2] <= 0 || y2[2] > 0))) {
       // did any of the coordinates exceed the genome boundaries
@@ -68,59 +41,6 @@ class SearchField {
     return positionString;
   }
 
-  convertNumberNotation(numStr) {
-    // Convert K or M notations
-    // e.g. "1.5M" to "1500000"
-    // or "0.05M" to "50000"
-    // or even "00.05M" or "00.050M" to "50000"
-    let newNumStr = numStr;
-
-    if (
-      !newNumStr.includes('M', newNumStr.length - 1) &&
-      !newNumStr.includes('K', newNumStr.length - 1)
-    ) {
-      // Nothing to convert
-      return newNumStr;
-    }
-
-    let numZerosToAdd = 0;
-    let decPointPosFromEnd = 0;
-
-    // Handle 'M' or 'N' notations
-    if (newNumStr.includes('M', newNumStr.length - 1)) {
-      numZerosToAdd = 6;
-      newNumStr = newNumStr.replace('M', '');
-    } else {
-      numZerosToAdd = 3;
-      newNumStr = newNumStr.replace('K', '');
-    }
-
-    if (Number.isNaN(+newNumStr)) {
-      // Without 'K' or 'M' notation, the string should be converted to a valid number.
-      return numStr;
-    }
-
-    // Drop the needless characters for the simplicity (e.g., "00.5" to "0.5" or "1,000" to "1000").
-    newNumStr = (+newNumStr).toString();
-
-    // Handle a decimal point
-    if (newNumStr.includes('.')) {
-      decPointPosFromEnd = newNumStr.length - 1 - newNumStr.indexOf('.');
-      newNumStr = (+newNumStr.replace('.', '')).toString();
-    }
-
-    const totalZerosToAdd = numZerosToAdd - decPointPosFromEnd;
-    if (totalZerosToAdd < 0) {
-      // The value is smaller than 1 (e.g. "0.00005K")
-      return numStr;
-    }
-
-    // Finally, add zeros at the end.
-    newNumStr += '0'.repeat(totalZerosToAdd);
-
-    return newNumStr;
-  }
-
   parsePosition(positionText, prevChr = null) {
     // Parse chr:position strings...
     // i.e. chr1:1000
@@ -131,7 +51,7 @@ class SearchField {
 
     if (positionParts.length > 1) {
       chr = positionParts[0];
-      pos = +this.convertNumberNotation(positionParts[1].replace(/,/g, '')); // chromosome specified
+      pos = +convertNumberNotation(positionParts[1].replace(/,/g, '')); // chromosome specified
     } else if (positionParts[0] in this.chromInfo.chrPositions) {
       // is this an entire chromosome
       chr = positionParts[0];
@@ -144,7 +64,7 @@ class SearchField {
       }
     } else {
       // no it's just a position without a chromosome
-      pos = +this.convertNumberNotation(positionParts[0].replace(/,/g, '')); // no chromosome specified
+      pos = +convertNumberNotation(positionParts[0].replace(/,/g, '')); // no chromosome specified
       chr = null;
 
       if (prevChr) chr = prevChr;
@@ -193,7 +113,7 @@ class SearchField {
     // shitty ass regex to deal with negative positions
     // (which aren't even valid genomic coordinates)
     let parts = term.split('-'); // split on a
-    parts = parts.filter((d) => d.length > 0);
+    parts = parts.filter(d => d.length > 0);
 
     let range = null;
 
@@ -203,15 +123,14 @@ class SearchField {
 
     if (parts.length > 1) {
       // calculate the range in one direction
-
+      /* eslint-disable no-unused-vars */
       let [chr1, chrPos1, genomePos1] = this.parsePosition(parts[0]);
-
       let [chr2, chrPos2, genomePos2] = this.parsePosition(parts[1], chr1);
+      /* eslint-enable no-unused-vars */
 
       const tempRange1 = [genomePos1, genomePos2];
 
       [chr1, chrPos1, genomePos1] = this.parsePosition(parts[1]);
-
       [chr2, chrPos2, genomePos2] = this.parsePosition(parts[0], chr1);
 
       if (chr1 === null && chr2 !== null) {
@@ -219,7 +138,6 @@ class SearchField {
         // and when we try to search the rever, the first chromosome
         // is null
         // we have to pass in the previous chromosome as a prevChrom
-
         [chr1, chrPos1, genomePos1] = this.parsePosition(parts[1], chr2);
       }
 
@@ -245,7 +163,7 @@ class SearchField {
       ];
     } else {
       // e.g. ("chr1:540340")
-
+      // eslint-disable-next-line no-unused-vars
       const [chr1, chrPos1, pos1] = this.parsePosition(parts[0]);
 
       range = [pos1 - 8000000, pos1 + 8000000];

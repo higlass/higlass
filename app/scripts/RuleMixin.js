@@ -1,8 +1,7 @@
-// @ts-nocheck
 import { Mixin } from './mixwith';
 
 const RuleMixin = Mixin(
-  (superclass) =>
+  superclass =>
     class extends superclass {
       constructor(context, options) {
         super(context, options);
@@ -18,8 +17,8 @@ const RuleMixin = Mixin(
         this.pubSubs.push(
           this.pubSub.subscribe(
             'app.mouseMove',
-            this.mouseMoveHandler.bind(this),
-          ),
+            this.mouseMoveHandler.bind(this)
+          )
         );
       }
 
@@ -40,7 +39,7 @@ const RuleMixin = Mixin(
       respondsToPosition() {
         return this.highlighted;
       }
-    },
+    }
 );
 
 export default RuleMixin;

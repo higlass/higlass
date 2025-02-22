@@ -7,34 +7,12 @@ import {
   svg2DTilesIcon,
   svgArrowheadDomainsIcon,
   svgGeneAnnotationsIcon,
-  svgGeoMapIcon,
-  svgHorizontal1dHeatmap,
   svgHorizontalLineIcon,
+  svgHorizontal1dHeatmap,
   svgVertical1DAxisIcon,
   svgVertical1DTilesIcon,
+  svgGeoMapIcon,
 } from '../icons';
-
-/**
- * @typedef TrackInfo
- * @property {string} type
- * @property {string | string[]} datatype
- * @property {string} orientation
- * @property {string[]=} aliases
- * @property {boolean=} local
- * @property {boolean=} rotatable
- * @property {boolean=} hidden
- * @property {string=} name
- * @property {HTMLElement | null | string=} thumbnail
- * @property {string[]=} availableOptions
- * @property {Record<string, unknown>=} defaultOptions
- * @property {boolean=} exportable
- * @property {Record<string, Record<string, unknown>>=} defaultOptionsByTheme
- * @property {number=} minHeight
- * @property {number=} defaultHeight
- * @property {number=} defaultWidth
- * @property {string=} chromInfoPath
- * @property {boolean=} projection
- */
 
 const osm = {
   type: 'osm-tiles',
@@ -94,12 +72,15 @@ const mapbox = {
   },
 };
 
-/** @type {TrackInfo[]} */
 export const TRACKS_INFO = [
   osm,
-  { ...osm, type: 'osm' },
+  Object.assign({}, osm, {
+    type: 'osm',
+  }),
   mapbox,
-  { ...mapbox, type: 'mapbox' },
+  Object.assign({}, mapbox, {
+    type: 'mapbox',
+  }),
   {
     type: 'left-axis',
     datatype: ['axis'],
@@ -305,6 +286,7 @@ export const TRACKS_INFO = [
       'trackBorderWidth',
       'trackBorderColor',
       'heatmapValueScaling',
+      'zeroValueColor',
     ],
   },
   {
@@ -332,6 +314,7 @@ export const TRACKS_INFO = [
       'axisMargin',
       'lineStrokeWidth',
       'lineStrokeColor',
+      'nanAsZero',
       'valueScaling',
       'valueScaleMin',
       'valueScaleMax',
@@ -358,6 +341,80 @@ export const TRACKS_INFO = [
       axisPositionHorizontal: 'right',
       lineStrokeColor: 'blue',
       lineStrokeWidth: 1,
+      valueScaling: 'linear',
+      trackBorderWidth: 0,
+      trackBorderColor: 'black',
+      labelTextOpacity: 0.4,
+      showMousePosition: false,
+      minHeight: 20,
+      mousePositionColor: '#000000',
+      showTooltip: false,
+    },
+    defaultOptionsByTheme: {
+      [THEME_DARK]: {
+        labelColor: '#ffffff',
+        labelBackgroundColor: '#000000',
+        trackBorderColor: '#ffffff',
+        mousePositionColor: '#ffffff',
+      },
+    },
+  },
+  {
+    type: 'filled-line',
+    datatype: ['multivec'],
+    local: false,
+    orientation: '1d-horizontal',
+    rotatable: true,
+    thumbnail: svgHorizontalLineIcon,
+    availableOptions: [
+      'fillColor',
+      'fillOpacity',
+      'labelPosition',
+      'labelLeftMargin',
+      'labelRightMargin',
+      'labelTopMargin',
+      'labelBottomMargin',
+      'labelShowResolution',
+      'labelShowAssembly',
+      'labelColor',
+      'labelTextOpacity',
+      'labelBackgroundColor',
+      'labelBackgroundOpacity',
+      'axisLabelFormatting',
+      'axisPositionHorizontal',
+      'axisMargin',
+      'strokeSingleSeries',
+      'lineStrokeWidth',
+      'lineStrokeColor',
+      'valueScaling',
+      'valueScaleMin',
+      'valueScaleMax',
+      'trackBorderWidth',
+      'trackBorderColor',
+      'trackType',
+      'showMousePosition',
+      'showTooltip',
+      'mousePositionColor',
+      'aggregationMode',
+      'minHeight',
+    ],
+    defaultOptions: {
+      fillColor: 'grey',
+      fillOpacity: 0.5,
+      labelColor: 'black',
+      labelPosition: 'topLeft',
+      labelLeftMargin: 0,
+      labelRightMargin: 0,
+      labelTopMargin: 0,
+      labelBottomMargin: 0,
+      labelBackgroundColor: 'white',
+      labelShowResolution: false,
+      labelShowAssembly: true,
+      axisLabelFormatting: 'scientific',
+      axisPositionHorizontal: 'right',
+      lineStrokeColor: 'blue',
+      lineStrokeWidth: 1,
+      strokeSingleSeries: 'off',
       valueScaling: 'linear',
       trackBorderWidth: 0,
       trackBorderColor: 'black',
@@ -505,7 +562,6 @@ export const TRACKS_INFO = [
       'selectRows',
       'selectRowsAggregationMode',
       'selectRowsAggregationWithRelativeHeight',
-      'selectRowsAggregationMethod',
       'colorbarBackgroundColor',
       'colorbarPosition',
       'zeroValueColor',
@@ -528,7 +584,6 @@ export const TRACKS_INFO = [
       selectRows: null,
       selectRowsAggregationMode: 'mean',
       selectRowsAggregationWithRelativeHeight: true,
-      selectRowsAggregationMethod: 'client',
       colorbarBackgroundColor: '#ffffff',
       colorbarPosition: 'topRight',
       zeroValueColor: null,
@@ -705,7 +760,7 @@ export const TRACKS_INFO = [
     aliases: ['horizontal-1d-value-interval', 'vertical-1d-value-interval'],
     datatype: ['bed-value'],
     local: false,
-    orientation: '1d-horizontal',
+    orientation: ['1d-horizontal'],
     rotatable: true,
     name: '1D Rectangles',
     availableOptions: [
@@ -756,7 +811,6 @@ export const TRACKS_INFO = [
     datatype: ['1d-projection'],
     local: true,
     hidden: true,
-    projection: true,
     orientation: '1d-vertical',
     name: 'Viewport Projection',
     thumbnail: 'viewport-projection-center.png',
@@ -764,6 +818,7 @@ export const TRACKS_INFO = [
       'projectionFillColor',
       'projectionStrokeColor',
       'strokeWidth',
+      'viewNameOpacity',
     ],
     defaultOptions: {
       projectionFillColor: '#777',
@@ -771,6 +826,7 @@ export const TRACKS_INFO = [
       projectionFillOpacity: 0.3,
       projectionStrokeOpacity: 0.7,
       strokeWidth: 1,
+      viewNameOpacity: 0.7,
     },
   },
   {
@@ -778,7 +834,6 @@ export const TRACKS_INFO = [
     datatype: ['1d-projection'],
     local: true,
     hidden: true,
-    projection: true,
     orientation: '1d-horizontal',
     name: 'Viewport Projection',
     thumbnail: 'viewport-projection-center.png',
@@ -786,6 +841,7 @@ export const TRACKS_INFO = [
       'projectionFillColor',
       'projectionStrokeColor',
       'strokeWidth',
+      'viewNameOpacity',
     ],
     defaultOptions: {
       projectionFillColor: '#777',
@@ -793,6 +849,7 @@ export const TRACKS_INFO = [
       projectionFillOpacity: 0.3,
       projectionStrokeOpacity: 0.7,
       strokeWidth: 1,
+      viewNameOpacity: 0.7,
     },
   },
   {
@@ -800,7 +857,6 @@ export const TRACKS_INFO = [
     datatype: ['2d-projection'],
     local: true,
     hidden: true,
-    projection: true,
     orientation: '2d',
     name: 'Viewport Projection',
     thumbnail: 'viewport-projection-center.png',
@@ -808,6 +864,7 @@ export const TRACKS_INFO = [
       'projectionFillColor',
       'projectionStrokeColor',
       'strokeWidth',
+      'viewNameOpacity',
     ],
     defaultOptions: {
       projectionFillColor: '#777',
@@ -815,6 +872,7 @@ export const TRACKS_INFO = [
       projectionFillOpacity: 0.3,
       projectionStrokeOpacity: 0.7,
       strokeWidth: 1,
+      viewNameOpacity: 0.7,
     },
   },
   {
@@ -823,8 +881,6 @@ export const TRACKS_INFO = [
     datatype: ['gene-annotation'],
     local: false,
     defaultHeight: 90,
-    defaultWidth: 90,
-    rotatable: true,
     orientation: '1d-horizontal',
     name: 'Gene Annotations',
     thumbnail: svgGeneAnnotationsIcon,
@@ -916,7 +972,7 @@ export const TRACKS_INFO = [
       'horizontal-2d-rectangle-domains',
       'vertical-2d-rectangle-domains',
     ],
-    datatype: ['2d-rectangle-domains'],
+    datatype: ['bedpe', '2d-rectangle-domains'],
     local: false,
     orientation: '1d-horizontal',
     rotatable: true,
@@ -937,6 +993,7 @@ export const TRACKS_INFO = [
       'rectangleDomainStrokeColor',
       'rectangleDomainOpacity',
       'minSquareSize',
+      'showTexts',
     ],
     defaultOptions: {
       labelColor: 'black',
@@ -951,6 +1008,7 @@ export const TRACKS_INFO = [
       rectangleDomainStrokeColor: 'black',
       rectangleDomainOpacity: 0.6,
       minSquareSize: 'none',
+      showTexts: true,
     },
   },
   {
@@ -962,6 +1020,8 @@ export const TRACKS_INFO = [
     thumbnail: svgArrowheadDomainsIcon,
     availableOptions: [
       'flipDiagonal',
+      'fontColor',
+      'fontSize',
       'labelPosition',
       'labelLeftMargin',
       'labelRightMargin',
@@ -973,13 +1033,15 @@ export const TRACKS_INFO = [
       'trackBorderWidth',
       'trackBorderColor',
       'rectangleDomainFillColor',
-      'rectangleDomainFillOpacity',
       'rectangleDomainStrokeColor',
       'rectangleDomainOpacity',
       'minSquareSize',
+      'showTexts',
     ],
     defaultOptions: {
       flipDiagonal: 'none',
+      fontColor: 'black',
+      fontSize: '10',
       labelColor: 'black',
       labelPosition: 'hidden',
       labelLeftMargin: 0,
@@ -989,10 +1051,10 @@ export const TRACKS_INFO = [
       trackBorderWidth: 0,
       trackBorderColor: 'black',
       rectangleDomainFillColor: 'grey',
-      rectangleDomainFillOpacity: 0.4,
       rectangleDomainStrokeColor: 'black',
       rectangleDomainOpacity: 0.6,
       minSquareSize: 'none',
+      showTexts: false,
     },
   },
   {
@@ -1069,6 +1131,7 @@ export const TRACKS_INFO = [
       'hoverColor',
       'selectColor',
       'exclude',
+      'showTexts',
       'trackBorderBgWidth',
       'trackBorderBgColor',
       'trackBorderBgAlpha',
@@ -1085,11 +1148,14 @@ export const TRACKS_INFO = [
       rectangleDomainFillColor: 'grey',
       rectangleDomainStrokeColor: 'black',
       rectangleDomainOpacity: 0.6,
+      rectanlgeMinSize: 1,
+      polygonMinBoundingSize: 0,
       minSquareSize: 'none',
       isClickable: false,
       hoverColor: 'orange',
       selectColor: 'fuchsia',
       exclude: [],
+      showTexts: true,
       trackBorderBgWidth: 0,
       trackBorderBgColor: 'black',
       trackBorderBgAlpha: 0.33,
@@ -1215,7 +1281,6 @@ export const TRACKS_INFO = [
       'mousePositionColor',
       'tickPositions',
       'tickFormat',
-      'reverseOrientation',
     ],
     defaultOptions: {
       color: '#808080',
@@ -1224,7 +1289,6 @@ export const TRACKS_INFO = [
       fontIsLeftAligned: false,
       showMousePosition: false,
       mousePositionColor: '#000000',
-      reverseOrientation: false,
     },
     defaultOptionsByTheme: {
       [THEME_DARK]: {
@@ -1375,7 +1439,69 @@ export const TRACKS_INFO = [
       colorRange: ['#000000', '#652537', '#bf5458', '#fba273', '#ffffe0'],
       colorEncodingRange: false,
       separatePlusMinusStrands: true,
-      annotationHeight: 16,
+      annotationHeight: 'scaled',
+    },
+  },
+  {
+    type: '1d-annotations',
+    datatype: ['bedlike'],
+    aliases: ['vertical-bedlike'],
+    local: false,
+    orientation: '1d-horizontal',
+    rotatable: true,
+    name: 'BED-like track',
+    thumbnail: null,
+    availableOptions: [
+      'alternating',
+      'annotationHeight',
+      'annotationStyle',
+      'fillColor',
+      'fillOpacity',
+      'fontColor',
+      'fontSize',
+      'labelBottomMargin',
+      'labelColor',
+      'labelLeftMargin',
+      'labelPosition',
+      'labelRightMargin',
+      'labelTopMargin',
+      'labelTextOpacity',
+      'labelBackgroundOpacity',
+      'maxAnnotationHeight',
+      'minHeight',
+      'trackBorderWidth',
+      'trackBorderColor',
+      'valueColumn',
+      'colorEncoding',
+      'colorEncodingRange',
+      'separatePlusMinusStrands',
+      'axisPositionHorizontal',
+      'axisMargin',
+      'showTexts',
+    ],
+    defaultOptions: {
+      alternating: false,
+      annotationStyle: 'box',
+      fillColor: 'blue',
+      fillOpacity: 0.3,
+      fontSize: '10',
+      axisPositionHorizontal: 'right',
+      labelColor: 'black',
+      labelPosition: 'hidden',
+      labelLeftMargin: 0,
+      labelRightMargin: 0,
+      labelTopMargin: 0,
+      labelBottomMargin: 0,
+      minHeight: 20,
+      maxAnnotationHeight: null,
+      trackBorderWidth: 0,
+      trackBorderColor: 'black',
+      valueColumn: null,
+      colorEncoding: 'itemRgb',
+      colorEncodingRange: false,
+      separatePlusMinusStrands: true,
+      annotationHeight: 'scaled',
+      showTexts: true,
     },
   },
   {
