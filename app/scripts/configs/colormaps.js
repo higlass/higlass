@@ -1,4 +1,3 @@
-// @ts-nocheck
 export const HEATED_OBJECT_MAP = [
   [0, 0, 0, 255],
   [35, 0, 0, 255],
@@ -255,7 +254,7 @@ export const HEATED_OBJECT_MAP = [
   [255, 255, 240, 255],
   [255, 255, 244, 255],
   [255, 255, 247, 255],
-  [255, 255, 255, 0],
+  [255, 255, 255, 0]
 ];
 
 export default HEATED_OBJECT_MAP;

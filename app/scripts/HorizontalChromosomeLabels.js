@@ -1,10 +1,9 @@
-// @ts-nocheck
 import boxIntersect from 'box-intersect';
-import { format, formatPrefix, precisionPrefix } from 'd3-format';
 import { scaleLinear } from 'd3-scale';
+import { format, precisionPrefix, formatPrefix } from 'd3-format';
 
-import ChromosomeInfo from './ChromosomeInfo';
 import PixiTrack from './PixiTrack';
+import ChromosomeInfo from './ChromosomeInfo';
 import SearchField from './SearchField';
 
 import {
@@ -12,7 +11,7 @@ import {
   colorToHex,
   pixiTextToSvg,
   showMousePosition,
-  svgLine,
+  svgLine
 } from './utils';
 
 import { GLOBALS, THEME_DARK } from './configs';
@@ -25,8 +24,12 @@ const TICK_COLOR = 0x777777;
 class HorizontalChromosomeLabels extends PixiTrack {
   constructor(context, options) {
     super(context, options);
-    const { dataConfig, animate, chromInfoPath, isShowGlobalMousePosition } =
-      context;
+    const {
+      dataConfig,
+      animate,
+      chromInfoPath,
+      isShowGlobalMousePosition
+    } = context;
 
     this.searchField = null;
     this.chromInfo = null;
@@ -54,7 +57,7 @@ class HorizontalChromosomeLabels extends PixiTrack {
       fill: this.options.color || this.textFontColor,
       lineJoin: 'round',
       stroke: this.options.stroke || this.textStrokeColor,
-      strokeThickness: 2,
+      strokeThickness: 2
     };
     this.stroke = colorToHex(this.pixiTextConfig.stroke);
 
@@ -76,7 +79,7 @@ class HorizontalChromosomeLabels extends PixiTrack {
       this.hideMousePosition = showMousePosition(
         this,
         this.is2d,
-        this.isShowGlobalMousePosition(),
+        this.isShowGlobalMousePosition()
       );
     }
 
@@ -88,7 +91,7 @@ class HorizontalChromosomeLabels extends PixiTrack {
 
     ChromosomeInfo(
       chromSizesPath,
-      (newChromInfo) => {
+      newChromInfo => {
         this.chromInfo = newChromInfo;
 
         this.searchField = new SearchField(this.chromInfo);
@@ -97,7 +100,7 @@ class HorizontalChromosomeLabels extends PixiTrack {
         this.draw();
         this.animate();
       },
-      this.pubSub,
+      this.pubSub
     );
   }
 
@@ -165,7 +168,6 @@ class HorizontalChromosomeLabels extends PixiTrack {
 
     this.prevOptions = strOptions;
     this.options = options;
-    this.tickTexts = {};
 
     this.pixiTextConfig.fontSize = +this.options.fontSize
       ? `${+this.options.fontSize}px`
@@ -191,7 +193,7 @@ class HorizontalChromosomeLabels extends PixiTrack {
       this.hideMousePosition = showMousePosition(
         this,
         this.is2d,
-        this.isShowGlobalMousePosition(),
+        this.isShowGlobalMousePosition()
       );
     }
 
@@ -230,47 +232,34 @@ class HorizontalChromosomeLabels extends PixiTrack {
     graphics.clear();
     graphics.lineStyle(1, 0);
 
-    // determine the stard and end positions of tick lines along the vertical axis
-    const lineYStart = this.options.reverseOrientation ? 0 : this.dimensions[1];
-    const lineYEnd = this.options.reverseOrientation
-      ? this.tickHeight
-      : this.dimensions[1] - this.tickHeight;
-
     // left tick
     // line is offset by one because it's right on the edge of the
     // visible region and we want to get the full width
-    graphics.moveTo(1, lineYStart);
-    graphics.lineTo(1, lineYEnd);
+    graphics.moveTo(1, this.dimensions[1]);
+    graphics.lineTo(1, this.dimensions[1] - this.tickHeight);
 
     // right tick
-    graphics.moveTo(this.dimensions[0] - 1, lineYStart);
-    graphics.lineTo(this.dimensions[0] - 1, lineYEnd);
+    graphics.moveTo(this.dimensions[0] - 1, this.dimensions[1]);
+    graphics.lineTo(
+      this.dimensions[0] - 1,
+      this.dimensions[1] - this.tickHeight
+    );
 
     // we want to control the precision of the tick labels
     // so that we don't end up with labels like 15.123131M
     this.leftBoundTick.x = 0;
-    this.leftBoundTick.y = this.options.reverseOrientation
-      ? lineYEnd + this.tickTextSeparation
-      : lineYEnd - this.tickTextSeparation;
+    this.leftBoundTick.y =
+      this.dimensions[1] - this.tickHeight - this.tickTextSeparation;
     this.leftBoundTick.text = `${x1[0]}: ${this.formatTick(x1[1])}`;
-    this.leftBoundTick.anchor.y = this.options.reverseOrientation ? 0 : 1;
+    this.leftBoundTick.anchor.y = 1;
 
     this.rightBoundTick.x = this.dimensions[0];
     this.rightBoundTick.text = `${x2[0]}: ${this.formatTick(x2[1])}`;
-    this.rightBoundTick.y = this.options.reverseOrientation
-      ? lineYEnd + this.tickTextSeparation
-      : lineYEnd - this.tickTextSeparation;
-    this.rightBoundTick.anchor.y = this.options.reverseOrientation ? 0 : 1;
+    this.rightBoundTick.y =
+      this.dimensions[1] - this.tickHeight - this.tickTextSeparation;
+    this.rightBoundTick.anchor.y = 1;
 
     this.rightBoundTick.anchor.x = 1;
-
-    if (this.flipText) {
-      // this means this track is displayed vertically, so update the anchor and scale of labels to make them readable!
-      this.leftBoundTick.scale.x = -1;
-      this.leftBoundTick.anchor.x = 1;
-      this.rightBoundTick.scale.x = -1;
-      this.rightBoundTick.anchor.x = 0;
-    }
 
     // line is offset by one because it's right on the edge of the
     // visible region and we want to get the full width
@@ -278,13 +267,13 @@ class HorizontalChromosomeLabels extends PixiTrack {
       1,
       this.dimensions[1],
       1,
-      this.dimensions[1] - this.tickHeight,
+      this.dimensions[1] - this.tickHeight
     ];
     this.rightBoundTick.tickLine = [
       this.dimensions[0] - 1,
       this.dimensions[1],
       this.dimensions[0] - 1,
-      this.dimensions[1] - this.tickHeight,
+      this.dimensions[1] - this.tickHeight
     ];
 
     this.tickTexts = {};
@@ -297,7 +286,7 @@ class HorizontalChromosomeLabels extends PixiTrack {
 
     graphics.visible = true;
 
-    // clear graphics *and* ticktexts otherwise the two are out of sync!
+    // CLear graphics *and* ticktexts otherwise the two are out of sync!
     graphics.clear();
 
     const chromLen = +this.chromInfo.chromLengths[cumPos.chr];
@@ -305,7 +294,7 @@ class HorizontalChromosomeLabels extends PixiTrack {
     const vpLeft = Math.max(this._xScale(cumPos.pos), 0);
     const vpRight = Math.min(
       this._xScale(cumPos.pos + chromLen),
-      this.dimensions[0],
+      this.dimensions[0]
     );
 
     const numTicks = (vpRight - vpLeft) / this.tickWidth;
@@ -314,17 +303,12 @@ class HorizontalChromosomeLabels extends PixiTrack {
     const xScale = scaleLinear()
       .domain([
         Math.max(1, this._xScale.invert(0) - cumPos.pos),
-        Math.min(
-          chromLen,
-          this._xScale.invert(this.dimensions[0]) - cumPos.pos,
-        ),
+        Math.min(chromLen, this._xScale.invert(this.dimensions[0]) - cumPos.pos)
       ])
       .range(vpLeft, vpRight);
 
     // calculate a certain number of ticks
-    const ticks = xScale
-      .ticks(numTicks)
-      .filter((tick) => Number.isInteger(tick));
+    const ticks = xScale.ticks(numTicks);
 
     // not sure why we're separating these out by chromosome, but ok
     const tickTexts = this.tickTexts[cumPos.chr];
@@ -337,13 +321,9 @@ class HorizontalChromosomeLabels extends PixiTrack {
 
     const xPadding = this.options.fontIsLeftAligned ? flipTextSign * 4 : 0;
 
-    let yPadding = this.options.fontIsLeftAligned
+    const yPadding = this.options.fontIsLeftAligned
       ? 0
       : tickHeight + this.tickTextSeparation;
-
-    if (this.options.reverseOrientation) {
-      yPadding = this.dimensions[1] - yPadding;
-    }
 
     // these two loops reuse existing text objects so that
     // we're not constantly recreating texts that already
@@ -364,7 +344,7 @@ class HorizontalChromosomeLabels extends PixiTrack {
       tickTexts[i].visible = true;
 
       tickTexts[i].anchor.x = this.options.fontIsLeftAligned ? 0 : 0.5;
-      tickTexts[i].anchor.y = this.options.reverseOrientation ? 0 : 1;
+      tickTexts[i].anchor.y = 1;
 
       if (this.flipText) tickTexts[i].scale.x = -1;
 
@@ -385,35 +365,35 @@ class HorizontalChromosomeLabels extends PixiTrack {
         x - 1,
         this.dimensions[1],
         x - 1,
-        this.dimensions[1] - tickHeight - 1,
+        this.dimensions[1] - tickHeight - 1
       ];
 
-      // draw outline
-      const lineYStart = this.options.reverseOrientation
-        ? 0
-        : this.dimensions[1];
-      const lineYEnd = this.options.reverseOrientation
-        ? tickHeight
-        : this.dimensions[1] - tickHeight;
+      // Draw outline
       graphics.lineStyle(1, this.stroke);
-      graphics.moveTo(x - 1, lineYStart);
-      graphics.lineTo(x - 1, lineYEnd - 1);
+      graphics.moveTo(x - 1, this.dimensions[1]);
+      graphics.lineTo(x - 1, this.dimensions[1] - tickHeight - 1);
       if (this.options.fontIsLeftAligned) {
-        graphics.lineTo(x + 2 * flipTextSign + 1 * flipTextSign, lineYEnd - 1);
-        graphics.lineTo(x + 2 * flipTextSign + 1 * flipTextSign, lineYEnd + 1);
-        graphics.lineTo(x + 1, lineYEnd + 1);
+        graphics.lineTo(
+          x + 2 * flipTextSign + 1 * flipTextSign,
+          this.dimensions[1] - tickHeight - 1
+        );
+        graphics.lineTo(
+          x + 2 * flipTextSign + 1 * flipTextSign,
+          this.dimensions[1] - tickHeight + 1
+        );
+        graphics.lineTo(x + 1, this.dimensions[1] - tickHeight + 1);
       } else {
-        graphics.lineTo(x + 1, lineYEnd - 1);
+        graphics.lineTo(x + 1, this.dimensions[1] - tickHeight - 1);
       }
-      graphics.lineTo(x + 1, lineYStart);
+      graphics.lineTo(x + 1, this.dimensions[1]);
 
       // draw the tick lines
       graphics.lineStyle(1, this.tickColor);
-      graphics.moveTo(x, lineYStart);
-      graphics.lineTo(x, lineYEnd);
+      graphics.moveTo(x, this.dimensions[1]);
+      graphics.lineTo(x, this.dimensions[1] - tickHeight);
 
       if (this.options.fontIsLeftAligned) {
-        graphics.lineTo(x + 2 * flipTextSign, lineYEnd);
+        graphics.lineTo(x + 2 * flipTextSign, this.dimensions[1] - tickHeight);
       }
 
       i += 1;
@@ -463,17 +443,13 @@ class HorizontalChromosomeLabels extends PixiTrack {
       this.gTicks[this.chromInfo.cumPositions[i].chr].visible = false;
     }
 
-    let yPadding = this.options.fontIsLeftAligned
+    const yPadding = this.options.fontIsLeftAligned
       ? 0
       : this.tickHeight + this.tickTextSeparation;
 
-    if (this.options.reverseOrientation) {
-      yPadding = this.dimensions[1] - yPadding;
-    }
-
     // hide all the chromosome labels in preparation for drawing
     // new ones
-    Object.keys(this.chromInfo.chrPositions).forEach((chrom) => {
+    Object.keys(this.chromInfo.chrPositions).forEach(chrom => {
       if (this.tickTexts[chrom]) {
         for (let j = 0; j < this.tickTexts[chrom].length; j++) {
           this.tickTexts[chrom][j].visible = false;
@@ -493,7 +469,7 @@ class HorizontalChromosomeLabels extends PixiTrack {
       const text = this.texts[i];
 
       text.anchor.x = this.options.fontIsLeftAligned ? 0 : 0.5;
-      text.anchor.y = this.options.reverseOrientation ? 0 : 1;
+      text.anchor.y = 1;
       text.x = viewportMidX;
       text.y = this.dimensions[1] - yPadding;
       text.updateTransform();
@@ -508,7 +484,7 @@ class HorizontalChromosomeLabels extends PixiTrack {
       this.allTexts.push({
         importance: text.hashValue,
         text,
-        caption: null,
+        caption: null
       });
     }
 
@@ -566,31 +542,29 @@ class HorizontalChromosomeLabels extends PixiTrack {
 
     output.setAttribute(
       'transform',
-      `translate(${this.position[0]},${this.position[1]})`,
+      `translate(${this.position[0]},${this.position[1]})`
     );
 
     this.allTexts
-      .filter((text) => text.text.visible)
-      .forEach((text) => {
+      .filter(text => text.text.visible)
+      .forEach(text => {
         const g = pixiTextToSvg(text.text);
         output.appendChild(g);
       });
 
-    Object.values(this.tickTexts).forEach((texts) => {
+    Object.values(this.tickTexts).forEach(texts => {
       texts
-        .filter((x) => x.visible)
-        .forEach((text) => {
+        .filter(x => x.visible)
+        .forEach(text => {
           let g = pixiTextToSvg(text);
           output.appendChild(g);
           g = svgLine(
             text.x,
-            this.options.reverseOrientation ? 0 : this.dimensions[1],
+            this.dimensions[1],
             text.x,
-            this.options.reverseOrientation
-              ? this.tickHeight
-              : this.dimensions[1] - this.tickHeight,
+            this.dimensions[1] - this.tickHeight,
             1,
-            this.tickColor,
+            this.tickColor
           );
 
           const line = document.createElement('line');

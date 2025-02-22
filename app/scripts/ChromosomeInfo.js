@@ -1,16 +1,43 @@
-// @ts-nocheck
 import { tsvParseRows } from 'd3-dsv';
 import { tileProxy } from './services';
+import { absToChr, chrToAbs } from './utils';
 
-import absToChr from './utils/abs-to-chr';
-import chrToAbs from './utils/chr-to-abs';
-import fakePubSub from './utils/fake-pub-sub';
-import parseChromsizesRows from './utils/parse-chromsizes-rows';
+import { fake as fakePubSub } from './hocs/with-pub-sub';
+
+export function parseChromsizesRows(data) {
+  const cumValues = [];
+  const chromLengths = {};
+  const chrPositions = {};
+
+  let totalLength = 0;
+
+  for (let i = 0; i < data.length; i++) {
+    const length = Number(data[i][1]);
+    totalLength += length;
+
+    const newValue = {
+      id: i,
+      chr: data[i][0],
+      pos: totalLength - length
+    };
+
+    cumValues.push(newValue);
+    chrPositions[newValue.chr] = newValue;
+    chromLengths[data[i][0]] = length;
+  }
+
+  return {
+    cumPositions: cumValues,
+    chrPositions,
+    totalLength,
+    chromLengths
+  };
+}
 
 function ChromosomeInfo(filepath, success, pubSub = fakePubSub) {
   const ret = {};
 
-  ret.absToChr = (absPos) => (ret.chrPositions ? absToChr(absPos, ret) : null);
+  ret.absToChr = absPos => (ret.chrPositions ? absToChr(absPos, ret) : null);
 
   ret.chrToAbs = ([chrName, chrPos] = []) =>
     ret.chrPositions ? chrToAbs(chrName, chrPos, ret) : null;
@@ -26,13 +53,13 @@ function ChromosomeInfo(filepath, success, pubSub = fakePubSub) {
           const data = tsvParseRows(chrInfoText);
           const chromInfo = parseChromsizesRows(data);
 
-          Object.keys(chromInfo).forEach((key) => {
+          Object.keys(chromInfo).forEach(key => {
             ret[key] = chromInfo[key];
           });
           if (success) success(ret);
         }
       },
-      pubSub,
+      pubSub
     )
     .then(() => ret);
 }

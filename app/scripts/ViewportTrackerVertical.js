@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { brushY } from 'd3-brush';
 import slugid from 'slugid';
 
@@ -49,11 +48,16 @@ class ViewportTrackerVertical extends SVGTrack {
 
     this.gBrush.selectAll('.handle--w').style('pointer-events', 'none');
 
-    // the viewport will call this.viewportChanged immediately upon
-    // hearing registerViewportChanged
+    this.text = this.gMain
+      .append('text')
+      .text('A')
+      .attr('text-anchor', 'middle')
+      .attr('dominant-baseline', 'middle');
+
     registerViewportChanged(uid, this.viewportChanged.bind(this));
 
-    this.rerender();
+    // the viewport will call this.viewportChanged immediately upon
+    // hearing registerViewportChanged
     this.draw();
   }
 
@@ -124,6 +128,15 @@ class ViewportTrackerVertical extends SVGTrack {
     const y1 = this._yScale(this.viewportYDomain[1]);
 
     const dest = [y0, y1];
+
+    const viewNameOpacity =
+      'viewNameOpacity' in this.options ? this.options.viewNameOpacity : 0.8;
+
+    this.text
+      .attr('x', this.dimensions[0] / 2)
+      .attr('y', (y0 + y1) / 2)
+      .text(this.context.viewUidToName(this.context.fromViewUid))
+      .attr('opacity', viewNameOpacity);
 
     // console.log('dest:', dest[0], dest[1]);
 

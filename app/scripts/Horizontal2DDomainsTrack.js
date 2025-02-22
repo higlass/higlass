@@ -1,4 +1,3 @@
-// @ts-nocheck
 import TiledPixiTrack from './TiledPixiTrack';
 
 import { tileProxy } from './services';
@@ -8,7 +7,7 @@ class Horizontal2DDomainsTrack extends TiledPixiTrack {
   constructor(context, options) {
     super(context, options);
 
-    this.drawnRects = new Set();
+    this.drawnRects = {};
     this.pMain = this.pMobile;
   }
 
@@ -50,7 +49,7 @@ class Horizontal2DDomainsTrack extends TiledPixiTrack {
     let zoomLevel = Math.max(xZoomLevel, yZoomLevel);
     zoomLevel = Math.min(zoomLevel, this.maxZoom);
 
-    if (this.options?.maxZoom) {
+    if (this.options && this.options.maxZoom) {
       if (this.options.maxZoom >= 0) {
         zoomLevel = Math.min(this.options.maxZoom, zoomLevel);
       } else {
@@ -68,12 +67,12 @@ class Horizontal2DDomainsTrack extends TiledPixiTrack {
      * @param tiles: A set of tiles which will be considered the currently visible
      * tile positions.
      */
-    this.visibleTiles = tilePositions.map((x) => ({
+    this.visibleTiles = tilePositions.map(x => ({
       tileId: this.tileToLocalId(x),
       remoteId: this.tileToRemoteId(x),
     }));
 
-    this.visibleTileIds = new Set(this.visibleTiles.map((x) => x.tileId));
+    this.visibleTileIds = new Set(this.visibleTiles.map(x => x.tileId));
   }
 
   calculateVisibleTiles() {
@@ -174,7 +173,7 @@ class Horizontal2DDomainsTrack extends TiledPixiTrack {
   draw() {
     // console.log('delayDrawing:', this.delayDrawing, this.dimensions[1]);
     if (!this.delayDrawing) {
-      this.drawnRects.clear();
+      this.drawnRects = {};
     }
 
     super.draw();
@@ -219,12 +218,18 @@ class Horizontal2DDomainsTrack extends TiledPixiTrack {
 
       const uid = td.uid;
 
-      if (this.drawnRects.has(uid)) {
+      if (this.drawnRects[uid]) {
         continue;
       }
       // we've already drawn this rectangle in another tile
 
-      this.drawnRects.add(uid);
+      this.drawnRects[uid] = {
+        x: startX,
+        y: startY,
+        width: endX - startX,
+        height: endY - startY,
+      };
+
       graphics.drawRect(startX, startY, endX - startX, endY - startY);
 
       graphics.pivot.x = this._refXScale(0);
@@ -289,6 +294,71 @@ class Horizontal2DDomainsTrack extends TiledPixiTrack {
 
   leftTrackDraw() {
     this.draw();
+  }
+
+  exportSVG() {
+    let track = null;
+    let base = null;
+
+    if (super.exportSVG) {
+      [base, track] = super.exportSVG();
+    } else {
+      base = document.createElement('g');
+      track = base;
+    }
+    const output = document.createElement('g');
+    output.setAttribute(
+      'transform',
+      `translate(${this.pMain.position.x},${this.pMain.position.y}) scale(${this.pMain.scale.x},${this.pMain.scale.y})`,
+    );
+
+    track.appendChild(output);
+
+    for (const tile of this.visibleAndFetchedTiles()) {
+      // this tile has no data
+      if (!tile.tileData || !tile.tileData.length) continue;
+
+      tile.tileData.forEach(td => {
+        const uid = td.uid;
+        const gTile = document.createElement('g');
+
+        const graphics = tile.graphics;
+        const graphicsRotation = (graphics.rotation * 180) / Math.PI;
+        const transformText = `translate(${graphics.position.x},${
+          graphics.position.y
+        }) rotate(${graphicsRotation}) scale(${graphics.scale.x},${
+          graphics.scale.y
+        }) translate(${-graphics.pivot.x},${-graphics.pivot.y})`;
+
+        gTile.setAttribute('transform', transformText);
+        output.appendChild(gTile);
+
+        if (uid in this.drawnRects) {
+          const rect = this.drawnRects[uid];
+
+          const r = document.createElement('rect');
+          r.setAttribute('x', rect.x);
+          r.setAttribute('y', rect.y);
+          r.setAttribute('width', rect.width);
+          r.setAttribute('height', rect.height);
+
+          r.setAttribute(
+            'fill',
+            this.options.rectangleDomainFillColor
+              ? this.options.rectangleDomainFillColor
+              : 'grey',
+          );
+          r.setAttribute('opacity', 0.3);
+
+          r.style.stroke = 'black';
+          r.style.strokeWidth = '1px';
+
+          gTile.appendChild(r);
+        }
+      });
+    }
+
+    return [base, base];
   }
 }
 

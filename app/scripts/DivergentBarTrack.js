@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { scaleLinear, scaleLog } from 'd3-scale';
 
 import BarTrack from './BarTrack';
@@ -22,7 +21,7 @@ class DivergentBarTrack extends BarTrack {
     const { tileX, tileWidth } = this.getTilePosAndDimensions(
       tile.tileData.zoomLevel,
       tile.tileData.tilePos,
-      this.tilesetInfo.tile_size || this.tilesetInfo.bins_per_dimension,
+      this.tilesetInfo.tile_size || this.tilesetInfo.bins_per_dimension
     );
     const tileValues = tile.tileData.dense;
 
@@ -70,13 +69,13 @@ class DivergentBarTrack extends BarTrack {
     ) {
       console.warn(
         'Negative values present when using a log scale',
-        this.valueScale.domain(),
+        this.valueScale.domain()
       );
       return;
     }
 
     const stroke = colorToHex(
-      this.options.lineStrokeColor ? this.options.lineStrokeColor : 'blue',
+      this.options.lineStrokeColor ? this.options.lineStrokeColor : 'blue'
     );
     // this scale should go from an index in the data array to
     // a position in the genome coordinates
@@ -129,7 +128,7 @@ class DivergentBarTrack extends BarTrack {
           baseline,
           width,
           yPos - baseline,
-          bottomColor,
+          bottomColor
         );
       } else {
         graphics.beginFill(topColorHex, opacity);
@@ -146,7 +145,7 @@ class DivergentBarTrack extends BarTrack {
         xPos,
         tile.svgData.barYValues[i],
         width,
-        tile.svgData.barHeights[i],
+        tile.svgData.barHeights[i]
       );
     }
   }

@@ -1,4 +1,8 @@
-export const DEFAULT_TRACKS_FOR_DATATYPE = /** @type {const} */ ({
+export const DEFAULT_TRACKS_FOR_DATATYPE = {
+  arcs: {
+    top: '1d-arcs',
+    bottom: '1d-arcs',
+  },
   chromsizes: {
     center: '2d-chromosome-grid',
     top: 'chromosome-labels',
@@ -19,6 +23,10 @@ export const DEFAULT_TRACKS_FOR_DATATYPE = /** @type {const} */ ({
     left: 'bar',
     right: 'bar',
   },
+  epilogos: {
+    top: 'horizontal-stacked-bar',
+    bottom: 'horizontal-stacked-bar',
+  },
   'geo-json': {
     center: 'geo-json',
   },
@@ -34,6 +42,9 @@ export const DEFAULT_TRACKS_FOR_DATATYPE = /** @type {const} */ ({
     left: 'vertical-bedlike',
     right: 'vertical-bedlike',
   },
-});
+  'osm-tiles': {
+    center: 'osm-tiles',
+  },
+};
 
 export default DEFAULT_TRACKS_FOR_DATATYPE;

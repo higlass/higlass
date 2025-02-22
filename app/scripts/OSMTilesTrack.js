@@ -1,4 +1,3 @@
-// @ts-nocheck
 import slugid from 'slugid';
 
 import PixiTrack from './PixiTrack';
@@ -11,6 +10,20 @@ import { debounce } from './utils';
 
 // Configs
 import { GLOBALS, ZOOM_DEBOUNCE } from './configs';
+
+function toDataURL(url, callback) {
+  const xhr = new XMLHttpRequest();
+  xhr.onload = function() {
+    const reader = new FileReader();
+    reader.onloadend = function() {
+      callback(reader.result);
+    };
+    reader.readAsDataURL(xhr.response);
+  };
+  xhr.open('GET', url);
+  xhr.responseType = 'blob';
+  xhr.send();
+}
 
 class OSMTilesTrack extends PixiTrack {
   /**
@@ -65,7 +78,7 @@ class OSMTilesTrack extends PixiTrack {
     this.uuid = slugid.nice();
     this.refreshTilesDebounced = debounce(
       this.refreshTiles.bind(this),
-      ZOOM_DEBOUNCE,
+      ZOOM_DEBOUNCE
     );
   }
 
@@ -73,13 +86,13 @@ class OSMTilesTrack extends PixiTrack {
    * Return the set of ids of all tiles which are both visible and fetched.
    */
   visibleAndFetchedIds() {
-    return Object.keys(this.fetchedTiles).filter((x) =>
-      this.visibleTileIds.has(x),
+    return Object.keys(this.fetchedTiles).filter(x =>
+      this.visibleTileIds.has(x)
     );
   }
 
   visibleAndFetchedTiles() {
-    return this.visibleAndFetchedIds().map((x) => this.fetchedTiles[x]);
+    return this.visibleAndFetchedIds().map(x => this.fetchedTiles[x]);
   }
 
   /**
@@ -89,13 +102,13 @@ class OSMTilesTrack extends PixiTrack {
    * tile positions.
    */
   setVisibleTiles(tilePositions) {
-    this.visibleTiles = tilePositions.map((x) => ({
+    this.visibleTiles = tilePositions.map(x => ({
       tileId: this.tileToLocalId(x),
       remoteId: this.tileToRemoteId(x),
-      mirrored: x.mirrored,
+      mirrored: x.mirrored
     }));
 
-    this.visibleTileIds = new Set(this.visibleTiles.map((x) => x.tileId));
+    this.visibleTileIds = new Set(this.visibleTiles.map(x => x.tileId));
   }
 
   removeAllTiles() {
@@ -113,7 +126,7 @@ class OSMTilesTrack extends PixiTrack {
     // fetch the tiles that should be visible but haven't been fetched
     // and aren't in the process of being fetched
     const toFetch = [...this.visibleTiles].filter(
-      (x) => !this.fetching.has(x.remoteId) && !fetchedTileIDs.has(x.tileId),
+      x => !this.fetching.has(x.remoteId) && !fetchedTileIDs.has(x.tileId)
     );
 
     for (let i = 0; i < toFetch.length; i++) {
@@ -123,7 +136,7 @@ class OSMTilesTrack extends PixiTrack {
     // calculate which tiles are obsolete and remove them
     // fetchedTileID are remote ids
     const toRemove = [...fetchedTileIDs].filter(
-      (x) => !this.visibleTileIds.has(x),
+      x => !this.visibleTileIds.has(x)
     );
 
     this.removeTiles(toRemove);
@@ -145,7 +158,7 @@ class OSMTilesTrack extends PixiTrack {
       return;
     }
 
-    toRemoveIds.forEach((x) => {
+    toRemoveIds.forEach(x => {
       const tileIdStr = x;
       this.destroyTile(this.fetchedTiles[tileIdStr]);
 
@@ -189,12 +202,12 @@ class OSMTilesTrack extends PixiTrack {
     const xZoomLevel = tileProxy.calculateZoomLevel(
       this._xScale,
       this.minX,
-      this.maxX,
+      this.maxX
     );
     const yZoomLevel = tileProxy.calculateZoomLevel(
       this._xScale,
       this.minY,
-      this.maxY,
+      this.maxY
     );
 
     let zoomLevel = Math.min(Math.max(xZoomLevel, yZoomLevel), this.maxZoom);
@@ -222,7 +235,7 @@ class OSMTilesTrack extends PixiTrack {
       this.minX,
       this.maxX,
       this.maxZoom,
-      this.maxWidth,
+      this.maxWidth
     );
 
     this.yTiles = tileProxy.calculateTiles(
@@ -231,7 +244,7 @@ class OSMTilesTrack extends PixiTrack {
       this.minY,
       this.maxY,
       this.maxZoom,
-      this.maxWidth,
+      this.maxWidth
     );
 
     const rows = this.xTiles;
@@ -344,13 +357,17 @@ class OSMTilesTrack extends PixiTrack {
       tileX,
       tileY,
       tileWidth,
-      tileHeight,
+      tileHeight
     };
   }
 
   setSpriteProperties(sprite, zoomLevel, tilePos) {
-    const { tileX, tileY, tileWidth, tileHeight } =
-      this.getTilePosAndDimensions(zoomLevel, tilePos);
+    const {
+      tileX,
+      tileY,
+      tileWidth,
+      tileHeight
+    } = this.getTilePosAndDimensions(zoomLevel, tilePos);
 
     sprite.x = this._refXScale(tileX);
     sprite.y = this._refYScale(tileY);
@@ -366,7 +383,7 @@ class OSMTilesTrack extends PixiTrack {
     // create the tile
     // should be overwritten by child classes
     const texture = new GLOBALS.PIXI.Texture(
-      new GLOBALS.PIXI.BaseTexture(tile.tileData.img),
+      new GLOBALS.PIXI.BaseTexture(tile.tileData.img)
     );
     const sprite = new GLOBALS.PIXI.Sprite(texture);
 
@@ -377,7 +394,7 @@ class OSMTilesTrack extends PixiTrack {
     this.setSpriteProperties(
       tile.sprite,
       tile.tileData.zoomLevel,
-      tile.tileData.tilePos,
+      tile.tileData.tilePos
     );
 
     graphics.removeChildren();
@@ -466,7 +483,7 @@ class OSMTilesTrack extends PixiTrack {
 
   fetchNewTiles(toFetch) {
     if (toFetch.length > 0) {
-      const toFetchList = [...new Set(toFetch.map((x) => x.remoteId))];
+      const toFetchList = [...new Set(toFetch.map(x => x.remoteId))];
 
       for (const tileId of toFetchList) {
         const parts = tileId.split('.');
@@ -483,8 +500,12 @@ class OSMTilesTrack extends PixiTrack {
             img,
             zoomLevel: +parts[0],
             tilePos: [+parts[1], +parts[2]],
-            tileSrc: src,
+            tileSrc: src
           };
+
+          toDataURL(src, res => {
+            loadedTiles[tileId].base64 = res;
+          });
 
           this.receivedTiles(loadedTiles);
         };
@@ -539,6 +560,52 @@ class OSMTilesTrack extends PixiTrack {
     super.draw();
   }
 
+  exportSVG() {
+    let track = null;
+    let base = null;
+
+    if (super.exportSVG) {
+      [base, track] = super.exportSVG();
+    } else {
+      base = document.createElement('g');
+      track = base;
+    }
+
+    const output = document.createElement('g');
+    track.appendChild(output);
+
+    output.setAttribute(
+      'transform',
+      `translate(${this.pMain.position.x},${this.pMain.position.y}) scale(${this.pMain.scale.x},${this.pMain.scale.y})`
+    );
+
+    for (const tile of this.visibleAndFetchedTiles()) {
+      const rotation = (tile.sprite.rotation * 180) / Math.PI;
+      const g = document.createElement('g');
+      g.setAttribute(
+        'transform',
+        `translate(${tile.sprite.x},${tile.sprite.y}) rotate(${rotation}) scale(${tile.sprite.scale.x},${tile.sprite.scale.y})`
+      );
+
+      const image = document.createElement('image');
+      image.setAttributeNS(
+        'http://www.w3.org/1999/xlink',
+        'xlink:href',
+        tile.tileData.base64
+      );
+      image.setAttribute('width', 256);
+      image.setAttribute('height', 256);
+      image.setAttribute('style', 'image-rendering: pixelated');
+
+      g.appendChild(image);
+      output.appendChild(g);
+    }
+
+    output.setAttribute('yo', 'joe');
+
+    return [base, base];
+  }
+
   /**
    * Draw a tile on some graphics
    */
@@ -554,7 +621,7 @@ class OSMTilesTrack extends PixiTrack {
         this.setSpriteProperties(
           tile.sprite,
           tile.tileData.zoomLevel,
-          tile.tileData.tilePos,
+          tile.tileData.tilePos
         );
       } else {
         // console.log('skipping...', tile.tileId);

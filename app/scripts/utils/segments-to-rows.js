@@ -1,20 +1,17 @@
-import { IntervalTree } from './interval-tree';
+import IntervalTree from './interval-tree';
 
-/** @typedef {{ from:number, to: number }} Segment */
-
-/**
- * Partition a list of segments into an array of rows containing the segments.
- *
- * WARNING: Sorts the `segments` array input _inplace_.
- *
- * @param {Array<Segment>} segments An array of segments (e.g. [{from: 10, to: 20}, {from: 18, to: 30}])
- * @return: {Array<Array<Segment>>} non-overlapping rows of segments
- */
 function segmentsToRows(segments) {
+  /**
+   * Partition a list of segments into an array of
+   * rows containing the segments.
+   *
+   * @param segments: An array of segments (e.g. [{from: 10, to: 20}, {from: 18, to: 30}])
+   * @return: An array of arrays of segments, representing
+   *          non-overlapping rows of segments
+   */
   // sort by the length of each segment
   segments.sort((a, b) => b.to - b.from - (a.to - a.from));
 
-  /** @type {Array<Array<Segment>>} */
   const rows = [[]];
   const rowIts = [new IntervalTree()];
 
@@ -25,7 +22,6 @@ function segmentsToRows(segments) {
     for (let j = 0; j < rows.length; j++) {
       const it = rowIts[j]; // an interval tree
 
-      /** @type {[number, number]} */
       const toCheck = [+segments[i].from, +segments[i].to];
       const occluded = it.intersects(toCheck);
 

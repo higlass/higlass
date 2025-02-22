@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { select } from 'd3-selection';
 import slugid from 'slugid';
 
@@ -28,7 +27,7 @@ class SVGTrack extends Track {
 
     this.gMain.attr(
       'transform',
-      `translate(${this.position[0]},${this.position[1]})`,
+      `translate(${this.position[0]},${this.position[1]})`
     );
     this.draw();
   }

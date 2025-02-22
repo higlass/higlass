@@ -1,20 +1,12 @@
 /**
- * Return an array of keys that are present in this dictionary
- *
- * TODO(Trevor): Replace with `Object.keys`?
- *
- * @template T
- * @param {T} dictionary
- * @returns {Array<keyof T>}
+ * Return an array of values that are present in this dictionary
  */
 export default function dictKeys(dictionary) {
-  /** @type {Array<keyof T>} */
   const keys = [];
 
   for (const key in dictionary) {
-    // @ts-expect-error - TS inference not good enough to infer the correct type
-    // biome-ignore lint/suspicious/noPrototypeBuiltins:
     if (dictionary.hasOwnProperty(key)) {
+      // eslint-disable-line no-prototype-builtins
       keys.push(key);
     }
   }

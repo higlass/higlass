@@ -1,6 +1,5 @@
-// @ts-nocheck
-import { brush } from 'd3-brush';
 import slugid from 'slugid';
+import { brush } from 'd3-brush';
 
 import SVGTrack from './SVGTrack';
 
@@ -54,10 +53,16 @@ class ViewportTracker2D extends SVGTrack {
 
     this.gBrush.selectAll('.handle--e').style('pointer-events', 'none');
 
-    // the viewport will call this.viewportChanged immediately upon
-    // hearing registerViewportChanged
+    this.text = this.gMain
+      .append('text')
+      .text('A')
+      .attr('text-anchor', 'middle')
+      .attr('dominant-baseline', 'middle');
+
     registerViewportChanged(uid, this.viewportChanged.bind(this));
 
+    // the viewport will call this.viewportChanged immediately upon
+    // hearing registerViewportChanged
     this.rerender();
     this.draw();
   }
@@ -145,6 +150,16 @@ class ViewportTracker2D extends SVGTrack {
       [x0, y0],
       [x1, y1],
     ];
+
+    // Draw the name of the view in the middle of the projection
+    const viewNameOpacity =
+      'viewNameOpacity' in this.options ? this.options.viewNameOpacity : 0.8;
+
+    this.text
+      .attr('x', (x0 + x1) / 2)
+      .attr('y', (y0 + y1) / 2)
+      .text(this.context.viewUidToName(this.context.fromViewUid))
+      .attr('opacity', viewNameOpacity);
 
     // user hasn't actively brushed so we don't want to emit a
     // 'brushed' event

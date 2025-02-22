@@ -11,7 +11,6 @@ export { default as colorToHex } from './color-to-hex';
 export { default as colorToRgba } from './color-to-rgba';
 export { default as dataToGenomicLoci } from './data-to-genomic-loci';
 export { default as debounce } from './debounce';
-export { default as decToHexStr } from './dec-to-hex-str';
 export { default as dictFromTuples } from './dict-from-tuples';
 export { default as dictItems } from './dict-items';
 export { default as dictKeys } from './dict-keys';
@@ -22,7 +21,6 @@ export { default as flatten } from './flatten';
 export { default as forEach } from './for-each';
 export { default as forwardEvent } from './forward-event';
 export { default as genomeLociToPixels } from './genome-loci-to-pixels';
-export { default as genomicRangeToChromosomeChunks } from './genomic-range-to-chromosome-chunks';
 export { default as getDefaultTrackForDatatype } from './get-default-track-for-datatype';
 export { default as getElementDim } from './get-element-dim';
 export { default as getTrackByUid } from './get-track-by-uid';
@@ -42,9 +40,7 @@ export { default as loadChromInfos } from './load-chrom-infos';
 export { default as lngToX } from './lng-to-x';
 export { default as map } from './map';
 export { default as max } from './max';
-export { default as maxNonZero } from './max-non-zero';
 export { default as min } from './min';
-export { default as minNonZero } from './min-non-zero';
 export { default as mod } from './mod';
 export { default as ndarrayAssign } from './ndarray-assign';
 export { default as ndarrayFlatten } from './ndarray-flatten';
@@ -52,7 +48,6 @@ export { default as ndarrayToList } from './ndarray-to-list';
 export { default as numericifyVersion } from './numericify-version';
 export { default as objVals } from './obj-vals';
 export { default as or } from './or';
-export { default as parseChromsizesRows } from './parse-chromsizes-rows';
 export { default as pixiTextToSvg } from './pixi-text-to-svg';
 export { default as q } from './q';
 export { default as reduce } from './reduce';
@@ -78,27 +73,22 @@ export { default as expandCombinedTracks } from './expand-combined-tracks';
 export { default as segmentsToRows } from './segments-to-rows';
 export { default as visitPositionedTracks } from './visit-positioned-tracks';
 export { default as visitTracks } from './visit-tracks';
-export { default as DenseDataExtrema1D } from './DenseDataExtrema1D';
-export { default as DenseDataExtrema2D } from './DenseDataExtrema2D';
-export { default as getAggregationFunction } from './get-aggregation-function';
-export { default as selectedItemsToSize } from './selected-items-to-size';
-export { default as IS_TRACK_RANGE_SELECTABLE } from './is-track-range-selectable';
+export { default as trackUtils } from './track-utils';
+export { default as positionedTracksToAllTracks } from './positioned-tracks-to-all-tracks';
+export { default as getDefaultTracksForDatatype } from './default-tracks';
+export { default as copyTextToClipboard } from './copy-text-to-clipboard';
+export { convertNumberNotation, chrPosToPositionString } from './number';
 
 export {
   getTrackObjectFromHGC,
   getTrackRenderer,
   getTiledPlot,
 } from './get-higlass-components';
-
-// We want to remove following lines eventually. However, we need these at the moment since
-// available-for-plugins.js complains about uninitialized objects due to the current cyclic dependencies.
 export {
   changeOptions,
   waitForJsonComplete,
   waitForTilesLoaded,
   waitForTransitionsFinished,
   mountHGComponent,
-  mountHGComponentAsync,
   removeHGComponent,
-} from '../test-helpers';
-export { default as trackUtils } from '../track-utils';
+} from './test-helpers';

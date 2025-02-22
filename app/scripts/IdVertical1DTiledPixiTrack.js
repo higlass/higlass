@@ -1,4 +1,3 @@
-// @ts-nocheck
 // Configs
 import { GLOBALS } from './configs';
 
@@ -26,8 +25,8 @@ class IdVertical1DTiledPixiTrack extends VerticalTiled1DPixiTrack {
         fontFamily: 'Arial',
         fontSize: 32,
         fill: 0xff1010,
-        align: 'center',
-      },
+        align: 'center'
+      }
     );
 
     // tile.text.y = 100;
@@ -56,7 +55,7 @@ class IdVertical1DTiledPixiTrack extends VerticalTiled1DPixiTrack {
 
     const { tileY, tileHeight } = this.getTilePosAndDimensions(
       tile.tileData.zoomLevel,
-      tile.tileData.tilePos,
+      tile.tileData.tilePos
     );
 
     // the text needs to be scaled down so that it doesn't become huge
@@ -97,19 +96,19 @@ class IdVertical1DTiledPixiTrack extends VerticalTiled1DPixiTrack {
       0,
       this._refYScale(tileY),
       tileScaledWidth,
-      tileScaledHeight,
+      tileScaledHeight
     );
   }
 
   fetchNewTiles(toFetch) {
     // no real fetching involved... we just need to display the data
-    toFetch.forEach((x) => {
+    toFetch.forEach(x => {
       const key = x.remoteId;
       const keyParts = key.split('.');
 
       const data = {
         zoomLevel: keyParts[1],
-        tilePos: keyParts.slice(2, keyParts.length).map((keyPart) => +keyPart),
+        tilePos: keyParts.slice(2, keyParts.length).map(keyPart => +keyPart)
       };
 
       this.fetchedTiles[x.tileId] = x;

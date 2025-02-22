@@ -1,4 +1,3 @@
-// @ts-nocheck
 import OSMTilesTrack from './OSMTilesTrack';
 
 /**
@@ -16,9 +15,8 @@ class RasterTilesTrack extends OSMTilesTrack {
     this.style = options.style;
 
     if (!this.options.tileSource) {
-      this.setError(
-        'No tile source string provided in the options. It should be in the form of http://a.com/{z}/{x}/{y}',
-      );
+      this.errorTextText =
+        'No tile source string provided in the options. It should be in the form of http://a.com/{z}/{x}/{y}';
       this.drawError();
     }
   }

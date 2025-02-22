@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * Get a track's config (not the track object) from a higlass component.
  *
@@ -14,7 +13,7 @@ const getTrackConfFromHGC = (hgc, viewUid, trackUid) => {
 
   let found = null;
 
-  const checkTrack = (track) => {
+  const checkTrack = track => {
     if (track.uid === trackUid) found = track;
     if (track.type.substr(0, 8) === 'combined')
       track.contents.forEach(checkTrack);
@@ -24,8 +23,8 @@ const getTrackConfFromHGC = (hgc, viewUid, trackUid) => {
   const tracks = myView.tracks;
 
   Object.keys(tracks)
-    .map((trackType) => tracks[trackType])
-    .filter((tracksByPos) => tracksByPos.filter)
+    .map(trackType => tracks[trackType])
+    .filter(tracksByPos => tracksByPos.filter)
     .reduce((a, b) => a.concat(b), [])
     .forEach(checkTrack);
 

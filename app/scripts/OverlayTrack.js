@@ -1,48 +1,7 @@
-// @ts-nocheck
 import PixiTrack from './PixiTrack';
 
 // Utils
-import { colorToHex, decToHexStr } from './utils';
-
-const drawRectOnGraphics = (x, y, width, height, graphics) => {
-  graphics.drawRect(x, y, width, height);
-};
-
-const drawRectOnSvg = (
-  x,
-  y,
-  width,
-  height,
-  svg,
-  {
-    fill = 0x000000,
-    fillOpacity = 0,
-    stroke = 0x000000,
-    strokeWidth = 0,
-    strokeOpacity = 0,
-  } = {},
-) => {
-  const r = document.createElement('rect');
-
-  r.setAttribute('x', x);
-  r.setAttribute('y', y);
-  r.setAttribute('width', width);
-  r.setAttribute('height', height);
-
-  r.setAttribute('fill', `#${decToHexStr(fill)}`);
-  r.setAttribute('fill-opacity', fillOpacity);
-  r.setAttribute('stroke', `#${decToHexStr(stroke)}`);
-  r.setAttribute('stroke-opacity', strokeOpacity);
-  r.setAttribute('stroke-width', strokeWidth);
-
-  svg.appendChild(r);
-};
-
-const drawRect = (x, y, width, height, target, options) => {
-  if (target instanceof HTMLElement)
-    drawRectOnSvg(x, y, width, height, target, options);
-  else drawRectOnGraphics(x, y, width, height, target);
-};
+import { colorToHex } from './utils';
 
 const drawRectWithPositionedBorder = (
   graphics,
@@ -53,7 +12,7 @@ const drawRectWithPositionedBorder = (
   fill,
   stroke,
   outline,
-  { isVertical = false, svg = null } = {},
+  isVertical = false
 ) => {
   let finalXPos = xPos;
   let finalYPos = yPos;
@@ -68,92 +27,62 @@ const drawRectWithPositionedBorder = (
   const outlineWidth = outline.width * 2 > width ? width / 2 : outline.width;
   const outlineHeight = outline.width * 2 > height ? height / 2 : outline.width;
 
-  const target = svg || graphics;
-  const colors = {
-    fill: 0x000000,
-    fillOpacity: 0,
-    stroke: 0x000000,
-    strokeOpacity: 0,
-    strokeWidth: 1,
-  };
-
-  if (outline.positions?.length) {
+  if (outline.positions && outline.positions.length) {
     graphics.lineStyle(1, 0x000000, 0);
     graphics.beginFill(outline.color, outline.opacity);
 
-    colors.fill = outline.color;
-    colors.fillOpacity = outline.opacity;
-    colors.stroke = 0x000000;
-    colors.strokeOpacity = 0;
-    colors.strokeWidth = 1;
-
-    outline.positions.forEach((pos) => {
+    outline.positions.forEach(pos => {
       if ((pos === 'top' && !isVertical) || (pos === 'left' && isVertical)) {
-        drawRect(
+        graphics.drawRect(
           xPos - outlineWidth,
           yPos - outlineHeight,
           width + outlineWidth * 2,
-          outlineHeight,
-          target,
-          colors,
+          outlineHeight
         );
       } else if (
         (pos === 'bottom' && !isVertical) ||
         (pos === 'right' && isVertical)
       ) {
-        drawRect(
+        graphics.drawRect(
           xPos - outlineWidth,
           yPos + height,
           width + outlineWidth * 2,
-          outlineHeight,
-          target,
-          colors,
+          outlineHeight
         );
       } else if (
         (pos === 'left' && !isVertical) ||
         (pos === 'top' && isVertical)
       ) {
-        drawRect(
+        graphics.drawRect(
           xPos - outlineWidth,
           yPos - outlineHeight,
           outlineWidth,
-          height + outlineHeight * 2,
-          target,
-          colors,
+          height + outlineHeight * 2
         );
       } else if (
         (pos === 'right' && !isVertical) ||
         (pos === 'bottom' && isVertical)
       ) {
-        drawRect(
+        graphics.drawRect(
           xPos + width,
           yPos - outlineHeight,
           outlineWidth,
-          height + outlineHeight * 2,
-          target,
-          colors,
+          height + outlineHeight * 2
         );
       }
     });
-  } else if (outline.width > 0 && outline.opacity > 0) {
+  } else {
     graphics.lineStyle(outline.width, outline.color, outline.opacity);
     graphics.beginFill(0x000000, 0);
-    colors.fill = 0x000000;
-    colors.fillOpacity = 0;
-    colors.stroke = outline.color;
-    colors.strokeOpacity = outline.opacity;
-    colors.strokeWidth = outline.width;
-    drawRect(
+    graphics.drawRect(
       xPos - outlineWidth,
       yPos - outlineHeight,
       width + outlineWidth * 2,
-      height + outlineHeight * 2,
-      target,
-      colors,
+      height + outlineHeight * 2
     );
   }
 
-  if (stroke.positions?.length) {
+  if (stroke.positions && stroke.positions.length) {
     graphics.lineStyle(1, 0x000000, 0);
     graphics.beginFill(stroke.color, stroke.opacity);
 
@@ -163,63 +92,48 @@ const drawRectWithPositionedBorder = (
     const strokeWidth = stroke.width * 2 > width ? width / 2 : stroke.width;
     const strokeHeight = stroke.width * 2 > height ? height / 2 : stroke.width;
 
-    colors.fill = stroke.color;
-    colors.fillOpacity = stroke.opacity;
-    colors.stroke = 0x000000;
-    colors.strokeOpacity = 0;
-    colors.strokeWidth = 1;
-
-    stroke.positions.forEach((pos) => {
+    stroke.positions.forEach(pos => {
       if ((pos === 'top' && !isVertical) || (pos === 'left' && isVertical)) {
-        drawRect(xPos, yPos, width, strokeHeight, target, colors);
+        graphics.drawRect(xPos, yPos, width, strokeHeight);
         finalYPos += strokeHeight;
         finalHeight -= strokeHeight;
       } else if (
         (pos === 'bottom' && !isVertical) ||
         (pos === 'right' && isVertical)
       ) {
-        drawRect(
+        graphics.drawRect(
           xPos,
           yPos + height - strokeHeight,
           width,
-          strokeHeight,
-          target,
-          colors,
+          strokeHeight
         );
         finalHeight -= strokeHeight;
       } else if (
         (pos === 'left' && !isVertical) ||
         (pos === 'top' && isVertical)
       ) {
-        drawRect(xPos, yPos, strokeWidth, height, target, colors);
+        graphics.drawRect(xPos, yPos, strokeWidth, height);
         finalXPos += strokeWidth;
         finalWidth -= strokeWidth;
       } else if (
         (pos === 'right' && !isVertical) ||
         (pos === 'bottom' && isVertical)
       ) {
-        drawRect(
+        graphics.drawRect(
           xPos + width - strokeWidth,
           yPos,
           strokeWidth,
-          height,
-          target,
-          colors,
+          height
         );
         finalWidth -= strokeWidth;
       }
     });
   } else {
     graphics.lineStyle(stroke.width, stroke.color, stroke.opacity);
-    colors.stroke = stroke.color;
-    colors.strokeOpacity = stroke.opacity;
-    colors.strokeWidth = stroke.width;
   }
 
   graphics.beginFill(fill.color, fill.opacity);
-  colors.fill = fill.color;
-  colors.fillOpacity = fill.opacity;
-  drawRect(finalXPos, finalYPos, finalWidth, finalHeight, target, colors);
+  graphics.drawRect(finalXPos, finalYPos, finalWidth, finalHeight);
 };
 
 class OverlayTrack extends PixiTrack {
@@ -234,12 +148,10 @@ class OverlayTrack extends PixiTrack {
     graphics,
     position,
     extent,
-    // biome-ignore lint/style/useDefaultParameterLast:
     minWidth = 0,
     fill,
     stroke,
-    outline,
-    options,
+    outline
   ) {
     if (!extent || extent.length < 2) return;
 
@@ -263,8 +175,7 @@ class OverlayTrack extends PixiTrack {
       height,
       fill,
       stroke,
-      outline,
-      options,
+      outline
     );
   }
 
@@ -272,12 +183,10 @@ class OverlayTrack extends PixiTrack {
     graphics,
     position,
     extent,
-    // biome-ignore lint/style/useDefaultParameterLast:
     minHeight = 0,
     fill,
     stroke,
-    outline,
-    options = {},
+    outline
   ) {
     if (!extent || extent.length < 2) return;
 
@@ -325,8 +234,6 @@ class OverlayTrack extends PixiTrack {
       height = minHeight;
     }
 
-    options.isVertical = true;
-
     drawRectWithPositionedBorder(
       graphics,
       xPos,
@@ -336,11 +243,11 @@ class OverlayTrack extends PixiTrack {
       fill,
       stroke,
       outline,
-      options,
+      true
     );
   }
 
-  draw(options) {
+  draw() {
     super.draw();
 
     const graphics = this.pMain;
@@ -348,7 +255,7 @@ class OverlayTrack extends PixiTrack {
       color: colorToHex(this.options.fill || this.options.fillColor || 'blue'),
       opacity: Number.isNaN(+this.options.fillOpacity)
         ? 0.3
-        : +this.options.fillOpacity,
+        : +this.options.fillOpacity
     };
     const stroke = {
       color: colorToHex(this.options.stroke || 'blue'),
@@ -357,7 +264,7 @@ class OverlayTrack extends PixiTrack {
       positions:
         !this.options.strokePos || Array.isArray(this.options.strokePos)
           ? this.options.strokePos
-          : [this.options.strokePos],
+          : [this.options.strokePos]
     };
     const outline = {
       color: colorToHex(this.options.outline || 'white'),
@@ -366,14 +273,14 @@ class OverlayTrack extends PixiTrack {
       positions:
         !this.options.outlinePos || Array.isArray(this.options.outlinePos)
           ? this.options.outlinePos
-          : [this.options.outlinePos],
+          : [this.options.outlinePos]
     };
 
-    if (!options || !options.svg) graphics.clear();
+    graphics.clear();
     graphics.lineStyle(
       stroke.width,
       stroke,
-      +!stroke.positions * stroke.opacity,
+      +!stroke.positions * stroke.opacity
     );
     graphics.beginFill(fill.color, fill.opacity);
 
@@ -381,9 +288,9 @@ class OverlayTrack extends PixiTrack {
     const minHeight = Math.max(0, +this.options.minHeight || 0);
 
     if (Array.isArray(this.options.extent)) {
-      this.options.orientationsAndPositions.forEach((op) => {
+      this.options.orientationsAndPositions.forEach(op => {
         if (op.orientation === '1d-horizontal' || op.orientation === '2d') {
-          this.options.extent.forEach((extent) =>
+          this.options.extent.forEach(extent =>
             this.drawHorizontalOverlay(
               graphics,
               op.position,
@@ -391,14 +298,13 @@ class OverlayTrack extends PixiTrack {
               minWidth,
               fill,
               stroke,
-              outline,
-              options,
-            ),
+              outline
+            )
           );
         }
 
         if (op.orientation === '1d-vertical' || op.orientation === '2d') {
-          this.options.extent.forEach((extent) =>
+          this.options.extent.forEach(extent =>
             this.drawVerticalOverlay(
               graphics,
               op.position,
@@ -406,9 +312,8 @@ class OverlayTrack extends PixiTrack {
               minHeight,
               fill,
               stroke,
-              outline,
-              options,
-            ),
+              outline
+            )
           );
         }
       });
@@ -435,22 +340,8 @@ class OverlayTrack extends PixiTrack {
   }
 
   exportSVG() {
-    let track = null;
-    let base = null;
-
-    if (super.exportSVG) {
-      [base, track] = super.exportSVG();
-    } else {
-      base = document.createElement('g');
-      track = base;
-    }
-
-    const output = document.createElement('g');
-    track.appendChild(output);
-
-    this.draw({ svg: output });
-
-    return [base, track];
+    // TODO: implement me
+    console.warn('Overlay tracks cannot be exported as SVG yet.');
   }
 }
 

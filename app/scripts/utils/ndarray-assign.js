@@ -1,20 +1,14 @@
-// @ts-nocheck
+import cwise from 'cwise';
+
 const ndarrayAssign = (target, source) => {
   const numSource = +source;
   const isScalar = !Number.isNaN(numSource);
 
   if (isScalar) {
-    if (target.dimension === 1) {
-      for (let i = 0; i < target.shape[0]; ++i) {
-        target.set(i, numSource);
-      }
-    } else {
-      for (let i = 0; i < target.shape[0]; ++i) {
-        for (let j = 0; j < target.shape[1]; ++j) {
-          target.set(i, j, numSource);
-        }
-      }
-    }
+    cwise({
+      args: ['array', 'scalar'],
+      body: 'function assigns(a, s) { a = s; }'
+    })(target, numSource);
   } else {
     const ty = target.shape[0];
     const tx = target.shape[1];
@@ -27,22 +21,15 @@ const ndarrayAssign = (target, source) => {
         ty,
         sy,
         tx,
-        sx,
+        sx
       );
       return;
     }
 
-    if (target.dimension === 1) {
-      for (let i = 0; i < target.shape[0]; ++i) {
-        target.set(i, source.get(i));
-      }
-    } else {
-      for (let i = 0; i < target.shape[0]; ++i) {
-        for (let j = 0; j < target.shape[1]; ++j) {
-          target.set(i, j, source.get(i, j));
-        }
-      }
-    }
+    cwise({
+      args: ['array', 'array'],
+      body: 'function assign(a, b) { a = b; }'
+    })(target, source);
   }
 };
 

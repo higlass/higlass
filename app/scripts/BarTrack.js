@@ -1,9 +1,8 @@
-// @ts-nocheck
 import { scaleLinear } from 'd3-scale';
 import { zoomIdentity } from 'd3-zoom';
 
 import HorizontalLine1DPixiTrack from './HorizontalLine1DPixiTrack';
-
+import { binsPerTile } from './Tiled1DPixiTrack';
 // Configs
 import { GLOBALS } from './configs';
 
@@ -20,7 +19,7 @@ class BarTrack extends HorizontalLine1DPixiTrack {
     this.pMain.addChild(this.zeroLine);
     this.valueScaleTransform = zoomIdentity;
 
-    if (this.options?.colorRange) {
+    if (this.options && this.options.colorRange) {
       if (this.options.colorRangeGradient) {
         this.setColorGradient(this.options.colorRange);
       } else {
@@ -38,8 +37,8 @@ class BarTrack extends HorizontalLine1DPixiTrack {
 
     // Normalize colormap upfront to save 3 divisions per data point during the
     // rendering.
-    this.colorScale = this.colorScale.map((rgb) =>
-      rgb.map((channel) => channel / 255.0),
+    this.colorScale = this.colorScale.map(rgb =>
+      rgb.map(channel => channel / 255.0),
     );
   }
 
@@ -62,6 +61,7 @@ class BarTrack extends HorizontalLine1DPixiTrack {
    */
   initTile(tile) {
     if (!this.initialized) return;
+
     super.initTile(tile);
   }
 
@@ -97,7 +97,7 @@ class BarTrack extends HorizontalLine1DPixiTrack {
     const { tileX, tileWidth } = this.getTilePosAndDimensions(
       tile.tileData.zoomLevel,
       tile.tileData.tilePos,
-      this.tilesetInfo.bins_per_dimension || this.tilesetInfo.tile_size,
+      binsPerTile(this.tilesetInfo),
     );
     const tileValues = tile.tileData.dense;
 
@@ -140,10 +140,7 @@ class BarTrack extends HorizontalLine1DPixiTrack {
     // this scale should go from an index in the data array to
     // a position in the genome coordinates
     const tileXScale = scaleLinear()
-      .domain([
-        0,
-        this.tilesetInfo.tile_size || this.tilesetInfo.bins_per_dimension,
-      ])
+      .domain([0, binsPerTile(this.tilesetInfo)])
       .range([tileX, tileX + tileWidth]);
 
     const strokeWidth = 0;
@@ -226,7 +223,7 @@ class BarTrack extends HorizontalLine1DPixiTrack {
   }
 
   rerender(options, force) {
-    if (options?.colorRange) {
+    if (options && options.colorRange) {
       if (options.colorRangeGradient) {
         this.setColorGradient(options.colorRange);
       } else {
@@ -301,7 +298,9 @@ class BarTrack extends HorizontalLine1DPixiTrack {
     if (this.options.zeroLineVisible) this.drawZeroLine();
     else this.zeroLine.clear();
 
-    Object.values(this.fetchedTiles).forEach((tile) => {
+    Object.values(this.fetchedTiles).forEach(tile => {
+      if (tile.tileData.error) return;
+
       const [graphicsXScale, graphicsXPos] = this.getXScaleAndOffset(
         tile.drawnAtScale,
       );
@@ -430,8 +429,8 @@ class BarTrack extends HorizontalLine1DPixiTrack {
     if (this.options.zeroLine) this.drawZeroLineSvg(output);
 
     this.visibleAndFetchedTiles()
-      .filter((tile) => tile.svgData?.barXValues)
-      .forEach((tile) => {
+      .filter(tile => tile.svgData && tile.svgData.barXValues)
+      .forEach(tile => {
         // const [xScale, xPos] = this.getXScaleAndOffset(tile.drawnAtScale);
         const data = tile.svgData;
 

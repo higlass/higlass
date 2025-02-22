@@ -1,26 +1,13 @@
 /**
- * @template T
- * @typedef {Array<{ [Key in keyof T]: [Key, T[Key]] }[keyof T]>} DictItems
- */
-
-/**
  * Return an array of (key,value) pairs that are present in this
  * dictionary
- *
- * TODO(Trevor): Replace with `Object.entries`?
- *
- * @template {object} T
- * @param {T} dictionary
- *
- * @returns {DictItems<T>}
  */
-const dictItems = (dictionary) => {
-  /** @type {DictItems<T>} */
+const dictItems = dictionary => {
   const keyValues = [];
 
   for (const key in dictionary) {
-    // biome-ignore lint/suspicious/noPrototypeBuiltins:
     if (dictionary.hasOwnProperty(key)) {
+      // eslint-disable-line no-prototype-builtins
       keyValues.push([key, dictionary[key]]);
     }
   }
