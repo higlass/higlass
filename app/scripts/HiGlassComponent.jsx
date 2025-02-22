@@ -4719,8 +4719,6 @@ class HiGlassComponent extends React.Component {
     this.tiledAreasDivs = {};
     this.tiledAreas = <div className={styles['tiled-area']} />;
 
-    this.tiledAreas = <div styleName="styles.tiled-area" />;
-
     // The component needs to be mounted in order for the initial view to have
     // the right width
     if (this.mounted) {
@@ -5014,7 +5012,7 @@ class HiGlassComponent extends React.Component {
               ref={(c) => {
                 this.tiledAreasDivs[view.uid] = c;
               }}
-              styleName="styles.tiled-area"
+              className={styles['tiled-area']}
             >
               {multiTrackHeader}
               {tiledPlot}
@@ -5084,38 +5082,19 @@ class HiGlassComponent extends React.Component {
       </ReactGridLayout>
     );
 
-    let styleNames = 'styles.higlass';
-
-    if (this.theme === THEME_DARK) {
-      styleNames += ' styles.higlass-dark-theme';
-    }
-
-    if (
-      this.sizeMode === SIZE_MODE_OVERFLOW ||
-      this.sizeMode === SIZE_MODE_BOUNDED_OVERFLOW ||
-      this.sizeMode === SIZE_MODE_SCROLL
-    ) {
-      styleNames += ' styles.higlass-container-overflow';
-    }
-
-    let scrollStyleNames = '';
-    if (
-      this.sizeMode === SIZE_MODE_OVERFLOW ||
-      this.sizeMode === SIZE_MODE_BOUNDED_OVERFLOW
-    ) {
-      scrollStyleNames = 'styles.higlass-scroll-container-overflow';
-    } else if (this.sizeMode === SIZE_MODE_SCROLL) {
-      scrollStyleNames = 'styles.higlass-scroll-container-scroll';
-    }
-
     return (
       <div
         key={this.uid}
         ref={this.topDivRef}
-        className="higlass"
+        className={clsx('higlass', styles.higlass, {
+          [styles['higlass-dark-theme']]: this.theme === THEME_DARK,
+          [styles['higlass-container-overflow']]:
+            this.sizeMode === SIZE_MODE_OVERFLOW ||
+            this.sizeMode === SIZE_MODE_BOUNDED_OVERFLOW ||
+            this.sizeMode === SIZE_MODE_SCROLL,
+        })}
         onMouseLeave={this.onMouseLeaveHandlerBound}
         onMouseMove={this.mouseMoveHandlerBound}
-        styleName={styleNames}
       >
         <PubSubProvider value={this.pubSub}>
           <ModalProvider value={this.modal}>
@@ -5130,22 +5109,29 @@ class HiGlassComponent extends React.Component {
                     this.canvasElement = c;
                   }}
                   onClick={this.canvasClickHandlerBound}
-                  styleName="styles.higlass-canvas"
+                  className={styles['higlass-canvas']}
                 />
                 <div
                   ref={(c) => {
                     this.scrollContainer = c;
                   }}
-                  className="higlass-scroll-container"
+                  className={clsx('higlass-scroll-container', {
+                    [styles['higlass-scroll-container-overflow']]:
+                      this.sizeMode === SIZE_MODE_OVERFLOW ||
+                      this.sizeMode === SIZE_MODE_BOUNDED_OVERFLOW,
+                    [styles['higlass-scroll-container-scroll']]:
+                      this.sizeMode === SIZE_MODE_SCROLL,
+                  })}
                   onScroll={this.onScrollHandlerBound}
-                  styleName={scrollStyleNames}
                 >
                   <div
                     ref={(c) => {
                       this.divDrawingSurface = c;
                     }}
-                    className="higlass-drawing-surface"
-                    styleName="styles.higlass-drawing-surface"
+                    className={clsx(
+                      'higlass-drawing-surface',
+                      styles['higlass-drawing-surface'],
+                    )}
                   >
                     {gridLayout}
                   </div>
@@ -5163,7 +5149,7 @@ class HiGlassComponent extends React.Component {
                       top: 0,
                       pointerEvents: 'none',
                     }}
-                    styleName="styles.higlass-svg"
+                    className={styles['higlass-svg']}
                   />
                 </div>
               </HiGlassComponentContext.Provider>
