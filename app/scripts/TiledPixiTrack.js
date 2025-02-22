@@ -882,7 +882,9 @@ class TiledPixiTrack extends PixiTrack {
       if (this.dataFetcher.tilesetInfoLoading) {
         this.trackNotFoundText.text = 'Loading...';
       } else {
-        this.trackNotFoundText.text = `Tileset info not found. Server: [${this.server}] tilesetUid: [${this.tilesetUid}]`;
+        const server = this.dataFetcher.dataConfig.server || 'unknown';
+        const tilesetUid = this.dataFetcher.dataConfig.tilesetUid;
+        this.trackNotFoundText.text = `Tileset info not found. Server: [${server}] tilesetUid: [${tilesetUid}]`;
       }
 
       [this.trackNotFoundText.x, this.trackNotFoundText.y] = this.position;
