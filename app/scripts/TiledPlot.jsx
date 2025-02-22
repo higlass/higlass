@@ -1,9 +1,9 @@
 // @ts-nocheck
+import clsx from 'clsx';
+import { ElementQueries, ResizeSensor } from 'css-element-queries';
 import { brush, brushX, brushY } from 'd3-brush';
 import { format } from 'd3-format';
 import { pointer, select } from 'd3-selection';
-
-import { ElementQueries, ResizeSensor } from 'css-element-queries';
 import PropTypes from 'prop-types';
 import React from 'react';
 import slugid from 'slugid';
@@ -49,7 +49,6 @@ import {
   TRACK_LOCATIONS,
 } from './configs';
 
-import clsx from 'clsx';
 import stylesCenterTrack from '../styles/CenterTrack.module.scss';
 // Styles
 import styles from '../styles/TiledPlot.module.scss';
