@@ -1,10 +1,12 @@
+// @ts-nocheck
+import clsx from 'clsx';
 import { ElementQueries, ResizeSensor } from 'css-element-queries';
 import { scaleLinear } from 'd3-scale';
 import { pointer, select } from 'd3-selection';
 import * as PIXI from 'pixi.js';
 import PropTypes from 'prop-types';
 import createPubSub, { globalPubSub } from 'pub-sub-es';
-import React, { createRef } from 'react';
+import * as React from 'react';
 import ReactGridLayout from 'react-grid-layout';
 import slugid from 'slugid';
 import parse from 'url-parse';
@@ -81,10 +83,9 @@ import {
 } from './configs';
 
 // Styles
-import styles from '../styles/HiGlass.module.scss'; // eslint-disable-line no-unused-vars
-import stylesMTHeader from '../styles/ViewHeader.module.scss'; // eslint-disable-line no-unused-vars
-
-import '../styles/HiGlass.scss'; // eslint-disable-line no-unused-vars
+import styles from '../styles/HiGlass.module.scss';
+import stylesMTHeader from '../styles/ViewHeader.module.scss';
+import '../styles/HiGlass.scss';
 
 const NUM_GRID_COLUMNS = 12;
 const DEFAULT_NEW_VIEW_HEIGHT = 12;
@@ -96,7 +97,7 @@ const SIZE_MODE_BOUNDED_OVERFLOW = 'bounded-overflow';
 const SIZE_MODE_SCROLL = 'scroll';
 
 class HiGlassComponent extends React.Component {
-  topDivRef = createRef();
+  topDivRef = React.createRef();
 
   constructor(props) {
     super(props);
