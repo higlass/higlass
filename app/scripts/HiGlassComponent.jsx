@@ -2253,15 +2253,7 @@ class HiGlassComponent extends React.Component {
 
     const prospectiveRowHeight = Math.floor(availableHeight / maxHeight); // maxHeight is the number of
     // rows necessary to display this view
-
-    // console.log('maxHeight', maxHeight);
-
-    // console.log('perTrackRowHeight', perTrackRowHeight);
-    // console.log('prospectiveRowHeight', prospectiveRowHeight);
-
     const chosenRowHeight = Math.max(prospectiveRowHeight, perTrackRowHeight);
-
-    // console.log('chosenRowHeight', chosenRowHeight);
 
     if (this.topDivRef.current) {
       this.setState({
