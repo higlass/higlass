@@ -4286,6 +4286,97 @@ class HiGlassComponent extends React.Component {
     this.setCenters[viewUid](centerX, centerY, k, false, animateTime);
   }
 
+  zoomToGene(viewUid, geneName, padding, animateTime) {
+    if (!(viewUid in this.setCenters)) {
+      throw Error(
+        `Invalid viewUid. Current uuids: ${Object.keys(this.setCenters).join(
+          ',',
+        )}`,
+      );
+    }
+
+    if (
+      !this.state.views[viewUid].genomePositionSearchBox ||
+      !this.state.views[viewUid].genomePositionSearchBox.autocompleteServer ||
+      !this.state.views[viewUid].genomePositionSearchBox.autocompleteId ||
+      !this.state.views[viewUid].chromInfoPath
+    ) {
+      console.warn(
+        'Please set chromInfoPath, autocompleteServer, and autocompleteId to use the zoomToGene API',
+      );
+      return;
+    }
+
+    this.suggestGene(viewUid, geneName, (suggestions) => {
+      if (suggestions) {
+        // extract the position of exact match
+        const exactMatch = suggestions.find(
+          (d) => d.geneName.toLowerCase() === geneName.toLowerCase(),
+        );
+
+        if (exactMatch) {
+          const { chr, txStart, txEnd } = exactMatch;
+
+          // extract absolute positions
+          ChromosomeInfo(
+            this.state.views[viewUid].chromInfoPath,
+            (loadedChromInfo) => {
+              // using the absolution positions, zoom to the position near a gene
+              const startAbs =
+                loadedChromInfo.chrToAbs([chr, txStart]) - padding;
+              const endAbs = loadedChromInfo.chrToAbs([chr, txEnd]) + padding;
+
+              const [centerX, centerY, k] = scalesCenterAndK(
+                this.xScales[viewUid].copy().domain([startAbs, endAbs]),
+                this.yScales[viewUid].copy().domain([startAbs, endAbs]),
+              );
+
+              this.setCenters[viewUid](centerX, centerY, k, false, animateTime);
+            },
+            this.pubSub,
+          );
+        } else {
+          console.warn(`Couldn't find the gene symbol: ${geneName}`);
+        }
+      }
+    });
+  }
+
+  suggestGene(viewUid, keyword, callback) {
+    if (!(viewUid in this.setCenters)) {
+      throw Error(
+        `Invalid viewUid. Current uuids: ${Object.keys(this.setCenters).join(
+          ',',
+        )}`,
+      );
+    }
+
+    if (
+      !this.state.views[viewUid].genomePositionSearchBox ||
+      !this.state.views[viewUid].genomePositionSearchBox.autocompleteServer ||
+      !this.state.views[viewUid].genomePositionSearchBox.autocompleteId
+    ) {
+      console.warn(
+        'Please set autocompleteServer and autocompleteId to use the suggestGene API',
+      );
+      return;
+    }
+
+    const autocompleteServer =
+      this.state.views[viewUid].genomePositionSearchBox.autocompleteServer;
+    const autocompleteId =
+      this.state.views[viewUid].genomePositionSearchBox.autocompleteId;
+
+    const url = `${autocompleteServer}/suggest/?d=${autocompleteId}&ac=${keyword.toLowerCase()}`;
+
+    tileProxy
+      .json(url, toVoid, this.pubSub)
+      .then((suggestions) => {
+        callback(suggestions);
+      })
+      .catch((error) => console.error(error));
+  }
+
   onLocationChange(viewId, callback, callbackId) {
     const viewsIds = Object.keys(this.state.views);
 
