@@ -1,7 +1,7 @@
 import { range } from 'd3-array';
 import slugid from 'slugid';
 
-import { workerGetTiles, workerSetPix } from './worker';
+import { workerFetchTiles, workerSetPix } from './worker';
 
 import sleep from '../utils/timeout';
 import tts from '../utils/trim-trailing-slash';
@@ -301,25 +301,7 @@ function* optimizeRequests(requests, { maxSize = MAX_FETCH_TILES } = {}) {
 export function fetchMultiRequestTiles(requests, pubSub) {
   const fetchPromises = [];
   for (const request of optimizeRequests(requests.map((r) => r.value))) {
-    const renderParams = request.tileIds.map((x) => `d=${x}`).join('&');
-    const outUrl = `${request.server}/tiles/?${renderParams}&s=${sessionId}`;
-
-    /** @type {Promise<Record<string, CompletedTileData<TileResponse>>>} */
-    const p = new Promise((resolve) => {
-      pubSub.publish('requestSent', outUrl);
-
-      workerGetTiles(
-        outUrl,
-        request.server,
-        request.tileIds,
-        authHeader,
-        resolve,
-        request.body,
-      );
-
-      pubSub.publish('requestReceived', outUrl);
-    });
-
+    const p = workerFetchTiles(request, { authHeader, sessionId, pubSub });
     fetchPromises.push(p);
   }
 
@@ -329,6 +311,7 @@ export function fetchMultiRequestTiles(requests, pubSub) {
 
     // merge back all the tile requests
     for (const data of datas) {
+      if (!data) continue;
       const tileIds = Object.keys(data);
 
       for (const tileId of tileIds) {

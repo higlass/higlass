@@ -391,7 +391,7 @@ function uint16ArrayToFloat32Array(uint16array) {
  * @template {TileResponse} T
  * @param {Record<string, T>} inputData
  * @param {string} server
- * @param {string[]} theseTileIds
+ * @param {ReadonlyArray<string>} theseTileIds
  *
  * @returns {Record<string, CompletedTileData<T>>}
  *
@@ -470,41 +470,41 @@ export function tileResponseToData(inputData, server, theseTileIds) {
  *
  * @template {TileResponse} T
  *
- * @param {string} outUrl
- * @param {string} server
- * @param {string[]} theseTileIds
- * @param {string | null} authHeader
- * @param {(data: Record<string, CompletedTileData<T>>) => void} done
- * @param {ReadonlyArray<Record<string, unknown>>} requestBody
+ * @param {Object} request
+ * @param {string} request.server
+ * @param {ReadonlyArray<string>} request.tileIds
+ * @param {ReadonlyArray<{ tilesetUid: string, tileIds: Array<string>, options?: Record<string, unknown> }>} request.body
+ * @param {Object} options
+ * @param {string | null} [options.authHeader]
+ * @param {import("pub-sub-es").PubSub} [options.pubSub]
+ * @param {string} options.sessionId
  */
-export function workerGetTiles(
-  outUrl,
-  server,
-  theseTileIds,
-  authHeader,
-  done,
-  requestBody,
-) {
+export function workerFetchTiles(request, options) {
   /** @type {Record<string, string>} */
   const headers = {
     'content-type': 'application/json',
   };
 
-  if (authHeader) headers.Authorization = authHeader;
+  if (options.authHeader) headers.Authorization = options.authHeader;
 
-  fetch(outUrl, {
+  const renderParams = request.tileIds.map((x) => `d=${x}`).join('&');
+  const url = `${request.server}/tiles/?${renderParams}&s=${options.sessionId}`;
+
+  options.pubSub?.publish('requestSent', url);
+  return fetch(url, {
     credentials: 'same-origin',
     headers,
-    ...(requestBody && Object.keys(requestBody).length > 0
+    ...(request.body?.length > 0
       ? {
           method: 'POST',
-          body: JSON.stringify(requestBody),
+          body: JSON.stringify(request.body),
         }
       : {}),
   })
     .then((response) => response.json())
     .then((data) => {
-      done(tileResponseToData(data, server, theseTileIds));
+      options.pubSub?.publish('requestReceived', url);
+      return tileResponseToData(data, request.server, request.tileIds);
     })
     .catch((err) => console.warn('err:', err));
 }
