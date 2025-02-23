@@ -3330,10 +3330,40 @@ class HiGlassComponent extends React.Component {
 
     if (viewConfig.locationLocks) {
       for (const viewUid of dictKeys(viewConfig.locationLocks.locksByViewUid)) {
-        this.locationLocks[viewUid] =
-          viewConfig.locationLocks.locksDict[
-            viewConfig.locationLocks.locksByViewUid[viewUid]
-          ];
+        if (
+          typeof viewConfig.locationLocks.locksByViewUid[viewUid] !== 'object'
+        ) {
+          this.locationLocks[viewUid] =
+            viewConfig.locationLocks.locksDict[
+              viewConfig.locationLocks.locksByViewUid[viewUid]
+            ];
+        } else {
+          // This means we need to link x and y axes separately.
+
+          // x-axis specific locks. The x-axis of this view is linked with an axis in another view.
+          if ('x' in viewConfig.locationLocks.locksByViewUid[viewUid]) {
+            const lockInfo =
+              viewConfig.locationLocks.locksDict[
+                viewConfig.locationLocks.locksByViewUid[viewUid].x.lock
+              ];
+            this.locationLocksAxisWise.x[viewUid] = {
+              lock: lockInfo,
+              axis: viewConfig.locationLocks.locksByViewUid[viewUid].x.axis, // The axis of another view, either 'x' or 'y'
+            };
+          }
+
+          // y-axis specific locks. The y-axis of this view is linked with an axis in another view.
+          if ('y' in viewConfig.locationLocks.locksByViewUid[viewUid]) {
+            const lockInfo =
+              viewConfig.locationLocks.locksDict[
+                viewConfig.locationLocks.locksByViewUid[viewUid].y.lock
+              ];
+            this.locationLocksAxisWise.y[viewUid] = {
+              lock: lockInfo,
+              axis: viewConfig.locationLocks.locksByViewUid[viewUid].y.axis, // The axis of another view, either 'x' or 'y'
+            };
+          }
+        }
       }
     }
 
