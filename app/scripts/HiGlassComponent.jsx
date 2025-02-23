@@ -258,10 +258,12 @@ class HiGlassComponent extends React.Component {
 
     const pluginTracks = {};
     try {
-      if (window.higlassTracks) {
-        Object.values(window.higlassTracks).forEach((trackDef) => {
-          pluginTracks[trackDef.config.type] = trackDef;
-        });
+      if (window.higlassTracksByType) {
+        Object.entries(window.higlassTracksByType).forEach(
+          ([trackType, trackDef]) => {
+            pluginTracks[trackType] = trackDef;
+          },
+        );
       }
     } catch (e) {
       console.warn(
