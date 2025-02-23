@@ -59,6 +59,7 @@ import {
   objVals,
   scalesCenterAndK,
   scalesToGenomeLoci,
+  toVoid,
   visitPositionedTracks,
 } from './utils';
 import positionedTracksToAllTracks from './utils/positioned-tracks-to-all-tracks';
@@ -77,6 +78,11 @@ import {
   MOUSE_TOOL_SELECT,
   MOUSE_TOOL_TRACK_SELECT,
   SHORT_DRAG_TIMEOUT,
+  SIZE_MODE_BOUNDED,
+  SIZE_MODE_BOUNDED_OVERFLOW,
+  SIZE_MODE_DEFAULT,
+  SIZE_MODE_OVERFLOW,
+  SIZE_MODE_SCROLL,
   THEME_DARK,
   THEME_LIGHT,
   TRACKS_INFO_BY_TYPE,
@@ -90,11 +96,6 @@ import '../styles/HiGlass.scss';
 const NUM_GRID_COLUMNS = 12;
 const DEFAULT_NEW_VIEW_HEIGHT = 12;
 const VIEW_HEADER_HEIGHT = 20;
-const SIZE_MODE_DEFAULT = 'default';
-const SIZE_MODE_BOUNDED = 'bounded';
-const SIZE_MODE_OVERFLOW = 'overflow';
-const SIZE_MODE_BOUNDED_OVERFLOW = 'bounded-overflow';
-const SIZE_MODE_SCROLL = 'scroll';
 
 class HiGlassComponent extends React.Component {
   topDivRef = React.createRef();
