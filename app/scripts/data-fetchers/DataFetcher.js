@@ -3,6 +3,7 @@ import slugid from 'slugid';
 
 import DenseDataExtrema1D from '../utils/DenseDataExtrema1D';
 import DenseDataExtrema2D from '../utils/DenseDataExtrema2D';
+import assert from '../utils/assert';
 import dictValues from '../utils/dict-values';
 import maxNonZero from '../utils/max-non-zero';
 import minNonZero from '../utils/min-non-zero';
@@ -11,6 +12,7 @@ import tts from '../utils/trim-trailing-slash';
 
 // Services
 import * as tileProxy from '../services/tile-proxy';
+import { isResolutionsTilesetInfo } from '../utils/type-guards';
 
 /** @import { PubSub } from 'pub-sub-es' */
 /** @import { TilesetInfo, AbstractDataFetcher, TileSource, DataConfig, HandleTilesetInfoFinished } from '../types' */
@@ -52,18 +54,14 @@ function isTuple(x) {
  */
 function createDefaultTileSource(pubSub) {
   return {
-    fetchTiles(request) {
-      return new Promise((done) => {
-        tileProxy.fetchTilesDebounced(
-          {
-            ...request,
-            ids: request.tileIds ?? [],
-            // @ts-expect-error - This is just really hard to type correctly
-            done,
-          },
-          pubSub,
-        );
-      });
+    async fetchTiles(request) {
+      /** @type {Record<string, Tile>} */
+      // @ts-expect-error - TODO: Need to resolve these types together
+      const tileData = await tileProxy.fetchTilesDebounced(
+        { ...request, ids: request.tileIds ?? [] },
+        pubSub,
+      );
+      return tileData;
     },
     fetchTilesetInfo({ server, tilesetUid }) {
       return new Promise((resolve, reject) => {
@@ -257,7 +255,11 @@ export default class DataFetcher {
       return this.fetchHorizontalSection(receivedTiles, tileIds, true);
     }
 
-    if (!this.dataConfig.children && this.dataConfig.tilesetUid) {
+    if (
+      !this.dataConfig.children &&
+      this.dataConfig.tilesetUid &&
+      this.dataConfig.server
+    ) {
       // no children, just return the fetched tiles as is
       const promise = this._tileSource.fetchTiles({
         id: slugid.nice(),
@@ -385,10 +387,10 @@ export default class DataFetcher {
     /** @type {boolean[]} */
     const mirrored = [];
 
-    const { slicePos, tilesetInfo } = this.dataConfig;
-    if (!slicePos || !tilesetInfo) {
-      throw new Error('No slice position or tileset info');
-    }
+    const { slicePos, tilesetInfo, server } = this.dataConfig;
+    assert(slicePos, 'No slice position in dataConfig.');
+    assert(server, 'No server in dataConfig.');
+    assert(tilesetInfo, 'No tilesetInfo in dataConfig.');
 
     for (const tileId of tileIds) {
       const parts = tileId.split('.');
@@ -404,7 +406,7 @@ export default class DataFetcher {
       // this needs to be consolidated into one function eventually
       let yTiles = [];
 
-      if ('resolutions' in tilesetInfo) {
+      if (isResolutionsTilesetInfo(tilesetInfo)) {
         const sortedResolutions = tilesetInfo.resolutions
           .map((x) => +x)
           .sort((a, b) => b - a);
@@ -442,7 +444,7 @@ export default class DataFetcher {
     // actually fetch the new tileIds
     const promise = this._tileSource.fetchTiles({
       id: slugid.nice(),
-      server: this.dataConfig.server,
+      server: server,
       tileIds: newTileIds.map((x) => `${this.dataConfig.tilesetUid}.${x}`),
     });
 
