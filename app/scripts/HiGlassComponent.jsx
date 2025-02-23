@@ -3205,13 +3205,23 @@ class HiGlassComponent extends React.Component {
    *
    * Done in place.
    *
-   * @param track: A view with tracks.
+   * @param {string} viewUid
+   * @param {{
+   *   type: string;
+   *   uid: string;
+   *   fromViewUid: string;
+   *   registerViewportChanged: (string: trackId, listener: () => void) => void;
+   *   removeViewportChanged: (string: trackId) => void;
+   *   removeScalesChangedListener: (string: trackId) => void;
+   * }} track A view with tracks.
    */
   addCallbacks(viewUid, track) {
+    const trackInfo = this.getTrackInfo(track.type);
     if (
       track.type === 'viewport-projection-center' ||
       track.type === 'viewport-projection-horizontal' ||
-      track.type === 'viewport-projection-vertical'
+      track.type === 'viewport-projection-vertical' ||
+      trackInfo?.projection
     ) {
       const fromView = track.fromViewUid;
 
