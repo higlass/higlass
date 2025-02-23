@@ -22,7 +22,7 @@ import { scalesCenterAndK } from './utils';
 import { SearchIcon } from './icons';
 
 // Styles
-import classes from '../styles/GenomePositionSearchBox.module.scss';
+import styles from '../styles/GenomePositionSearchBox.module.scss';
 
 class GenomePositionSearchBox extends React.Component {
   constructor(props) {
@@ -438,7 +438,7 @@ class GenomePositionSearchBox extends React.Component {
             left: this.menuPosition.left,
             top: this.menuPosition.top,
           }}
-          className={classes['genome-position-search-bar-suggestions']}
+          className={styles['genome-position-search-bar-suggestions']}
         >
           {items}
         </div>
@@ -479,10 +479,10 @@ class GenomePositionSearchBox extends React.Component {
           this.gpsbForm = c;
         }}
         className={clsx({
-          [classes['genome-position-search-dark']]:
+          [styles['genome-position-search-focus']]: this.state.isFocused,
+          [styles['genome-position-search']]: !this.state.isFocused,
+          [styles['genome-position-search-dark']]:
             this.props.theme === THEME_DARK,
-          [classes['genome-position-search-focus']]: this.state.isFocused,
-          [classes['genome-position-search']]: !this.state.isFocused,
         })}
       >
         <Autocomplete
@@ -491,7 +491,7 @@ class GenomePositionSearchBox extends React.Component {
           }}
           getItemValue={(item) => item.geneName}
           inputProps={{
-            className: classes['genome-position-search-bar'],
+            className: styles['genome-position-search-bar'],
           }}
           items={this.state.genes}
           menuStyle={{
