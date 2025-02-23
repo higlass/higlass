@@ -6,7 +6,7 @@ import { pointer, select } from 'd3-selection';
 import * as PIXI from 'pixi.js';
 import PropTypes from 'prop-types';
 import createPubSub, { globalPubSub } from 'pub-sub-es';
-import * as React from 'react';
+import React from 'react';
 import ReactGridLayout from 'react-grid-layout';
 import slugid from 'slugid';
 import parse from 'url-parse';
