@@ -299,12 +299,10 @@ function* optimizeRequests(requests, { maxSize = MAX_FETCH_TILES } = {}) {
  * @param {import("pub-sub-es").PubSub} pubSub
  */
 export function fetchMultiRequestTiles(requests, pubSub) {
-  const fetchPromises = [];
-  for (const request of optimizeRequests(requests.map((r) => r.value))) {
-    const p = workerFetchTiles(request, { authHeader, sessionId, pubSub });
-    fetchPromises.push(p);
-  }
-
+  const fetchPromises = Array.from(
+    optimizeRequests(requests.map((r) => r.value)),
+    (request) => workerFetchTiles(request, { authHeader, sessionId, pubSub }),
+  );
   Promise.all(fetchPromises).then((datas) => {
     /** @type {TileData} */
     const tiles = {};
@@ -322,14 +320,14 @@ export function fetchMultiRequestTiles(requests, pubSub) {
     // trigger the callback for every request
     for (const request of requests) {
       /** @type {TileData} */
-      const reqDate = {};
+      const requestData = {};
 
       // pull together the data per request
       for (const id of request.value.tileIds) {
-        reqDate[id] = tiles[`${request.value.server}/${id}`];
+        requestData[id] = tiles[`${request.value.server}/${id}`];
       }
 
-      request.resolve(reqDate);
+      request.resolve(requestData);
     }
   });
 }
