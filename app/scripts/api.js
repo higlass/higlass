@@ -1,24 +1,29 @@
-// @ts-nocheck
 import Ajv from 'ajv';
 import createPubSub from 'pub-sub-es';
 import ReactDOM from 'react-dom';
 
 import schema from '../schema.json';
 
-import { setTileProxyAuthHeader } from './services';
+import { getTileProxyAuthHeader, setTileProxyAuthHeader } from './services';
 
 import { getTrackObjectFromHGC } from './utils';
 
-import { MOUSE_TOOL_MOVE, MOUSE_TOOL_SELECT } from './configs';
-
-import { version } from '../../package.json';
+import {
+  MOUSE_TOOL_MOVE,
+  MOUSE_TOOL_SELECT,
+  MOUSE_TOOL_TRACK_SELECT,
+  SIZE_MODE_BOUNDED,
+  SIZE_MODE_BOUNDED_OVERFLOW,
+  SIZE_MODE_DEFAULT,
+  SIZE_MODE_OVERFLOW,
+  SIZE_MODE_SCROLL,
+} from './configs';
 
 const forceUpdate = (self) => {
   self.setState(self.state);
 };
 
 const createApi = function api(context, pubSub) {
-  /** @type {import('./HiGlassComponent').default} */
   const self = context;
 
   let pubSubs = [];
@@ -44,7 +49,10 @@ const createApi = function api(context, pubSub) {
        * @return {string} Version number
        */
       get version() {
-        return version;
+        // Note, `VERSION` is exposed by webpack across the entire app. I.e.,
+        // it's globally available within the build but not outside. See
+        // `plugins` in `webpack.config.js`
+        return VERSION;
       },
 
       /**
@@ -100,7 +108,7 @@ const createApi = function api(context, pubSub) {
        * Get the currently set auth header
        */
       getAuthHeader() {
-        return setTileProxyAuthHeader();
+        return getTileProxyAuthHeader();
       },
 
       /**
@@ -113,38 +121,10 @@ const createApi = function api(context, pubSub) {
       },
 
       /**
-       * Reload all or specific tiles for viewId/trackId
-       *
-       * @param {array} target Should be an array of type
-       *                       ({ viewId: string, trackId: string } | string).
-       *                       If the array is just strings, it's interpreted
-       *                       as a list of views whose tracks to reload.
+       * Reload all of the tiles
        */
-      reload(target) {
-        /** @type {{ viewId: string, trackId: string}[]} */
-        let tracks;
-        if (!target) {
-          tracks = self.iterateOverTracks();
-        } else {
-          tracks = target.flatMap((d) =>
-            typeof d === 'string' ? self.iterateOverTracksInView(d) : d,
-          );
-        }
-
-        for (const { viewId, trackId } of tracks) {
-          const selectedTrack = self.getTrackObject(viewId, trackId);
-          // iterate over childTracks if CombinedTrack
-          for (const track of selectedTrack.childTracks || [selectedTrack]) {
-            // reload tiles for tracks with tiles.
-            if (track.fetchedTiles) {
-              track.removeTiles(Object.keys(track.fetchedTiles));
-              track.fetching.clear();
-              track.refreshTiles();
-            }
-            // second argument forces re-render
-            track.rerender(track.options, true);
-          }
-        }
+      reload() {
+        console.warn('Not implemented yet!');
       },
 
       /**
@@ -164,7 +144,9 @@ const createApi = function api(context, pubSub) {
        * hgv.setRangeSelectionToFloat(); // Allow float range selections
        */
       setRangeSelectionToInt() {
-        self.setState({ rangeSelectionToInt: true });
+        self.setState({
+          rangeSelectionToInt: true,
+        });
       },
 
       /**
@@ -176,7 +158,9 @@ const createApi = function api(context, pubSub) {
        * hgv.setRangeSelectionToFloat(); // Allow float range selections
        */
       setRangeSelectionToFloat() {
-        self.setState({ rangeSelectionToInt: false });
+        self.setState({
+          rangeSelectionToInt: false,
+        });
       },
 
       /**
@@ -205,8 +189,6 @@ const createApi = function api(context, pubSub) {
        *
        * @param {obj} newViewConfig A JSON object that defines
        *    the state of the HiGlassComponent
-       * @param {boolean} resolveImmediately If true, the returned promise resolves immediately
-       *    even if not all data has loaded. This should be set to true, if the new viewconf does not request new data. Default: false.
        * @example
        *
        * const p = hgv.setViewConfig(newViewConfig);
@@ -215,10 +197,19 @@ const createApi = function api(context, pubSub) {
        * });
        *
        * @return {Promise} dataLoaded A promise that resolves when
-       *   all of the data for this viewconfig is loaded. If `resolveImmediately` is set to true,
-       * the promise resolves without waiting for the data to be loaded.
+       *   all of the data for this viewconfig is loaded
        */
-      setViewConfig(newViewConfig, resolveImmediately = false) {
+      setViewConfig(newViewConfig) {
+        const validate = new Ajv().compile(schema);
+        const valid = validate(newViewConfig);
+        if (validate.errors) {
+          console.warn(JSON.stringify(validate.errors, null, 2));
+        }
+        if (!valid) {
+          console.warn('Invalid viewconf');
+          // throw new Error('Invalid viewconf');
+        }
+
         const viewsByUid = self.processViewConfig(newViewConfig);
         const p = new Promise((resolve) => {
           this.requestsInFlight = 0;
@@ -244,11 +235,7 @@ const createApi = function api(context, pubSub) {
               viewConfig: newViewConfig,
               views: viewsByUid,
             },
-            () => {
-              if (resolveImmediately) {
-                resolve();
-              }
-            },
+            () => {},
           );
         });
 
@@ -261,23 +248,18 @@ const createApi = function api(context, pubSub) {
        * @returns (Object) A JSON object describing the visible views
        */
       getViewConfig() {
-        return self.getViewsAsJson();
-      },
-
-      /**
-       * Validate a viewconf.
-       *
-       * @returns (Boolean) A JSON object describing the visible views
-       */
-      validateViewConfig(viewConfig, { verbose = false } = {}) {
+        const newViewConfig = self.getViewsAsJson();
         const validate = new Ajv().compile(schema);
-        const valid = validate(viewConfig);
-        if (verbose && validate.errors) {
+        const valid = validate(newViewConfig);
+        if (validate.errors) {
           console.warn(JSON.stringify(validate.errors, null, 2));
         }
-        return valid;
+        if (!valid) {
+          console.warn('Invalid viewconf');
+          // throw new Error('Invalid viewconf');
+        }
+        return newViewConfig;
       },
-
       /**
        * Get the minimum and maximum visible values for a given track.
        *
@@ -367,6 +349,16 @@ const createApi = function api(context, pubSub) {
         });
       },
 
+      measureSize() {
+        self.measureSize();
+
+        for (const tiledPlot of Object.values(self.tiledPlots)) {
+          if (tiledPlot) {
+            tiledPlot.measureSize();
+          }
+        }
+      },
+
       /**
        * Show the track chooser which highlights tracks
        * when the mouse is over them.
@@ -391,7 +383,7 @@ const createApi = function api(context, pubSub) {
        * Hide the track chooser.
        */
       hideTrackChooser() {
-        this.setState({
+        self.setState({
           chooseTrackHandler: null,
         });
       },
@@ -497,42 +489,6 @@ const createApi = function api(context, pubSub) {
       },
 
       /**
-       * Change the current view port to a location near the gene of interest.
-       * When ``animateTime`` is greater than 0, animate the transition.
-       *
-       * @param {string} viewUid The identifier of the view to zoom
-       * @param {string} geneName The name of gene symbol to search
-       * @param {string} padding The padding (base pairs) around a given gene for the navigation
-       * @param {Number} animateTime The time to spend zooming to the specified location
-       * @example
-       * // Zoom to the location near 'MYC'
-       * hgApi.zoomToGene('view1', 'MYC', 100, 2000);
-       */
-      zoomToGene(viewUid, geneName, padding = 0, animateTime = 0) {
-        self.zoomToGene(viewUid, geneName, padding, animateTime);
-      },
-
-      /**
-       * Get the list of genes of top match for a given keyword.
-       *
-       * @param {string} viewUid The id of the view containing the track.
-       * @param {string} keyword The substring of gene name to search.
-       * @param {function} callback A function to be called upon gene list search.
-       * @example
-       * hgv.suggestGene('view1', 'MY', (suggestions) => {
-       *    if(suggestions && suggestions.length > 0) {
-       *      console.log('Gene suggested', suggestions[0].geneName);
-       *      console.log('Chromosome', suggestions[0].chr);
-       *      console.log('Start position', suggestions[0].txStart);
-       *      console.log('End position', suggestions[0].txEnd);
-       *    }
-       * });
-       */
-      suggestGene(viewUid, keyword, callback) {
-        return self.suggestGene(viewUid, keyword, callback);
-      },
-
-      /**
        * Zoom so that the entirety of all the datasets in a view
        * are visible.
        * The passed in ``viewUid`` should refer to a view which is present. If it
@@ -587,12 +543,43 @@ const createApi = function api(context, pubSub) {
        */
       activateTool(tool) {
         switch (tool) {
+          case 'track-select':
+            self.setMouseTool(MOUSE_TOOL_TRACK_SELECT);
+            break;
+
           case 'select':
             self.setMouseTool(MOUSE_TOOL_SELECT);
             break;
 
           default:
             self.setMouseTool(MOUSE_TOOL_MOVE);
+            break;
+        }
+      },
+
+      /**
+       * Set the size mode for the higlass container
+       *
+       * @param {string sizeMode The size mode for the container.
+       *                         The vailable options are 'default',
+       *                         'bounded', 'overflow' and 'scroll'
+       */
+      setSizeMode(sizeMode) {
+        switch (sizeMode) {
+          case 'bounded':
+            self.setSizeMode(SIZE_MODE_BOUNDED);
+            break;
+          case 'overflow':
+            self.setSizeMode(SIZE_MODE_OVERFLOW);
+            break;
+          case 'bounded-overflow':
+            self.setSizeMode(SIZE_MODE_BOUNDED_OVERFLOW);
+            break;
+          case 'scroll':
+            self.setSizeMode(SIZE_MODE_SCROLL);
+            break;
+          default:
+            self.setSizeMode(SIZE_MODE_DEFAULT);
             break;
         }
       },
@@ -676,10 +663,6 @@ const createApi = function api(context, pubSub) {
       /**
        * Return the track's javascript object. This is useful for subscribing to
        * data events (dataChanged)
-       *
-       * @param {string} viewId The id of the view containing the track
-       * @param {string} trackId The id of the track within the view
-       * @return {obj} The HiGlass track object for this track
        */
       getTrackObject(viewId, trackId) {
         let newViewId = viewId;
@@ -697,7 +680,7 @@ const createApi = function api(context, pubSub) {
        * Set or get an option.
        * @param   {string}  key  The name of the option you want get or set
        * @param   {*}  value  If not `undefined`, `key` will be set to `value`
-       * @return  {obj}  When `value` is `undefined` the current value of
+       * @return  {[type]}  When `value` is `undefined` the current value of
        *   `key` will be returned.
        */
       option(key, value) {
@@ -734,20 +717,34 @@ const createApi = function api(context, pubSub) {
        * hgv.off('mouseMoveZoom', mmz);
        * hgv.off('wheel', wheelListener);
        * hgv.off('createSVG');
-       * hgv.off('click');
-       * hgv.off('geneSearch', geneSearchListener);
        */
       off(event, listenerId, viewId) {
         const callback =
           typeof listenerId === 'object' ? listenerId.callback : listenerId;
 
         switch (event) {
+          case 'annotationCreated':
+            apiPubSub.unsubscribe('annotationCreated', callback);
+            break;
+
+          case 'annotationChanged':
+            apiPubSub.unsubscribe('annotationChanged', callback);
+            break;
+
+          case 'annotationRemoved':
+            apiPubSub.unsubscribe('annotationRemoved', callback);
+            break;
+
           case 'click':
             apiPubSub.unsubscribe('click', callback);
             break;
 
           case 'cursorLocation':
             apiPubSub.unsubscribe('cursorLocation', callback);
+            break;
+
+          case 'datasetInfo':
+            apiPubSub.unsubscribe('datasetInfo', callback);
             break;
 
           case 'location':
@@ -774,10 +771,6 @@ const createApi = function api(context, pubSub) {
             self.offPostCreateSVG();
             break;
 
-          case 'geneSearch':
-            apiPubSub.unsubscribe('geneSearch', callback);
-            break;
-
           default:
             // nothing
             break;
@@ -797,22 +790,15 @@ const createApi = function api(context, pubSub) {
        *
        * **Event types**
        *
-       * ``click``: Returns a list of objects for each track that is below the click event.
+       * ``click``: Returns clicked objects. (Currently only clicks on 1D annotations are captured.)
        *
        * .. code-block:: javascript
        *
-       *     [
-       *      {
-       *       event: {
-       *          type: 'annotation',
-       *          event: { ... },
-       *          payload: [230000000, 561000000]
-       *        },
-       *       trackType: '1d-annotation',
-       *       trackUid: 'xyz',
-       *       viewUid: 'abc'
-       *      }
-       *     ]
+       *     {
+       *       type: 'annotation',
+       *       event: { ... },
+       *       payload: [230000000, 561000000]
+       *     }
        *
        * ``cursorLocation:`` Returns an object describing the location under the cursor
        *
@@ -956,21 +942,26 @@ const createApi = function api(context, pubSub) {
        *    svg.appendChild(circle);
        *    return svg;
        * });
-       *
-       * const geneSearchListener = event => {
-       *    console.log('Gene searched', event.geneSymbol);
-       *    console.log('Range of the gene', event.range);
-       *    console.log('Center of the gene', event.centerX);
-       * }
-       * hgv.on('geneSearch', geneSearchListener);
        */
       on(event, callback, viewId, callbackId) {
         switch (event) {
+          case 'annotationCreated':
+            return apiPubSub.subscribe('annotationCreated', callback);
+
+          case 'annotationChanged':
+            return apiPubSub.subscribe('annotationChanged', callback);
+
+          case 'annotationRemoved':
+            return apiPubSub.subscribe('annotationRemoved', callback);
+
           case 'click':
             return apiPubSub.subscribe('click', callback);
 
           case 'cursorLocation':
             return apiPubSub.subscribe('cursorLocation', callback);
+
+          case 'datasetInfo':
+            return apiPubSub.subscribe('datasetInfo', callback);
 
           case 'location':
             // returns a set of scales (xScale, yScale) on every zoom event
@@ -990,9 +981,6 @@ const createApi = function api(context, pubSub) {
 
           case 'createSVG':
             return self.onPostCreateSVG(callback);
-
-          case 'geneSearch':
-            return apiPubSub.subscribe('geneSearch', callback);
 
           default:
             return undefined;
