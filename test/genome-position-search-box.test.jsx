@@ -92,7 +92,7 @@ describe('Genome position search box tests', () => {
     });
   });
 
-  describe.only('Search for a specific gene', () => {
+  describe('Search for a specific gene', () => {
     it('Cleans up previously created instances and mounts a new component', async () => {
       if (hgc) {
         hgc.unmount();
@@ -103,6 +103,10 @@ describe('Genome position search box tests', () => {
         global.document.body.removeChild(div);
       }
 
+      const viewconf = JSON.parse(JSON.stringify(geneAnnotationsOnly1));
+      viewconf.trackSourceServers = [];
+      viewconf.views[0].tracks.top.push(chromInfoTrack);
+
       div = global.document.createElement('div');
       global.document.body.appendChild(div);
 
@@ -110,10 +114,7 @@ describe('Genome position search box tests', () => {
       div.setAttribute('id', 'simple-hg-component');
 
       hgc = Enzyme.mount(
-        <HiGlassComponent
-          options={{ bounded: false }}
-          viewConfig={geneAnnotationsOnly1}
-        />,
+        <HiGlassComponent options={{ bounded: false }} viewConfig={viewconf} />,
         { attachTo: div },
       );
 
@@ -151,7 +152,6 @@ describe('Genome position search box tests', () => {
         hgc.detach();
         hgc = null;
       }
-
       if (div) {
         global.document.body.removeChild(div);
         div = null;

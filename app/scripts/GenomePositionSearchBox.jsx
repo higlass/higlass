@@ -192,46 +192,67 @@ class GenomePositionSearchBox extends React.Component {
     // iterate over all non-position oriented words and try
     // to replace them with the positions loaded from the suggestions
     // database
-    const spaceParts = this.positionText.split(' ');
+    const origSearchText = this.positionText;
+    const spaceParts = origSearchText.split(' ');
+    let foundGeneSymbol = false;
 
     for (let i = 0; i < spaceParts.length; i++) {
       const dashParts = spaceParts[i].split('-');
 
-      for (let j = 0; j < dashParts.length; j++) {
-        // if we're in this function, this gene name must have been loaded
-        const genePosition = genePositions[dashParts[j].toLowerCase()];
+      // check if this "word" is a gene symbol which can be replaced
 
-        if (!genePosition) {
-          continue;
+      // iterate over chunks, checking what the maximum replaceable
+      // unit is
+      let j = 0;
+      let k = 0;
+      let spacePart = '';
+
+      while (j < dashParts.length) {
+        k = dashParts.length;
+
+        while (k > j) {
+          const dashChunk = dashParts.slice(j, k).join('-');
+
+          if (genePositions[dashChunk.toLowerCase()]) {
+            const genePosition = genePositions[dashChunk.toLowerCase()];
+            const extension = Math.floor(
+              (genePosition.txEnd - genePosition.txStart) / 4,
+            );
+
+            if (j === 0 && k < dashParts.length) {
+              // there's more parts so this is the first part
+              spacePart = `${genePosition.chr}:${
+                genePosition.txStart - extension
+              }`;
+            } else if (j === 0 && k === dashParts.length) {
+              // there's only one part so this is a position
+              spacePart = `${genePosition.chr}:${
+                genePosition.txStart - extension
+              }-${genePosition.txEnd + extension}`;
+            } else {
+              spacePart += `- ${genePosition.chr}:${
+                genePosition.txEnd + extension
+              }`;
+              // it's the last part of a range
+            }
+            foundGeneSymbol = true; // we found a gene symbol
+            break;
+          }
+          if (k === j + 1) {
+            if (spacePart.length) {
+              spacePart += '-';
+            }
+
+            spacePart += dashChunk;
+          }
+
+          k -= 1;
         }
 
-        // elongate the span of the gene so that it doesn't take up the entire
-        // view
-        const extension = Math.floor(
-          (genePosition.txEnd - genePosition.txStart) / 4,
-        );
-
-        if (dashParts.length === 1) {
-          // no range, just a position
-          dashParts[j] = `${genePosition.chr}:${
-            genePosition.txStart - extension
-          }-${genePosition.txEnd + extension}`;
-        } else if (j === 0) {
-          // first part of a range
-
-          dashParts[j] = `${genePosition.chr}:${
-            genePosition.txStart - extension
-          }`;
-        } else {
-          // last part of a range
-
-          dashParts[j] = `${genePosition.chr}:${
-            genePosition.txEnd + extension
-          }`;
-        }
-
-        spaceParts[i] = dashParts.join('-');
+        j = k + 1;
       }
+
+      spaceParts[i] = spacePart;
     }
 
     const newValue = spaceParts.join(' ');
@@ -241,6 +262,8 @@ class GenomePositionSearchBox extends React.Component {
     this.setState({
       value: newValue,
     });
+    // return the original keyword that a user searched if we found a gene symbol from it
+    return foundGeneSymbol ? origSearchText : null;
   }
 
   replaceGenesWithPositions(finished) {
@@ -260,7 +283,11 @@ class GenomePositionSearchBox extends React.Component {
         const url = `${this.props.autocompleteServer}/suggest/?d=${
           this.props.autocompleteId
         }&ac=${valueParts[i].toLowerCase()}`;
-        q = q.defer(tileProxy.json, url);
+
+        const fetchJson = (callback) => {
+          tileProxy.json(url, callback, this.props.pubSub);
+        };
+        q = q.defer(fetchJson);
       }
     }
 
@@ -366,21 +393,26 @@ class GenomePositionSearchBox extends React.Component {
       const url = `${this.props.autocompleteServer}/suggest/?d=${
         this.props.autocompleteId
       }&ac=${parts[this.changedPart].toLowerCase()}`;
-      tileProxy.json(url, (error, data) => {
-        if (error) {
+
+      tileProxy.json(
+        url,
+        (error, data) => {
+          if (error) {
+            this.setState({
+              loading: false,
+              genes: [],
+            });
+            return;
+          }
+
+          // we've received a list of autocomplete suggestions
           this.setState({
             loading: false,
-            genes: [],
+            genes: data,
           });
-          return;
-        }
-
-        // we've received a list of autocomplete suggestions
-        this.setState({
-          loading: false,
-          genes: data,
-        });
-      });
+        },
+        this.props.pubSub,
+      );
     }
   }
 
