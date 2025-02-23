@@ -16,8 +16,9 @@ import {
 
 import createElementAndApi from './utils/create-element-and-api';
 import removeDiv from './utils/remove-div';
+import emptyConf from './view-configs-more/emptyConf.json';
 
-import { geneAnnotationsOnly1, noGPSB } from './view-configs';
+import { chromInfoTrack, geneAnnotationsOnly1, noGPSB } from './view-configs';
 
 Enzyme.configure({ adapter: new Adapter() });
 
@@ -25,7 +26,8 @@ describe('Genome position search box tests', () => {
   let hgc = null;
   let div = null;
 
-  describe('Default chromsizes', () => {
+  describe('No chromsizes shown', () => {
+    /** Doesn't show chromsizes because there's no chromsizes track. */
     let api = null;
     afterEach(() => {
       api.destroy();
@@ -35,14 +37,8 @@ describe('Genome position search box tests', () => {
       hgc = null;
     });
 
-    it('are loaded and displayed', async () => {
-      const viewconf = JSON.parse(JSON.stringify(geneAnnotationsOnly1));
-      viewconf.views[0].genomePositionSearchBox = {
-        chromInfoPath:
-          'https://s3.amazonaws.com/pkerp/public/gpsb/small.chrom.sizes',
-        hideAvailableAssemblies: true,
-        visible: true,
-      };
+    it("Doesn't show chromsizes", async () => {
+      const viewconf = JSON.parse(JSON.stringify(emptyConf));
       viewconf.trackSourceServers = [];
 
       [div, api] = createElementAndApi(viewconf, {});
@@ -55,14 +51,48 @@ describe('Genome position search box tests', () => {
           expect(hgc.genomePositionSearchBoxes.aa.assemblyPickButton).to.be
             .undefined;
 
-          expect(positionText.indexOf('bar')).to.be.greaterThan(-1);
+          expect(positionText.indexOf('no chromosome')).to.be.greaterThan(-1);
           done(null);
         });
       });
     });
   });
 
-  describe('Base genome position search box test', () => {
+  describe('Chromsizes shown', () => {
+    /** Chromsizes are shown because there's a chromsizes track. */
+    let api = null;
+    afterEach(() => {
+      // api.destroy();
+      // removeDiv(div);
+      api = undefined;
+      div = undefined;
+      hgc = null;
+    });
+
+    it('Shows chromsizes', async () => {
+      const viewconf = JSON.parse(JSON.stringify(emptyConf));
+      viewconf.trackSourceServers = [];
+      viewconf.views[0].tracks.top = [chromInfoTrack];
+
+      [div, api] = createElementAndApi(viewconf, {});
+      hgc = api.getComponent();
+
+      await new Promise((done) => {
+        waitForJsonComplete(() => {
+          const positionText = hgc.genomePositionSearchBoxes.aa.positionText;
+
+          expect(hgc.genomePositionSearchBoxes.aa.assemblyPickButton).to.be
+            .undefined;
+
+          expect(positionText.indexOf('no chromosome')).to.be.equal(-1);
+          expect(positionText.indexOf('chr1:0-100')).to.be.equal(0);
+          done(null);
+        });
+      });
+    });
+  });
+
+  describe.only('Search for a specific gene', () => {
     it('Cleans up previously created instances and mounts a new component', async () => {
       if (hgc) {
         hgc.unmount();
