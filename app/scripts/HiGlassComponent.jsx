@@ -149,6 +149,8 @@ class HiGlassComponent extends React.Component {
     // between views
     this.zoomLocks = {};
     this.locationLocks = {};
+    // axis-specific location lock
+    this.locationLocksAxisWise = { x: {}, y: {} };
 
     // locks that keep the value scales synchronized between
     // *tracks* (which can be in different views)
@@ -1711,6 +1713,128 @@ class HiGlassComponent extends React.Component {
         const [newXScale, newYScale] = this.setCenters[key](
           newCenterX,
           newCenterY,
+          keyK,
+          false,
+        );
+
+        // because the setCenters call above has a 'false' notify, the new scales won't
+        // be propagated from there, so we have to store them here
+        this.xScales[key] = newXScale;
+        this.yScales[key] = newYScale;
+
+        // notify the listeners of all locked views that the scales of
+        // this view have changed
+        if (key in this.scalesChangedListeners) {
+          dictValues(this.scalesChangedListeners[key]).forEach((x) => {
+            x(newXScale, newYScale);
+          });
+        }
+      }
+    }
+
+    if (this.locationLocksAxisWise.x[uid]) {
+      // the x axis of this view is locked to an axis of another view
+      const lockGroup = this.locationLocksAxisWise.x[uid].lock;
+      const lockGroupItems = dictItems(lockGroup);
+
+      // this means the x axis of this view (uid) is locked to the y axis of another view
+      const lockCrossAxis = this.locationLocksAxisWise.x[uid].axis !== 'x';
+
+      const [centerX, centerY, k] = scalesCenterAndK(
+        this.xScales[uid],
+        this.yScales[uid],
+      );
+
+      for (let i = 0; i < lockGroupItems.length; i++) {
+        const key = lockGroupItems[i][0];
+        const value = lockGroupItems[i][1];
+
+        if (!this.xScales[key] || !this.yScales[key]) {
+          continue;
+        }
+
+        const [keyCenterX, keyCenterY, keyK] = scalesCenterAndK(
+          this.xScales[key],
+          this.yScales[key],
+        );
+
+        if (key === uid) {
+          // no need to notify oneself that the scales have changed
+          continue;
+        }
+
+        const dx = value[0] - lockGroup[uid][0];
+
+        const newCenterX = centerX + dx;
+
+        if (!this.setCenters[key]) {
+          continue;
+        }
+
+        const [newXScale, newYScale] = this.setCenters[key](
+          lockCrossAxis ? keyCenterX : newCenterX,
+          lockCrossAxis ? newCenterX : keyCenterY,
+          keyK,
+          false,
+        );
+
+        // because the setCenters call above has a 'false' notify, the new scales won't
+        // be propagated from there, so we have to store them here
+        this.xScales[key] = newXScale;
+        this.yScales[key] = newYScale;
+
+        // notify the listeners of all locked views that the scales of
+        // this view have changed
+        if (key in this.scalesChangedListeners) {
+          dictValues(this.scalesChangedListeners[key]).forEach((x) => {
+            x(newXScale, newYScale);
+          });
+        }
+      }
+    }
+
+    if (this.locationLocksAxisWise.y[uid]) {
+      // the y axis of this view is locked to an axis of another view
+      const lockGroup = this.locationLocksAxisWise.y[uid].lock;
+      const lockGroupItems = dictItems(lockGroup);
+
+      // this means the y axis of this view (uid) is locked to the x axis of another view
+      const lockCrossAxis = this.locationLocksAxisWise.y[uid].axis !== 'y';
+
+      const [centerX, centerY, k] = scalesCenterAndK(
+        this.xScales[uid],
+        this.yScales[uid],
+      );
+
+      for (let i = 0; i < lockGroupItems.length; i++) {
+        const key = lockGroupItems[i][0];
+        const value = lockGroupItems[i][1];
+
+        if (!this.xScales[key] || !this.yScales[key]) {
+          continue;
+        }
+
+        const [keyCenterX, keyCenterY, keyK] = scalesCenterAndK(
+          this.xScales[key],
+          this.yScales[key],
+        );
+
+        if (key === uid) {
+          // no need to notify oneself that the scales have changed
+          continue;
+        }
+
+        const dy = value[1] - lockGroup[uid][1];
+
+        const newCenterY = centerY + dy;
+
+        if (!this.setCenters[key]) {
+          continue;
+        }
+
+        const [newXScale, newYScale] = this.setCenters[key](
+          lockCrossAxis ? newCenterY : keyCenterX,
+          lockCrossAxis ? keyCenterY : newCenterY,
           keyK,
           false,
         );
