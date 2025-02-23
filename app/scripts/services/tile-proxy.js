@@ -24,10 +24,6 @@ export let requestsInFlight = 0;
 export let authHeader = null;
 
 /**
- * @typedef {TilesRequest & { ids: Array<string>; done: (value: Record<string, CompletedTileData<TileResponse>>) => void; }} WrappedTilesRequest
- */
-
-/**
  * Iterator helper to chunk an array into smaller arrays of a fixed size.
  *
  * @template T
@@ -50,35 +46,42 @@ function* chunkIterable(iterable, size) {
 }
 
 /**
+ * @template T
+ * @template U
+ * @typedef {{ value: T, resolve: (value: U) => void, reject: (err: unknown) => void }} WithResolvers
+ */
+
+/**
  * Create a function that batches calls at intervals, with a final debounce.
  *
  * The returned function collects individual items and executes `processBatch` at the specified interval.
  * If additional calls occur after the last batch, a final debounce ensures they are included.
  *
  * @template T
+ * @template U
  * @template {Array<unknown>} Args
  *
- * @param {(items: Array<T>, ...args: Args) => void} processBatch
+ * @param {(items: Array<WithResolvers<T, U>>, ...args: Args) => void} processBatch
  * @param {number} interval
  * @param {number} finalWait
  */
 const delayedBatchExecutor = (processBatch, interval, finalWait) => {
   /** @type {ReturnType<typeof setTimeout> | undefined} */
   let timeout = undefined;
-  /** @type {Array<T>} */
-  let items = [];
+  /** @type {Array<WithResolvers<T, U>>} */
+  let pending = [];
   /** @type {number} */
   let blockedCalls = 0;
 
   const reset = () => {
     timeout = undefined;
-    items = [];
+    pending = [];
   };
 
   /** @param {Args} args */
   const callFunc = (...args) => {
     // Flush the "bundle" (of collected items) to the processor
-    processBatch(items, ...args);
+    processBatch(pending, ...args);
     reset();
   };
 
@@ -101,12 +104,14 @@ const delayedBatchExecutor = (processBatch, interval, finalWait) => {
 
   let wait = false;
   /**
-   * @param {T} item
+   * @param {T} value
    * @param {Args} args
+   * @returns {Promise<U>}
    */
-  const throttled = (item, ...args) => {
+  const throttled = (value, ...args) => {
     // Collect items into the current queue any time the caller makes a request
-    items.push(item);
+    const { promise, resolve, reject } = Promise.withResolvers();
+    pending.push({ value, resolve, reject });
 
     if (!wait) {
       callFunc(...args);
@@ -119,6 +124,8 @@ const delayedBatchExecutor = (processBatch, interval, finalWait) => {
     } else {
       blockedCalls++;
     }
+
+    return promise;
   };
 
   return throttled;
@@ -284,13 +291,15 @@ function* optimizeRequests(requests, { maxSize = MAX_FETCH_TILES } = {}) {
   }
 }
 
+/** @typedef {Record<string, CompletedTileData<TileResponse>>} TileData */
+
 /**
- * @param {Array<WrappedTilesRequest>} requests
+ * @param {Array<WithResolvers<TilesRequest & { ids: Array<string> }, TileData>>} requests
  * @param {import("pub-sub-es").PubSub} pubSub
  */
 export function fetchMultiRequestTiles(requests, pubSub) {
   const fetchPromises = [];
-  for (const request of optimizeRequests(requests)) {
+  for (const request of optimizeRequests(requests.map((r) => r.value))) {
     const renderParams = request.ids.map((x) => `d=${x}`).join('&');
     const outUrl = `${request.server}/tiles/?${renderParams}&s=${sessionId}`;
 
@@ -314,7 +323,7 @@ export function fetchMultiRequestTiles(requests, pubSub) {
   }
 
   Promise.all(fetchPromises).then((datas) => {
-    /** @type {Record<string, CompletedTileData<TileResponse>>} */
+    /** @type {TileData} */
     const tiles = {};
 
     // merge back all the tile requests
@@ -328,16 +337,15 @@ export function fetchMultiRequestTiles(requests, pubSub) {
 
     // trigger the callback for every request
     for (const request of requests) {
-      /** @type {Record<string, CompletedTileData<TileResponse>>} */
+      /** @type {TileData} */
       const reqDate = {};
-      const { server } = request;
 
       // pull together the data per request
-      for (const id of request.ids) {
-        reqDate[id] = tiles[`${server}/${id}`];
+      for (const id of request.value.ids) {
+        reqDate[id] = tiles[`${request.value.server}/${id}`];
       }
 
-      request.done(reqDate);
+      request.resolve(reqDate);
     }
   });
 }
@@ -345,7 +353,7 @@ export function fetchMultiRequestTiles(requests, pubSub) {
 /**
  * Retrieve a set of tiles from the server.
  *
- * @type {(request: WrappedTilesRequest, pubSub: import('pub-sub-es').PubSub) => void}
+ * @type {(request: TilesRequest & { ids: Array<string> }, pubSub: import('pub-sub-es').PubSub) => Promise<TileData>}
  */
 export const fetchTilesDebounced = delayedBatchExecutor(
   fetchMultiRequestTiles,
