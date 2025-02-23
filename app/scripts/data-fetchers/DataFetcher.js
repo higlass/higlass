@@ -57,10 +57,7 @@ function createDefaultTileSource(pubSub) {
     async fetchTiles(request) {
       /** @type {Record<string, Tile>} */
       // @ts-expect-error - TODO: Need to resolve these types together
-      const tileData = await tileProxy.fetchTilesDebounced(
-        { ...request, ids: request.tileIds ?? [] },
-        pubSub,
-      );
+      const tileData = await tileProxy.fetchTilesDebounced(request, pubSub);
       return tileData;
     },
     fetchTilesetInfo({ server, tilesetUid }) {

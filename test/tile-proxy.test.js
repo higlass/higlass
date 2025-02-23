@@ -133,25 +133,25 @@ describe('bundleRequestsById', () => {
   it('merges requests with the same id', () => {
     expect(
       bundleRequestsById([
-        { id: 'A', ids: ['1', '2'], answer: 42 },
-        { id: 'B', ids: ['3'], bar: 'baz' },
-        { id: 'A', ids: ['4', '5'], answer: 123 },
+        { id: 'A', tileIds: ['1', '2'], answer: 42 },
+        { id: 'B', tileIds: ['3'], bar: 'baz' },
+        { id: 'A', tileIds: ['4', '5'], answer: 123 },
       ]),
     ).toEqual([
-      { id: 'A', ids: ['1', '2', '4', '5'], answer: 42 },
-      { id: 'B', ids: ['3'], bar: 'baz' },
+      { id: 'A', tileIds: ['1', '2', '4', '5'], answer: 42 },
+      { id: 'B', tileIds: ['3'], bar: 'baz' },
     ]);
   });
 
-  it('returns the same array when all ids are unique', () => {
+  it('returns the same array when all tileIds are unique', () => {
     expect(
       bundleRequestsById([
-        { id: 'X', ids: ['10'] },
-        { id: 'Y', ids: ['20', '30'] },
+        { id: 'X', tileIds: ['10'] },
+        { id: 'Y', tileIds: ['20', '30'] },
       ]),
     ).toEqual([
-      { id: 'X', ids: ['10'] },
-      { id: 'Y', ids: ['20', '30'] },
+      { id: 'X', tileIds: ['10'] },
+      { id: 'Y', tileIds: ['20', '30'] },
     ]);
   });
 
@@ -169,7 +169,7 @@ describe('bundleRequestsByServer', () => {
       requestsByServer: Object.fromEntries(
         requests.map((r) => [
           r.server,
-          Object.fromEntries(r.ids.map((id) => [id, true])),
+          Object.fromEntries(r.tileIds.map((id) => [id, true])),
         ]),
       ),
       requestBodyByServer: Object.fromEntries(
@@ -182,25 +182,33 @@ describe('bundleRequestsByServer', () => {
     const result = bundleRequestsByServer([
       {
         server: 'A',
-        ids: ['tileset1.1', 'tileset2.2'],
+        tileIds: ['tileset1.1', 'tileset2.2'],
         options: { foo: 'bar' },
       },
-      { server: 'B', ids: ['tileset3.3'], options: { baz: 'qux' } },
-      { server: 'A', ids: ['tileset1.4'] },
+      { server: 'B', tileIds: ['tileset3.3'], options: { baz: 'qux' } },
+      { server: 'A', tileIds: ['tileset1.4'] },
     ]);
     expect(result).toEqual([
       {
         server: 'A',
-        ids: ['tileset1.1', 'tileset2.2', 'tileset1.4'],
+        tileIds: ['tileset1.1', 'tileset2.2', 'tileset1.4'],
         options: { foo: 'bar' },
         body: [
-          { options: { foo: 'bar' }, tileIds: ['1'], tilesetUid: 'tileset1' },
-          { options: { foo: 'bar' }, tileIds: ['2'], tilesetUid: 'tileset2' },
+          {
+            options: { foo: 'bar' },
+            tiletileIds: ['1'],
+            tilesetUid: 'tileset1',
+          },
+          {
+            options: { foo: 'bar' },
+            tiletileIds: ['2'],
+            tilesetUid: 'tileset2',
+          },
         ],
       },
       {
         server: 'B',
-        ids: ['tileset3.3'],
+        tileIds: ['tileset3.3'],
         options: { baz: 'qux' },
         body: [
           { options: { baz: 'qux' }, tileIds: ['3'], tilesetUid: 'tileset3' },
@@ -211,20 +219,20 @@ describe('bundleRequestsByServer', () => {
 
   it('merges requests for the same server and combines ids', () => {
     const result = bundleRequestsByServer([
-      { server: 'A', ids: ['AA.1', 'AA.2'] },
-      { server: 'B', ids: ['BB.3'] },
-      { server: 'A', ids: ['AA.4', 'AA.5'] },
-      { server: 'A', ids: ['BB.4', 'BB.5'] },
+      { server: 'A', tileIds: ['AA.1', 'AA.2'] },
+      { server: 'B', tileIds: ['BB.3'] },
+      { server: 'A', tileIds: ['AA.4', 'AA.5'] },
+      { server: 'A', tileIds: ['BB.4', 'BB.5'] },
     ]);
     expect(result).toEqual([
       {
         body: [],
-        ids: ['AA.1', 'AA.2', 'AA.4', 'AA.5', 'BB.4', 'BB.5'],
+        tileIds: ['AA.1', 'AA.2', 'AA.4', 'AA.5', 'BB.4', 'BB.5'],
         server: 'A',
       },
       {
         body: [],
-        ids: ['BB.3'],
+        tileIds: ['BB.3'],
         server: 'B',
       },
     ]);
@@ -251,15 +259,15 @@ describe('bundleRequestsByServer', () => {
 
   it('creates and appends body entries for request with options', () => {
     const result = bundleRequestsByServer([
-      { server: 'A', ids: ['AA.1', 'AA.2'], options: { answer: 42 } },
-      { server: 'B', ids: ['BB.3'], options: { name: 'monty' } },
-      { server: 'A', ids: ['AA.4', 'AA.5'] },
-      { server: 'A', ids: ['AA.6'], options: { answer: 51 } },
-      { server: 'A', ids: ['BB.4', 'BB.5'], options: { name: 'python' } },
+      { server: 'A', tileIds: ['AA.1', 'AA.2'], options: { answer: 42 } },
+      { server: 'B', tileIds: ['BB.3'], options: { name: 'monty' } },
+      { server: 'A', tileIds: ['AA.4', 'AA.5'] },
+      { server: 'A', tileIds: ['AA.6'], options: { answer: 51 } },
+      { server: 'A', tileIds: ['BB.4', 'BB.5'], options: { name: 'python' } },
     ]);
     expect(result).toEqual([
       {
-        ids: ['AA.1', 'AA.2', 'AA.4', 'AA.5', 'AA.6', 'BB.4', 'BB.5'],
+        tileIds: ['AA.1', 'AA.2', 'AA.4', 'AA.5', 'AA.6', 'BB.4', 'BB.5'],
         server: 'A',
         options: { answer: 42 },
         body: [
@@ -276,7 +284,7 @@ describe('bundleRequestsByServer', () => {
         ],
       },
       {
-        ids: ['BB.3'],
+        tileIds: ['BB.3'],
         server: 'B',
         options: { name: 'monty' },
         body: [
@@ -329,17 +337,17 @@ describe('bundleRequestsByServer', () => {
 
   it('returns the same array when all servers are unique', () => {
     const result = bundleRequestsByServer([
-      { server: 'X', ids: ['foo.10'] },
-      { server: 'Y', ids: ['bar.20', 'bar.30'] },
+      { server: 'X', tileIds: ['foo.10'] },
+      { server: 'Y', tileIds: ['bar.20', 'bar.30'] },
     ]);
     expect(result).toEqual([
       {
-        ids: ['foo.10'],
+        tileIds: ['foo.10'],
         server: 'X',
         body: [],
       },
       {
-        ids: ['bar.20', 'bar.30'],
+        tileIds: ['bar.20', 'bar.30'],
         server: 'Y',
         body: [],
       },

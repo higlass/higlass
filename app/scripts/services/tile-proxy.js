@@ -143,26 +143,26 @@ export const getTileProxyAuthHeader = () => authHeader;
  * Merges an array of request objects by combining requests
  * that share the same `id`, reducing the total number of requests.
  *
- * If multiple requests have the same `id`, their `ids` arrays are merged
+ * If multiple requests have the same `id`, their `tileIds` arrays are merged
  * into a single request entry in the output array.
  *
  * @example
  * ```js
  * const requests = [
- *   { id: "A", ids: ["1", "2"] },
- *   { id: "B", ids: ["3"] },
- *   { id: "A", ids: ["4", "5"] },
+ *   { id: "A", tileIds: ["1", "2"] },
+ *   { id: "B", tileIds: ["3"] },
+ *   { id: "A", tileids: ["4", "5"] },
  * ];
  *
  * const bundled = bundleRequests(requests);
  * console.log(bundled);
  * // [
- * //   { id: "A", ids: ["1", "2", "4", "5"] },
- * //   { id: "B", ids: ["3"] }
+ * //   { id: "A", tileIds: ["1", "2", "4", "5"] },
+ * //   { id: "B", tileIds: ["3"] }
  * // ]
  * ```
  *
- * @template {{ id: string, ids: Array<string> }} T
+ * @template {{ id: string, tileIds: Array<string> }} T
  * @param {Array<T>} requests - The list of requests to bundle
  * @returns {Array<T>} - A new array with merged requests
  */
@@ -175,16 +175,16 @@ export function bundleRequestsById(requests) {
   for (const request of requests) {
     if (mapper[request.id] === undefined) {
       mapper[request.id] = bundle.length;
-      bundle.push({ ...request, ids: [] });
+      bundle.push({ ...request, tileIds: [] });
     }
-    bundle[mapper[request.id]].ids.push(...request.ids);
+    bundle[mapper[request.id]].tileIds.push(...request.tileIds);
   }
 
   return bundle;
 }
 
 /**
- * Groups request objects by `server`, merging their `ids` and structuring tileset-related
+ * Groups request objects by `server`, merging their `tileIds` and structuring tileset-related
  * data into `body`.
  *
  * **Note:** The first request for each `server` sets the `options` for all grouped requests.
@@ -198,9 +198,9 @@ export function bundleRequestsById(requests) {
  * @example
  * ```js
  * const requests = [
- *   { server: "A", ids: ["tileset1.1", "tileset2.2"], options: { foo: "bar" } },
- *   { server: "B", ids: ["tileset3.3"], options: { baz: "qux" } },
- *   { server: "A", ids: ["tileset1.4"] },
+ *   { server: "A", tileIds: ["tileset1.1", "tileset2.2"], options: { foo: "bar" } },
+ *   { server: "B", tileIds: ["tileset3.3"], options: { baz: "qux" } },
+ *   { server: "A", tileIds: ["tileset1.4"] },
  * ];
  *
  * const bundled = bundleRequestsByServer(requests);
@@ -208,7 +208,7 @@ export function bundleRequestsById(requests) {
  * // [
  * //   {
  * //     server: "A",
- * //     ids: ["tileset1.1", "tileset2.2", "tileset1.4"],
+ * //     tileIds: ["tileset1.1", "tileset2.2", "tileset1.4"],
  * //     options: { foo: "bar" },
  * //     body: [
  * //       { tilesetUid: "tileset1", tileIds: ["1"], options: { foo: "bar" } },
@@ -217,7 +217,7 @@ export function bundleRequestsById(requests) {
  * //   },
  * //   {
  * //     server: "B",
- * //     ids: ["tileset3.3"],
+ * //     tileIds: ["tileset3.3"],
  * //     options: { baz: "qux" },
  * //     body: [
  * //       { tilesetUid: "tileset3", tileIds: ["3"], options: { baz: "qux" } }
@@ -226,7 +226,7 @@ export function bundleRequestsById(requests) {
  * // ]
  * ```
  *
- * @template {{ ids: Array<string>, server: string, options?: Record<string, any> }} T
+ * @template {{ tileIds: Array<string>, server: string, options?: Record<string, any> }} T
  * @param {Array<T>} requests - The list of requests to bundle
  * @returns {Array<T & { body: Array<{ tilesetUid: string, tileIds: Array<string>, options: Record<string, any> }> }>} - A new array with merged requests per server
  */
@@ -242,11 +242,11 @@ export function bundleRequestsByServer(requests) {
   for (const request of requests) {
     if (mapper[request.server] === undefined) {
       mapper[request.server] = bundle.length;
-      bundle.push({ ...request, ids: [], body: [] });
+      bundle.push({ ...request, body: [] });
     }
     const server = bundle[mapper[request.server]];
-    for (const id of request.ids) {
-      server.ids.push(id);
+    for (const id of request.tileIds) {
+      server.tileIds.push(id);
       if (request.options) {
         const firstSepIndex = id.indexOf('.');
         const tilesetUid = id.substring(0, firstSepIndex);
@@ -277,7 +277,7 @@ export function bundleRequestsByServer(requests) {
  * consolidate requests targeting the same endpoint. The resulting set is split
  * into smaller batches based on `maxSize`.
  *
- * @template {{ id: string, ids: Array<string>, server: string, options?: Record<string, any> }} T
+ * @template {TilesRequest} T
  * @param {Array<T>} requests - The list of requests to optimize.
  * @param {{ maxSize?: number }} [options] - Configuration options.
  */
@@ -285,8 +285,8 @@ function* optimizeRequests(requests, { maxSize = MAX_FETCH_TILES } = {}) {
   const byRequestId = bundleRequestsById(requests);
   const byServer = bundleRequestsByServer(byRequestId);
   for (const request of byServer) {
-    for (const ids of chunkIterable(new Set(request.ids), maxSize)) {
-      yield { ...request, ids };
+    for (const tileIds of chunkIterable(new Set(request.tileIds), maxSize)) {
+      yield { ...request, tileIds };
     }
   }
 }
@@ -294,13 +294,13 @@ function* optimizeRequests(requests, { maxSize = MAX_FETCH_TILES } = {}) {
 /** @typedef {Record<string, CompletedTileData<TileResponse>>} TileData */
 
 /**
- * @param {Array<WithResolvers<TilesRequest & { ids: Array<string> }, TileData>>} requests
+ * @param {Array<WithResolvers<TilesRequest, TileData>>} requests
  * @param {import("pub-sub-es").PubSub} pubSub
  */
 export function fetchMultiRequestTiles(requests, pubSub) {
   const fetchPromises = [];
   for (const request of optimizeRequests(requests.map((r) => r.value))) {
-    const renderParams = request.ids.map((x) => `d=${x}`).join('&');
+    const renderParams = request.tileIds.map((x) => `d=${x}`).join('&');
     const outUrl = `${request.server}/tiles/?${renderParams}&s=${sessionId}`;
 
     /** @type {Promise<Record<string, CompletedTileData<TileResponse>>>} */
@@ -310,7 +310,7 @@ export function fetchMultiRequestTiles(requests, pubSub) {
       workerGetTiles(
         outUrl,
         request.server,
-        request.ids,
+        request.tileIds,
         authHeader,
         resolve,
         request.body,
@@ -341,7 +341,7 @@ export function fetchMultiRequestTiles(requests, pubSub) {
       const reqDate = {};
 
       // pull together the data per request
-      for (const id of request.value.ids) {
+      for (const id of request.value.tileIds) {
         reqDate[id] = tiles[`${request.value.server}/${id}`];
       }
 
@@ -353,7 +353,7 @@ export function fetchMultiRequestTiles(requests, pubSub) {
 /**
  * Retrieve a set of tiles from the server.
  *
- * @type {(request: TilesRequest & { ids: Array<string> }, pubSub: import('pub-sub-es').PubSub) => Promise<TileData>}
+ * @type {(request: TilesRequest, pubSub: import('pub-sub-es').PubSub) => Promise<TileData>}
  */
 export const fetchTilesDebounced = delayedBatchExecutor(
   fetchMultiRequestTiles,
