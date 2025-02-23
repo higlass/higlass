@@ -293,6 +293,7 @@ class HiGlassComponent extends React.Component {
       rowHeight,
       svgElement: null,
       canvasElement: null,
+      customDialog: null,
       views,
       viewConfig,
       addTrackPositionMenuPosition: null,
@@ -4682,6 +4683,15 @@ class HiGlassComponent extends React.Component {
   }
 
   /**
+   * Close the custom dialog  (e.g. when the close button is clicked)
+   */
+  closeCustomDialog() {
+    this.setState((prevState) => ({
+      customDialog: null,
+    }));
+  }
+
+  /**
    * Handle internally broadcasted click events
    */
   appClickHandler(data) {
@@ -4778,6 +4788,28 @@ class HiGlassComponent extends React.Component {
       }
     }
 
+    // Go through clicked tracks and check if we need to display a dialog
+    const customDialog = [];
+    clickReturns.forEach((clickReturn, i) => {
+      const trackObj = getTrackObjById(
+        this.tiledPlots,
+        clickReturn.viewUid,
+        clickReturn.trackUid,
+      );
+      if (typeof trackObj.clickDialog === 'function') {
+        const dialogData = trackObj.clickDialog();
+        if (dialogData) {
+          customDialog.push(dialogData);
+        }
+      }
+    });
+    // We don't want to rerender everytime the canvas is clicked.
+    if (customDialog.length > 0) {
+      this.setState((prevState) => ({
+        customDialog,
+      }));
+    }
+
     this.pubSub.publish('app.click', clickReturns);
   }
 
@@ -4786,6 +4818,13 @@ class HiGlassComponent extends React.Component {
    */
   mouseMoveZoomHandler(data) {
     this.apiPublish('mouseMoveZoom', data);
+  }
+
+  /**
+   * Handle gene search events.
+   */
+  geneSearchHandler(data) {
+    this.apiPublish('geneSearch', data);
   }
 
   /**
@@ -5011,6 +5050,8 @@ class HiGlassComponent extends React.Component {
                     this.state.chooseTrackHandler(view.uid, trackId, evt)
                 : null
             }
+            customDialog={this.state.customDialog}
+            closeCustomDialog={() => this.closeCustomDialog()}
             chromInfoPath={view.chromInfoPath}
             disableTrackMenu={this.isTrackMenuDisabled()}
             draggingHappening={this.state.draggingHappening}
