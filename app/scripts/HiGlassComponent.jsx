@@ -285,8 +285,6 @@ class HiGlassComponent extends React.Component {
     this.pluginDataFetchers = pluginDataFetchers;
 
     this.state = {
-      pluginDataFetchers,
-      pluginTracks,
       currentBreakpoint: 'lg',
       width: 0,
       height: 0,
@@ -2310,6 +2308,10 @@ class HiGlassComponent extends React.Component {
   getTrackInfo(trackType) {
     if (TRACKS_INFO_BY_TYPE[trackType]) {
       return TRACKS_INFO_BY_TYPE[trackType];
+    }
+
+    if (this.pluginTracks?.[trackType]) {
+      return this.pluginTracks[trackType].config;
     }
 
     if (window.higlassTracksByType?.[trackType]) {
@@ -5159,7 +5161,7 @@ class HiGlassComponent extends React.Component {
             pixiRenderer={this.pixiRenderer}
             pixiStage={this.pixiStage}
             pluginDataFetchers={this.pluginDataFetchers}
-            pluginTracks={this.state.pluginTracks}
+            pluginTracks={this.pluginTracks}
             rangeSelection1dSize={this.state.rangeSelection1dSize}
             rangeSelectionToInt={this.state.rangeSelectionToInt}
             registerDraggingChangedListener={(listener) =>
