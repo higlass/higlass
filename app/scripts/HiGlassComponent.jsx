@@ -5331,18 +5331,16 @@ class HiGlassComponent extends React.Component {
           ) : null;
 
         return (
-          <div key={view.uid}>
-            <div
-              key={view.uid}
-              ref={(c) => {
-                this.tiledAreasDivs[view.uid] = c;
-              }}
-              className={styles['tiled-area']}
-            >
-              {multiTrackHeader}
-              {tiledPlot}
-              {overlay}
-            </div>
+          <div
+            key={view.uid}
+            ref={(c) => {
+              this.tiledAreasDivs[view.uid] = c;
+            }}
+            className={styles['tiled-area']}
+          >
+            {multiTrackHeader}
+            {tiledPlot}
+            {overlay}
           </div>
         );
       });
