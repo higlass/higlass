@@ -150,9 +150,8 @@ export interface AbstractDataFetcher<TileType, DataConfig> {
 
 export type TilesRequest = {
   id: string;
-  server: string;
-  tilesetUid: string;
   tileIds: Array<string>;
+  server: string;
   // biome-ignore lint/suspicious/noExplicitAny: We can't know what the options are
   options?: Record<string, any>;
 };
@@ -170,7 +169,7 @@ export type RegisterTilesetRequest = {
 };
 
 export type TileSource<T> = {
-  fetchTiles: (request: Partial<TilesRequest>) => Promise<Record<string, T>>;
+  fetchTiles: (request: TilesRequest) => Promise<Record<string, T>>;
   fetchTilesetInfo: (
     request: TilesetInfoRequest,
   ) => Promise<Record<string, TilesetInfo>>;

@@ -1,7 +1,7 @@
 import { range } from 'd3-array';
 import slugid from 'slugid';
 
-import { workerGetTiles, workerSetPix } from './worker';
+import { workerFetchTiles, workerSetPix } from './worker';
 
 import sleep from '../utils/timeout';
 import tts from '../utils/trim-trailing-slash';
@@ -22,10 +22,6 @@ const sessionId = import.meta.env.DEV ? 'dev' : slugid.nice();
 export let requestsInFlight = 0;
 /** @type {string | null} */
 export let authHeader = null;
-
-/**
- * @typedef {TilesRequest & { ids: Array<string>; done: (value: Record<string, CompletedTileData<TileResponse>>) => void; }} WrappedTilesRequest
- */
 
 /**
  * Iterator helper to chunk an array into smaller arrays of a fixed size.
@@ -50,35 +46,42 @@ function* chunkIterable(iterable, size) {
 }
 
 /**
+ * @template T
+ * @template U
+ * @typedef {{ value: T, resolve: (value: U) => void, reject: (err: unknown) => void }} WithResolvers
+ */
+
+/**
  * Create a function that batches calls at intervals, with a final debounce.
  *
  * The returned function collects individual items and executes `processBatch` at the specified interval.
  * If additional calls occur after the last batch, a final debounce ensures they are included.
  *
  * @template T
+ * @template U
  * @template {Array<unknown>} Args
  *
- * @param {(items: Array<T>, ...args: Args) => void} processBatch
+ * @param {(items: Array<WithResolvers<T, U>>, ...args: Args) => void} processBatch
  * @param {number} interval
  * @param {number} finalWait
  */
 const delayedBatchExecutor = (processBatch, interval, finalWait) => {
   /** @type {ReturnType<typeof setTimeout> | undefined} */
   let timeout = undefined;
-  /** @type {Array<T>} */
-  let items = [];
+  /** @type {Array<WithResolvers<T, U>>} */
+  let pending = [];
   /** @type {number} */
   let blockedCalls = 0;
 
   const reset = () => {
     timeout = undefined;
-    items = [];
+    pending = [];
   };
 
   /** @param {Args} args */
   const callFunc = (...args) => {
     // Flush the "bundle" (of collected items) to the processor
-    processBatch(items, ...args);
+    processBatch(pending, ...args);
     reset();
   };
 
@@ -101,12 +104,14 @@ const delayedBatchExecutor = (processBatch, interval, finalWait) => {
 
   let wait = false;
   /**
-   * @param {T} item
+   * @param {T} value
    * @param {Args} args
+   * @returns {Promise<U>}
    */
-  const throttled = (item, ...args) => {
+  const throttled = (value, ...args) => {
     // Collect items into the current queue any time the caller makes a request
-    items.push(item);
+    const { promise, resolve, reject } = Promise.withResolvers();
+    pending.push({ value, resolve, reject });
 
     if (!wait) {
       callFunc(...args);
@@ -119,6 +124,8 @@ const delayedBatchExecutor = (processBatch, interval, finalWait) => {
     } else {
       blockedCalls++;
     }
+
+    return promise;
   };
 
   return throttled;
@@ -136,48 +143,49 @@ export const getTileProxyAuthHeader = () => authHeader;
  * Merges an array of request objects by combining requests
  * that share the same `id`, reducing the total number of requests.
  *
- * If multiple requests have the same `id`, their `ids` arrays are merged
+ * If multiple requests have the same `id`, their `tileIds` arrays are merged
  * into a single request entry in the output array.
  *
  * @example
  * ```js
  * const requests = [
- *   { id: "A", ids: ["1", "2"] },
- *   { id: "B", ids: ["3"] },
- *   { id: "A", ids: ["4", "5"] },
+ *   { id: "A", tileIds: ["1", "2"] },
+ *   { id: "B", tileIds: ["3"] },
+ *   { id: "A", tileids: ["4", "5"] },
  * ];
  *
  * const bundled = bundleRequests(requests);
  * console.log(bundled);
  * // [
- * //   { id: "A", ids: ["1", "2", "4", "5"] },
- * //   { id: "B", ids: ["3"] }
+ * //   { id: "A", tileIds: ["1", "2", "4", "5"] },
+ * //   { id: "B", tileIds: ["3"] },
  * // ]
  * ```
  *
- * @template {{ id: string, ids: Array<string> }} T
+ * @template {{ id: string, tileIds: ReadonlyArray<string> }} T
  * @param {Array<T>} requests - The list of requests to bundle
  * @returns {Array<T>} - A new array with merged requests
  */
 export function bundleRequestsById(requests) {
   /** @type {Array<T>} */
-  const bundle = [];
+  const bundledRequests = [];
   /** @type {Record<string, number>} */
   const mapper = {};
 
   for (const request of requests) {
     if (mapper[request.id] === undefined) {
-      mapper[request.id] = bundle.length;
-      bundle.push({ ...request, ids: [] });
+      mapper[request.id] = bundledRequests.length;
+      bundledRequests.push({ ...request, tileIds: [] });
     }
-    bundle[mapper[request.id]].ids.push(...request.ids);
+    const bundle = bundledRequests[mapper[request.id]];
+    bundle.tileIds = bundle.tileIds.concat(request.tileIds);
   }
 
-  return bundle;
+  return bundledRequests;
 }
 
 /**
- * Groups request objects by `server`, merging their `ids` and structuring tileset-related
+ * Groups request objects by `server`, merging their `tileIds` and structuring tileset-related
  * data into `body`.
  *
  * **Note:** The first request for each `server` sets the `options` for all grouped requests.
@@ -191,9 +199,9 @@ export function bundleRequestsById(requests) {
  * @example
  * ```js
  * const requests = [
- *   { server: "A", ids: ["tileset1.1", "tileset2.2"], options: { foo: "bar" } },
- *   { server: "B", ids: ["tileset3.3"], options: { baz: "qux" } },
- *   { server: "A", ids: ["tileset1.4"] },
+ *   { server: "A", tileIds: ["tileset1.1", "tileset2.2"], options: { foo: "bar" } },
+ *   { server: "B", tileIds: ["tileset3.3"], options: { baz: "qux" } },
+ *   { server: "A", tileIds: ["tileset1.4"] },
  * ];
  *
  * const bundled = bundleRequestsByServer(requests);
@@ -201,7 +209,7 @@ export function bundleRequestsById(requests) {
  * // [
  * //   {
  * //     server: "A",
- * //     ids: ["tileset1.1", "tileset2.2", "tileset1.4"],
+ * //     tileIds: ["tileset1.1", "tileset2.2", "tileset1.4"],
  * //     options: { foo: "bar" },
  * //     body: [
  * //       { tilesetUid: "tileset1", tileIds: ["1"], options: { foo: "bar" } },
@@ -210,7 +218,7 @@ export function bundleRequestsById(requests) {
  * //   },
  * //   {
  * //     server: "B",
- * //     ids: ["tileset3.3"],
+ * //     tileIds: ["tileset3.3"],
  * //     options: { baz: "qux" },
  * //     body: [
  * //       { tilesetUid: "tileset3", tileIds: ["3"], options: { baz: "qux" } }
@@ -219,9 +227,9 @@ export function bundleRequestsById(requests) {
  * // ]
  * ```
  *
- * @template {{ ids: Array<string>, server: string, options?: Record<string, any> }} T
+ * @template {{ tileIds: ReadonlyArray<string>, server: string, options?: Record<string, any> }} T
  * @param {Array<T>} requests - The list of requests to bundle
- * @returns {Array<T & { body: Array<{ tilesetUid: string, tileIds: Array<string>, options: Record<string, any> }> }>} - A new array with merged requests per server
+ * @returns {Array<T & { body: ReadonlyArray<ServerTilesetBody> }> }>} - A new array with merged requests per server
  */
 export function bundleRequestsByServer(requests) {
   /** @typedef {{ tilesetUid: string, tileIds: Array<string>, options: Record<string, any> }} ServerTilesetBody */
@@ -235,11 +243,11 @@ export function bundleRequestsByServer(requests) {
   for (const request of requests) {
     if (mapper[request.server] === undefined) {
       mapper[request.server] = bundle.length;
-      bundle.push({ ...request, ids: [], body: [] });
+      bundle.push({ ...request, tileIds: [], body: [] });
     }
     const server = bundle[mapper[request.server]];
-    for (const id of request.ids) {
-      server.ids.push(id);
+    server.tileIds = server.tileIds.concat(request.tileIds);
+    for (const id of request.tileIds) {
       if (request.options) {
         const firstSepIndex = id.indexOf('.');
         const tilesetUid = id.substring(0, firstSepIndex);
@@ -270,7 +278,7 @@ export function bundleRequestsByServer(requests) {
  * consolidate requests targeting the same endpoint. The resulting set is split
  * into smaller batches based on `maxSize`.
  *
- * @template {{ id: string, ids: Array<string>, server: string, options?: Record<string, any> }} T
+ * @template {TilesRequest} T
  * @param {Array<T>} requests - The list of requests to optimize.
  * @param {{ maxSize?: number }} [options] - Configuration options.
  */
@@ -278,47 +286,30 @@ function* optimizeRequests(requests, { maxSize = MAX_FETCH_TILES } = {}) {
   const byRequestId = bundleRequestsById(requests);
   const byServer = bundleRequestsByServer(byRequestId);
   for (const request of byServer) {
-    for (const ids of chunkIterable(new Set(request.ids), maxSize)) {
-      yield { ...request, ids };
+    for (const tileIds of chunkIterable(new Set(request.tileIds), maxSize)) {
+      yield { ...request, tileIds };
     }
   }
 }
 
+/** @typedef {Record<string, CompletedTileData<TileResponse>>} TileData */
+
 /**
- * @param {Array<WrappedTilesRequest>} requests
+ * @param {Array<WithResolvers<TilesRequest, TileData>>} requests
  * @param {import("pub-sub-es").PubSub} pubSub
  */
 export function fetchMultiRequestTiles(requests, pubSub) {
-  const fetchPromises = [];
-  for (const request of optimizeRequests(requests)) {
-    const renderParams = request.ids.map((x) => `d=${x}`).join('&');
-    const outUrl = `${request.server}/tiles/?${renderParams}&s=${sessionId}`;
-
-    /** @type {Promise<Record<string, CompletedTileData<TileResponse>>>} */
-    const p = new Promise((resolve) => {
-      pubSub.publish('requestSent', outUrl);
-
-      workerGetTiles(
-        outUrl,
-        request.server,
-        request.ids,
-        authHeader,
-        resolve,
-        request.body,
-      );
-
-      pubSub.publish('requestReceived', outUrl);
-    });
-
-    fetchPromises.push(p);
-  }
-
+  const fetchPromises = Array.from(
+    optimizeRequests(requests.map((r) => r.value)),
+    (request) => workerFetchTiles(request, { authHeader, sessionId, pubSub }),
+  );
   Promise.all(fetchPromises).then((datas) => {
-    /** @type {Record<string, CompletedTileData<TileResponse>>} */
+    /** @type {TileData} */
     const tiles = {};
 
     // merge back all the tile requests
     for (const data of datas) {
+      if (!data) continue;
       const tileIds = Object.keys(data);
 
       for (const tileId of tileIds) {
@@ -328,16 +319,15 @@ export function fetchMultiRequestTiles(requests, pubSub) {
 
     // trigger the callback for every request
     for (const request of requests) {
-      /** @type {Record<string, CompletedTileData<TileResponse>>} */
-      const reqDate = {};
-      const { server } = request;
+      /** @type {TileData} */
+      const requestData = {};
 
       // pull together the data per request
-      for (const id of request.ids) {
-        reqDate[id] = tiles[`${server}/${id}`];
+      for (const id of request.value.tileIds) {
+        requestData[id] = tiles[`${request.value.server}/${id}`];
       }
 
-      request.done(reqDate);
+      request.resolve(requestData);
     }
   });
 }
@@ -345,7 +335,7 @@ export function fetchMultiRequestTiles(requests, pubSub) {
 /**
  * Retrieve a set of tiles from the server.
  *
- * @type {(request: WrappedTilesRequest, pubSub: import('pub-sub-es').PubSub) => void}
+ * @type {(request: TilesRequest, pubSub: import('pub-sub-es').PubSub) => Promise<TileData>}
  */
 export const fetchTilesDebounced = delayedBatchExecutor(
   fetchMultiRequestTiles,
