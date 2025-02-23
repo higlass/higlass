@@ -266,10 +266,7 @@ class HiGlassComponent extends React.Component {
         );
       }
     } catch (e) {
-      console.warn(
-        'Broken config of a plugin track',
-        this.props.options.tracks,
-      );
+      console.warn('Broken config of a plugin track');
     }
 
     if (this.props.options.pluginDataFetchers) {
@@ -288,6 +285,7 @@ class HiGlassComponent extends React.Component {
     this.pluginDataFetchers = pluginDataFetchers;
 
     this.state = {
+      pluginDataFetchers,
       pluginTracks,
       currentBreakpoint: 'lg',
       width: 0,
