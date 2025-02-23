@@ -196,12 +196,12 @@ describe('bundleRequestsByServer', () => {
         body: [
           {
             options: { foo: 'bar' },
-            tiletileIds: ['1'],
+            tileIds: ['1'],
             tilesetUid: 'tileset1',
           },
           {
             options: { foo: 'bar' },
-            tiletileIds: ['2'],
+            tileIds: ['2'],
             tilesetUid: 'tileset2',
           },
         ],

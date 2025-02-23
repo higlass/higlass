@@ -475,7 +475,7 @@ export function tileResponseToData(inputData, server, theseTileIds) {
  * @param {string[]} theseTileIds
  * @param {string | null} authHeader
  * @param {(data: Record<string, CompletedTileData<T>>) => void} done
- * @param {Array<Record<string, unknown>>} requestBody
+ * @param {ReadonlyArray<Record<string, unknown>>} requestBody
  */
 export function workerGetTiles(
   outUrl,

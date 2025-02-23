@@ -158,29 +158,30 @@ export const getTileProxyAuthHeader = () => authHeader;
  * console.log(bundled);
  * // [
  * //   { id: "A", tileIds: ["1", "2", "4", "5"] },
- * //   { id: "B", tileIds: ["3"] }
+ * //   { id: "B", tileIds: ["3"] },
  * // ]
  * ```
  *
- * @template {{ id: string, tileIds: Array<string> }} T
+ * @template {{ id: string, tileIds: ReadonlyArray<string> }} T
  * @param {Array<T>} requests - The list of requests to bundle
  * @returns {Array<T>} - A new array with merged requests
  */
 export function bundleRequestsById(requests) {
   /** @type {Array<T>} */
-  const bundle = [];
+  const bundledRequests = [];
   /** @type {Record<string, number>} */
   const mapper = {};
 
   for (const request of requests) {
     if (mapper[request.id] === undefined) {
-      mapper[request.id] = bundle.length;
-      bundle.push({ ...request, tileIds: [] });
+      mapper[request.id] = bundledRequests.length;
+      bundledRequests.push({ ...request, tileIds: [] });
     }
-    bundle[mapper[request.id]].tileIds.push(...request.tileIds);
+    const bundle = bundledRequests[mapper[request.id]];
+    bundle.tileIds = bundle.tileIds.concat(request.tileIds);
   }
 
-  return bundle;
+  return bundledRequests;
 }
 
 /**
@@ -226,9 +227,9 @@ export function bundleRequestsById(requests) {
  * // ]
  * ```
  *
- * @template {{ tileIds: Array<string>, server: string, options?: Record<string, any> }} T
+ * @template {{ tileIds: ReadonlyArray<string>, server: string, options?: Record<string, any> }} T
  * @param {Array<T>} requests - The list of requests to bundle
- * @returns {Array<T & { body: Array<{ tilesetUid: string, tileIds: Array<string>, options: Record<string, any> }> }>} - A new array with merged requests per server
+ * @returns {Array<T & { body: ReadonlyArray<ServerTilesetBody> }> }>} - A new array with merged requests per server
  */
 export function bundleRequestsByServer(requests) {
   /** @typedef {{ tilesetUid: string, tileIds: Array<string>, options: Record<string, any> }} ServerTilesetBody */
@@ -242,11 +243,11 @@ export function bundleRequestsByServer(requests) {
   for (const request of requests) {
     if (mapper[request.server] === undefined) {
       mapper[request.server] = bundle.length;
-      bundle.push({ ...request, body: [] });
+      bundle.push({ ...request, tileIds: [], body: [] });
     }
     const server = bundle[mapper[request.server]];
+    server.tileIds = server.tileIds.concat(request.tileIds);
     for (const id of request.tileIds) {
-      server.tileIds.push(id);
       if (request.options) {
         const firstSepIndex = id.indexOf('.');
         const tilesetUid = id.substring(0, firstSepIndex);
