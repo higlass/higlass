@@ -348,6 +348,8 @@ class HiGlassComponent extends React.Component {
     this.zoomEndHandlerBound = this.zoomEndHandler.bind(this);
     this.zoomHandlerBound = this.zoomHandler.bind(this);
     this.trackDroppedHandlerBound = this.trackDroppedHandler.bind(this);
+    this.trackDimensionsModifiedHandlerBound =
+      this.trackDimensionsModifiedHandler.bind(this);
     this.animateBound = this.animate.bind(this);
     this.animateOnGlobalEventBound = this.animateOnGlobalEvent.bind(this);
     this.requestReceivedHandlerBound = this.requestReceivedHandler.bind(this);
@@ -412,6 +414,10 @@ class HiGlassComponent extends React.Component {
         this.animateOnMouseMoveHandlerBound,
       ),
       this.pubSub.subscribe('trackDropped', this.trackDroppedHandlerBound),
+      this.pubSub.subscribe(
+        'trackDimensionsModified',
+        this.trackDimensionsModifiedHandlerBound,
+      ),
       this.pubSub.subscribe('app.zoomStart', this.zoomStartHandlerBound),
       this.pubSub.subscribe('app.zoomEnd', this.zoomEndHandlerBound),
       this.pubSub.subscribe('app.zoom', this.zoomHandlerBound),
@@ -4898,6 +4904,37 @@ class HiGlassComponent extends React.Component {
       this.sizeMode === SIZE_MODE_SCROLL ||
       view?.zoomFixed
     );
+  }
+
+  /**
+   * Handle trackDimensionsModified events
+   * @param {Object} settings
+   * @param {string} settings.viewId = id of the view
+   * @param {string} settings.trackId = id of the track
+   * @param {number} settings.height = new height of the track or undefined if current height should remain
+   * @param {nmber} settings.width = new width of the track or undefined if current width should remain
+   */
+  trackDimensionsModifiedHandler(settings) {
+    const view = this.state.views[settings.viewId];
+
+    if (!view) return;
+
+    const track = getTrackByUid(view.tracks, settings.trackId);
+
+    if (!track) return;
+
+    if (settings.height !== undefined) {
+      track.height = settings.height;
+    }
+
+    if (settings.width !== undefined) {
+      track.width = settings.width;
+    }
+    this.adjustLayoutToTrackSizes(view);
+
+    this.setState((prevState) => ({
+      views: prevState.views,
+    }));
   }
 
   wheelHandler(evt) {
