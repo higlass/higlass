@@ -3,6 +3,7 @@ import { assert, describe, expect, it } from 'vitest';
 import tileProxy, {
   tileDataToPixData,
   bundleRequestsById,
+  bundleRequestsByServer,
 } from '../app/scripts/services/tile-proxy';
 import fakePubSub from '../app/scripts/utils/fake-pub-sub';
 import { defaultColorScale } from './testdata/colorscale-data';
@@ -11,7 +12,7 @@ import {
   multivecTileDataWithServerAggregation,
 } from './testdata/multivec-data';
 
-describe('tileProxy.json()', () => {
+describe('json', () => {
   it('is a function', () => {
     expect(typeof tileProxy.json).to.eql('function');
   });
@@ -29,7 +30,7 @@ describe('tileProxy.json()', () => {
     }));
 });
 
-describe('tile-proxy text', () => {
+describe('text', () => {
   it('is a function', () => {
     expect(typeof tileProxy.json).to.eql('function');
   });
@@ -156,5 +157,206 @@ describe('bundleRequestsById', () => {
 
   it('returns an empty array when input is empty', () => {
     expect(bundleRequestsById([])).toEqual([]);
+  });
+});
+
+describe('bundleRequestsByServer', () => {
+  /**
+   * @param {ReturnType<typeof bundleRequestsByServer>} requests
+   */
+  function toLegacy(requests) {
+    return {
+      requestsByServer: Object.fromEntries(
+        requests.map((r) => [
+          r.server,
+          Object.fromEntries(r.ids.map((id) => [id, true])),
+        ]),
+      ),
+      requestBodyByServer: Object.fromEntries(
+        requests.map((r) => [r.server, r.body]),
+      ),
+    };
+  }
+
+  it('bundles requests by server', () => {
+    const result = bundleRequestsByServer([
+      {
+        server: 'A',
+        ids: ['tileset1.1', 'tileset2.2'],
+        options: { foo: 'bar' },
+      },
+      { server: 'B', ids: ['tileset3.3'], options: { baz: 'qux' } },
+      { server: 'A', ids: ['tileset1.4'] },
+    ]);
+    expect(result).toEqual([
+      {
+        server: 'A',
+        ids: ['tileset1.1', 'tileset2.2', 'tileset1.4'],
+        options: { foo: 'bar' },
+        body: [
+          { options: { foo: 'bar' }, tileIds: ['1'], tilesetUid: 'tileset1' },
+          { options: { foo: 'bar' }, tileIds: ['2'], tilesetUid: 'tileset2' },
+        ],
+      },
+      {
+        server: 'B',
+        ids: ['tileset3.3'],
+        options: { baz: 'qux' },
+        body: [
+          { options: { baz: 'qux' }, tileIds: ['3'], tilesetUid: 'tileset3' },
+        ],
+      },
+    ]);
+  });
+
+  it('merges requests for the same server and combines ids', () => {
+    const result = bundleRequestsByServer([
+      { server: 'A', ids: ['AA.1', 'AA.2'] },
+      { server: 'B', ids: ['BB.3'] },
+      { server: 'A', ids: ['AA.4', 'AA.5'] },
+      { server: 'A', ids: ['BB.4', 'BB.5'] },
+    ]);
+    expect(result).toEqual([
+      {
+        body: [],
+        ids: ['AA.1', 'AA.2', 'AA.4', 'AA.5', 'BB.4', 'BB.5'],
+        server: 'A',
+      },
+      {
+        body: [],
+        ids: ['BB.3'],
+        server: 'B',
+      },
+    ]);
+    expect(toLegacy(result)).toEqual({
+      requestBodyByServer: {
+        A: [],
+        B: [],
+      },
+      requestsByServer: {
+        A: {
+          'AA.1': true,
+          'AA.2': true,
+          'AA.4': true,
+          'AA.5': true,
+          'BB.4': true,
+          'BB.5': true,
+        },
+        B: {
+          'BB.3': true,
+        },
+      },
+    });
+  });
+
+  it('creates and appends body entries for request with options', () => {
+    const result = bundleRequestsByServer([
+      { server: 'A', ids: ['AA.1', 'AA.2'], options: { answer: 42 } },
+      { server: 'B', ids: ['BB.3'], options: { name: 'monty' } },
+      { server: 'A', ids: ['AA.4', 'AA.5'] },
+      { server: 'A', ids: ['AA.6'], options: { answer: 51 } },
+      { server: 'A', ids: ['BB.4', 'BB.5'], options: { name: 'python' } },
+    ]);
+    expect(result).toEqual([
+      {
+        ids: ['AA.1', 'AA.2', 'AA.4', 'AA.5', 'AA.6', 'BB.4', 'BB.5'],
+        server: 'A',
+        options: { answer: 42 },
+        body: [
+          {
+            tilesetUid: 'AA',
+            tileIds: ['1', '2', '6'],
+            options: { answer: 42 },
+          },
+          {
+            tilesetUid: 'BB',
+            tileIds: ['4', '5'],
+            options: { name: 'python' },
+          },
+        ],
+      },
+      {
+        ids: ['BB.3'],
+        server: 'B',
+        options: { name: 'monty' },
+        body: [
+          {
+            tilesetUid: 'BB',
+            tileIds: ['3'],
+            options: { name: 'monty' },
+          },
+        ],
+      },
+    ]);
+    expect(toLegacy(result)).toEqual({
+      requestBodyByServer: {
+        A: [
+          {
+            tilesetUid: 'AA',
+            tileIds: ['1', '2', '6'],
+            options: { answer: 42 },
+          },
+          {
+            tilesetUid: 'BB',
+            tileIds: ['4', '5'],
+            options: { name: 'python' },
+          },
+        ],
+        B: [
+          {
+            tilesetUid: 'BB',
+            tileIds: ['3'],
+            options: { name: 'monty' },
+          },
+        ],
+      },
+      requestsByServer: {
+        A: {
+          'AA.1': true,
+          'AA.2': true,
+          'AA.4': true,
+          'AA.5': true,
+          'AA.6': true,
+          'BB.4': true,
+          'BB.5': true,
+        },
+        B: {
+          'BB.3': true,
+        },
+      },
+    });
+  });
+
+  it('returns the same array when all servers are unique', () => {
+    const result = bundleRequestsByServer([
+      { server: 'X', ids: ['foo.10'] },
+      { server: 'Y', ids: ['bar.20', 'bar.30'] },
+    ]);
+    expect(result).toEqual([
+      {
+        ids: ['foo.10'],
+        server: 'X',
+        body: [],
+      },
+      {
+        ids: ['bar.20', 'bar.30'],
+        server: 'Y',
+        body: [],
+      },
+    ]);
+    expect(toLegacy(result)).toEqual({
+      requestBodyByServer: {
+        X: [],
+        Y: [],
+      },
+      requestsByServer: {
+        X: { 'foo.10': true },
+        Y: { 'bar.20': true, 'bar.30': true },
+      },
+    });
+  });
+
+  it('returns an empty array when input is empty', () => {
+    expect(bundleRequestsByServer([])).toEqual([]);
   });
 });
