@@ -58,6 +58,9 @@ class ContextMenuContainer extends React.Component {
     });
   }
 
+  /**
+   * @param {React.MouseEvent} evt
+   */
   handleItemMouseEnter(evt, series) {
     this.handleItemMouseEnterWithRect(
       evt.currentTarget.getBoundingClientRect(),
