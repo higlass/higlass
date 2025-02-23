@@ -36,26 +36,11 @@ class GenomePositionSearchBox extends React.Component {
 
     this.xScale = null;
     this.yScale = null;
-    // this.props.zoomDispatch.on('zoom.' + this.uid, this.zoomed.bind(this))
-
-    /*
-    this.xOrigScale = scaleLinear().domain(this.props.xDomain)
-              .range(this.props.xRange);
-    this.yOrigScale = scaleLinear().domain(this.props.yDomain)
-              .range(this.props.yRange);
-
-    this.zoomedXScale = this.xOrigScale.copy();
-    this.zoomedYScale = this.yOrigScale.copy();
-    */
-
     this.prevParts = [];
 
     this.props.registerViewportChangedListener(this.scalesChanged.bind(this));
 
-    this.menuPosition = {
-      left: 0,
-      top: 0,
-    };
+    this.menuPosition = { left: 0, top: 0 };
 
     this.currentChromInfoServer = this.props.chromInfoServer;
     this.currentChromInfoId = this.props.chromInfoId;
@@ -108,9 +93,6 @@ class GenomePositionSearchBox extends React.Component {
     }
 
     this.availableChromSizes = {};
-    // this.availableChromSizes[this.props.chromInfoId] = new Set([{server: this.props.chromInfoServer, uuid: this.props.chromInfoId} ]);
-
-    // this.fetchChromInfo(this.props.chromInfoId);
   }
 
   componentDidMount() {
@@ -121,8 +103,6 @@ class GenomePositionSearchBox extends React.Component {
       this.autocompleteKeyPress.bind(this),
     );
 
-    // this.findAvailableAutocompleteSources();
-    // this.findAvailableChromSizes();
     this.fetchChromInfo(this.props.chromInfoServer, this.props.chromInfoId);
     this.setPositionText();
   }
@@ -132,20 +112,15 @@ class GenomePositionSearchBox extends React.Component {
     this.props.removeViewportChangedListener();
   }
 
+  /**
+   * The user has selected an assembly to use for the coordinate search box
+   *
+   * @param {string} chromInfoServer
+   * @param {string} chromInfoId - The name of the chromosome info set to use
+   *
+   * @returns {void} Once the appropriate ChromInfo file is fetched, it is stored locally
+   */
   fetchChromInfo(chromInfoServer, chromInfoId) {
-    /**
-     * The user has selected an assembly to use for the coordinate search box
-     *
-     * Parameters
-     * ----------
-     *  chromInfoId: string
-     *      The name of the chromosome info set to use
-     *
-     * Returns
-     * -------
-     *  null
-     *      Once the appropriate ChromInfo file is fetched, it is stored locally
-     */
     if (!chromInfoId) {
       this.positionText = 'no chromosome track present';
 
@@ -190,7 +165,6 @@ class GenomePositionSearchBox extends React.Component {
     if (!this.searchField) {
       return;
     }
-    // console.trace('spt');
 
     const positionString = this.searchField.scalesToPositionText(
       this.xScale,
@@ -198,14 +172,11 @@ class GenomePositionSearchBox extends React.Component {
       this.props.twoD,
     );
 
-    // ReactDOM.findDOMNode( this.refs.searchFieldText).value = positionString;
     // used for autocomplete
     this.prevParts = positionString.split(/[ -]/);
-    // console.log('this.autocompleteMenu', this.autocompleteMenu.inputEl);
     if (this.gpsbForm) {
       this.positionText = positionString;
       this.autocompleteMenu.inputEl.value = positionString;
-      // this.setState({ value: positionString });
     }
   }
 
@@ -321,10 +292,9 @@ class GenomePositionSearchBox extends React.Component {
     }); // no menu should be open
 
     this.replaceGenesWithPositions(() => {
-      const searchFieldValue = this.positionText; // ReactDOM.findDOMNode( this.refs.searchFieldText ).value;
+      const searchFieldValue = this.positionText;
 
       if (this.searchField != null) {
-        // eslint-disable-next-line prefer-const
         let [range1, range2] =
           this.searchField.searchPosition(searchFieldValue);
 
@@ -391,9 +361,7 @@ class GenomePositionSearchBox extends React.Component {
 
     if (this.changedPart != null) {
       // if something has changed in the input text
-      this.setState({
-        loading: true,
-      });
+      this.setState({ loading: true });
       // spend out a request for the autcomplete suggestions
       const url = `${this.props.autocompleteServer}/suggest/?d=${
         this.props.autocompleteId
