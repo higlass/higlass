@@ -338,28 +338,28 @@ function indexTiles(tileResponses) {
 /** @typedef {CompletedTileData<TileResponse>} TileData */
 
 /**
- * @param {Array<WithResolvers<TilesRequest, Record<string, TileData>>>} requests
- * @param {PubSub} pubSub
- */
-export async function fetchMultiRequestTiles(requests, pubSub) {
-  const promises = Array.from(
-    optimizeRequests(requests.map((r) => r.value)),
-    (request) => workerFetchTiles(request, { authHeader, sessionId, pubSub }),
-  );
-  const index = indexTiles(await Promise.all(promises));
-  // trigger the callback for every request
-  for (const request of requests) {
-    request.resolve(index.get(request.value));
-  }
-}
-
-/**
  * Retrieve a set of tiles from the server.
  *
  * @type {(request: TilesRequest, pubSub: PubSub) => Promise<Record<string, TileData>>}
  */
 export const fetchTilesDebounced = delayedBatchExecutor(
-  fetchMultiRequestTiles,
+  /**
+   * Fetch and process a batch of tile requests.
+   *
+   * @param {Array<WithResolvers<TilesRequest, Record<string, TileData>>>} requestBatch
+   * @param {PubSub} pubSub
+   */
+  async (requestBatch, pubSub) => {
+    const promises = Array.from(
+      optimizeRequests(requestBatch.map((r) => r.value)),
+      (request) => workerFetchTiles(request, { authHeader, sessionId, pubSub }),
+    );
+    const index = indexTiles(await Promise.all(promises));
+    // trigger the callback for every request
+    for (const request of requestBatch) {
+      request.resolve(index.get(request.value));
+    }
+  },
   TILE_FETCH_DEBOUNCE,
   TILE_FETCH_DEBOUNCE,
 );
