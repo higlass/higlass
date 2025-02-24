@@ -5,13 +5,17 @@ import { workerFetchTiles, workerSetPix } from './worker';
 
 import sleep from '../utils/timeout';
 import tts from '../utils/trim-trailing-slash';
-
-/** @import { Scale, TilesetInfo, TilesRequest }  from '../types' */
-/** @import { CompletedTileData, TileResponse, SelectedRowsOptions } from './worker' */
+import {
+  isLegacyTilesetInfo,
+  isResolutionsTilesetInfo,
+} from '../utils/type-guards';
 
 // Config
 import { TILE_FETCH_DEBOUNCE } from '../configs/primitives';
-import { isLegacyTilesetInfo } from '../utils/type-guards';
+
+/** @import { PubSub }  from 'pub-sub-es' */
+/** @import { Scale, TilesetInfo, TilesRequest }  from '../types' */
+/** @import { CompletedTileData, TileResponse, SelectedRowsOptions } from './worker' */
 
 /** @type {number} */
 const MAX_FETCH_TILES = 15;
@@ -61,11 +65,12 @@ function* chunkIterable(iterable, size) {
  * @template U
  * @template {Array<unknown>} Args
  *
- * @param {(items: Array<WithResolvers<T, U>>, ...args: Args) => void} processBatch
- * @param {number} interval
- * @param {number} finalWait
+ * @param {Object} options
+ * @param {(items: Array<WithResolvers<T, U>>, ...args: Args) => void} options.processBatch
+ * @param {number} options.interval
+ * @param {number} options.finalWait
  */
-const delayedBatchExecutor = (processBatch, interval, finalWait) => {
+function createBatchedExecutor({ processBatch, interval, finalWait }) {
   /** @type {ReturnType<typeof setTimeout> | undefined} */
   let timeout = undefined;
   /** @type {Array<WithResolvers<T, U>>} */
@@ -129,7 +134,7 @@ const delayedBatchExecutor = (processBatch, interval, finalWait) => {
   };
 
   return throttled;
-};
+}
 
 /** @param {string} newHeader */
 export const setTileProxyAuthHeader = (newHeader) => {
@@ -292,56 +297,72 @@ function* optimizeRequests(requests, { maxSize = MAX_FETCH_TILES } = {}) {
   }
 }
 
-/** @typedef {Record<string, CompletedTileData<TileResponse>>} TileData */
+/** @typedef {CompletedTileData<TileResponse>} TileData */
 
 /**
- * @param {Array<WithResolvers<TilesRequest, TileData>>} requests
- * @param {import("pub-sub-es").PubSub} pubSub
+ * Collects independent tile responses into a shared index.
+ *
+ * Allows requests to retrieve associated tiles by server and tile IDs.
+ *
+ * @param {Array<Record<string, TileData> | void>} responses
  */
-export function fetchMultiRequestTiles(requests, pubSub) {
-  const fetchPromises = Array.from(
-    optimizeRequests(requests.map((r) => r.value)),
-    (request) => workerFetchTiles(request, { authHeader, sessionId, pubSub }),
-  );
-  Promise.all(fetchPromises).then((datas) => {
-    /** @type {TileData} */
-    const tiles = {};
+function indexTiles(responses) {
+  /** @type {Record<string, TileData>} */
+  const tileMap = {};
+  /** @type {(server: string, tileId: string) => string} */
+  const keyFor = (server, tileId) => `${server}/${tileId}`;
 
-    // merge back all the tile requests
-    for (const data of datas) {
-      if (!data) continue;
-      const tileIds = Object.keys(data);
-
-      for (const tileId of tileIds) {
-        tiles[`${data[tileId].server}/${tileId}`] = data[tileId];
-      }
+  // merge back all the tile requests
+  for (const response of responses) {
+    if (!response) continue;
+    for (const [tileId, tileData] of Object.entries(response)) {
+      tileMap[keyFor(tileData.server, tileId)] = response[tileId];
     }
+  }
 
-    // trigger the callback for every request
-    for (const request of requests) {
-      /** @type {TileData} */
-      const requestData = {};
-
-      // pull together the data per request
-      for (const id of request.value.tileIds) {
-        requestData[id] = tiles[`${request.value.server}/${id}`];
+  return {
+    /**
+     * Retrieve data for a specific request from the shared index.
+     *
+     * @param {{ server: string, tileIds: Array<string> }} request
+     */
+    resolveTileDataForRequest(request) {
+      /** @type {Record<string, TileData>} */
+      const response = {};
+      for (const tileId of request.tileIds) {
+        const entry = tileMap[keyFor(request.server, tileId)];
+        if (entry) response[tileId] = entry;
       }
-
-      request.resolve(requestData);
-    }
-  });
+      return response;
+    },
+  };
 }
 
 /**
  * Retrieve a set of tiles from the server.
  *
- * @type {(request: TilesRequest, pubSub: import('pub-sub-es').PubSub) => Promise<TileData>}
+ * @type {(request: TilesRequest, pubSub: PubSub) => Promise<Record<string, TileData>>}
  */
-export const fetchTilesDebounced = delayedBatchExecutor(
-  fetchMultiRequestTiles,
-  TILE_FETCH_DEBOUNCE,
-  TILE_FETCH_DEBOUNCE,
-);
+export const fetchTilesDebounced = createBatchedExecutor({
+  /**
+   * Fetch and process a batch of tile requests.
+   *
+   * @param {Array<WithResolvers<TilesRequest, Record<string, TileData>>>} requests
+   * @param {PubSub} pubSub
+   */
+  processBatch: async (requests, pubSub) => {
+    const promises = Array.from(
+      optimizeRequests(requests.map((r) => r.value)),
+      (request) => workerFetchTiles(request, { authHeader, sessionId, pubSub }),
+    );
+    const index = indexTiles(await Promise.all(promises));
+    for (const request of requests) {
+      request.resolve(index.resolveTileDataForRequest(request.value));
+    }
+  },
+  interval: TILE_FETCH_DEBOUNCE,
+  finalWait: TILE_FETCH_DEBOUNCE,
+});
 
 /**
  * Calculate the zoom level from a list of available resolutions
@@ -377,7 +398,7 @@ export const calculateZoomLevelFromResolutions = (resolutions, scale) => {
  * @returns {number}
  */
 export const calculateResolution = (tilesetInfo, zoomLevel) => {
-  if ('resolutions' in tilesetInfo) {
+  if (isResolutionsTilesetInfo(tilesetInfo)) {
     const sortedResolutions = tilesetInfo.resolutions
       .map((x) => +x)
       .sort((a, b) => b - a);
