@@ -5,13 +5,17 @@ import { workerFetchTiles, workerSetPix } from './worker';
 
 import sleep from '../utils/timeout';
 import tts from '../utils/trim-trailing-slash';
-
-/** @import { Scale, TilesetInfo, TilesRequest }  from '../types' */
-/** @import { CompletedTileData, TileResponse, SelectedRowsOptions } from './worker' */
+import {
+  isLegacyTilesetInfo,
+  isResolutionsTilesetInfo,
+} from '../utils/type-guards';
 
 // Config
 import { TILE_FETCH_DEBOUNCE } from '../configs/primitives';
-import { isLegacyTilesetInfo } from '../utils/type-guards';
+
+/** @import { PubSub }  from 'pub-sub-es' */
+/** @import { Scale, TilesetInfo, TilesRequest }  from '../types' */
+/** @import { CompletedTileData, TileResponse, SelectedRowsOptions } from './worker' */
 
 /** @type {number} */
 const MAX_FETCH_TILES = 15;
@@ -292,50 +296,67 @@ function* optimizeRequests(requests, { maxSize = MAX_FETCH_TILES } = {}) {
   }
 }
 
-/** @typedef {Record<string, CompletedTileData<TileResponse>>} TileData */
+/**
+ * Collects independent tile responses into a shared index.
+ *
+ * Allows requests to retrieve associated tiles by server and tile IDs.
+ *
+ * @param {Array<Record<string, TileData> | void>} tileResponses - An array of tile response objects.
+ */
+function indexTiles(tileResponses) {
+  /** @type {Record<string, TileData>} */
+  const tileMap = {};
+  /** @type {(server: string, tileId: string) => string} */
+  const keyFor = (server, tileId) => `${server}/${tileId}`;
+
+  // merge back all the tile requests
+  for (const response of tileResponses) {
+    if (!response) continue;
+    for (const [tileId, tileData] of Object.entries(response)) {
+      tileMap[keyFor(tileData.server, tileId)] = response[tileId];
+    }
+  }
+
+  return {
+    /**
+     * Retrieve data for a specific request from the shared index.
+     *
+     * @param {{ server: string, tileIds: Array<string> }} request
+     */
+    get(request) {
+      /** @type {Record<string, TileData>} */
+      const data = {};
+      for (const tileId of request.tileIds) {
+        const entry = tileMap[keyFor(request.server, tileId)];
+        if (entry) data[tileId] = entry;
+      }
+      return data;
+    },
+  };
+}
+
+/** @typedef {CompletedTileData<TileResponse>} TileData */
 
 /**
- * @param {Array<WithResolvers<TilesRequest, TileData>>} requests
- * @param {import("pub-sub-es").PubSub} pubSub
+ * @param {Array<WithResolvers<TilesRequest, Record<string, TileData>>>} requests
+ * @param {PubSub} pubSub
  */
-export function fetchMultiRequestTiles(requests, pubSub) {
-  const fetchPromises = Array.from(
+export async function fetchMultiRequestTiles(requests, pubSub) {
+  const promises = Array.from(
     optimizeRequests(requests.map((r) => r.value)),
     (request) => workerFetchTiles(request, { authHeader, sessionId, pubSub }),
   );
-  Promise.all(fetchPromises).then((datas) => {
-    /** @type {TileData} */
-    const tiles = {};
-
-    // merge back all the tile requests
-    for (const data of datas) {
-      if (!data) continue;
-      const tileIds = Object.keys(data);
-
-      for (const tileId of tileIds) {
-        tiles[`${data[tileId].server}/${tileId}`] = data[tileId];
-      }
-    }
-
-    // trigger the callback for every request
-    for (const request of requests) {
-      /** @type {TileData} */
-      const requestData = {};
-
-      // pull together the data per request
-      for (const id of request.value.tileIds) {
-        requestData[id] = tiles[`${request.value.server}/${id}`];
-      }
-
-      request.resolve(requestData);
-    }
-  });
+  const index = indexTiles(await Promise.all(promises));
+  // trigger the callback for every request
+  for (const request of requests) {
+    request.resolve(index.get(request.value));
+  }
 }
 
 /**
  * Retrieve a set of tiles from the server.
  *
- * @type {(request: TilesRequest, pubSub: import('pub-sub-es').PubSub) => Promise<TileData>}
+ * @type {(request: TilesRequest, pubSub: PubSub) => Promise<Record<string, TileData>>}
  */
 export const fetchTilesDebounced = delayedBatchExecutor(
   fetchMultiRequestTiles,
@@ -377,7 +398,7 @@ export const calculateZoomLevelFromResolutions = (resolutions, scale) => {
  * @returns {number}
  */
 export const calculateResolution = (tilesetInfo, zoomLevel) => {
-  if ('resolutions' in tilesetInfo) {
+  if (isResolutionsTilesetInfo(tilesetInfo)) {
     const sortedResolutions = tilesetInfo.resolutions
       .map((x) => +x)
       .sort((a, b) => b - a);
