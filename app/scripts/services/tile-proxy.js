@@ -10,9 +10,6 @@ import {
   isResolutionsTilesetInfo,
 } from '../utils/type-guards';
 
-// Config
-import { TILE_FETCH_DEBOUNCE } from '../configs/primitives';
-
 /** @import { PubSub }  from 'pub-sub-es' */
 /** @import { Scale, TilesetInfo, TilesRequest }  from '../types' */
 /** @import { CompletedTileData, TileResponse, SelectedRowsOptions } from './worker' */
@@ -67,73 +64,26 @@ function* chunkIterable(iterable, size) {
  *
  * @param {Object} options
  * @param {(items: Array<WithResolvers<T, U>>, ...args: Args) => void} options.processBatch
- * @param {number} options.interval
- * @param {number} options.finalWait
+ *
+ * @returns {(value: T, ...args: Args) => Promise<U>}
  */
-function createBatchedExecutor({ processBatch, interval, finalWait }) {
-  /** @type {ReturnType<typeof setTimeout> | undefined} */
-  let timeout = undefined;
+function createBatchedExecutor({ processBatch }) {
   /** @type {Array<WithResolvers<T, U>>} */
   let pending = [];
   /** @type {number} */
-  let blockedCalls = 0;
-
-  const reset = () => {
-    timeout = undefined;
-    pending = [];
-  };
-
+  let id = 0;
   /** @param {Args} args */
-  const callFunc = (...args) => {
-    // Flush the "bundle" (of collected items) to the processor
+  function run(...args) {
     processBatch(pending, ...args);
-    reset();
-  };
-
-  /** @param {Args} args */
-  const debounced = (...args) => {
-    const later = () => {
-      // Since we throttle and debounce we should check whether there were
-      // actually multiple attempts to call this function after the most recent
-      // throttled call. If there were no more calls we don't have to call
-      // the function again.
-      if (blockedCalls > 0) {
-        callFunc(...args);
-        blockedCalls = 0;
-      }
-    };
-
-    clearTimeout(timeout);
-    timeout = setTimeout(later, finalWait);
-  };
-
-  let wait = false;
-  /**
-   * @param {T} value
-   * @param {Args} args
-   * @returns {Promise<U>}
-   */
-  const throttled = (value, ...args) => {
-    // Collect items into the current queue any time the caller makes a request
+    pending = [];
+    id = 0;
+  }
+  return function enqueue(value, ...args) {
+    id = id || requestAnimationFrame(() => run(...args));
     const { promise, resolve, reject } = Promise.withResolvers();
     pending.push({ value, resolve, reject });
-
-    if (!wait) {
-      callFunc(...args);
-      debounced(...args);
-      wait = true;
-      blockedCalls = 0;
-      setTimeout(() => {
-        wait = false;
-      }, interval);
-    } else {
-      blockedCalls++;
-    }
-
     return promise;
   };
-
-  return throttled;
 }
 
 /** @param {string} newHeader */
@@ -330,8 +280,7 @@ function indexTiles(responses) {
       /** @type {Record<string, TileData>} */
       const response = {};
       for (const tileId of request.tileIds) {
-        const entry = tileMap[keyFor(request.server, tileId)];
-        if (entry) response[tileId] = entry;
+        response[tileId] = tileMap[keyFor(request.server, tileId)];
       }
       return response;
     },
@@ -360,8 +309,6 @@ export const fetchTilesDebounced = createBatchedExecutor({
       request.resolve(index.resolveTileDataForRequest(request.value));
     }
   },
-  interval: TILE_FETCH_DEBOUNCE,
-  finalWait: TILE_FETCH_DEBOUNCE,
 });
 
 /**
