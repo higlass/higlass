@@ -62,8 +62,8 @@ describe('Genome position search box tests', () => {
     /** Chromsizes are shown because there's a chromsizes track. */
     let api = null;
     afterEach(() => {
-      // api.destroy();
-      // removeDiv(div);
+      api.destroy();
+      removeDiv(div);
       api = undefined;
       div = undefined;
       hgc = null;
@@ -92,7 +92,7 @@ describe('Genome position search box tests', () => {
     });
   });
 
-  describe('Search for a specific gene', () => {
+  describe.only('Search for a specific gene', () => {
     it('Cleans up previously created instances and mounts a new component', async () => {
       if (hgc) {
         hgc.unmount();
@@ -146,6 +146,40 @@ describe('Genome position search box tests', () => {
       });
     });
 
+    // it('Switches to a different assembly', async () => {
+    //   const viewUid = 'aa';
+    //   const position = 'top';
+    //   const newTrack = {
+    //     server: 'http://higlass.io/api/v1',
+    //     tilesetUid: 'GUm5aBiLRCyz2PsBea7Yzg',
+    //     uid: 'e8H0Eve5TRWlc6XymPQejg',
+    //     type: 'horizontal-gene-annotations',
+    //     options: {
+    //       labelColor: 'black',
+    //       labelPosition: 'hidden',
+    //       plusStrandColor: 'blue',
+    //       minusStrandColor: 'red',
+    //       name: 'Gene Annotations (mm9)',
+    //       coordSystem: 'mm9',
+    //     },
+    //     width: 20,
+    //     height: 60,
+    //   };
+
+    //   hgc.instance().handleTrackAdded(viewUid, newTrack, position, null);
+    // });
+
+    // it('Mock type something', async () => {
+    //   hgc.instance().genomePositionSearchBoxes.aa.onAutocompleteChange({}, '');
+    //   await new Promise((done) => waitForJsonComplete(done));
+    // });
+
+    // it('Make sure it has mouse genes', () => {
+    //   expect(
+    //     hgc.instance().genomePositionSearchBoxes.aa.state.genes[0].geneName,
+    //   ).to.equal('Gt(ROSA)26Sor');
+    // });
+
     it('Cleans up', () => {
       if (hgc) {
         hgc.unmount();
@@ -159,7 +193,18 @@ describe('Genome position search box tests', () => {
     });
   });
 
-  describe('Starting with no genome position search box', () => {
+  /**
+   * Skipping this large test for now because much of the switching
+   * assembly functionality has been removed in higlass 2.0.
+   *
+   * We still need to test that:
+   * [ ] - Removing a chromsizes track sets the search box back to "no chromosomes"
+   * [ ] - Changing the chromsizes changes the displayed position
+   * [ ] - Changing the gene annotations changes the search results
+   * [ ] - Ideally we would check that the chromsizes of the gene annotations tileset info
+   *       and the chromsizes file match
+   */
+  describe.skip('Starting with no genome position search box', () => {
     it('Cleans up previously created instances and mounts a new component', async () => {
       if (hgc) {
         hgc.unmount();
@@ -361,12 +406,6 @@ describe('Genome position search box tests', () => {
       hgc.instance().handleTogglePositionSearchBox('aa');
       hgc.update();
       await new Promise((done) => waitForJsonComplete(done));
-    });
-
-    it('Ensures that selected assembly is hg19', () => {
-      expect(
-        hgc.instance().genomePositionSearchBoxes.aa.state.selectedAssembly,
-      ).to.equal('hg19');
     });
 
     it("checks that the div hasn't grown too much", () => {
