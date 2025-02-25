@@ -45,10 +45,13 @@ class GenomePositionSearchBox extends React.Component {
     this.currentChromInfoServer = this.props.chromInfoServer;
     this.currentChromInfoId = this.props.chromInfoId;
 
+    console.log('autcompleteId', this.props.autocompleteId);
+
     // the position text is maintained both here and in
     // in state.value so that it can be quickly updated in
     // response to zoom events
-    this.positionText = 'no chromosome track present';
+    // this.positionText = 'no chromosome track present';
+    this.positionText = props.error;
 
     this.state = {
       value: this.positionText,
@@ -549,7 +552,7 @@ class GenomePositionSearchBox extends React.Component {
             </div>
           )}
           renderMenu={this.handleRenderMenu.bind(this)}
-          value={this.positionText}
+          value={this.props.error || this.positionText}
           wrapperStyle={{
             width: '100%',
           }}

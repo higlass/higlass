@@ -146,50 +146,66 @@ describe('Genome position search box tests', () => {
       });
     });
 
-    // it('Switches to a different assembly', async () => {
-    //   const viewUid = 'aa';
-    //   const position = 'top';
-    //   const newTrack = {
-    //     server: 'http://higlass.io/api/v1',
-    //     tilesetUid: 'GUm5aBiLRCyz2PsBea7Yzg',
-    //     uid: 'e8H0Eve5TRWlc6XymPQejg',
-    //     type: 'horizontal-gene-annotations',
-    //     options: {
-    //       labelColor: 'black',
-    //       labelPosition: 'hidden',
-    //       plusStrandColor: 'blue',
-    //       minusStrandColor: 'red',
-    //       name: 'Gene Annotations (mm9)',
-    //       coordSystem: 'mm9',
-    //     },
-    //     width: 20,
-    //     height: 60,
-    //   };
+    it('Adds a new annotations track', async () => {
+      const viewUid = 'aa';
+      const position = 'top';
+      const newTrack = {
+        server: 'http://higlass.io/api/v1',
+        tilesetUid: 'GUm5aBiLRCyz2PsBea7Yzg',
+        uid: 'e8H0Eve5TRWlc6XymPQejg',
+        type: 'horizontal-gene-annotations',
+        options: {
+          labelColor: 'black',
+          labelPosition: 'hidden',
+          plusStrandColor: 'blue',
+          minusStrandColor: 'red',
+          name: 'Gene Annotations (mm9)',
+          coordSystem: 'mm9',
+        },
+        width: 20,
+        height: 60,
+      };
 
-    //   hgc.instance().handleTrackAdded(viewUid, newTrack, position, null);
-    // });
+      hgc.instance().handleTrackAdded(viewUid, newTrack, position, null);
+      hgc.setState(hgc.instance().state);
+      const positionText = hgc.genomePositionSearchBoxes.aa.positionText;
 
-    // it('Mock type something', async () => {
-    //   hgc.instance().genomePositionSearchBoxes.aa.onAutocompleteChange({}, '');
-    //   await new Promise((done) => waitForJsonComplete(done));
-    // });
+      expect(positionText.indexOf('multiple annotation')).to.be.greaterThan(-1);
+      done(null);
+    });
 
-    // it('Make sure it has mouse genes', () => {
-    //   expect(
-    //     hgc.instance().genomePositionSearchBoxes.aa.state.genes[0].geneName,
-    //   ).to.equal('Gt(ROSA)26Sor');
-    // });
+    it();
+
+    it('Ensures that the autocomplete has changed', async () => {
+      hgc.instance().genomePositionSearchBoxes.aa.onAutocompleteChange({}, '');
+      expect(
+        hgc.instance().genomePositionSearchBoxes.aa.state.autocompleteId,
+      ).to.not.equal('OHJakQICQD6gTD7skx4EWA');
+
+      await new Promise((done) => waitForJsonComplete(done));
+    });
+
+    it('Mock type something', async () => {
+      hgc.instance().genomePositionSearchBoxes.aa.onAutocompleteChange({}, '');
+      await new Promise((done) => waitForJsonComplete(done));
+    });
+
+    it('Make sure it has mouse genes', () => {
+      expect(
+        hgc.instance().genomePositionSearchBoxes.aa.state.genes[0].geneName,
+      ).to.equal('Gt(ROSA)26Sor');
+    });
 
     it('Cleans up', () => {
-      if (hgc) {
-        hgc.unmount();
-        hgc.detach();
-        hgc = null;
-      }
-      if (div) {
-        global.document.body.removeChild(div);
-        div = null;
-      }
+      // if (hgc) {
+      //   hgc.unmount();
+      //   hgc.detach();
+      //   hgc = null;
+      // }
+      // if (div) {
+      //   global.document.body.removeChild(div);
+      //   div = null;
+      // }
     });
   });
 
