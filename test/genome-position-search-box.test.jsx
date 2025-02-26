@@ -103,7 +103,7 @@ describe('Genome position search box tests', () => {
     });
   });
 
-  describe.only('Search for a specific gene', () => {
+  describe('Search for a specific gene', () => {
     it('Cleans up previously created instances and mounts a new component', async () => {
       if (hgc) {
         hgc.unmount();
