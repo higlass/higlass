@@ -45,8 +45,6 @@ class GenomePositionSearchBox extends React.Component {
     this.currentChromInfoServer = this.props.chromInfoServer;
     this.currentChromInfoId = this.props.chromInfoId;
 
-    console.log('autcompleteId', this.props.autocompleteId);
-
     // the position text is maintained both here and in
     // in state.value so that it can be quickly updated in
     // response to zoom events
@@ -60,8 +58,6 @@ class GenomePositionSearchBox extends React.Component {
       genes: [],
       isFocused: false,
       menuOpened: false,
-      autocompleteServer: this.props.autocompleteServer,
-      autocompleteId: this.props.autocompleteId,
       availableAssemblies: [],
       selectedAssembly: null,
     };
@@ -83,19 +79,6 @@ class GenomePositionSearchBox extends React.Component {
         border: 'solid 1px #ccc',
       },
     };
-
-    this.availableAutocompletes = {};
-
-    if (this.props.autocompleteId) {
-      this.availableAutocompletes[this.props.chromInfoId] = new Set([
-        {
-          server: this.props.autocompleteServer,
-          acId: this.props.autocompleteId,
-        },
-      ]);
-    }
-
-    this.availableChromSizes = {};
   }
 
   componentDidMount() {
@@ -339,8 +322,16 @@ class GenomePositionSearchBox extends React.Component {
           range2 = range1;
         }
 
-        const newXScale = this.xScale.copy().domain(range1);
-        const newYScale = this.yScale.copy().domain(range2);
+        const newXScale = this.xScale.copy();
+        const newYScale = this.yScale.copy();
+
+        // If someone doesn't enter anything in the searcbar then
+        // range1 will be empty. In that case, we'll just stay in the
+        // current position
+        if (range1) {
+          newXScale.domain(range1);
+          newYScale.domain(range1);
+        }
 
         const [centerX, centerY, k] = scalesCenterAndK(newXScale, newYScale);
 
@@ -508,7 +499,6 @@ class GenomePositionSearchBox extends React.Component {
   }
 
   render() {
-    console.log('render positionText', this.positionText);
     return (
       <div
         ref={(c) => {

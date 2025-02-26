@@ -5177,8 +5177,6 @@ class HiGlassComponent extends React.Component {
             x.type === 'chromosome-labels',
         );
 
-        console.log('annotationTracks', annotationTracks);
-
         const getGenomePositionSearchBox = (isFocused, onFocus) => (
           <GenomePositionSearchBox
             // Reserved props

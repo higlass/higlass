@@ -22,6 +22,17 @@ import { chromInfoTrack, geneAnnotationsOnly1, noGPSB } from './view-configs';
 
 Enzyme.configure({ adapter: new Adapter() });
 
+/**
+ *
+ * Key tests for the simplified genome position search box component
+ *
+ * [x] - Removing a chromsizes track sets the search box back to "no chromosomes"
+ * [x] - Changing the chromsizes changes the displayed position
+ * [x] - Changing the gene annotations changes the search results
+ * [ ] - Ideally we would check that the chromsizes of the gene annotations tileset info
+ *       and the chromsizes file match
+ */
+
 describe('Genome position search box tests', () => {
   let hgc = null;
   let div = null;
@@ -201,8 +212,61 @@ describe('Genome position search box tests', () => {
       ).to.equal('Gt(ROSA)26Sor');
     });
 
-    it('Removes the chromsizes track', () => {
+    it('Changes the chromsizes track', async (done) => {
+      hgc.instance().genomePositionSearchBoxes.aa.buttonClick();
+
+      // First check the original position
+      await new Promise((done) => {
+        waitForJsonComplete(() => {
+          waitForTransitionsFinished(hgc.instance(), () => {
+            const positionText1 =
+              hgc.instance().genomePositionSearchBoxes.aa.positionText;
+
+            expect(positionText1.indexOf('chr9:21,963,212')).to.be.equal(0);
+            done(null);
+          });
+        });
+      });
+
+      // Now change the chromsizes track
       hgc.instance().handleCloseTrack('aa', chromInfoTrack.uid);
+
+      const newTrack = {
+        server: 'http://higlass.io/api/v1',
+        tilesetUid: 'NyITQvZsS_mOFNlz5C2LJg',
+        uid: 'hcl1',
+        type: 'horizontal-chromosome-labels',
+        options: {
+          showMousePosition: false,
+          mousePositionColor: '#999999',
+          color: '#777777',
+          stroke: '#FFFFFF',
+          fontSize: 12,
+          fontIsAligned: false,
+        },
+        width: 1173,
+        height: 30,
+      };
+
+      hgc.instance().handleTrackAdded('aa', newTrack, 'top', null);
+      hgc.setState(hgc.instance().state);
+
+      // Check that we have a new location
+      await new Promise((done) => {
+        waitForJsonComplete(() => {
+          waitForTransitionsFinished(hgc.instance(), () => {
+            const positionText1 =
+              hgc.instance().genomePositionSearchBoxes.aa.positionText;
+
+            expect(positionText1.indexOf('chr9:21,963,212')).to.be.equal(-1);
+            done(null);
+          });
+        });
+      });
+    });
+
+    it('Removes the chromsizes track', () => {
+      hgc.instance().handleCloseTrack('aa', 'hcl1');
       hgc.setState(hgc.instance().state);
 
       const errorText = hgc.instance().genomePositionSearchBoxes.aa.props.error;
@@ -223,16 +287,4 @@ describe('Genome position search box tests', () => {
       }
     });
   });
-
-  /**
-   * Skipping this large test for now because much of the switching
-   * assembly functionality has been removed in higlass 2.0.
-   *
-   * We still need to test that:
-   * [x] - Removing a chromsizes track sets the search box back to "no chromosomes"
-   * [ ] - Changing the chromsizes changes the displayed position
-   * [x] - Changing the gene annotations changes the search results
-   * [ ] - Ideally we would check that the chromsizes of the gene annotations tileset info
-   *       and the chromsizes file match
-   */
 });
