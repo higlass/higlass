@@ -508,6 +508,7 @@ class GenomePositionSearchBox extends React.Component {
   }
 
   render() {
+    console.log('render positionText', this.positionText);
     return (
       <div
         ref={(c) => {
