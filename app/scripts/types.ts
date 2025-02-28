@@ -77,6 +77,8 @@ export interface TrackObject {
   draw(): void;
   rerender(options: unknown): void;
   delayDrawing: boolean;
+  flipText?: boolean;
+  originalTrack?: TrackObject;
   childTracks?: TrackObject[];
   createdTracks: Record<string, TrackObject>;
   refScalesChanged(x: Scale, y: Scale): void;

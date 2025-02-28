@@ -1,17 +1,20 @@
 // @ts-nocheck
 import clsx from 'clsx';
+import { format } from 'd3-format';
 import PropTypes from 'prop-types';
 import React from 'react';
+
 import { mix } from './mixwith';
 
 import { getSeriesItems } from './SeriesListItems';
-import { expandCombinedTracks } from './utils';
+import { absToChr, expandCombinedTracks } from './utils';
+import copyTextToClipboard from './utils/copy-text-to-clipboard';
 
 import ContextMenuContainer from './ContextMenuContainer';
 import ContextMenuItem from './ContextMenuItem';
 import SeriesListSubmenuMixin from './SeriesListSubmenuMixin';
 
-import { THEME_DARK } from './configs';
+import { THEME_DARK } from './configs/themes';
 
 // Styles
 import classes from '../styles/ContextMenu.module.scss';
@@ -57,6 +60,17 @@ class ViewContextMenu extends mix(ContextMenuContainer).with(
         {seriesItems}
 
         {seriesItems && <hr className={classes['context-menu-hr']} />}
+
+        {this.props.genomePositionSearchBox && (
+          <ContextMenuItem
+            onClick={this.copyLocationToClipboard.bind(this)}
+            onMouseEnter={(e) => this.handleOtherMouseEnter(e)}
+          >
+            Copy location under cursor
+          </ContextMenuItem>
+        )}
+
+        <hr className={classes['context-menu-hr']} />
 
         <ContextMenuItem
           onClick={() =>
@@ -153,6 +167,40 @@ class ViewContextMenu extends mix(ContextMenuContainer).with(
       height: 30,
       position: 'top',
     });
+  }
+
+  copyLocationToClipboard() {
+    const is2d =
+      this.props.tracks[0] && this.props.tracks[0].position === 'center';
+
+    const chromInfo =
+      this.props.genomePositionSearchBox?.searchField?.chromInfo;
+
+    if (!chromInfo) {
+      console.warn(
+        'There needs to be a genome position search box present to copy the location',
+      );
+      this.props.closeMenu();
+      return;
+    }
+
+    const xAbsCoord = this.props.coords[0];
+    const yAbsCoord = this.props.coords[1];
+
+    const xChr = absToChr(xAbsCoord, chromInfo);
+    const stringFormat = format(',d');
+
+    let locationText = `${xChr[0]}:${stringFormat(xChr[1])}`;
+
+    if (is2d) {
+      const yChr = absToChr(yAbsCoord, chromInfo);
+      locationText = `${locationText} & ${yChr[0]}:${stringFormat(yChr[1])}`;
+      copyTextToClipboard(locationText);
+    } else {
+      copyTextToClipboard(locationText);
+    }
+
+    this.props.closeMenu();
   }
 
   handleAddVerticalSection() {

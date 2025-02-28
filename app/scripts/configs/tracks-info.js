@@ -34,6 +34,7 @@ import {
  * @property {number=} defaultWidth
  * @property {string=} chromInfoPath
  * @property {boolean=} projection
+ * @property {Record<string, unknown>} [optionsInfo]
  */
 
 const osm = {
