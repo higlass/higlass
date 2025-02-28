@@ -3,7 +3,7 @@ import { viewer } from '../../app/scripts/hglib';
 
 import createDiv from './create-div';
 
-export default function createElementAndAPI(
+export default async function createElementAndApi(
   viewConfig,
   options,
   width,
@@ -22,7 +22,7 @@ export default function createElementAndAPI(
     }`,
   );
 
-  const api = viewer(div, viewConfig, options);
+  const api = await viewer(div, viewConfig, options);
 
   return [div, api];
 }

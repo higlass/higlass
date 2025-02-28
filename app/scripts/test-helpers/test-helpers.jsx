@@ -250,6 +250,9 @@ export const removeHGComponent = (div) => {
 
 // ideally the "await-ers" avoid would be promises (rather than polling)
 // and that way `mountHGComponent` would be async by default.
+/**
+ * @returns {Promise<[HTMLElement, { instance: () => HiGlassComponent }]>}
+ */
 export async function mountHGComponentAsync(
   prevDiv,
   prevHgc,

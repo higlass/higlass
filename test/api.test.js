@@ -37,7 +37,7 @@ describe('API Tests', () => {
   });
 
   describe('Options tests', () => {
-    it('adjust view spacing', () => {
+    it('adjust view spacing', async () => {
       const options = {
         pixelPreciseMarginPadding: true,
         containingPaddingX: 0,
@@ -52,7 +52,7 @@ describe('API Tests', () => {
         viewPaddingRight: 6,
       };
 
-      [div, api] = createElementAndApi(adjustViewSpacingConf, options);
+      [div, api] = await createElementAndApi(adjustViewSpacingConf, options);
 
       const tiledPlotEl = div.querySelector('.tiled-plot-div');
       const trackRendererEl = div.querySelector('.track-renderer-div');
@@ -92,8 +92,8 @@ describe('API Tests', () => {
       );
     });
 
-    it('creates a track with default options', () => {
-      [div, api] = createElementAndApi(simpleCenterViewConfig, {
+    it('creates a track with default options', async () => {
+      [div, api] = await createElementAndApi(simpleCenterViewConfig, {
         defaultTrackOptions: {
           all: {
             showTooltip: true,
@@ -121,8 +121,8 @@ describe('API Tests', () => {
       // expect(Object.keys(component.viewHeaders).length).to.be.greaterThan(0);
     });
 
-    it('creates a track without default options', () => {
-      [div, api] = createElementAndApi(simpleCenterViewConfig);
+    it('creates a track without default options', async () => {
+      [div, api] = await createElementAndApi(simpleCenterViewConfig);
 
       const newTrack = {
         filetype: 'hitile',
@@ -144,8 +144,8 @@ describe('API Tests', () => {
       // expect(Object.keys(component.viewHeaders).length).to.be.greaterThan(0);
     });
 
-    it('creates an editable component', () => {
-      [div, api] = createElementAndApi(simpleCenterViewConfig);
+    it('creates an editable component', async () => {
+      [div, api] = await createElementAndApi(simpleCenterViewConfig);
 
       const component = api.getComponent();
 
@@ -153,7 +153,7 @@ describe('API Tests', () => {
     });
 
     it('zooms to negative domain', async () => {
-      [div, api] = createElementAndApi(simpleCenterViewConfig, {
+      [div, api] = await createElementAndApi(simpleCenterViewConfig, {
         editable: false,
       });
 
@@ -173,7 +173,7 @@ describe('API Tests', () => {
     });
 
     it('zooms to just x and y', async () => {
-      [div, api] = createElementAndApi(simpleCenterViewConfig, {
+      [div, api] = await createElementAndApi(simpleCenterViewConfig, {
         editable: false,
       });
 
@@ -191,7 +191,7 @@ describe('API Tests', () => {
     });
 
     it('zooms to the location near a MYC gene', async () => {
-      [div, api] = createElementAndApi(simpleCenterViewConfig, {
+      [div, api] = await createElementAndApi(simpleCenterViewConfig, {
         editable: false,
       });
 
@@ -207,7 +207,7 @@ describe('API Tests', () => {
     });
 
     it('suggest a list of genes that top match with the given keyword', async () => {
-      [div, api] = createElementAndApi(simpleCenterViewConfig, {
+      [div, api] = await createElementAndApi(simpleCenterViewConfig, {
         editable: false,
       });
 
@@ -224,7 +224,7 @@ describe('API Tests', () => {
     });
 
     it('reset viewport after zoom', async () => {
-      [div, api] = createElementAndApi(simpleHeatmapViewConf, {
+      [div, api] = await createElementAndApi(simpleHeatmapViewConf, {
         editable: false,
       });
 
@@ -250,7 +250,7 @@ describe('API Tests', () => {
     it('zoom to a nonexistent view', async () => {
       // complete me, should throw an error rather than complaining
       // "Cannot read property 'copy' of undefined thrown"
-      [div, api] = createElementAndApi(simpleCenterViewConfig, {
+      [div, api] = await createElementAndApi(simpleCenterViewConfig, {
         editable: false,
       });
 
@@ -266,7 +266,7 @@ describe('API Tests', () => {
     });
 
     it('creates a non editable component', async () => {
-      [div, api] = createElementAndApi(simpleCenterViewConfig, {
+      [div, api] = await createElementAndApi(simpleCenterViewConfig, {
         editable: false,
       });
 
@@ -276,7 +276,7 @@ describe('API Tests', () => {
     });
 
     it('retrieves a track', async () => {
-      [div, api] = createElementAndApi(simpleCenterViewConfig, {
+      [div, api] = await createElementAndApi(simpleCenterViewConfig, {
         editable: false,
       });
 
@@ -289,7 +289,7 @@ describe('API Tests', () => {
     });
 
     it('zooms to a negative location', async () => {
-      [div, api] = createElementAndApi(simpleCenterViewConfig, {
+      [div, api] = await createElementAndApi(simpleCenterViewConfig, {
         editable: false,
         bounded: true,
       });
@@ -301,7 +301,7 @@ describe('API Tests', () => {
     });
 
     it('has option getter', async () => {
-      [div, api] = createElementAndApi(simpleCenterViewConfig, {
+      [div, api] = await createElementAndApi(simpleCenterViewConfig, {
         editable: false,
         sizeMode: 'bounded',
       });
@@ -310,13 +310,13 @@ describe('API Tests', () => {
       expect(api.option('sizeMode')).to.equal('bounded');
     });
 
-    it('has version', () => {
-      [div, api] = createElementAndApi(emptyConf, { editable: false });
+    it('has version', async () => {
+      [div, api] = await createElementAndApi(emptyConf, { editable: false });
       expect(api.version).to.equal(VERSION);
     });
 
     it('mousemove and zoom events work for 1D and 2D tracks', async () => {
-      [div, api] = createElementAndApi(
+      [div, api] = await createElementAndApi(
         simple1dHorizontalVerticalAnd2dDataTrack,
         { editable: false, bounded: true },
       );
@@ -357,7 +357,7 @@ describe('API Tests', () => {
     });
 
     it('global mouse position broadcasting', async () => {
-      [div, api] = createElementAndApi(
+      [div, api] = await createElementAndApi(
         simple1dHorizontalVerticalAnd2dDataTrack,
         { editable: false, bounded: true },
       );
@@ -419,7 +419,7 @@ describe('API Tests', () => {
     });
 
     it('listens to click events', async () => {
-      [div, api] = createElementAndApi(simple1And2dAnnotations, {
+      [div, api] = await createElementAndApi(simple1And2dAnnotations, {
         editable: false,
         bounded: true,
       });
@@ -463,7 +463,7 @@ describe('API Tests', () => {
     });
 
     it('has location getter', async () => {
-      [div, api] = createElementAndApi(simpleHeatmapViewConf, {
+      [div, api] = await createElementAndApi(simpleHeatmapViewConf, {
         editable: false,
       });
 
@@ -488,7 +488,7 @@ describe('API Tests', () => {
     });
 
     it('triggers on viewConfig events from track resize interactions', async () => {
-      [div, api] = createElementAndApi(
+      [div, api] = await createElementAndApi(
         simple1dHorizontalVerticalAnd2dDataTrack,
       );
       const hgc = api.getComponent();
@@ -510,7 +510,7 @@ describe('API Tests', () => {
     });
 
     it('triggers on wheel events', async () => {
-      [div, api] = createElementAndApi(
+      [div, api] = await createElementAndApi(
         simple1dHorizontalVerticalAnd2dDataTrack,
       );
       const hgc = api.getComponent();
@@ -542,7 +542,7 @@ describe('API Tests', () => {
     });
 
     it('can modify and set the viewconf', async () => {
-      [div, api] = createElementAndApi(simpleHeatmapViewConf, {
+      [div, api] = await createElementAndApi(simpleHeatmapViewConf, {
         editable: true,
       });
 
@@ -568,7 +568,7 @@ describe('API Tests', () => {
 
   describe('Export SVG API tests', () => {
     it('listens to create SVG events', async () => {
-      [div, api] = createElementAndApi(simple1And2dAnnotations, {
+      [div, api] = await createElementAndApi(simple1And2dAnnotations, {
         editable: false,
         bounded: true,
       });
@@ -587,7 +587,7 @@ describe('API Tests', () => {
     });
 
     it('listens to create SVG events and enables manipulation of the SVG', async () => {
-      [div, api] = createElementAndApi(simple1And2dAnnotations, {
+      [div, api] = await createElementAndApi(simple1And2dAnnotations, {
         editable: false,
         bounded: true,
       });
@@ -622,7 +622,7 @@ describe('API Tests', () => {
 
   describe('Gene search events', () => {
     it('triggers on gene search events', async () => {
-      [div, api] = createElementAndApi(
+      [div, api] = await createElementAndApi(
         simple1dHorizontalVerticalAnd2dDataTrack,
       );
       const hgc = api.getComponent();

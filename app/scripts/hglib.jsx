@@ -115,6 +115,7 @@ export const viewer = async (element, viewConfig, options) => {
     // fetch the config if provided
     viewConfig = await fetch(viewConfig).then((response) => response.json());
   }
+
   const hg = launch(element, viewConfig, options);
   return hg.api;
 };

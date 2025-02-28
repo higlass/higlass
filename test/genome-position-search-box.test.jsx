@@ -52,7 +52,7 @@ describe('Genome position search box tests', () => {
       const viewconf = JSON.parse(JSON.stringify(emptyConf));
       viewconf.trackSourceServers = [];
 
-      [div, api] = createElementAndApi(viewconf, {});
+      [div, api] = await createElementAndApi(viewconf, {});
       hgc = api.getComponent();
 
       await new Promise((done) => {
@@ -85,7 +85,7 @@ describe('Genome position search box tests', () => {
       viewconf.trackSourceServers = [];
       viewconf.views[0].tracks.top = [chromInfoTrack];
 
-      [div, api] = createElementAndApi(viewconf, {});
+      [div, api] = await createElementAndApi(viewconf, {});
       hgc = api.getComponent();
 
       await new Promise((done) => {

@@ -10,7 +10,7 @@ import viewConfig from './view-configs/two-bars-and-a-heatmap.json';
 
 describe('Context menu tests', () => {
   it('opens a context menu', async () => {
-    const [_, api] = createElementAndApi(viewConfig);
+    const [_, api] = await createElementAndApi(viewConfig);
     const contextmenu = new MouseEvent('contextmenu', {
       clientX: 348,
       clientY: 315,

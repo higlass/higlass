@@ -13,7 +13,7 @@ describe('PNG Export', () => {
       const response = await fetch(
         'http://higlass.io/api/v1/viewconfs/?d=Y7FtjugjR6OIV_P2DRqCSg',
       );
-      [div, api] = createElementAndApi(await response.json());
+      [div, api] = await createElementAndApi(await response.json());
     });
 
     afterEach(() => {

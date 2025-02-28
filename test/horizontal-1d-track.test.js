@@ -28,7 +28,7 @@ describe('Horizontal 1D track tests', () => {
     it('check that the const indicators were rendered', async () => {
       viewConf = horizontal1dLineTrackWithConstViewConf;
 
-      [div, api] = createElementAndApi(viewConf, { bound: true });
+      [div, api] = await createElementAndApi(viewConf, { bound: true });
 
       hgc = api.getComponent();
 
@@ -58,7 +58,7 @@ describe('Horizontal 1D track tests', () => {
     it('check that the const indicators were rendered', async () => {
       viewConf = horizontalLineEnd;
 
-      [div, api] = createElementAndApi(viewConf, { bound: true });
+      [div, api] = await createElementAndApi(viewConf, { bound: true });
 
       hgc = api.getComponent();
 
