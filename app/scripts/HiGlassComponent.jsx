@@ -215,7 +215,9 @@ class HiGlassComponent extends React.Component {
     this.viewconfLoaded = false;
 
     const { viewConfig } = this.props;
-    const views = this.loadIfRemoteViewConfig(this.props.viewConfig);
+    const views = this.processViewConfig(
+      JSON.parse(JSON.stringify(this.props.viewConfig)),
+    );
 
     if (props.options.authToken) {
       setTileProxyAuthHeader(props.options.authToken);
@@ -591,46 +593,13 @@ class HiGlassComponent extends React.Component {
     return this.tiledPlots[viewUid].trackRenderer;
   }
 
-  /**
-   * Check if the passed in viewConfig is remote (i.e. is a string).
-   * If it is, fetch it before proceeding
-   */
-  loadIfRemoteViewConfig(viewConfig) {
-    let views = {};
-    if (typeof viewConfig === 'string') {
-      // Load external viewConfig
-      tileProxy.json(
-        viewConfig,
-        (error, remoteViewConfig) => {
-          viewConfig = remoteViewConfig;
-          this.setState({
-            views: this.processViewConfig(
-              JSON.parse(JSON.stringify(remoteViewConfig)),
-            ),
-            viewConfig: remoteViewConfig,
-          });
-          this.unsetOnLocationChange.forEach(
-            ({ viewId, callback, callbackId }) => {
-              this.onLocationChange(viewId, callback, callbackId);
-            },
-          );
-        },
-        this.pubSub,
-      );
-    } else {
-      views = this.processViewConfig(JSON.parse(JSON.stringify(viewConfig)));
-      if (this.mounted) {
-        this.setState({
-          viewConfig,
-        });
-      }
-    }
-
-    return views;
-  }
-
   UNSAFE_componentWillReceiveProps(newProps) {
-    const viewsByUid = this.loadIfRemoteViewConfig(newProps.viewConfig);
+    if (this.mounted) {
+      this.setState({ viewConfig: newProps.viewConfig });
+    }
+    const viewsByUid = this.processViewConfig(
+      JSON.parse(JSON.stringify(newProps.viewConfig)),
+    );
 
     if (newProps.options.authToken !== this.prevAuthToken) {
       // we go a new auth token so we should reload everything

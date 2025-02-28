@@ -24,13 +24,6 @@ describe('Add and remove viewconf', () => {
 
       api = viewer(div, simpleCenterViewConfig, {});
       api.setViewConfig(simpleCenterViewConfig);
-
-      // p.then(() => {
-      //   console.log('done');
-      //   done();
-      // });
-
-      // ([div, hgc] = mountHGComponent(div, hgc, 'http://higlass.io/api/v1/viewconfs/?d=default', done));
     });
 
     it('Ensures that setting a new viewconf changes the trackSourceServers', () => {

@@ -10,6 +10,8 @@ import {
   removeHGComponent,
 } from '../app/scripts/test-helpers';
 
+import viewconf from './view-configs/default.json';
+
 Enzyme.configure({ adapter: new Adapter() });
 
 describe('HiGlass component creation tests', () => {
@@ -18,11 +20,7 @@ describe('HiGlass component creation tests', () => {
 
   describe('API tests', () => {
     beforeAll(async () => {
-      [div, hgc] = await mountHGComponentAsync(
-        div,
-        hgc,
-        'http://higlass.io/api/v1/viewconfs/?d=default',
-      );
+      [div, hgc] = await mountHGComponentAsync(div, hgc, viewconf);
     });
 
     afterAll(() => {
