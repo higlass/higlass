@@ -20,7 +20,8 @@ describe('HiGlass component creation tests', () => {
 
   describe('API tests', () => {
     beforeAll(async () => {
-      [div, hgc] = await mountHGComponentAsync(div, hgc, viewconf);
+      const response = fetch('http://higlass.io/api/v1/viewconfs/?d=default');
+      [div, hgc] = await mountHGComponentAsync(div, hgc, await response.json());
     });
 
     afterAll(() => {
