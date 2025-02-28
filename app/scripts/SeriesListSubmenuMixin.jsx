@@ -47,6 +47,7 @@ const SeriesListSubmenuMixin = Mixin(
               ref={(c) => {
                 this.seriesListMenu = c;
               }}
+              apiPublish={this.props.apiPublish}
               closeMenu={this.props.closeMenu}
               hostTrack={this.props.tracks[0]}
               onAddDivisor={this.props.onAddDivisor}

@@ -1,17 +1,28 @@
-// @ts-nocheck
+import clsx from 'clsx';
 import PropTypes from 'prop-types';
 import React from 'react';
 
 // Styles
 import classes from '../styles/ContextMenu.module.scss';
 
+/**
+ * @typedef ContextMenuItemProps
+ * @prop {string} [className]
+ * @prop {(evt: React.MouseEvent) => void} onClick
+ * @prop {(evt: React.MouseEvent) => void} onMouseEnter
+ * @prop {(evt: React.MouseEvent) => void} onMouseLeave
+ */
+
+/**
+ * @param {React.PropsWithChildren<ContextMenuItemProps>} props
+ */
 function ContextMenuItem(props) {
   return (
     <div
       data-menu-item-for={
         typeof props.children === 'string' ? props.children : null
       }
-      className={classes['context-menu-item']}
+      className={clsx(classes['context-menu-item'], props.className)}
       onClick={(e) => props.onClick(e)}
       onMouseEnter={(e) => props.onMouseEnter(e)}
       onMouseLeave={(e) => props.onMouseLeave(e)}
