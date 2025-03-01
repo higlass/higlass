@@ -16,10 +16,10 @@ describe('Plugin data fetchers:', () => {
   let viewConf;
 
   describe('Dummy plugin data fetcher:', () => {
-    it('Should render', () => {
+    it('Should render', async () => {
       viewConf = dummyDataFetcherViewConf;
 
-      [div, api] = createElementAndApi(viewConf, { bound: true });
+      [div, api] = await createElementAndApi(viewConf, { bound: true });
 
       hgc = api.getComponent();
 

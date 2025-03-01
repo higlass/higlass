@@ -2,7 +2,10 @@ import visitTracks from './visit-tracks';
 
 /** @import { TrackConfig, TrackPosition, TrackVisitor } from '../types' */
 
-/** @typedef {{ [Key in TrackPosition]?: Array<TrackConfig> }} PositionedTracks */
+/**
+ * @template [T=TrackConfig]
+ * @typedef {{ [Key in TrackPosition]?: Array<T> }} PositionedTracks
+ */
 
 /**
  * Track visitor for positioned tracks, i.e., tracks with a position.

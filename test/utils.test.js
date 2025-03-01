@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 
 import * as utils from '../app/scripts/utils';
 import { IntervalTree } from '../app/scripts/utils/interval-tree';
+import positionedTracksToAllTracks from '../app/scripts/utils/positioned-tracks-to-all-tracks';
 import selectedItemsToCumWeights from '../app/scripts/utils/selected-items-to-cum-weights';
 
 import { oneViewConfig } from './view-configs';
@@ -312,5 +313,53 @@ describe('IntervalTree', () => {
 
     expect(tree.intersects([15, 25])).toBe(true);
     expect(tree.intersects([25, 29])).toBe(false);
+  });
+});
+
+describe('positionedTracksToAllTracks', () => {
+  it('flattens a position-indexed list of tracks into a flat list with positions', () => {
+    const positionedTracks = {
+      top: [{ type: 'line' }, { type: 'bar' }],
+      center: [
+        {
+          type: 'combined',
+          contents: [{ type: 'heatmap' }, { type: '2d-tiles' }],
+        },
+      ],
+    };
+    const result = positionedTracksToAllTracks(positionedTracks);
+    expect(result).toEqual([
+      { type: 'line', position: 'top' },
+      { type: 'bar', position: 'top' },
+      { type: 'heatmap', position: 'center' },
+      { type: '2d-tiles', position: 'center' },
+      {
+        type: 'combined',
+        position: 'center',
+        contents: [{ type: 'heatmap' }, { type: '2d-tiles' }],
+      },
+    ]);
+  });
+
+  it('excludes combined contents when includeCombinedContents is false', () => {
+    const positionedTracks = {
+      top: [{ type: 'line' }],
+      center: [
+        {
+          type: 'combined',
+          contents: [{ type: 'heatmap' }],
+        },
+      ],
+    };
+
+    const result = positionedTracksToAllTracks(positionedTracks, {
+      includeCombinedContents: false,
+    });
+
+    expect(result).toEqual([
+      { type: 'line', position: 'top' },
+      { type: 'combined', contents: [{ type: 'heatmap' }], position: 'center' },
+      // No separate entry for 'heatmap'
+    ]);
   });
 });

@@ -1,4 +1,3 @@
-// @ts-nocheck
 /* ------------------------------- Primitives ------------------------------- */
 
 export * from './primitives';
@@ -21,3 +20,9 @@ export {
   NUM_PRECOMP_SUBSETS_PER_1D_TTILE,
   NUM_PRECOMP_SUBSETS_PER_2D_TTILE,
 } from './dense-data-extrema-config';
+
+export const SIZE_MODE_DEFAULT = 'default';
+export const SIZE_MODE_BOUNDED = 'bounded';
+export const SIZE_MODE_OVERFLOW = 'overflow';
+export const SIZE_MODE_BOUNDED_OVERFLOW = 'bounded-overflow';
+export const SIZE_MODE_SCROLL = 'scroll';

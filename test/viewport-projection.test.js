@@ -22,9 +22,9 @@ describe('Viewport projection tests', () => {
   let div0;
   let api0;
 
-  beforeEach(() => {
-    [div0, api0] = createElementAndApi(topAxisOnly, {}, 600, 100);
-    [div, api] = createElementAndApi(viewConfig);
+  beforeEach(async () => {
+    [div0, api0] = await createElementAndApi(topAxisOnly, {}, 600, 100);
+    [div, api] = await createElementAndApi(viewConfig);
   });
 
   afterEach(() => {
@@ -140,8 +140,8 @@ describe('Viewport projection without linked views tests', () => {
   let api;
   let div;
 
-  beforeEach(() => {
-    [div, api] = createElementAndApi(viewConfigWithoutFromViewUids);
+  beforeEach(async () => {
+    [div, api] = await createElementAndApi(viewConfigWithoutFromViewUids);
   });
 
   afterEach(() => {

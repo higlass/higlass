@@ -15,10 +15,10 @@ describe('Plugin track tests', () => {
   let div = null;
   let viewConf;
 
-  it('Should render', () => {
+  it('Should render', async () => {
     viewConf = dummyTrackViewConf;
 
-    [div, api] = createElementAndApi(viewConf, { bound: true });
+    [div, api] = await createElementAndApi(viewConf, { bound: true });
 
     hgc = api.getComponent();
 

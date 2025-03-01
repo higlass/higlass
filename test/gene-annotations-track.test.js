@@ -23,8 +23,8 @@ describe('Gene Annotations Tracks', () => {
   let api = null;
   let hgc = null;
 
-  beforeAll(() => {
-    [div, api] = createElementAndApi(geneAnnotationsOnly);
+  beforeAll(async () => {
+    [div, api] = await createElementAndApi(geneAnnotationsOnly);
     hgc = api.getComponent();
   });
 
