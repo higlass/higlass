@@ -41,7 +41,6 @@ describe('API Tests', () => {
       [div, api] = await createElementAndApi(simpleCenterViewConfig);
 
       api.showTrackChooser();
-
       api.hideTrackChooser();
     });
 
