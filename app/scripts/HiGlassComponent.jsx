@@ -98,8 +98,6 @@ const DEFAULT_NEW_VIEW_HEIGHT = 12;
 const VIEW_HEADER_HEIGHT = 20;
 
 class HiGlassComponent extends React.Component {
-  topDivRef = React.createRef();
-
   constructor(props) {
     super(props);
 
@@ -110,6 +108,8 @@ class HiGlassComponent extends React.Component {
         React.version,
       );
     }
+
+    this.topDivRef = React.createRef();
 
     this.pubSub = createPubSub();
     this.domEvent = createDomEvent(this.pubSub);
