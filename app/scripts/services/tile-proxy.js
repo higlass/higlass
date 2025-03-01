@@ -777,10 +777,6 @@ function text(url, callback, pubSub) {
  * @param {import("pub-sub-es").PubSub} pubSub
  */
 async function json(url, callback, pubSub) {
-  // Fritz: What is going on here? Can someone explain?
-  if (url.indexOf('hg19') >= 0) {
-    await sleep(1);
-  }
   return fetchEither(url, callback, 'json', pubSub);
 }
 

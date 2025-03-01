@@ -6,6 +6,7 @@ import Enzyme from 'enzyme';
 
 // Utils
 import { removeHGComponent } from '../app/scripts/test-helpers';
+import createElementAndApi from './utils/create-element-and-api';
 
 import { osmConf } from './view-configs';
 
@@ -13,22 +14,8 @@ import { viewer } from '../app/scripts/hglib';
 
 Enzyme.configure({ adapter: new Adapter() });
 
-function createElementAndAPI(viewConfig, options) {
-  const div = global.document.createElement('div');
-  global.document.body.appendChild(div);
-
-  div.setAttribute(
-    'style',
-    'width:600px; height: 400px; background-color: lightgreen',
-  );
-
-  const api = viewer(div, viewConfig, options);
-
-  return [div, api];
-}
-
 describe('OSM tests', () => {
-  it('creates an editable component', () => {
+  it('creates an editable component', async () => {
     const track = osmConf.views[0].tracks.center[0];
     track.options.minPos = -180;
     track.options.maxPos = 180;
@@ -37,7 +24,7 @@ describe('OSM tests', () => {
     osmConf.views[0].initialYDomain = [-42.4, -42.3];
     osmConf.views[0].layout.w = 12;
 
-    const [div, api] = createElementAndAPI(osmConf, {
+    const [div, api] = await createElementAndApi(osmConf, {
       bounded: true,
     });
 

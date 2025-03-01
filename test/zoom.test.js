@@ -12,8 +12,8 @@ describe('Zoom tests', () => {
   let api;
   let div;
 
-  beforeEach(() => {
-    [div, api] = createElementAndApi(viewConfig);
+  beforeEach(async () => {
+    [div, api] = await createElementAndApi(viewConfig);
   });
 
   afterEach(() => {

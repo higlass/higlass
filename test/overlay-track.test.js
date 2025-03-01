@@ -14,10 +14,10 @@ describe('Overlay Track:', () => {
   let viewConf;
 
   describe('Annotation overlays:', () => {
-    it('Should render', () => {
+    it('Should render', async () => {
       viewConf = overlayAnnotations1d2dViewConf;
 
-      [div, api] = createElementAndApi(viewConf, { bound: true });
+      [div, api] = await createElementAndApi(viewConf, { bound: true });
 
       hgc = api.getComponent();
 
@@ -68,7 +68,7 @@ describe('Overlay Track:', () => {
     it('Should render', async () => {
       viewConf = overlayChromGridViewConf;
 
-      [div, api] = createElementAndApi(viewConf, { bound: true });
+      [div, api] = await createElementAndApi(viewConf, { bound: true });
 
       hgc = api.getComponent();
 

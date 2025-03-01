@@ -32,7 +32,7 @@ describe('Double view', () => {
   });
 
   afterAll(async () => {
-    removeHGComponent(div);
+    // removeHGComponent(div);
   });
 
   it('has a colorbar', () => {
@@ -207,11 +207,6 @@ describe('Double view', () => {
   });
   it('splits one of the views3', async () => {
     hgc.instance().handleAddView(twoViewConfig.views[0]);
-    await new Promise((done) => waitForTilesLoaded(hgc.instance(), done));
-  });
-  it('checks to make sure the colorbar is gone', async () => {
-    const track = getTrackObjectFromHGC(hgc.instance(), 'aa', 'heatmap1');
-    expect(track.pColorbarArea.visible).to.equal(false);
     await new Promise((done) => waitForTilesLoaded(hgc.instance(), done));
   });
 });

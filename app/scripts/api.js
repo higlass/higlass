@@ -5,13 +5,21 @@ import ReactDOM from 'react-dom';
 
 import schema from '../schema.json';
 
-import { setTileProxyAuthHeader } from './services';
+import { getTileProxyAuthHeader, setTileProxyAuthHeader } from './services';
 
 import { getTrackObjectFromHGC } from './utils';
 
-import { MOUSE_TOOL_MOVE, MOUSE_TOOL_SELECT } from './configs';
-
 import { version } from '../../package.json';
+import {
+  MOUSE_TOOL_MOVE,
+  MOUSE_TOOL_SELECT,
+  MOUSE_TOOL_TRACK_SELECT,
+  SIZE_MODE_BOUNDED,
+  SIZE_MODE_BOUNDED_OVERFLOW,
+  SIZE_MODE_DEFAULT,
+  SIZE_MODE_OVERFLOW,
+  SIZE_MODE_SCROLL,
+} from './configs';
 
 const forceUpdate = (self) => {
   self.setState(self.state);
@@ -100,7 +108,7 @@ const createApi = function api(context, pubSub) {
        * Get the currently set auth header
        */
       getAuthHeader() {
-        return setTileProxyAuthHeader();
+        return getTileProxyAuthHeader();
       },
 
       /**
@@ -152,7 +160,9 @@ const createApi = function api(context, pubSub) {
        */
       destroy() {
         destroy();
-        ReactDOM.unmountComponentAtNode(self.topDiv.parentNode);
+        if (self.topDivRef.current) {
+          ReactDOM.unmountComponentAtNode(self.topDivRef.current);
+        }
       },
 
       /**
@@ -367,6 +377,16 @@ const createApi = function api(context, pubSub) {
         });
       },
 
+      measureSize() {
+        self.measureSize();
+
+        for (const tiledPlot of Object.values(self.tiledPlots)) {
+          if (tiledPlot) {
+            tiledPlot.measureSize();
+          }
+        }
+      },
+
       /**
        * Show the track chooser which highlights tracks
        * when the mouse is over them.
@@ -391,7 +411,7 @@ const createApi = function api(context, pubSub) {
        * Hide the track chooser.
        */
       hideTrackChooser() {
-        this.setState({
+        self.setState({
           chooseTrackHandler: null,
         });
       },
@@ -587,12 +607,43 @@ const createApi = function api(context, pubSub) {
        */
       activateTool(tool) {
         switch (tool) {
+          case 'track-select':
+            self.setMouseTool(MOUSE_TOOL_TRACK_SELECT);
+            break;
+
           case 'select':
             self.setMouseTool(MOUSE_TOOL_SELECT);
             break;
 
           default:
             self.setMouseTool(MOUSE_TOOL_MOVE);
+            break;
+        }
+      },
+
+      /**
+       * Set the size mode for the higlass container
+       *
+       * @param {string sizeMode The size mode for the container.
+       *                         The vailable options are 'default',
+       *                         'bounded', 'overflow' and 'scroll'
+       */
+      setSizeMode(sizeMode) {
+        switch (sizeMode) {
+          case 'bounded':
+            self.setSizeMode(SIZE_MODE_BOUNDED);
+            break;
+          case 'overflow':
+            self.setSizeMode(SIZE_MODE_OVERFLOW);
+            break;
+          case 'bounded-overflow':
+            self.setSizeMode(SIZE_MODE_BOUNDED_OVERFLOW);
+            break;
+          case 'scroll':
+            self.setSizeMode(SIZE_MODE_SCROLL);
+            break;
+          default:
+            self.setSizeMode(SIZE_MODE_DEFAULT);
             break;
         }
       },
@@ -742,12 +793,28 @@ const createApi = function api(context, pubSub) {
           typeof listenerId === 'object' ? listenerId.callback : listenerId;
 
         switch (event) {
+          case 'annotationCreated':
+            apiPubSub.unsubscribe('annotationCreated', callback);
+            break;
+
+          case 'annotationChanged':
+            apiPubSub.unsubscribe('annotationChanged', callback);
+            break;
+
+          case 'annotationRemoved':
+            apiPubSub.unsubscribe('annotationRemoved', callback);
+            break;
+
           case 'click':
             apiPubSub.unsubscribe('click', callback);
             break;
 
           case 'cursorLocation':
             apiPubSub.unsubscribe('cursorLocation', callback);
+            break;
+
+          case 'datasetInfo':
+            apiPubSub.unsubscribe('datasetInfo', callback);
             break;
 
           case 'location':
@@ -797,7 +864,7 @@ const createApi = function api(context, pubSub) {
        *
        * **Event types**
        *
-       * ``click``: Returns a list of objects for each track that is below the click event.
+       * ``click``: Returns clicked objects. (Currently only clicks on 1D annotations are captured.)
        *
        * .. code-block:: javascript
        *
@@ -966,11 +1033,23 @@ const createApi = function api(context, pubSub) {
        */
       on(event, callback, viewId, callbackId) {
         switch (event) {
+          case 'annotationCreated':
+            return apiPubSub.subscribe('annotationCreated', callback);
+
+          case 'annotationChanged':
+            return apiPubSub.subscribe('annotationChanged', callback);
+
+          case 'annotationRemoved':
+            return apiPubSub.subscribe('annotationRemoved', callback);
+
           case 'click':
             return apiPubSub.subscribe('click', callback);
 
           case 'cursorLocation':
             return apiPubSub.subscribe('cursorLocation', callback);
+
+          case 'datasetInfo':
+            return apiPubSub.subscribe('datasetInfo', callback);
 
           case 'location':
             // returns a set of scales (xScale, yScale) on every zoom event

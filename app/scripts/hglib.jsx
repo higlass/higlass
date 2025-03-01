@@ -102,15 +102,20 @@ const launch = (element, config, options) => {
  *   }
  * });
  *
- * @return  {Object}  Newly created HiGlass component.
+ * @return  {Promise<Object>}  Newly created HiGlass component.
  */
-export const viewer = (element, viewConfig, options) => {
+export const viewer = async (element, viewConfig, options) => {
   /**
    * Available options:
    *
    *  bounded: [true/false]
    *      Fit the container to the bounds of the element
    */
+  if (typeof viewConfig === 'string') {
+    // fetch the config if provided
+    viewConfig = await fetch(viewConfig).then((response) => response.json());
+  }
+
   const hg = launch(element, viewConfig, options);
   return hg.api;
 };

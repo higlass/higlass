@@ -39,15 +39,14 @@ describe('View manipulation tests', () => {
 
   describe('Viewport projection tests', () => {
     beforeAll(async () => {
-      [div, hgc] = await mountHGComponentAsync(
-        div,
-        hgc,
+      const response = await fetch(
         'http://higlass.io/api/v1/viewconfs/?d=KaeBVQQpTaqT0kfhE32boQ',
-        {
-          style: 'width:800px; height:400px; background-color: lightgreen',
-          bounded: true,
-        },
       );
+      const viewconf = await response.json();
+      [div, hgc] = await mountHGComponentAsync(div, hgc, viewconf, {
+        style: 'width:800px; height:400px; background-color: lightgreen',
+        bounded: true,
+      });
     });
 
     afterAll(() => {
