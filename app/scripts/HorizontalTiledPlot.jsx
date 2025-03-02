@@ -11,7 +11,7 @@ import ListWrapper from './ListWrapper';
 import SortableList from './SortableList';
 
 // Utils
-import { IS_TRACK_RANGE_SELECTABLE, or, resetD3BrushStyle, sum } from './utils';
+import { IS_TRACK_RANGE_SELECTABLE, resetD3BrushStyle } from './utils';
 
 // Styles
 import styles from '../styles/HorizontalTiledPlot.module.scss';
@@ -178,11 +178,13 @@ class HorizontalTiledPlot extends React.Component {
   /* ------------------------------ Rendering ------------------------------- */
 
   render() {
-    const height = this.props.tracks.map((x) => x.height).reduce(sum, 0);
+    const height = this.props.tracks
+      .map((x) => x.height)
+      .reduce((a, b) => a + b, 0);
 
     const isBrushable = this.props.tracks
       .map((track) => IS_TRACK_RANGE_SELECTABLE(track))
-      .reduce(or, false);
+      .reduce((a, b) => a || b, false);
 
     const rangeSelectorClass = this.props.isRangeSelectionActive
       ? stylesTrack['track-range-selection-active']

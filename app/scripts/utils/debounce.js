@@ -19,7 +19,7 @@
  * @param {boolean} immediate - If `true` function is not debounced.
  * @return {{ (...args: Args): void, cancel(): void }} Debounced function.
  */
-export const debounce = (func, wait, immediate) => {
+const debounce = (func, wait, immediate) => {
   /** @type {ReturnType<typeof setTimeout> | undefined} */
   let timeout;
 

@@ -12,7 +12,7 @@ import SortableList from './SortableList';
 import VerticalItem from './VerticalItem';
 
 // Utils
-import { IS_TRACK_RANGE_SELECTABLE, or, resetD3BrushStyle, sum } from './utils';
+import { IS_TRACK_RANGE_SELECTABLE, resetD3BrushStyle } from './utils';
 
 import stylesPlot from '../styles/TiledPlot.module.scss';
 import stylesTrack from '../styles/Track.module.scss';
@@ -184,11 +184,13 @@ class VerticalTiledPlot extends React.Component {
   /* ------------------------------ Rendering ------------------------------- */
 
   render() {
-    const width = this.props.tracks.map((x) => x.width).reduce(sum, 0);
+    const width = this.props.tracks
+      .map((x) => x.width)
+      .reduce((a, b) => a + b, 0);
 
     const isBrushable = this.props.tracks
       .map((track) => IS_TRACK_RANGE_SELECTABLE(track))
-      .reduce(or, false);
+      .reduce((a, b) => a || b, false);
 
     const rangeSelectorClass =
       stylesTrack[
