@@ -75,20 +75,20 @@ describe('API Tests', () => {
       );
       expect(tiledPlotBBox.height).to.equal(
         totalViewHeight +
-        options.viewPaddingTop +
-        options.viewPaddingBottom +
-        options.viewMarginTop +
-        options.viewMarginBottom,
+          options.viewPaddingTop +
+          options.viewPaddingBottom +
+          options.viewMarginTop +
+          options.viewMarginBottom,
       );
       expect(trackRendererBBox.width).to.equal(
         topTrackBBox.width + options.viewPaddingLeft + options.viewPaddingRight,
       );
       expect(tiledPlotBBox.width).to.equal(
         topTrackBBox.width +
-        options.viewPaddingLeft +
-        options.viewPaddingRight +
-        options.viewMarginLeft +
-        options.viewMarginRight,
+          options.viewPaddingLeft +
+          options.viewPaddingRight +
+          options.viewMarginLeft +
+          options.viewMarginRight,
       );
     });
 
@@ -534,8 +534,8 @@ describe('API Tests', () => {
         forwarded: true,
         target: canvas,
         nativeEvent: undefined,
-        stopPropagation: () => { },
-        preventDefault: () => { },
+        stopPropagation: () => {},
+        preventDefault: () => {},
       };
       // Simulate the wheel and keyboard events.
       hgc.wheelHandler(wheelEvent);

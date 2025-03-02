@@ -375,11 +375,11 @@ class HiGlassComponent extends React.Component {
 
     this.setBroadcastMousePositionGlobally(
       this.props.options.broadcastMousePositionGlobally ||
-      this.props.options.globalMousePosition,
+        this.props.options.globalMousePosition,
     );
     this.setShowGlobalMousePosition(
       this.props.options.showGlobalMousePosition ||
-      this.props.options.globalMousePosition,
+        this.props.options.globalMousePosition,
     );
   }
 
@@ -1316,11 +1316,11 @@ class HiGlassComponent extends React.Component {
           typeof sourceTrack.options.scaleEndPercent !== 'undefined' &&
           (Math.abs(
             lockedTrack.options.scaleStartPercent -
-            sourceTrack.options.scaleStartPercent,
+              sourceTrack.options.scaleStartPercent,
           ) > epsilon ||
             Math.abs(
               lockedTrack.options.scaleEndPercent -
-              sourceTrack.options.scaleEndPercent,
+                sourceTrack.options.scaleEndPercent,
             ) > epsilon);
 
         // If we do view based scaling we want to minimize the number of rerenders
@@ -3324,7 +3324,7 @@ class HiGlassComponent extends React.Component {
         ) {
           this.locationLocks[viewUid] =
             viewConfig.locationLocks.locksDict[
-            viewConfig.locationLocks.locksByViewUid[viewUid]
+              viewConfig.locationLocks.locksByViewUid[viewUid]
             ];
         } else {
           // This means we need to link x and y axes separately.
@@ -3333,7 +3333,7 @@ class HiGlassComponent extends React.Component {
           if ('x' in viewConfig.locationLocks.locksByViewUid[viewUid]) {
             const lockInfo =
               viewConfig.locationLocks.locksDict[
-              viewConfig.locationLocks.locksByViewUid[viewUid].x.lock
+                viewConfig.locationLocks.locksByViewUid[viewUid].x.lock
               ];
             this.locationLocksAxisWise.x[viewUid] = {
               lock: lockInfo,
@@ -3345,7 +3345,7 @@ class HiGlassComponent extends React.Component {
           if ('y' in viewConfig.locationLocks.locksByViewUid[viewUid]) {
             const lockInfo =
               viewConfig.locationLocks.locksDict[
-              viewConfig.locationLocks.locksByViewUid[viewUid].y.lock
+                viewConfig.locationLocks.locksByViewUid[viewUid].y.lock
               ];
             this.locationLocksAxisWise.y[viewUid] = {
               lock: lockInfo,
@@ -3367,7 +3367,7 @@ class HiGlassComponent extends React.Component {
       for (const viewUid of dictKeys(viewConfig.zoomLocks.locksByViewUid)) {
         this.zoomLocks[viewUid] =
           viewConfig.zoomLocks.locksDict[
-          viewConfig.zoomLocks.locksByViewUid[viewUid]
+            viewConfig.zoomLocks.locksByViewUid[viewUid]
           ];
       }
     }
@@ -3384,7 +3384,7 @@ class HiGlassComponent extends React.Component {
       )) {
         this.valueScaleLocks[viewUid] =
           viewConfig.valueScaleLocks.locksDict[
-          viewConfig.valueScaleLocks.locksByViewUid[viewUid]
+            viewConfig.valueScaleLocks.locksByViewUid[viewUid]
           ];
       }
     }
@@ -4449,8 +4449,8 @@ class HiGlassComponent extends React.Component {
 
     const hoveredTracks = hoveredTiledPlot
       ? hoveredTiledPlot
-        .listTracksAtPosition(relPos[0], relPos[1], true)
-        .map((track) => track.originalTrack || track)
+          .listTracksAtPosition(relPos[0], relPos[1], true)
+          .map((track) => track.originalTrack || track)
       : [];
 
     const hoveredTrack = hoveredTracks.find(
@@ -4459,9 +4459,9 @@ class HiGlassComponent extends React.Component {
 
     const relTrackPos = hoveredTrack
       ? [
-        relPos[0] - hoveredTrack.position[0],
-        relPos[1] - hoveredTrack.position[1],
-      ]
+          relPos[0] - hoveredTrack.position[0],
+          relPos[1] - hoveredTrack.position[1],
+        ]
       : relPos;
 
     let dataX = -1;
@@ -4671,8 +4671,8 @@ class HiGlassComponent extends React.Component {
 
     const hoveredTracks = hoveredTiledPlot
       ? hoveredTiledPlot
-        .listTracksAtPosition(relPos[0], relPos[1], true)
-        .map((track) => track.originalTrack || track)
+          .listTracksAtPosition(relPos[0], relPos[1], true)
+          .map((track) => track.originalTrack || track)
       : [];
 
     const hoveredTrack = hoveredTracks.find(
@@ -4685,9 +4685,9 @@ class HiGlassComponent extends React.Component {
     // any additional information (i.e. annotations under the cursor)
     const relTrackPos = hoveredTrack
       ? [
-        relPos[0] - hoveredTrack.position[0],
-        relPos[1] - hoveredTrack.position[1],
-      ]
+          relPos[0] - hoveredTrack.position[0],
+          relPos[1] - hoveredTrack.position[1],
+        ]
       : relPos;
 
     const relTrackX = hoveredTrack?.flipText ? relTrackPos[1] : relTrackPos[0];
@@ -4787,7 +4787,7 @@ class HiGlassComponent extends React.Component {
   /**
    * Handle mousedown events/
    */
-  mouseDownHandler(evt) { }
+  mouseDownHandler(evt) {}
 
   onScrollHandler() {
     if (this.sizeMode !== SIZE_MODE_SCROLL) return;
@@ -4906,8 +4906,8 @@ class HiGlassComponent extends React.Component {
       relPos[1] += this.scrollTop;
       const hoveredTracks = hoveredTiledPlot
         ? hoveredTiledPlot
-          .listTracksAtPosition(relPos[0], relPos[1], true)
-          .map((track) => track.originalTrack || track)
+            .listTracksAtPosition(relPos[0], relPos[1], true)
+            .map((track) => track.originalTrack || track)
         : [];
       const hoveredTrack = hoveredTracks.find(
         (track) => !track.isAugmentationTrack,
@@ -4915,9 +4915,9 @@ class HiGlassComponent extends React.Component {
 
       const relTrackPos = hoveredTrack
         ? [
-          relPos[0] - hoveredTrack.position[0],
-          relPos[1] - hoveredTrack.position[1],
-        ]
+            relPos[0] - hoveredTrack.position[0],
+            relPos[1] - hoveredTrack.position[1],
+          ]
         : relPos;
 
       const viewUid = hoveredTiledPlot?.props
@@ -5042,7 +5042,7 @@ class HiGlassComponent extends React.Component {
             chooseTrackHandler={
               this.state.chooseTrackHandler
                 ? (trackId, evt) =>
-                  this.state.chooseTrackHandler(view.uid, trackId, evt)
+                    this.state.chooseTrackHandler(view.uid, trackId, evt)
                 : null
             }
             customDialog={this.state.customDialog}
@@ -5202,8 +5202,8 @@ class HiGlassComponent extends React.Component {
         );
         const multiTrackHeader =
           this.isEditable() &&
-            !this.isViewHeaderDisabled() &&
-            !this.state.viewConfig.hideHeader ? (
+          !this.isViewHeaderDisabled() &&
+          !this.state.viewConfig.hideHeader ? (
             <ViewHeader
               ref={(c) => {
                 this.viewHeaders[view.uid] = c;
@@ -5301,8 +5301,8 @@ class HiGlassComponent extends React.Component {
 
     let layouts = this.mounted
       ? Object.values(this.state.views)
-        .filter((view) => view.layout)
-        .map((view) => view.layout)
+          .filter((view) => view.layout)
+          .map((view) => view.layout)
       : [];
 
     layouts = JSON.parse(JSON.stringify(layouts)); // make sure to copy the layouts
