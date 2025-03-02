@@ -1,6 +1,7 @@
 # Release notes
 
 - Fix: Add missing initializer value to `utils.reduce`
+- Fix `api.hideTrackChooser`
 
 ## v1.13.5
 

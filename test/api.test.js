@@ -37,6 +37,14 @@ describe('API Tests', () => {
   });
 
   describe('Options tests', () => {
+    it('shows and hides the track chooser', () => {
+      [div, api] = createElementAndApi(simpleCenterViewConfig);
+
+      api.showTrackChooser();
+
+      api.hideTrackChooser();
+    });
+
     it('adjust view spacing', () => {
       const options = {
         pixelPreciseMarginPadding: true,
