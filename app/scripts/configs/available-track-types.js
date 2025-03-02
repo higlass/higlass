@@ -20,7 +20,7 @@ import { DATATYPE_TO_TRACK_TYPE } from './datatype-to-track-type';
  *  A list of track-types:
  *      E.g. ['top-line', 'top-rectangle']
  */
-export const AVAILABLE_TRACK_TYPES = (datatypes, orientation) => {
+const AVAILABLE_TRACK_TYPES = (datatypes, orientation) => {
   const datatypesToTrackTypes = DATATYPE_TO_TRACK_TYPE(orientation);
   let availableTrackTypes = new Set(
     Object.values(datatypesToTrackTypes).flat(),

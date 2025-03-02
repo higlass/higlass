@@ -15,7 +15,7 @@ import { getDefaultTrackForDatatype } from './utils';
 // Styles
 import '../styles/AddTrackDialog.module.scss';
 
-export class AddTrackDialog extends React.Component {
+class AddTrackDialog extends React.Component {
   constructor(props) {
     super(props);
 

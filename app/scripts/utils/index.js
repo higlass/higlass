@@ -1,6 +1,4 @@
 export { default as absToChr } from './abs-to-chr';
-export { default as accessorTransposition } from './accessor-transposition';
-export { default as addArrays } from './add-arrays';
 export { default as chromInfoBisector } from './chrom-info-bisector';
 export { default as chrToAbs } from './chr-to-abs';
 export { default as cloneEvent } from './clone-event';
@@ -26,7 +24,6 @@ export { default as getTrackObjById } from './get-track-obj-by-id';
 export { default as getTrackPositionByUid } from './get-track-position-by-uid';
 export { default as getXylofon } from './get-xylofon';
 export { default as gradient } from './gradient';
-export { default as hasClass } from './has-class';
 export { default as hasParent } from './has-parent';
 export { default as hexStrToInt } from './hex-string-to-int';
 export { default as intoTheVoid } from './into-the-void';

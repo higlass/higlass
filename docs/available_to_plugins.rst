@@ -98,9 +98,8 @@ Utils
 
 - DenseDataExtrema1D
 - DenseDataExtrema2D
+- IS_TRACK_RANGE_SELECTABLE
 - absToChr
-- accessorTransposition
-- addArrays
 - changeOptions
 - chrToAbs
 - chromInfoBisector
@@ -132,7 +131,6 @@ Utils
 - getTrackRenderer
 - getXylofon
 - gradient
-- hasClass
 - hasParent
 - hexStrToInt
 - intoTheVoid
