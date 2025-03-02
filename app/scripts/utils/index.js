@@ -25,7 +25,6 @@ export { default as getXylofon } from './get-xylofon';
 export { default as gradient } from './gradient';
 export { default as hasParent } from './has-parent';
 export { default as hexStrToInt } from './hex-string-to-int';
-export { default as intoTheVoid } from './into-the-void';
 export { default as isWithin } from './is-within';
 export { default as map } from './map';
 export { default as max } from './max';

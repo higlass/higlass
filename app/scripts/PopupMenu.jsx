@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-import intoTheVoid from './utils/into-the-void';
+import toVoid from './utils/to-void';
 
 class PopupMenu extends React.Component {
   constructor(props) {
@@ -76,7 +76,7 @@ class PopupMenu extends React.Component {
 }
 
 PopupMenu.defaultProps = {
-  onMenuClosed: intoTheVoid,
+  onMenuClosed: toVoid,
 };
 
 PopupMenu.propTypes = {

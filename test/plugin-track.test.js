@@ -75,7 +75,6 @@ describe('Plugin track tests', () => {
         "gradient",
         "hasParent",
         "hexStrToInt",
-        "intoTheVoid",
         "isWithin",
         "map",
         "max",
