@@ -8,7 +8,7 @@
  * @param   {string}  strokeColor  Color HEX string
  * @return  {HTMLElement}  SVG line object
  */
-export const svgLine = (x1, y1, x2, y2, strokeWidth, strokeColor) => {
+const svgLine = (x1, y1, x2, y2, strokeWidth, strokeColor) => {
   const line = document.createElement('line');
 
   line.setAttribute('x1', String(x1));

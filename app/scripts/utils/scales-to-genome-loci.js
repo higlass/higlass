@@ -9,7 +9,7 @@ import dataToGenomicLoci from './data-to-genomic-loci';
  * @param {import('../types').ChromInfo} chromInfo
  * @returns {[...GenomicLoci, ...GenomicLoci] | undefined} The genomic coordinates.
  */
-export const scalesToGenomeLoci = (xScale, yScale, chromInfo) => {
+const scalesToGenomeLoci = (xScale, yScale, chromInfo) => {
   if (chromInfo === null || !xScale || !yScale) return undefined;
 
   const x0 = xScale.domain()[0];
