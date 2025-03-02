@@ -117,7 +117,6 @@ Utils
 - download
 - expandCombinedTracks
 - fillInMinWidths
-- flatten
 - forwardEvent
 - getAggregationFunction
 - getDefaultTrackForDatatype
@@ -133,12 +132,8 @@ Utils
 - gradient
 - hasParent
 - hexStrToInt
-- intoTheVoid
 - isWithin
-- map
-- max
 - maxNonZero
-- min
 - minNonZero
 - mountHGComponent
 - mountHGComponentAsync
@@ -147,10 +142,8 @@ Utils
 - ndarrayToList
 - numericifyVersion
 - objVals
-- or
 - parseChromsizesRows
 - pixiTextToSvg
-- reduce
 - removeHGComponent
 - resetD3BrushStyle
 - scalesCenterAndK
@@ -158,7 +151,6 @@ Utils
 - segmentsToRows
 - selectedItemsToSize
 - showMousePosition
-- sum
 - svgLine
 - throttleAndDebounce
 - timeout
@@ -172,6 +164,7 @@ Utils
 - waitForJsonComplete
 - waitForTilesLoaded
 - waitForTransitionsFinished
+
 
 Configs
 -------

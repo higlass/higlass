@@ -36,7 +36,6 @@ import {
   getTrackByUid,
   getTrackPositionByUid,
   isWithin,
-  sum,
   visitPositionedTracks,
 } from './utils';
 import getDefaultTracksForDataType from './utils/get-default-tracks-for-datatype';
@@ -2274,29 +2273,31 @@ export class TiledPlot extends React.Component {
     // gallery goes around the central view it's dimension takes up twice the
     // space!
     this.galleryDim = this.props.tracks.gallery
-      ? this.props.tracks.gallery.map((x) => x.height).reduce(sum, 0)
+      ? this.props.tracks.gallery
+          .map((x) => x.height)
+          .reduce((a, b) => a + b, 0)
       : 0;
 
     // left, top, right, and bottom have fixed heights / widths
     // the center will vary to accomodate their dimensions
     this.topHeightNoGallery = this.props.tracks.top
       .map((x) => x.height)
-      .reduce(sum, 0);
+      .reduce((a, b) => a + b, 0);
     this.topHeight = this.topHeightNoGallery + this.galleryDim;
 
     this.bottomHeightNoGallery = this.props.tracks.bottom
       .map((x) => x.height)
-      .reduce(sum, 0);
+      .reduce((a, b) => a + b, 0);
     this.bottomHeight = this.bottomHeightNoGallery + this.galleryDim;
 
     this.leftWidthNoGallery = this.props.tracks.left
       .map((x) => x.width)
-      .reduce(sum, 0);
+      .reduce((a, b) => a + b, 0);
     this.leftWidth = this.leftWidthNoGallery + this.galleryDim;
 
     this.rightWidthNoGallery = this.props.tracks.right
       .map((x) => x.width)
-      .reduce(sum, 0);
+      .reduce((a, b) => a + b, 0);
     this.rightWidth = this.rightWidthNoGallery + this.galleryDim;
 
     const verticalPadding = this.props.paddingTop + this.props.paddingBottom;

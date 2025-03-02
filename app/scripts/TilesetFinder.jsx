@@ -13,7 +13,7 @@ import withPubSub from './hocs/with-pub-sub';
 // Configs
 import { TRACKS_INFO } from './configs';
 
-class TilesetFinder extends React.Component {
+export class TilesetFinder extends React.Component {
   constructor(props) {
     super(props);
 

@@ -10,7 +10,7 @@ import { GLOBALS } from './configs';
 import { tileProxy } from './services';
 
 // Utils
-import { colorToHex, max, min } from './utils';
+import { colorToHex } from './utils';
 
 const MOUSE_CLICK_TIME = 250;
 
@@ -79,7 +79,7 @@ class Annotations2dTrack extends TiledPixiTrack {
    * Point projection from the data to the view (pixel) coordinates
    * @param   {number}  x  Data X coordinate
    * @param   {number}  y  Data Y coordinate
-   * @return  {array}  Tuple [x,y] containing the translated view coordinates.
+   * @return  {[number, number]}  Tuple [x,y] containing the translated view coordinates.
    */
   projection([x, y]) {
     return [this._xScale(x), this._yScale(y)];
@@ -123,7 +123,7 @@ class Annotations2dTrack extends TiledPixiTrack {
       this.maxY,
     );
 
-    return min(max(xZoomLevel, yZoomLevel), this.maxZoom);
+    return Math.min(Math.max(xZoomLevel, yZoomLevel), this.maxZoom);
   }
 
   /**
@@ -349,7 +349,7 @@ class Annotations2dTrack extends TiledPixiTrack {
       strokeWidth = this.options.rectangleDomainStrokeWidth + 1 || 2;
       strokeAlpha = 1;
       fill = this.options.selectColor;
-      fillAlpha = max(0.33, this.options.rectangleDomainFillOpacity);
+      fillAlpha = Math.max(0.33, this.options.rectangleDomainFillOpacity);
     }
 
     graphics.clear();

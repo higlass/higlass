@@ -1,5 +1,3 @@
-import or from './or';
-
 /**
  * Return true if this track is selectable by range.
  * @param {import('../types').TrackConfig} track
@@ -34,7 +32,7 @@ export const IS_TRACK_RANGE_SELECTABLE = (track) => {
       const contents = track.contents;
       return contents
         .map((t) => IS_TRACK_RANGE_SELECTABLE(t))
-        .reduce(or, false);
+        .reduce((a, b) => a || b, false);
     }
 
     default:

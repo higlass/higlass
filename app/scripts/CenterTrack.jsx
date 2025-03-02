@@ -8,7 +8,7 @@ import React from 'react';
 import TrackControl from './TrackControl';
 
 // Utils
-import { IS_TRACK_RANGE_SELECTABLE, or, resetD3BrushStyle } from './utils';
+import { IS_TRACK_RANGE_SELECTABLE, resetD3BrushStyle } from './utils';
 
 // Styles
 import styles from '../styles/CenterTrack.module.scss';
@@ -430,7 +430,7 @@ class CenterTrack extends React.Component {
   render() {
     const isBrushable = this.props.tracks
       .map((track) => IS_TRACK_RANGE_SELECTABLE(track))
-      .reduce(or, false);
+      .reduce((a, b) => a || b, false);
 
     // Althought the tracks property is an array and could contain more than one
     // track, in practice there is only one combined track.
