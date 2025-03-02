@@ -76,7 +76,7 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
     this.pubSub = pubSub;
     this.is2d = true;
     this.animate = animate;
-    this.uid = slugid.nice();
+    this.uid = context.trackUid ?? slugid.nice();
     this.scaleBrush = brushY();
 
     this.onTrackOptionsChanged = onTrackOptionsChanged;

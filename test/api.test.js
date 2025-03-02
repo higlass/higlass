@@ -21,7 +21,6 @@ import simpleHeatmapViewConf from './view-configs/simple-heatmap.json';
 
 import createElementAndApi from './utils/create-element-and-api';
 import removeDiv from './utils/remove-div';
-// import drag from './utils/drag';
 
 import { version as VERSION } from '../package.json';
 
@@ -519,18 +518,20 @@ describe('API Tests', () => {
 
       const promise = new Promise((done) => {
         api.on('wheel', (e) => {
-          expect(e.origEvt.clientX).toEqual(150);
-          expect(e.origEvt.clientY).toEqual(250);
+          expect(e.origEvt.clientX).toEqual(300);
+          expect(e.origEvt.clientY).toEqual(150);
           expect(e.viewUid).toEqual('a');
           expect(e.trackUid).toEqual('heatmap');
+          done(null);
         });
       });
 
       const canvas = div.querySelector('canvas');
+
       // The wheel event that we expect to catch.
       const wheelEvent = {
-        clientX: 150,
-        clientY: 250,
+        clientX: 300,
+        clientY: 150,
         forwarded: true,
         target: canvas,
         nativeEvent: undefined,

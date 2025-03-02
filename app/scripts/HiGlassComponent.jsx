@@ -130,7 +130,6 @@ class HiGlassComponent extends React.Component {
     this.yScales = {};
     this.projectionXDomains = {};
     this.projectionYDomains = {};
-    this.topDiv = null;
     this.zoomToDataExtentOnInit = new Set();
 
     // a reference of view / track combinations
@@ -4901,7 +4900,7 @@ class HiGlassComponent extends React.Component {
 
     // Find the tracks at the wheel position
     if (this.apiStack.wheel && this.apiStack.wheel.length > 0) {
-      const relPos = pointer(nativeEvent, this.topDiv);
+      const relPos = pointer(nativeEvent, this.topDivRef.current);
       // We need to add the scrollTop
       relPos[1] += this.scrollTop;
       const hoveredTracks = hoveredTiledPlot
@@ -4923,7 +4922,7 @@ class HiGlassComponent extends React.Component {
       const viewUid = hoveredTiledPlot?.props
         ? hoveredTiledPlot.props.uid
         : undefined;
-      const trackUid = hoveredTrack ? hoveredTrack.id : undefined;
+      const trackUid = hoveredTrack ? hoveredTrack.uid : undefined;
 
       const evtToPublish = {
         x: relPos[0],
