@@ -287,6 +287,7 @@ class ViewHeader extends React.Component {
             onClick={() =>
               this.handleAddTrackPositionMenuOpened(this.props.viewUid)
             }
+            data-testid="add-track"
           >
             <title>Add Track</title>
             <use xlinkHref="#plus" />

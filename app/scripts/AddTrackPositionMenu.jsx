@@ -46,6 +46,7 @@ function AddTrackPositionMenu(props) {
               <span
                 onClick={() => props.onTrackPositionChosen('center')}
                 className={classes['add-track-position-middle-middle-full']}
+                data-testid="add-track-center"
               >
                 center
               </span>
@@ -56,6 +57,7 @@ function AddTrackPositionMenu(props) {
                 className={
                   classes['add-track-position-middle-middle-upper-right']
                 }
+                data-testid="add-track-upper-right"
               />
               <span
                 onClick={() =>
@@ -64,6 +66,7 @@ function AddTrackPositionMenu(props) {
                 className={
                   classes['add-track-position-middle-middle-lower-left']
                 }
+                data-testid="add-track-lower-left"
               />
             </td>
             <td

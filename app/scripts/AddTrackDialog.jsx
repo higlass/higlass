@@ -228,9 +228,9 @@ AddTrackDialog.defaultProps = {
 };
 
 AddTrackDialog.propTypes = {
-  datatype: PropTypes.string.isRequired,
+  datatype: PropTypes.string,
   extent: PropTypes.string,
-  host: PropTypes.string.isRequired,
+  host: PropTypes.string,
   onCancel: PropTypes.func.isRequired,
   onTracksChosen: PropTypes.func.isRequired,
   position: PropTypes.string,

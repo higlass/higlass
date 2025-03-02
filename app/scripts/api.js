@@ -25,6 +25,8 @@ const forceUpdate = (self) => {
   self.setState(self.state);
 };
 
+/** @typedef {ReturnType<typeof createApi>} HiGlassApi */
+
 const createApi = function api(context, pubSub) {
   /** @type {import('./HiGlassComponent').default} */
   const self = context;

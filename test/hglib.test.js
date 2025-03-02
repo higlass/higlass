@@ -67,7 +67,6 @@ describe('viewer', () => {
         "zoomToGene": [Function],
       }
     `);
-    // @ts-expect-error - higlass doesn't have strcit types for it's API
     expect(Object.keys(api.getViewConfig())).toMatchInlineSnapshot(`
       [
         "editable",
@@ -84,7 +83,6 @@ describe('viewer', () => {
     // Wait for the Genome search box to be in the DOM
     await expect.element(page.getByRole('combobox')).toBeInTheDocument();
 
-    // @ts-expect-error - higlass doesn't have strcit types for it's API
     const hgc = api.getComponent();
 
     // Wait for tiles to load
