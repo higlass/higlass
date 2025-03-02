@@ -526,20 +526,17 @@ describe('API Tests', () => {
         });
       });
 
-      const canvas = div.querySelector('canvas');
+      // dispatch a real event
+      div.querySelector('canvas').dispatchEvent(
+        new WheelEvent('wheel', {
+          clientX: 300,
+          clientY: 150,
+          deltaY: 10,
+          bubbles: true,
+          cancelable: true,
+        }),
+      );
 
-      // The wheel event that we expect to catch.
-      const wheelEvent = {
-        clientX: 300,
-        clientY: 150,
-        forwarded: true,
-        target: canvas,
-        nativeEvent: undefined,
-        stopPropagation: () => {},
-        preventDefault: () => {},
-      };
-      // Simulate the wheel and keyboard events.
-      hgc.wheelHandler(wheelEvent);
       await promise;
     });
 
