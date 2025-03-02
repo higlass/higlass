@@ -1,7 +1,15 @@
 # Release notes
 
-- Fix: Add missing initializer value to `utils.reduce`
+## Next release
+
+- Add missing initializer value to `utils.reduce`
 - Fix `api.hideTrackChooser`
+- Remove unused utilites from `HGC.utils` (`accessorTransposition`,
+`addArrays`, `addClass`, `base64ToCanvas`, `flatten`, `forEach`,
+`genomeLociToPixels`, `genomicRangeToChromosomeChunks`, `hasClass`,
+`isTrackOrChildTrack`, `latToY`, `loadChromInfos`, `lngToX`, `mod`, `q`,
+`reduce`, `rangeQuery2d`, `relToAbsChromPos`, `removeClass`, `rgbToHex`,
+`some`, `tileToCanvas`)
 
 ## v1.13.5
 
