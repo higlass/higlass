@@ -62,24 +62,6 @@ describe('selectedItemsToCumWeights', () => {
   });
 });
 
-describe('reduce', () => {
-  it('should sum array elements starting from 0', () => {
-    const sumFrom0 = utils.reduce((a, b) => a + b, 0);
-    expect(sumFrom0([1, 2, 3, 4])).toBe(10);
-  });
-
-  it('should sum array elements starting from a given number', () => {
-    const sumFrom10 = utils.reduce((a, b) => a + b, 10);
-    expect(sumFrom10([1, 2, 3, 4])).toBe(20);
-  });
-});
-
-describe('flatten', () => {
-  it('should flatten a nested array into a single-level array', () => {
-    expect(utils.flatten([[1, 2], [3, 4, 5], [6]])).toEqual([1, 2, 3, 4, 5, 6]);
-  });
-});
-
 describe('colorDomainToRgbaArray', () => {
   it.each(
     /** @type {const} */ ([

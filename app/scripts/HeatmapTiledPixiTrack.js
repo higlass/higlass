@@ -6,12 +6,12 @@ import { select } from 'd3-selection';
 import ndarray from 'ndarray';
 import slugid from 'slugid';
 
+// Utils
 import absToChr from './utils/abs-to-chr';
 import colorDomainToRgbaArray from './utils/color-domain-to-rgba-array';
 import colorToHex from './utils/color-to-hex';
-// Utils
 import colorToRgba from './utils/color-to-rgba';
-import { download } from './utils/download';
+import download from './utils/download';
 import ndarrayAssign from './utils/ndarray-assign';
 import ndarrayFlatten from './utils/ndarray-flatten';
 import objVals from './utils/obj-vals';

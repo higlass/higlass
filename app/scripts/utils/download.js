@@ -3,7 +3,7 @@
  * @param {string} filename - Name of the file to download
  * @param {string | Blob} stringOrBlob - Contents of the file to download
  */
-export function download(filename, stringOrBlob) {
+function download(filename, stringOrBlob) {
   // yanked from here
   // https://stackoverflow.com/questions/3665115/create-a-file-in-memory-for-user-to-download-not-through-server
 
