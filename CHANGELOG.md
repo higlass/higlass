@@ -2,6 +2,7 @@
 
 - Fix: Add missing initializer value to `utils.reduce`
 - Fix `api.hideTrackChooser`
+- Use bins_per_dimension or tile_size when calculating 1D visible tiles
 
 ## v1.13.5
 
