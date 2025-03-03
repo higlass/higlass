@@ -69,7 +69,8 @@
                   mousePositionColor: '#000000',
                   geneAnnotationHeight: 10,
                   geneLabelPosition: 'outside',
-                  geneStrandSpacing: 4
+                  geneStrandSpacing: 4,
+                  showTooltip: true,
                 },
               },
               {
@@ -90,7 +91,7 @@
                   labelTextOpacity: 0.4,
                   showMousePosition: true,
                   mousePositionColor: '#000000',
-                  showTooltip: false
+                  showTooltip: true,
                 }
               },
               {
@@ -111,7 +112,7 @@
                   labelTextOpacity: 0.4,
                   showMousePosition: true,
                   mousePositionColor: '#000000',
-                  showTooltip: false
+                  showTooltip: true,
                 },
               },
               {
@@ -132,7 +133,7 @@
                   labelTextOpacity: 0.4,
                   showMousePosition: true,
                   mousePositionColor: '#000000',
-                  showTooltip: false
+                  showTooltip: true,
                 },
               },
               {
@@ -153,7 +154,7 @@
                   labelTextOpacity: 0.4,
                   showMousePosition: true,
                   mousePositionColor: '#000000',
-                  showTooltip: false
+                  showTooltip: true,
                 },
               },
               {
@@ -167,7 +168,7 @@
                   fontSize: 11,
                   fontIsLeftAligned: true,
                   showMousePosition: true,
-                  mousePositionColor: '#000000'
+                  mousePositionColor: '#000000',
                 },
               }
             ],
@@ -218,7 +219,7 @@
             chromInfoServer: 'http://higlass.io/api/v1',
             chromInfoId: 'hg19',
             autocompleteServer: 'http://higlass.io/api/v1',
-            autocompleteId: 'OHJakQICQD6gTD7skx4EWA'
+            autocompleteId: 'OHJakQICQD6gTD7skx4EWA',
           }
         }
       ],
@@ -228,7 +229,7 @@
       exportViewUrl: '/api/v1/viewconfs',
       zoomLocks: {
         locksByViewUid: {},
-        locksDict: {}
+        locksDict: {},
       },
       trackSourceServers: [
         'http://higlass.io/api/v1'
@@ -236,41 +237,35 @@
       locationLocks: {
         locksByViewUid: {
           aa: 'PkNgAl3mSIqttnSsCewngw',
-          ewZvJwlDSei_dbpIAkGMlg: 'PkNgAl3mSIqttnSsCewngw'
+          ewZvJwlDSei_dbpIAkGMlg: 'PkNgAl3mSIqttnSsCewngw',
         },
         locksDict: {
           PkNgAl3mSIqttnSsCewngw: {
             aa: [
               1550000000,
               1550000000,
-              3380588.876772046
+              3380588.876772046,
             ],
             ewZvJwlDSei_dbpIAkGMlg: [
               1550000000.0000002,
               1549999999.9999993,
-              3380588.876772046
+              3380588.876772046,
             ],
-            uid: 'PkNgAl3mSIqttnSsCewngw'
+            uid: 'PkNgAl3mSIqttnSsCewngw',
           }
         }
       },
       valueScaleLocks: {
         locksByViewUid: {},
-        locksDict: {}
+        locksDict: {},
       }
     };
 
-    const hgApi = window.hgApi = hglib.viewer(
+    const hgApi = window.hgApi = await hglib.viewer(
       document.getElementById('demo'),
       viewConfig,
       { bounded: true },
     );
-
-    hgApi.setBroadcastMousePositionGlobally(true);
-
-    hgApi.on('viewConfig', () => {
-      console.log('View Config changed');
-    });
 
   </script>
 </html>

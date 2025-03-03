@@ -55,7 +55,10 @@ const showMousePosition = (
   // This clears the mouse position graphics, i.e., the mouse position will not
   // be visible afterwards.
   const clearGraphics = () => {
-    graphics.clear();
+    // @ts-expect-error - PixiJS Graphics object does not expose private property, which may still be null or undefined when Graphics object is only partially released
+    if (graphics?._geometry) {
+      graphics.clear();
+    }
   };
 
   /**

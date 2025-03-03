@@ -445,6 +445,12 @@ class TiledPixiTrack extends PixiTrack {
       (x) => !this.visibleTileIds.has(x),
     );
 
+    // uncomment to help with debugging tile memory leaks
+    // console.log(“Visible Tiles”, this.visibleTiles.length)
+    // console.log(“Remove Tiles”, toRemove.length)
+    // console.log(“Fetched Tiles”, Object.keys(this.fetchedTiles).length)
+    // console.log('Cached pixi objects', Object.keys(GLOBALS.PIXI.utils.BaseTextureCache).length);
+
     this.removeTiles(toRemove);
   }
 
@@ -698,14 +704,20 @@ class TiledPixiTrack extends PixiTrack {
      */
 
     // keep track of which tiles are visible at the moment
-    this.addMissingGraphics();
-    this.removeOldTiles();
-    this.updateExistingGraphics();
+    try {
+      this.addMissingGraphics();
+      this.removeOldTiles();
+      this.updateExistingGraphics();
 
-    if (this.listeners.dataChanged) {
-      for (const callback of this.listeners.dataChanged) {
-        callback(this.visibleAndFetchedTiles().map((x) => x.tileData));
+      if (this.listeners.dataChanged) {
+        for (const callback of this.listeners.dataChanged) {
+          callback(this.visibleAndFetchedTiles().map((x) => x.tileData));
+        }
       }
+    } catch (err) {
+      console.warn(
+        `Error in TiledPixiTrack.synchronizeTilesAndGraphics: ${JSON.stringify(err)}`,
+      );
     }
   }
 

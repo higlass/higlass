@@ -1,6 +1,6 @@
-@import './colors';
-@import './sizes';
-@import './transitions';
+@use './colors' as *;
+@use './sizes' as *;
+@use './transitions' as *;
 
 .dialog-header {
   position: relative;

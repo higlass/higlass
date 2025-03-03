@@ -16,6 +16,7 @@
   "files": ["app", "dist"],
   "keywords": ["hi-c", "genomics", "matrix", "tracks"],
   "scripts": {
+    "clean": "rm -rf node_modules && rm -f package-lock.json && rm -rf dist && rm -rf build",
     "start": "vite",
     "build": "node ./scripts/build.mjs",
     "compile": "npm run build && zip -r dist.zip dist",
