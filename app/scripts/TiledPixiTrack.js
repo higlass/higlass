@@ -715,7 +715,9 @@ class TiledPixiTrack extends PixiTrack {
         }
       }
     } catch (err) {
-      console.warn(`Error in TiledPixiTrack.synchronizeTilesAndGraphics: ${JSON.stringify(err)}`);
+      console.warn(
+        `Error in TiledPixiTrack.synchronizeTilesAndGraphics: ${JSON.stringify(err)}`,
+      );
     }
   }
 

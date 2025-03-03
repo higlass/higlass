@@ -1129,7 +1129,7 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
             `;
           }
 
-          // Fields 1-3 are the genomic coordinates and the sixth field is the strand (if present), 
+          // Fields 1-3 are the genomic coordinates and the sixth field is the strand (if present),
           // following the BED3 or BED6+ format
           const intervalText =
             parts.length >= 5 && typeof parts[5] !== 'undefined'
