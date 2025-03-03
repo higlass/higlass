@@ -1,7 +1,8 @@
 # Release notes
 
-- Fix: Add missing initializer value to `utils.reduce`
+- Add missing initializer value to `utils.reduce`
 - Fix `api.hideTrackChooser`
+- Added buttons to the add track position pop-up for selecting upper-right and lower-left extents with the center position.
 
 ## v1.13.5
 

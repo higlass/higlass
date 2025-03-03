@@ -80,8 +80,8 @@ class ViewHeader extends React.Component {
    *
    * We just need to close the menu here.
    */
-  handleTrackPositionChosen(position) {
-    this.props.onTrackPositionChosen(position);
+  handleTrackPositionChosen(position, extent) {
+    this.props.onTrackPositionChosen(position, extent);
 
     this.setState({
       addTrackPositionMenuUid: null,
@@ -287,6 +287,7 @@ class ViewHeader extends React.Component {
             onClick={() =>
               this.handleAddTrackPositionMenuOpened(this.props.viewUid)
             }
+            data-testid="add-track"
           >
             <title>Add Track</title>
             <use xlinkHref="#plus" />

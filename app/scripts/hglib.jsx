@@ -24,6 +24,10 @@ export const tracks = {
 
 export { default as schema } from '../schema.json';
 
+/** @import { HiGlassApi as Api } from './api' */
+
+/** @typedef {Api["public"]} HiGlassApi */
+
 // export functions that are useful for testing
 export {
   waitForJsonComplete,
@@ -102,7 +106,7 @@ const launch = (element, config, options) => {
  *   }
  * });
  *
- * @return  {Promise<Object>}  Newly created HiGlass component.
+ * @return  {Promise<HiGlassApi>}  Newly created HiGlass component.
  */
 export const viewer = async (element, viewConfig, options) => {
   /**

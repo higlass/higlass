@@ -65,11 +65,48 @@
   text-align: center;
   outline: none;
   border: 1px solid $gray;
+  position: relative;
 }
 
 .add-track-position-middle-middle:hover {
   background-color: $active;
   color: $white;
+}
+
+.add-track-position-middle-middle-full {
+  height: 80px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.add-track-position-middle-middle-upper-right {
+  width: 0;
+  height: 0;
+  border-top: 30px solid $gray;
+  border-left: 30px solid transparent;
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+
+.add-track-position-middle-middle-upper-right:hover {
+  border-top: 30px solid $active;
+}
+
+.add-track-position-middle-middle-lower-left {
+  width: 0;
+  height: 0;
+  border-bottom: 30px solid $gray;
+  border-right: 30px solid transparent;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+}
+
+.add-track-position-middle-middle-lower-left:hover {
+  border-bottom: 30px solid $active;
 }
 
 .add-track-position-bottom-middle {

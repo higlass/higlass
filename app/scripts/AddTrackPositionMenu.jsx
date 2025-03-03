@@ -42,11 +42,32 @@ function AddTrackPositionMenu(props) {
             >
               left
             </td>
-            <td
-              className={classes['add-track-position-middle-middle']}
-              onClick={() => props.onTrackPositionChosen('center')}
-            >
-              center
+            <td className={classes['add-track-position-middle-middle']}>
+              <span
+                onClick={() => props.onTrackPositionChosen('center')}
+                className={classes['add-track-position-middle-middle-full']}
+                data-testid="add-track-center"
+              >
+                center
+              </span>
+              <span
+                onClick={() =>
+                  props.onTrackPositionChosen('center', 'upper-right')
+                }
+                className={
+                  classes['add-track-position-middle-middle-upper-right']
+                }
+                data-testid="add-track-upper-right"
+              />
+              <span
+                onClick={() =>
+                  props.onTrackPositionChosen('center', 'lower-left')
+                }
+                className={
+                  classes['add-track-position-middle-middle-lower-left']
+                }
+                data-testid="add-track-lower-left"
+              />
             </td>
             <td
               className={classes['add-track-position-middle-right']}

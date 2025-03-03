@@ -108,6 +108,7 @@ From there, we need to add the tracks:
     :figwidth: 500px
 
     To add a track, click on the '+' and select a track position.
+    The lower-left and upper-right triangle buttons in the center position provide shortcuts for adding tracks that only occupy the lower-left or upper-right corner of the center position by setting the track options `extent: "lower-left"` and `extent: "upper-right"`, respectively. This is useful for creating for comparing two datasets side by side.
 
 After selecting a position, we need to select a dataset to add. The dialog
 shows both the local datasets as well as the public data available on
