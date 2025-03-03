@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { scaleLinear } from 'd3-scale';
 
 import TiledPixiTrack from './TiledPixiTrack';
@@ -10,11 +11,8 @@ class Tiled1DPixiTrack extends TiledPixiTrack {
   constructor(context, options) {
     super(context, options);
 
-    const {
-      onMouseMoveZoom,
-      isValueScaleLocked,
-      getLockGroupExtrema,
-    } = context;
+    const { onMouseMoveZoom, isValueScaleLocked, getLockGroupExtrema } =
+      context;
 
     this.onMouseMoveZoom = onMouseMoveZoom;
     this.isValueScaleLocked = isValueScaleLocked;
@@ -296,7 +294,10 @@ class Tiled1DPixiTrack extends TiledPixiTrack {
    */
   getAggregatedVisibleValue(aggregator = 'max') {
     const aggregate = aggregator === 'min' ? Math.min : Math.max;
-    const limit = aggregator === 'min' ? Infinity : -Infinity;
+    const limit =
+      aggregator === 'min'
+        ? Number.POSITIVE_INFINITY
+        : Number.NEGATIVE_INFINITY;
 
     let visibleAndFetchedIds = this.visibleAndFetchedIds();
 

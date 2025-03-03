@@ -1,6 +1,6 @@
 /**
  * An adventure into the abyss of void!
- * @return  {undefined}  The explorers find nothing but void.
+ * @type {(...args: any[]) => void}  The explorers find nothing but void.
  */
 const intoTheVoid = () => {};
 

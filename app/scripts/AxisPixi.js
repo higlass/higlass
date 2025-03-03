@@ -1,9 +1,12 @@
+// @ts-nocheck
 import { format } from 'd3-format';
 
 // Configs
-import { GLOBALS, THEME_DARK } from './configs';
+import GLOBALS from './configs/globals';
+import { THEME_DARK } from './configs/themes';
 
-import { colorToHex } from './utils';
+// Utils
+import colorToHex from './utils/color-to-hex';
 
 const TICK_HEIGHT = 40;
 const TICK_MARGIN = 0;
@@ -135,7 +138,7 @@ class AxisPixi {
       graphics.moveTo(-TICK_MARGIN, valueScale(tick));
       graphics.lineTo(-(TICK_MARGIN + TICK_LENGTH), valueScale(tick));
 
-      if (this.track && this.track.flipText) {
+      if (this.track?.flipText) {
         this.axisTexts[i].scale.x = -1;
       }
     }
@@ -177,7 +180,7 @@ class AxisPixi {
       graphics.moveTo(TICK_MARGIN, valueScale(tick));
       graphics.lineTo(TICK_MARGIN + TICK_LENGTH, valueScale(tick));
 
-      if (this.track && this.track.flipText) {
+      if (this.track?.flipText) {
         this.axisTexts[i].scale.x = -1;
       }
     }
@@ -225,7 +228,7 @@ class AxisPixi {
 
     let stroke = 'black';
 
-    if (this.track && this.track.options.lineStrokeColor) {
+    if (this.track?.options.lineStrokeColor) {
       stroke = this.track.options.lineStrokeColor;
     }
     // TODO: On the canvas, there is no vertical line beside the scale,
@@ -251,7 +254,7 @@ class AxisPixi {
     // factor out the styling for axis lines
     let stroke = 'black';
 
-    if (this.track && this.track.options.lineStrokeColor) {
+    if (this.track?.options.lineStrokeColor) {
       stroke = this.track.options.lineStrokeColor;
     }
 
@@ -303,9 +306,7 @@ class AxisPixi {
 
       tickLine.setAttribute(
         'd',
-        `M${+TICK_MARGIN},${valueScale(tick)} L${+(
-          TICK_MARGIN + TICK_LENGTH
-        )},${valueScale(tick)}`,
+        `M${+TICK_MARGIN},${valueScale(tick)} L${+(TICK_MARGIN + TICK_LENGTH)},${valueScale(tick)}`,
       );
 
       const g = document.createElement('g');
@@ -349,9 +350,7 @@ class AxisPixi {
 
       tickLine.setAttribute(
         'd',
-        `M${-TICK_MARGIN},${valueScale(tick)} L${-(
-          TICK_MARGIN + TICK_LENGTH
-        )},${valueScale(tick)}`,
+        `M${-TICK_MARGIN},${valueScale(tick)} L${-(TICK_MARGIN + TICK_LENGTH)},${valueScale(tick)}`,
       );
 
       const g = document.createElement('g');

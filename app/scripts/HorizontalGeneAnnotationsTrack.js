@@ -1,3 +1,4 @@
+// @ts-nocheck
 import boxIntersect from 'box-intersect';
 import classifyPoint from 'robust-point-in-polygon';
 
@@ -10,8 +11,9 @@ import HorizontalTiled1DPixiTrack from './HorizontalTiled1DPixiTrack';
 // Services
 import { tileProxy } from './services';
 
+import trackUtils from './track-utils';
 // Utils
-import { colorToHex, trackUtils } from './utils';
+import { colorToHex } from './utils';
 
 // these are default values that are overwritten by the track's options
 const FONT_SIZE = 11;
@@ -140,6 +142,8 @@ function externalInitTile(track, tile, options) {
     const geneName = geneInfo[3];
     const geneId = track.geneId(geneInfo, td.type);
     const strand = td.strand || geneInfo[5];
+
+    td.strand = td.strand || strand;
 
     let fill = plusStrandColor || DEFAULT_PLUS_STRAND_COLOR;
 

@@ -50,7 +50,7 @@ header and select _Edit view config_.
 The editor support a couple of keyboard shortcuts to make editing fast:
 
 - ``CMD (or CTRL) + S `` to save and apply the view config
-- ``ESC`` to claose the modl and to undue all (saved but not finalized) changes introduced while editing the view config.
+- ``ESC`` to close the modal and to undo all (saved but not finalized) changes introduced while editing the view config.
 - ``CMD (or CTRL) + Enter`` to save, apply, and finalize changes and close the modal
 - Hold ``ALT`` for 1 second to temporarily hide the modal. The modal will reappear as soon as you release ``ALT``.
 
@@ -284,6 +284,94 @@ database, assigns them a uid, and makes them accessible through its API at
     {
         "exportViewUrl": "/api/v1/viewconfs",
     }
+
+zoomLocks
+^^^^^^^^^
+
+In HiGlass, the zoom and location of multiple views can be synchronized for 
+concurrent analysis. The ``zoomLocks`` field in the viewconf specifies which views
+should be synchronized in terms of the zoom level. For example, the following 
+configuration locks the zoom level of two views:
+
+.. code-block:: javascript
+
+    "zoomLocks": {
+      "locksByViewUid": {
+        "view-1": "lock-1",
+        "view-2": "lock-1",
+      },
+      "locksDict": {
+        "lock-1": {
+          "view-1": [
+            1550000000,
+            1550000000,
+            3380588.876772046
+          ],
+          "view-2": [
+            1550000000.0000002,
+            1549999999.9999993,
+            3380588.876772046
+          ],
+          "uid": "lock-1"
+        }
+      }
+    }
+
+locationLocks
+^^^^^^^^^^^^^
+
+The ``locationLocks`` field specifies which views should be synchronized in terms of
+the location of views. This is similar to ``zoomLocks`` excepts that this field cares
+about the location instead of a zoom level. The following configuration locks the 
+location of two views:
+
+.. code-block:: javascript
+
+    "locationLocks": {
+      "locksByViewUid": {
+        "view-1": "lock-1",
+        "view-2": "lock-1",
+      },
+      "locksDict": {
+        "lock-1": {
+          "view-1": [
+            1550000000,
+            1550000000,
+            3380588.876772046
+          ],
+          "view-2": [
+            1550000000.0000002,
+            1549999999.9999993,
+            3380588.876772046
+          ],
+          "uid": "lock-1"
+        }
+      }
+    }
+
+Using this configuration, both the horizontal and vertical axes in a view 
+(``"view-1"``) are locked with the horizontal and vertical axes of another
+(``"view-2"``). For a more complex use case, HiGlass also enables to lock 
+certain axis between views:
+
+.. code-block:: javascript
+
+    "locationLocks": {
+      "locksByViewUid": {
+        "view-1": { "x": { "lock": "lock-1", "axis": "y" } },  
+        "view-2": { "y": { "lock": "lock-1", "axis": "x" } }, 
+      },
+      "locksDict": {
+        "lock-1": {
+          "view-1": [...],
+          "view-2": [...],
+          "uid": "lock-1"
+        }
+      }
+    }
+
+In this case, only the x-axis of ``"view-1"`` will be locked with the y-axis 
+of ``"view-2"``.
 
 Tracks
 ======

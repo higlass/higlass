@@ -1,3 +1,4 @@
+// @ts-nocheck
 import TiledPixiTrack from './TiledPixiTrack';
 
 import { tileProxy } from './services';

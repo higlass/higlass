@@ -1,3 +1,4 @@
+// @ts-nocheck
 import HeatmapTiledPixiTrack from './HeatmapTiledPixiTrack';
 
 // Services
@@ -29,7 +30,7 @@ class HorizontalHeatmapTrack extends HeatmapTiledPixiTrack {
     // Continuous scaling is currently not supported
     this.continuousScaling = false;
 
-    if (options && options.colorRange) {
+    if (options?.colorRange) {
       this.colorScale = colorDomainToRgbaArray(options.colorRange);
     }
 
@@ -88,7 +89,7 @@ class HorizontalHeatmapTrack extends HeatmapTiledPixiTrack {
       zoomLevel = Math.min(zoomLevel, this.maxZoom);
     }
 
-    if (this.options && this.options.maxZoom) {
+    if (this.options?.maxZoom) {
       if (this.options.maxZoom >= 0) {
         zoomLevel = Math.min(this.options.maxZoom, zoomLevel);
       } else {
@@ -220,12 +221,8 @@ class HorizontalHeatmapTrack extends HeatmapTiledPixiTrack {
   }
 
   setSpriteProperties(sprite, zoomLevel, tilePos, mirrored) {
-    const {
-      tileX,
-      tileY,
-      tileWidth,
-      tileHeight,
-    } = this.getTilePosAndDimensions(zoomLevel, tilePos);
+    const { tileX, tileY, tileWidth, tileHeight } =
+      this.getTilePosAndDimensions(zoomLevel, tilePos);
 
     const tileEndX = tileX + tileWidth;
     const tileEndY = tileY + tileHeight;

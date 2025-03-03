@@ -1,4 +1,5 @@
-import { initTile, drawTile } from './Id2DTiledPixiTrack';
+// @ts-nocheck
+import { drawTile, initTile } from './Id2DTiledPixiTrack';
 import OSMTilesTrack from './OSMTilesTrack';
 
 class OSMTileIdsTrack extends OSMTilesTrack {

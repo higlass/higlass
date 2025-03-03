@@ -1,6 +1,6 @@
-import slugid from 'slugid';
+// @ts-nocheck
 import { brush } from 'd3-brush';
-import { event } from 'd3-selection';
+import slugid from 'slugid';
 
 import SVGTrack from './SVGTrack';
 
@@ -54,15 +54,15 @@ class ViewportTracker2D extends SVGTrack {
 
     this.gBrush.selectAll('.handle--e').style('pointer-events', 'none');
 
-    registerViewportChanged(uid, this.viewportChanged.bind(this));
-
     // the viewport will call this.viewportChanged immediately upon
     // hearing registerViewportChanged
+    registerViewportChanged(uid, this.viewportChanged.bind(this));
+
     this.rerender();
     this.draw();
   }
 
-  brushed() {
+  brushed(event) {
     /**
      * Should only be called  on active brushing, not in response to the
      * draw event

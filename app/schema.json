@@ -26,8 +26,8 @@
       "items": { "type": "string" },
       "minLength": 1
     },
-    "zoomLocks": { "$ref": "#/definitions/locks/genericLocks" },
-    "locationLocks": { "$ref": "#/definitions/locks/genericLocks" },
+    "zoomLocks": { "$ref": "#/definitions/locks/zoomLocks" },
+    "locationLocks": { "$ref": "#/definitions/locks/locationLocks" },
     "valueScaleLocks": { "$ref": "#/definitions/locks/valueScaleLocks" },
     "views": {
       "type": "array",
@@ -61,12 +61,87 @@
         }
       },
 
-      "genericLocks": {
+      "axisSpecificLocks": {
+        "additionalProperties": false,
+        "properties": {
+          "axis": {
+            "enum": ["x", "y"],
+            "type": "string"
+          },
+          "lock": {
+            "type": "string"
+          }
+        },
+        "required": ["lock", "axis"],
+        "type": "object"
+      },
+
+      "locationLocksByViewUid": {
+        "type": "object",
+        "additionalProperties": false,
+        "patternProperties": {
+          ".": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "additionalProperties": false,
+                "properties": {
+                  "x": {
+                    "$ref": "#/definitions/locks/axisSpecificLocks"
+                  },
+                  "y": {
+                    "$ref": "#/definitions/locks/axisSpecificLocks"
+                  }
+                },
+                "type": "object"
+              }
+            ]
+          }
+        }
+      },
+
+      "zoomLocks": {
         "type": "object",
         "additionalProperties": false,
         "required": [],
         "properties": {
           "locksByViewUid": { "$ref": "#/definitions/locks/locksByViewUid" },
+          "locksDict": {
+            "type": "object",
+            "additionalProperties": false,
+            "patternProperties": {
+              ".": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "uid": { "$ref": "#/definitions/locks/slug" }
+                },
+                "patternProperties": {
+                  "^(?!uid).": {
+                    "type": "array",
+                    "minLength": 3,
+                    "maxLength": 3,
+                    "items": {
+                      "type": "number"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+
+      "locationLocks": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [],
+        "properties": {
+          "locksByViewUid": {
+            "$ref": "#/definitions/locks/locationLocksByViewUid"
+          },
           "locksDict": {
             "type": "object",
             "additionalProperties": false,
@@ -253,7 +328,9 @@
             "type": "integer",
             "title": "Height",
             "default": 12
-          }
+          },
+          "moved": { "type": "boolean" },
+          "static": { "type": "boolean" }
         }
       },
 
@@ -307,7 +384,8 @@
           "position": { "type": "string" },
           "server": { "type": "string" },
           "tilesetUid": { "type": "string" },
-          "width": { "type": "number" }
+          "width": { "type": "number" },
+          "transforms": { "type": "array" }
         }
       },
 

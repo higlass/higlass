@@ -78,20 +78,27 @@ export { default as expandCombinedTracks } from './expand-combined-tracks';
 export { default as segmentsToRows } from './segments-to-rows';
 export { default as visitPositionedTracks } from './visit-positioned-tracks';
 export { default as visitTracks } from './visit-tracks';
-export { default as trackUtils } from './track-utils';
 export { default as DenseDataExtrema1D } from './DenseDataExtrema1D';
 export { default as DenseDataExtrema2D } from './DenseDataExtrema2D';
+export { default as getAggregationFunction } from './get-aggregation-function';
+export { default as selectedItemsToSize } from './selected-items-to-size';
+export { default as IS_TRACK_RANGE_SELECTABLE } from './is-track-range-selectable';
 
 export {
   getTrackObjectFromHGC,
   getTrackRenderer,
   getTiledPlot,
 } from './get-higlass-components';
+
+// We want to remove following lines eventually. However, we need these at the moment since
+// available-for-plugins.js complains about uninitialized objects due to the current cyclic dependencies.
 export {
   changeOptions,
   waitForJsonComplete,
   waitForTilesLoaded,
   waitForTransitionsFinished,
   mountHGComponent,
+  mountHGComponentAsync,
   removeHGComponent,
-} from './test-helpers';
+} from '../test-helpers';
+export { default as trackUtils } from '../track-utils';

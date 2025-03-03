@@ -1,5 +1,6 @@
-import Tiled1DPixiTrack from './Tiled1DPixiTrack';
+// @ts-nocheck
 import AxisPixi from './AxisPixi';
+import Tiled1DPixiTrack from './Tiled1DPixiTrack';
 
 import { tileProxy } from './services';
 import { colorToHex, showMousePosition } from './utils';
@@ -291,7 +292,7 @@ class HorizontalTiled1DPixiTrack extends Tiled1DPixiTrack {
               labelG.y = y;
               break;
 
-            case 'leftTop':
+            // case 'leftTop':
             default:
               labelG.anchor.x = 0;
               labelG.anchor.y = 1;
@@ -378,8 +379,8 @@ class HorizontalTiled1DPixiTrack extends Tiled1DPixiTrack {
                 labelEl.setAttribute('y', y + labelSize + 2);
                 break;
 
-              case 'left':
-              case 'leftTop':
+              // case 'left':
+              // case 'leftTop':
               default:
                 labelEl.setAttribute('x', this.position[0] + 2);
                 labelEl.setAttribute('y', y - 2);

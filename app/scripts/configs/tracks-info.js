@@ -7,12 +7,34 @@ import {
   svg2DTilesIcon,
   svgArrowheadDomainsIcon,
   svgGeneAnnotationsIcon,
-  svgHorizontalLineIcon,
+  svgGeoMapIcon,
   svgHorizontal1dHeatmap,
+  svgHorizontalLineIcon,
   svgVertical1DAxisIcon,
   svgVertical1DTilesIcon,
-  svgGeoMapIcon,
 } from '../icons';
+
+/**
+ * @typedef TrackInfo
+ * @property {string} type
+ * @property {string | string[]} datatype
+ * @property {string} orientation
+ * @property {string[]=} aliases
+ * @property {boolean=} local
+ * @property {boolean=} rotatable
+ * @property {boolean=} hidden
+ * @property {string=} name
+ * @property {HTMLElement | null | string=} thumbnail
+ * @property {string[]=} availableOptions
+ * @property {Record<string, unknown>=} defaultOptions
+ * @property {boolean=} exportable
+ * @property {Record<string, Record<string, unknown>>=} defaultOptionsByTheme
+ * @property {number=} minHeight
+ * @property {number=} defaultHeight
+ * @property {number=} defaultWidth
+ * @property {string=} chromInfoPath
+ * @property {boolean=} projection
+ */
 
 const osm = {
   type: 'osm-tiles',
@@ -72,11 +94,12 @@ const mapbox = {
   },
 };
 
+/** @type {TrackInfo[]} */
 export const TRACKS_INFO = [
   osm,
-  Object.assign({}, osm, { type: 'osm' }),
+  { ...osm, type: 'osm' },
   mapbox,
-  Object.assign({}, mapbox, { type: 'mapbox' }),
+  { ...mapbox, type: 'mapbox' },
   {
     type: 'left-axis',
     datatype: ['axis'],
@@ -682,7 +705,7 @@ export const TRACKS_INFO = [
     aliases: ['horizontal-1d-value-interval', 'vertical-1d-value-interval'],
     datatype: ['bed-value'],
     local: false,
-    orientation: ['1d-horizontal'],
+    orientation: '1d-horizontal',
     rotatable: true,
     name: '1D Rectangles',
     availableOptions: [
@@ -950,6 +973,7 @@ export const TRACKS_INFO = [
       'trackBorderWidth',
       'trackBorderColor',
       'rectangleDomainFillColor',
+      'rectangleDomainFillOpacity',
       'rectangleDomainStrokeColor',
       'rectangleDomainOpacity',
       'minSquareSize',
@@ -965,6 +989,7 @@ export const TRACKS_INFO = [
       trackBorderWidth: 0,
       trackBorderColor: 'black',
       rectangleDomainFillColor: 'grey',
+      rectangleDomainFillOpacity: 0.4,
       rectangleDomainStrokeColor: 'black',
       rectangleDomainOpacity: 0.6,
       minSquareSize: 'none',

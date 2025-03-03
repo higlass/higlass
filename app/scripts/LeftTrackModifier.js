@@ -1,3 +1,4 @@
+// @ts-nocheck
 // Configs
 import { GLOBALS } from './configs';
 
@@ -87,6 +88,7 @@ class LeftTrackModifier {
     /**
      * Either get or set the reference xScale
      */
+    // biome-ignore lint/style/noArguments: Getter/Setter
     if (!arguments.length) {
       return this.originalTrack._refYScale;
     }
@@ -100,6 +102,7 @@ class LeftTrackModifier {
     /**
      * Either get or set the reference yScale
      */
+    // biome-ignore lint/style/noArguments: Getter/Setter
     if (!arguments.length) {
       return this.originalTrack._refXScale;
     }
@@ -113,6 +116,7 @@ class LeftTrackModifier {
     /**
      * Either get or set the xScale
      */
+    // biome-ignore lint/style/noArguments: Getter/Setter
     if (!arguments.length) {
       return this.originalTrack._xScale;
     }
@@ -126,6 +130,7 @@ class LeftTrackModifier {
     /**
      * Either get or set the yScale
      */
+    // biome-ignore lint/style/noArguments: Getter/Setter
     if (!arguments.length) {
       return this.originalTrack._yScale;
     }
@@ -137,6 +142,14 @@ class LeftTrackModifier {
 
   getMouseOverHtml(trackX, trackY) {
     return this.originalTrack.getMouseOverHtml(trackY, trackX);
+  }
+
+  clickOutside() {
+    this.originalTrack.clickOutside();
+  }
+
+  click(...args) {
+    this.originalTrack.click(...args);
   }
 
   draw() {

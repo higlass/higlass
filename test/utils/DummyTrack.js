@@ -1,7 +1,8 @@
+// @ts-nocheck
 const DummyTrack = function DummyTrack(HGC, ...args) {
   if (!new.target) {
     throw new Error(
-      'Uncaught TypeError: Class constructor cannot be invoked without "new"'
+      'Uncaught TypeError: Class constructor cannot be invoked without "new"',
     );
   }
 
@@ -18,13 +19,13 @@ const DummyTrack = function DummyTrack(HGC, ...args) {
 DummyTrack.config = {
   type: 'dummy',
   availableOptions: [],
-  defaultOptions: {}
+  defaultOptions: {},
 };
 
 const trackDef = {
   name: 'DummyTrack',
   track: DummyTrack,
-  config: DummyTrack.config
+  config: DummyTrack.config,
 };
 
 const register = () => {

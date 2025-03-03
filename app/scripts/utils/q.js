@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * Object query language using dot-notation.
  *
@@ -11,8 +12,8 @@
  *   console.log(myFancyQuery(myFancyObj)) ==> 'Sweet!'
  *   console.log(myFancyQuery(myNotSoFancyObj)) ==> undefined
  *   ```
- * @param   {[type]}  queryStr  [description]
- * @return  {[type]}  [description]
+ * @param {string} queryStr - dot-notation query string
+ * @return {unknown}
  */
 const q = (queryStr) => {
   try {
@@ -29,4 +30,5 @@ const q = (queryStr) => {
   }
 };
 
+// TODO(Trevor): This is not referenced anywhere in the codebase, but it is exported. Remove?
 export default q;

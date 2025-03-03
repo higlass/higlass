@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 // used by apply() and isApplicationOf()
 const _appliedMixin = '__mixwith_appliedMixin';
 // used by wrap() and unwrap()
@@ -73,6 +75,7 @@ export const apply = (superclass, mixin) => {
  * `mixin` to a superclass
  */
 export const isApplicationOf = (proto, mixin) =>
+  // biome-ignore lint/suspicious/noPrototypeBuiltins:
   proto.hasOwnProperty(_appliedMixin) && proto[_appliedMixin] === unwrap(mixin);
 
 /**
@@ -176,7 +179,7 @@ export const DeDupe = (mixin) =>
  * @return {MixinFunction} the given mixin function
  */
 export const HasInstance = (mixin) => {
-  if (Symbol && Symbol.hasInstance && !mixin[Symbol.hasInstance]) {
+  if (Symbol?.hasInstance && !mixin[Symbol.hasInstance]) {
     Object.defineProperty(mixin, Symbol.hasInstance, {
       value(o) {
         return hasMixin(o, mixin);

@@ -1,9 +1,10 @@
+// @ts-nocheck
 import boxIntersect from 'box-intersect';
+import { format, formatPrefix, precisionPrefix } from 'd3-format';
 import { scaleLinear } from 'd3-scale';
-import { format, precisionPrefix, formatPrefix } from 'd3-format';
 
-import PixiTrack from './PixiTrack';
 import ChromosomeInfo from './ChromosomeInfo';
+import PixiTrack from './PixiTrack';
 import SearchField from './SearchField';
 
 import {
@@ -24,12 +25,8 @@ const TICK_COLOR = 0x777777;
 class HorizontalChromosomeLabels extends PixiTrack {
   constructor(context, options) {
     super(context, options);
-    const {
-      dataConfig,
-      animate,
-      chromInfoPath,
-      isShowGlobalMousePosition,
-    } = context;
+    const { dataConfig, animate, chromInfoPath, isShowGlobalMousePosition } =
+      context;
 
     this.searchField = null;
     this.chromInfo = null;
@@ -168,6 +165,7 @@ class HorizontalChromosomeLabels extends PixiTrack {
 
     this.prevOptions = strOptions;
     this.options = options;
+    this.tickTexts = {};
 
     this.pixiTextConfig.fontSize = +this.options.fontSize
       ? `${+this.options.fontSize}px`
@@ -265,6 +263,14 @@ class HorizontalChromosomeLabels extends PixiTrack {
     this.rightBoundTick.anchor.y = this.options.reverseOrientation ? 0 : 1;
 
     this.rightBoundTick.anchor.x = 1;
+
+    if (this.flipText) {
+      // this means this track is displayed vertically, so update the anchor and scale of labels to make them readable!
+      this.leftBoundTick.scale.x = -1;
+      this.leftBoundTick.anchor.x = 1;
+      this.rightBoundTick.scale.x = -1;
+      this.rightBoundTick.anchor.x = 0;
+    }
 
     // line is offset by one because it's right on the edge of the
     // visible region and we want to get the full width

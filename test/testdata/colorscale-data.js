@@ -1,5 +1,4 @@
-// eslint-disable-next-line import/prefer-default-export
-export const defaultColorScale = [
+export const defaultColorScale = /** @type {const} */ ([
   [251, 231, 35, 255],
   [249, 231, 33, 255],
   [247, 230, 31, 255],
@@ -256,4 +255,4 @@ export const defaultColorScale = [
   [68, 2, 85, 255],
   [68, 1, 84, 255],
   [255, 255, 255, 0],
-];
+]);

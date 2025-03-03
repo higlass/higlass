@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { scaleLinear } from 'd3-scale';
 import HorizontalLine1DPixiTrack from './HorizontalLine1DPixiTrack';
 
@@ -27,7 +28,7 @@ class Horizontal1dHeatmapTrack extends HorizontalLine1DPixiTrack {
   }
 
   rerender(options) {
-    if (options && options.colorRange) {
+    if (options?.colorRange) {
       this.setColorScale(options.colorRange);
     }
 

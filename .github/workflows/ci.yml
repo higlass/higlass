@@ -1,0 +1,67 @@
+# This workflow will do a clean install of node dependencies, build the source code and run tests across different versions of node
+# For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
+
+name: CI
+
+on:
+  push:
+    branches: [develop, master]
+  pull_request:
+
+jobs:
+
+  Typecheck:
+    runs-on: ubuntu-latest
+    env:
+      PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22.x'
+          cache: 'npm'
+      - run: npm ci --legacy-peer-deps
+      - run: npm run typecheck
+
+  Lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: biomejs/setup-biome@v2 # detects version from package.json
+      - run: biome ci
+
+  Schema:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22.x'
+      - run: npm install -g ajv-cli
+      - run: ajv validate -s app/schema.json -d "{docs/examples/viewconfs,test/{view-configs,view-configs-more}}/*.json"
+
+  Test:
+    needs: [Lint, Schema, Typecheck]
+    runs-on: ubuntu-latest
+    name: "Test (shard: ${{ matrix.shard }})"
+    strategy:
+      matrix:
+        shard: [1/4, 2/4, 3/4, 4/4]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22.x'
+          cache: 'npm'
+      - run: npm ci --legacy-peer-deps
+      - run: npx playwright install chromium --with-deps
+
+      - name: Clone higlass-test-mocks
+        run: |
+          git clone --depth=1 https://github.com/higlass/higlass-test-mocks.git higlass-test-mocks
+          echo "HIGLASS_MOCKS_DIR=$(pwd)/higlass-test-mocks" >> $GITHUB_ENV
+
+      - run: npm test -- --maxWorkers=1 --no-file-parallelism --shard ${{ matrix.shard }}
+        env:
+          VITE_USE_MOCKS: 1
+          HIGLASS_MOCKS_DIR: ${{ env.HIGLASS_MOCKS_DIR }}

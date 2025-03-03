@@ -1,10 +1,95 @@
 # Release notes
 
-## Next
-
+- Fix: Add missing initializer value to `utils.reduce`
+- Fix `api.hideTrackChooser`
 - Use bins_per_dimension or tile_size when calculating 1D visible tiles
 
-_[Detailed changes since v1.11.5](https://github.com/higlass/higlass/compare/v1.11.6...develop)_
+## v1.13.5
+
+- Allow tracks to pass in custom context menu items
+- Let tracks set errors with a source using setError
+
+## v1.13.4
+
+- fix: Disable logging unknown data types in console
+
+## v1.13.3
+
+- Inject HiGlass CSS via JS, removing the need to include `hglib.css` in HTML templates.
+
+## v1.13.2
+
+- Add entrypoint for importing from `higlass/dist/*` with bundlers
+
+## v1.13.1
+
+- Add type annotations for `Track` and `PixiTrack`
+- Add ESM export to build
+
+## v1.13.0
+
+- Add initial typechecking via JSDoc comments
+- Allow Pixi v6 as a peer dependency
+
+## v1.12.4
+
+- Fix breaking change of the plugin track API introduced by the previous patch (v1.12.3)
+
+## v1.12.3
+
+- Allow React v18 as a peer dependency.
+
+## v1.12.2
+
+- Correctly set the selected assembly on startup.
+- Hide position text in genome position search box when assembly is invalid or not set.
+
+## v1.12.1
+
+- Fix GenomePositionSearchBox
+- Reduced position text in GenomePositionSearchBox when there are only 1D horizontal tracks
+
+## v1.12.0
+
+- Migrate to Vite from webpack
+- Migrate to web-test-runner from karma
+- Update a bunch of packages (most notably d3 packages which have a slightly different API)
+- Fix tests
+- Update scss to fix deprecation warnings
+- Remove all references to TravisCI.
+- Update linting and schema tests to GH Actions.
+- Tracks can now implement `click()`, which allows them to react to click events on the corresponding track
+- Tracks can now implement `clickDialog`, to open modals and display custom data in them (e.g. in response to a click on the track)
+
+## v1.11.11
+
+- Bump terser-webpack-plugin version to fix build issue
+
+## v1.11.10
+
+- Remove dependency on `cwise`
+- Fix color issue in GeneAnnotation SVG export
+
+## v1.11.8
+
+- Remove react-bootstrap from the GenomePositionSearchBox
+- Make vertical chromosome labels as well as loading status labels readable in vertical tracks
+- Added an option menu item for rectangle domain fill opacity
+- Added a parameter in `zoomToGene` to allow specifying padding around gene
+- Add data fetchers to `AVAILABLE_FOR_PLUGINS`
+- Update track list in `AVAILABLE_FOR_PLUGINS`
+- Correctly setup initial scales of vertical tracks when the width of a center track is zero.
+- Config-wise, allow axis-specific location locks (e.g., lock the vertical axis in a view to the horizontal axis in another).
+- Add `reload` implementation to `HiGlassComponenet` API.
+
+_[Detailed changes since v1.11.5](https://github.com/higlass/higlass/compare/v1.11.7...develop)_
+
+## v1.11.7
+
+- Show visual clue when tileset info is not available ("Tileset info not found. ...").
+- Properly initialize the style of 1D brushes (`viewport-projection-horizontal` and `viewport-projection-vertical`).
+
+_[Detailed changes since v1.11.5](https://github.com/higlass/higlass/compare/v1.11.6...v1.11.7)_
 
 ## v1.11.6
 

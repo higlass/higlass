@@ -1,7 +1,8 @@
+// @ts-nocheck
 import { color } from 'd3-color';
 
-import PixiTrack from './PixiTrack';
 import ChromosomeInfo from './ChromosomeInfo';
+import PixiTrack from './PixiTrack';
 
 // Configs
 import { GLOBALS } from './configs';

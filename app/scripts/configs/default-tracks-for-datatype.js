@@ -1,4 +1,4 @@
-export const DEFAULT_TRACKS_FOR_DATATYPE = {
+export const DEFAULT_TRACKS_FOR_DATATYPE = /** @type {const} */ ({
   chromsizes: {
     center: '2d-chromosome-grid',
     top: 'chromosome-labels',
@@ -34,6 +34,6 @@ export const DEFAULT_TRACKS_FOR_DATATYPE = {
     left: 'vertical-bedlike',
     right: 'vertical-bedlike',
   },
-};
+});
 
 export default DEFAULT_TRACKS_FOR_DATATYPE;

@@ -3,18 +3,22 @@ import slugid from 'slugid';
 
 import Track from './Track';
 
-import { colorToHex } from './utils';
+import colorToHex from './utils/color-to-hex';
 
 // Configs
-import { GLOBALS } from './configs';
+import GLOBALS from './configs/globals';
+import {
+  isLegacyTilesetInfo,
+  isResolutionsTilesetInfo,
+} from './utils/type-guards';
 
 /**
  * Format a resolution relative to the highest possible resolution.
  *
  * The highest possible resolution determines the granularity of the
  * formatting (e.g. 20K vs 20000)
- * @param {int} resolution The resolution to format (e.g. 30000)
- * @param {int} maxResolutionSize The maximum possible resolution (e.g. 1000)
+ * @param {number} resolution The resolution to format (e.g. 30000)
+ * @param {number} maxResolutionSize The maximum possible resolution (e.g. 1000)
  *
  * @returns {string} A formatted resolution string (e.g. "30K")
  */
@@ -30,11 +34,10 @@ function formatResolutionText(resolution, maxResolutionSize) {
  * Get a text description of a resolution based on a zoom level
  * and a list of resolutions
  *
- * @param {list} resolutions: A list of resolutions (e.g. [1000,2000,3000])
- * @param {int} zoomLevel: The current zoom level (e.g. 4)
+ * @param {Array<number>} resolutions: A list of resolutions (e.g. [1000,2000,3000])
+ * @param {number} zoomLevel: The current zoom level (e.g. 4)
  *
- * @returns {string} A formatted string representation of the zoom level
- *   (e.g. "30K")
+ * @returns {string} A formatted string representation of the zoom level (e.g. "30K")
  */
 function getResolutionBasedResolutionText(resolutions, zoomLevel) {
   const sortedResolutions = resolutions.map((x) => +x).sort((a, b) => b - a);
@@ -46,18 +49,14 @@ function getResolutionBasedResolutionText(resolutions, zoomLevel) {
 
 /**
  * Get a text description of the resolution based on the zoom level
- * max width of the dataset, the bins per dimension and the maximum
- * zoom.
+ * max width of the dataset, the bins per dimension and the maximum zoom.
  *
- * @param {int} zoomLevel The current zoomLevel (e.g. 0)
- * @param {int} max_width The max width
- *   (e.g. 2 ** maxZoom * highestResolution * binsPerDimension)
- * @param {int} bins_per_dimension The number of bins per tile dimension
- *   (e.g. 256)
- * @param {int} maxZoom The maximum zoom level for this tileset
+ * @param {number} zoomLevel - The current zoomLevel (e.g. 0)
+ * @param {number} maxWidth - The max width (e.g. 2 ** maxZoom * highestResolution * binsPerDimension)
+ * @param {number} binsPerDimension - The number of bins per tile dimension (e.g. 256)
+ * @param {number} maxZoom - The maximum zoom level for this tileset
  *
- * @returns {string} A formatted string representation of the zoom level
- *   (e.g. "30K")
+ * @returns {string} A formatted string representation of the zoom level (e.g. "30K")
  */
 function getWidthBasedResolutionText(
   zoomLevel,
@@ -84,14 +83,51 @@ function getWidthBasedResolutionText(
   return '';
 }
 
+/**
+ * @typedef PixiTrackOptions
+ * @property {string} labelPosition - If the label is to be drawn, where should it be drawn?
+ * @property {string} labelText - What should be drawn in the label.
+ * If either labelPosition or labelText are false, no label will be drawn.
+ * @property {number=} trackBorderWidth
+ * @property {string=} trackBorderColor
+ * @property {string=} backgroundColor
+ * @property {string=} labelColor
+ * @property {string=} lineStrokeColor
+ * @property {string=} barFillColor
+ * @property {string=} name
+ * @property {number=} labelTextOpacity
+ * @property {string=} labelBackgroundColor
+ * @property {number=} labelLeftMargin
+ * @property {number=} labelRightMargin
+ * @property {number=} labelTopMargin
+ * @property {number=} labelBottomMargin
+ * @property {number=} labelBackgroundOpacity
+ * @property {boolean=} labelShowAssembly
+ * @property {boolean=} labelShowResolution
+ * @property {string=} dataTransform
+ */
+
+/**
+ * @typedef {import('./Track').ExtendedTrackContext<{ scene: import('pixi.js').Container}>} PixiTrackContext
+ */
+
+/**
+ * @template T
+ * @typedef {T & PixiTrackContext} ExtendedPixiContext
+ */
+
+/**
+ * @template T
+ * @typedef {T & PixiTrackOptions} ExtendedPixiOptions
+ */
+
+/**
+ * @template {ExtendedPixiOptions<{[key: string]: any}>} Options
+ * @extends {Track<Options>} */
 class PixiTrack extends Track {
   /**
-   * @param scene: A PIXI.js scene to draw everything to.
-   * @param options: A set of options that describe how this track is rendered.
-    this.pMain.position.x = this.position[0];
-   *          - labelPosition: If the label is to be drawn, where should it be drawn?
-   *          - labelText: What should be drawn in the label. If either labelPosition
-   *                  or labelText are false, no label will be drawn.
+   * @param {PixiTrackContext} context - Includes the PIXI.js scene to draw to.
+   * @param {Options} options - The options for this track.
    */
   constructor(context, options) {
     super(context, options);
@@ -99,27 +135,39 @@ class PixiTrack extends Track {
 
     // the PIXI drawing areas
     // pMain will have transforms applied to it as users scroll to and fro
+    /** @type {import('pixi.js').Container} */
     this.scene = scene;
 
     // this option is used to temporarily prevent drawing so that
     // updates can be batched (e.g. zoomed and options changed)
+    /** @type {boolean} */
     this.delayDrawing = false;
 
+    /** @type {import('pixi.js').Graphics} */
     this.pBase = new GLOBALS.PIXI.Graphics();
-
+    /** @type {import('pixi.js').Graphics} */
     this.pMasked = new GLOBALS.PIXI.Graphics();
+    /** @type {import('pixi.js').Graphics} */
     this.pMask = new GLOBALS.PIXI.Graphics();
+    /** @type {import('pixi.js').Graphics} */
     this.pMain = new GLOBALS.PIXI.Graphics();
 
     // for drawing the track label (often its name)
+    /** @type {import('pixi.js').Graphics} */
     this.pBorder = new GLOBALS.PIXI.Graphics();
+    /** @type {import('pixi.js').Graphics} */
     this.pBackground = new GLOBALS.PIXI.Graphics();
+    /** @type {import('pixi.js').Graphics} */
     this.pForeground = new GLOBALS.PIXI.Graphics();
+    /** @type {import('pixi.js').Graphics} */
     this.pLabel = new GLOBALS.PIXI.Graphics();
+    /** @type {import('pixi.js').Graphics} */
     this.pMobile = new GLOBALS.PIXI.Graphics();
+    /** @type {import('pixi.js').Graphics} */
     this.pAxis = new GLOBALS.PIXI.Graphics();
 
     // for drawing information on mouseover events
+    /** @type {import('pixi.js').Graphics} */
     this.pMouseOver = new GLOBALS.PIXI.Graphics();
 
     this.scene.addChild(this.pBase);
@@ -138,20 +186,28 @@ class PixiTrack extends Track {
 
     this.pMasked.mask = this.pMask;
 
+    /** @type {string} */
     this.prevOptions = '';
 
     // pMobile will be a graphics object that is moved around
     // tracks that wish to use it will replace this.pMain with it
 
+    /** @type {PixiTrackOptions} */
     this.options = Object.assign(this.options, options);
 
+    /** @type {string} */
     const labelTextText = this.getName();
-
+    /** @type {string} */
     this.labelTextFontFamily = 'Arial';
+    /** @type {number} */
     this.labelTextFontSize = 12;
-    // Used to avoid label/colormap clashes
+    /**
+     * Used to avoid label/colormap clashes
+     * @type {number}
+     */
     this.labelXOffset = 0;
 
+    /** @type {import('pixi.js').Text} */
     this.labelText = new GLOBALS.PIXI.Text(labelTextText, {
       fontSize: `${this.labelTextFontSize}px`,
       fontFamily: this.labelTextFontFamily,
@@ -159,6 +215,7 @@ class PixiTrack extends Track {
     });
     this.pLabel.addChild(this.labelText);
 
+    /** @type {import('pixi.js').Text} */
     this.errorText = new GLOBALS.PIXI.Text('', {
       fontSize: '12px',
       fontFamily: 'Arial',
@@ -167,12 +224,21 @@ class PixiTrack extends Track {
     this.errorText.anchor.x = 0.5;
     this.errorText.anchor.y = 0.5;
     this.pLabel.addChild(this.errorText);
+
+    /** @type {boolean} */
+    this.flipText = false;
+    /** @type {import('./types').TilesetInfo | undefined} */
+    this.tilesetInfo = undefined;
+
+    /** @type {{ [key: string]: string }} */
+    this.errorTexts = {};
   }
 
   setLabelText() {
     // will be drawn in draw() anyway
   }
 
+  /** @param {[number, number]} newPosition */
   setPosition(newPosition) {
     this.position = newPosition;
 
@@ -183,6 +249,7 @@ class PixiTrack extends Track {
     this.setForeground();
   }
 
+  /** @param {[number, number]} newDimensions */
   setDimensions(newDimensions) {
     super.setDimensions(newDimensions);
 
@@ -193,6 +260,10 @@ class PixiTrack extends Track {
     this.setForeground();
   }
 
+  /**
+   * @param {[number, number]} position
+   * @param {[number, number]} dimensions
+   */
   setMask(position, dimensions) {
     this.pMask.clear();
     this.pMask.beginFill();
@@ -241,15 +312,38 @@ class PixiTrack extends Track {
     );
   }
 
+  /** Set an error for this track.
+   *
+   * The error can be associated with a source so that multiple
+   * components within the track can set their own independent errors
+   * that will be displayed to the user without overlapping.
+   *
+   * @param {string} error The error text
+   * @param {string} source The source of the error
+   */
+  setError(error, source) {
+    this.errorTexts[source] = error;
+
+    this.drawError();
+  }
+
   drawError() {
     this.errorText.x = this.position[0] + this.dimensions[0] / 2;
     this.errorText.y = this.position[1] + this.dimensions[1] / 2;
 
-    this.errorText.text = this.errorTextText;
+    // Collect all the error texts, filter out the ones that are empty
+    // and put the non-empty ones separate lines
+    const errorTextText = Object.values(this.errorTexts)
+      .filter((x) => x?.length)
+      .reduce((acc, x) => (acc ? `${acc}\n${x}` : x), '');
 
-    if (this.errorTextText && this.errorTextText.length) {
+    this.errorText.text = errorTextText;
+    this.errorText.alpha = 0.8;
+
+    if (errorTextText?.length) {
       // draw a red border around the track to bring attention to its
       // error
+
       const graphics = this.pBorder;
       graphics.clear();
       graphics.lineStyle(1, colorToHex('red'));
@@ -260,6 +354,8 @@ class PixiTrack extends Track {
         this.dimensions[0],
         this.dimensions[1],
       );
+    } else {
+      this.pBorder.clear();
     }
   }
 
@@ -308,9 +404,7 @@ class PixiTrack extends Track {
   }
 
   getName() {
-    return this.options.name
-      ? this.options.name
-      : (this.tilesetInfo && this.tilesetInfo.name) || '';
+    return this.options.name ? this.options.name : this.tilesetInfo?.name || '';
   }
 
   drawLabel() {
@@ -320,6 +414,8 @@ class PixiTrack extends Track {
 
     graphics.clear();
 
+    // TODO(Trevor): I don't think this can ever be true. Options are always defined,
+    // and options.labelPosition can't be defined if this.options is undefined.
     if (
       !this.options ||
       !this.options.labelPosition ||
@@ -330,11 +426,11 @@ class PixiTrack extends Track {
       return;
     }
 
+    const { labelBackgroundColor = 'white', labelBackgroundOpacity = 0.5 } =
+      this.options;
     graphics.beginFill(
-      colorToHex(this.options.labelBackgroundColor || 'white'),
-      +this.options.labelBackgroundOpacity >= 0
-        ? +this.options.labelBackgroundOpacity
-        : 0.5,
+      colorToHex(labelBackgroundColor),
+      +labelBackgroundOpacity,
     );
 
     const fontColor = colorToHex(this.getLabelColor());
@@ -356,8 +452,7 @@ class PixiTrack extends Track {
 
     if (
       this.options.labelShowResolution &&
-      this.tilesetInfo &&
-      this.tilesetInfo.max_width &&
+      isLegacyTilesetInfo(this.tilesetInfo) &&
       this.tilesetInfo.bins_per_dimension
     ) {
       const formattedResolution = getWidthBasedResolutionText(
@@ -370,8 +465,7 @@ class PixiTrack extends Track {
       labelTextText += `\n[Current data resolution: ${formattedResolution}]`;
     } else if (
       this.options.labelShowResolution &&
-      this.tilesetInfo &&
-      this.tilesetInfo.resolutions
+      isResolutionsTilesetInfo(this.tilesetInfo)
     ) {
       const formattedResolution = getResolutionBasedResolutionText(
         this.tilesetInfo.resolutions,
@@ -381,10 +475,10 @@ class PixiTrack extends Track {
       labelTextText += `\n[Current data resolution: ${formattedResolution}]`;
     }
 
-    if (this.options && this.options.dataTransform) {
+    if (this.options?.dataTransform) {
       let chosenTransform = null;
 
-      if (this.tilesetInfo && this.tilesetInfo.transforms) {
+      if (this.tilesetInfo?.transforms) {
         for (const transform of this.tilesetInfo.transforms) {
           if (transform.value === this.options.dataTransform) {
             chosenTransform = transform;
@@ -418,10 +512,12 @@ class PixiTrack extends Track {
       this.labelText.scale.x = -1;
     }
 
-    const labelLeftMargin = +this.options.labelLeftMargin || 0;
-    const labelRightMargin = +this.options.labelRightMargin || 0;
-    const labelTopMargin = +this.options.labelTopMargin || 0;
-    const labelBottomMargin = +this.options.labelBottomMargin || 0;
+    const {
+      labelLeftMargin = 0,
+      labelRightMargin = 0,
+      labelTopMargin = 0,
+      labelBottomMargin = 0,
+    } = this.options;
 
     if (this.options.labelPosition === 'topLeft') {
       this.labelText.x = this.position[0] + labelLeftMargin + this.labelXOffset;
@@ -575,6 +671,7 @@ class PixiTrack extends Track {
     }
   }
 
+  /** @param {Options} options */
   rerender(options) {
     this.options = options;
 
@@ -598,8 +695,8 @@ class PixiTrack extends Track {
   /**
    * Export an SVG representation of this track
    *
-   * @returns {Array} The two returned DOM nodes are both SVG
-   * elements [base,track]. Base is a parent which contains track as a
+   * @returns {[HTMLElement, HTMLElement]} The two returned DOM nodes are both SVG
+   * elements [base, track]. Base is a parent which contains track as a
    * child. Track is clipped with a clipping rectangle contained in base.
    *
    */
@@ -612,7 +709,7 @@ class PixiTrack extends Track {
     rectBackground.setAttribute('width', `${this.dimensions[0]}`);
     rectBackground.setAttribute('height', `${this.dimensions[1]}`);
 
-    if (this.options && this.options.backgroundColor) {
+    if (this.options?.backgroundColor) {
       rectBackground.setAttribute('fill', this.options.backgroundColor);
     } else {
       rectBackground.setAttribute('fill-opacity', '0');
@@ -693,15 +790,15 @@ class PixiTrack extends Track {
         this.options.labelPosition === 'topRight'
       ) {
         const dy = ddy + (i + 1) * (this.labelTextFontSize + 2);
-        text.setAttribute('dy', dy);
+        text.setAttribute('dy', String(dy));
       } else if (
         this.options.labelPosition === 'bottomLeft' ||
         this.options.labelPosition === 'bottomRight'
       ) {
-        text.setAttribute('dy', ddy + i * (this.labelTextFontSize + 2));
+        text.setAttribute('dy', String(ddy + i * (this.labelTextFontSize + 2)));
       }
 
-      text.setAttribute('fill', this.options.labelColor);
+      text.setAttribute('fill', this.options.labelColor ?? '');
 
       if (this.labelText.anchor.x === 0.5) {
         text.setAttribute('text-anchor', 'middle');
@@ -720,6 +817,13 @@ class PixiTrack extends Track {
     // return the whole SVG and where the specific track should draw its
     // contents
     return [gBase, gTrack];
+  }
+
+  /**
+   * @returns {number}
+   */
+  calculateZoomLevel() {
+    throw new Error('Must be implemented by subclass');
   }
 }
 

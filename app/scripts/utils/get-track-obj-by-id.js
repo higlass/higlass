@@ -1,3 +1,4 @@
+// @ts-nocheck
 const getTrackObjById = (tiledPlots, viewId, trackId) => {
   const tiledPlot = viewId ? tiledPlots[viewId] : Object.values(tiledPlots)[0];
 

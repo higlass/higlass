@@ -1,3 +1,4 @@
+// @ts-nocheck
 import createPubSub from 'pub-sub-es';
 
 import TiledPixiTrack from './TiledPixiTrack';
@@ -40,13 +41,11 @@ class Annotations2dTrack extends TiledPixiTrack {
   /* --------------------------- Getter / Setter ---------------------------- */
 
   get minX() {
-    return this.tilesetInfo && this.tilesetInfo.min_pos
-      ? this.tilesetInfo.min_pos[0]
-      : 0;
+    return this.tilesetInfo?.min_pos ? this.tilesetInfo.min_pos[0] : 0;
   }
 
   get maxX() {
-    return this.tilesetInfo && this.tilesetInfo.max_pos
+    return this.tilesetInfo?.max_pos
       ? this.tilesetInfo.max_pos[0]
       : this.tilesetInfo.max_width || this.tilesetInfo.max_size;
   }
@@ -467,7 +466,7 @@ class Annotations2dTrack extends TiledPixiTrack {
     track.appendChild(output);
 
     this.visibleAndFetchedTiles()
-      .filter((tile) => tile.tileData && tile.tileData.length)
+      .filter((tile) => tile.tileData?.length)
       .map((tile) => ({ graphics: tile.graphics, td: tile.tileData }))
       .forEach(({ td, graphics }) => {
         const gTile = document.createElement('g');

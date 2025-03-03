@@ -1,0 +1,18 @@
+{
+  "exclude": ["node_modules", "dist"],
+  "compilerOptions": {
+    "module": "esnext",
+    "target": "esnext",
+    "moduleResolution": "bundler",
+    "strict": true,
+    "declaration": true,
+    "allowSyntheticDefaultImports": true,
+    "verbatimModuleSyntax": true,
+    "skipLibCheck": true,
+    "allowJs": true,
+    "checkJs": true,
+    "noEmit": true,
+    "jsx": "react",
+    "types": ["vite/client", "@vitest/browser/matchers"]
+  }
+}

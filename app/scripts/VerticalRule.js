@@ -1,4 +1,6 @@
-import { mix, Mixin } from './mixwith';
+// @ts-nocheck
+
+import { Mixin, mix } from './mixwith';
 
 import PixiTrack from './PixiTrack';
 import RuleMixin from './RuleMixin';

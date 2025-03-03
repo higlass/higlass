@@ -5,19 +5,19 @@
  * @param   {number}  x2  End X
  * @param   {number}  y2  End Y
  * @param   {number}  strokeWidth  Line width
- * @param   {number}  strokeColor  Color HEX string
- * @return  {object}  SVG line object
+ * @param   {string}  strokeColor  Color HEX string
+ * @return  {HTMLElement}  SVG line object
  */
 export const svgLine = (x1, y1, x2, y2, strokeWidth, strokeColor) => {
   const line = document.createElement('line');
 
-  line.setAttribute('x1', x1);
-  line.setAttribute('x2', x2);
-  line.setAttribute('y1', y1);
-  line.setAttribute('y2', y2);
+  line.setAttribute('x1', String(x1));
+  line.setAttribute('x2', String(x2));
+  line.setAttribute('y1', String(y1));
+  line.setAttribute('y2', String(y2));
 
   if (strokeWidth) {
-    line.setAttribute('stroke-width', strokeWidth);
+    line.setAttribute('stroke-width', String(strokeWidth));
   }
   if (strokeColor) {
     line.setAttribute('stroke', strokeColor);

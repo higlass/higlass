@@ -1,4 +1,6 @@
-import { addArrays, accessorTransposition } from '.';
+// @ts-nocheck
+import accessorTransposition from './accessor-transposition';
+import addArrays from './add-arrays';
 
 /**
  * Perform a 2D query on a 1D array
@@ -22,7 +24,9 @@ const rangeQuery2d = (
   xRange,
   yRange,
   mirrored,
+  // biome-ignore lint/style/useDefaultParameterLast:
   xOff = 0,
+  // biome-ignore lint/style/useDefaultParameterLast:
   yOff = 0,
   outList,
 ) => {

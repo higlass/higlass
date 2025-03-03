@@ -1,7 +1,11 @@
+// @ts-nocheck
 import slugid from 'slugid';
 
 class CombinedTrack {
-  constructor({ tracks, createTrackObject }) {
+  constructor(context) {
+    this.context = context;
+    const { tracks, createTrackObject } = context;
+
     this.childTracks = tracks.map(createTrackObject);
     this.createdTracks = {};
     this.uid = slugid.nice();
@@ -105,6 +109,18 @@ class CombinedTrack {
   //   }
   // }
 
+  clickOutside() {
+    for (let i = 0; i < this.childTracks.length; i++) {
+      this.childTracks[i].clickOutside();
+    }
+  }
+
+  click(...args) {
+    for (let i = 0; i < this.childTracks.length; i++) {
+      this.childTracks[i].click(...args);
+    }
+  }
+
   draw() {
     // for (let i = 0; i < this.childTracks.length; i++) {
     //   this.childTracks[i].draw();
@@ -159,6 +175,7 @@ class CombinedTrack {
   }
 
   minValue(_) {
+    // biome-ignore lint/style/noArguments: Getter/Setter
     if (arguments.length === 0) {
       const minValues = this.childTracks
         .filter((x) => x.minValue) // filter for tracks which have the minValue function
@@ -176,6 +193,7 @@ class CombinedTrack {
   }
 
   maxValue(_) {
+    // biome-ignore lint/style/noArguments: Getter/Setter
     if (arguments.length === 0) {
       const maxValues = this.childTracks
         .filter((x) => x.maxValue) // filter for tracks which have the minValue function
@@ -214,7 +232,7 @@ class CombinedTrack {
       if (childTrack.getMouseOverHtml) {
         const trackHtml = childTrack.getMouseOverHtml(trackX, trackY);
 
-        if (trackHtml && trackHtml.length) {
+        if (trackHtml?.length) {
           mouseOverHtml += trackHtml;
           mouseOverHtml += '<br/>';
         }

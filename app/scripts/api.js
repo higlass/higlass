@@ -1,6 +1,7 @@
-import ReactDOM from 'react-dom';
-import createPubSub from 'pub-sub-es';
+// @ts-nocheck
 import Ajv from 'ajv';
+import createPubSub from 'pub-sub-es';
+import ReactDOM from 'react-dom';
 
 import schema from '../schema.json';
 
@@ -10,11 +11,14 @@ import { getTrackObjectFromHGC } from './utils';
 
 import { MOUSE_TOOL_MOVE, MOUSE_TOOL_SELECT } from './configs';
 
+import { version } from '../../package.json';
+
 const forceUpdate = (self) => {
   self.setState(self.state);
 };
 
 const createApi = function api(context, pubSub) {
+  /** @type {import('./HiGlassComponent').default} */
   const self = context;
 
   let pubSubs = [];
@@ -40,10 +44,7 @@ const createApi = function api(context, pubSub) {
        * @return {string} Version number
        */
       get version() {
-        // Note, `VERSION` is exposed by webpack across the entire app. I.e.,
-        // it's globally available within the build but not outside. See
-        // `plugins` in `webpack.config.js`
-        return VERSION;
+        return version;
       },
 
       /**
@@ -112,10 +113,38 @@ const createApi = function api(context, pubSub) {
       },
 
       /**
-       * Reload all of the tiles
+       * Reload all or specific tiles for viewId/trackId
+       *
+       * @param {array} target Should be an array of type
+       *                       ({ viewId: string, trackId: string } | string).
+       *                       If the array is just strings, it's interpreted
+       *                       as a list of views whose tracks to reload.
        */
-      reload() {
-        console.warn('Not implemented yet!');
+      reload(target) {
+        /** @type {{ viewId: string, trackId: string}[]} */
+        let tracks;
+        if (!target) {
+          tracks = self.iterateOverTracks();
+        } else {
+          tracks = target.flatMap((d) =>
+            typeof d === 'string' ? self.iterateOverTracksInView(d) : d,
+          );
+        }
+
+        for (const { viewId, trackId } of tracks) {
+          const selectedTrack = self.getTrackObject(viewId, trackId);
+          // iterate over childTracks if CombinedTrack
+          for (const track of selectedTrack.childTracks || [selectedTrack]) {
+            // reload tiles for tracks with tiles.
+            if (track.fetchedTiles) {
+              track.removeTiles(Object.keys(track.fetchedTiles));
+              track.fetching.clear();
+              track.refreshTiles();
+            }
+            // second argument forces re-render
+            track.rerender(track.options, true);
+          }
+        }
       },
 
       /**
@@ -164,7 +193,7 @@ const createApi = function api(context, pubSub) {
        * hgv.activateTool('select'); // Activate select tool
        * hgv.setRangeSelection1dSize(5000, 10000); // Force selections to be between 5 and 10 Kb
        */
-      setRangeSelection1dSize(minSize = 0, maxSize = Infinity) {
+      setRangeSelection1dSize(minSize = 0, maxSize = Number.POSITIVE_INFINITY) {
         self.setState({
           rangeSelection1dSize: [minSize, maxSize],
         });
@@ -362,7 +391,7 @@ const createApi = function api(context, pubSub) {
        * Hide the track chooser.
        */
       hideTrackChooser() {
-        this.setState({
+        self.setState({
           chooseTrackHandler: null,
         });
       },
@@ -473,13 +502,14 @@ const createApi = function api(context, pubSub) {
        *
        * @param {string} viewUid The identifier of the view to zoom
        * @param {string} geneName The name of gene symbol to search
+       * @param {string} padding The padding (base pairs) around a given gene for the navigation
        * @param {Number} animateTime The time to spend zooming to the specified location
        * @example
        * // Zoom to the location near 'MYC'
-       * hgApi.zoomToGene('view1', 'MYC', 2000);
+       * hgApi.zoomToGene('view1', 'MYC', 100, 2000);
        */
-      zoomToGene(viewUid, geneName, animateTime = 0) {
-        self.zoomToGene(viewUid, geneName, animateTime);
+      zoomToGene(viewUid, geneName, padding = 0, animateTime = 0) {
+        self.zoomToGene(viewUid, geneName, padding, animateTime);
       },
 
       /**
@@ -629,8 +659,7 @@ const createApi = function api(context, pubSub) {
       getLocation(viewId) {
         const wurstId = viewId
           ? self.xScales[viewId] && self.yScales[viewId] && viewId
-          : Object.values(self.tiledPlots)[0] &&
-            Object.values(self.tiledPlots)[0].props.uid;
+          : Object.values(self.tiledPlots)[0]?.props.uid;
 
         if (!wurstId) {
           return 'Please provide a valid view UUID sweetheart 😙';
@@ -647,6 +676,10 @@ const createApi = function api(context, pubSub) {
       /**
        * Return the track's javascript object. This is useful for subscribing to
        * data events (dataChanged)
+       *
+       * @param {string} viewId The id of the view containing the track
+       * @param {string} trackId The id of the track within the view
+       * @return {obj} The HiGlass track object for this track
        */
       getTrackObject(viewId, trackId) {
         let newViewId = viewId;
@@ -664,7 +697,7 @@ const createApi = function api(context, pubSub) {
        * Set or get an option.
        * @param   {string}  key  The name of the option you want get or set
        * @param   {*}  value  If not `undefined`, `key` will be set to `value`
-       * @return  {[type]}  When `value` is `undefined` the current value of
+       * @return  {obj}  When `value` is `undefined` the current value of
        *   `key` will be returned.
        */
       option(key, value) {
@@ -701,6 +734,7 @@ const createApi = function api(context, pubSub) {
        * hgv.off('mouseMoveZoom', mmz);
        * hgv.off('wheel', wheelListener);
        * hgv.off('createSVG');
+       * hgv.off('click');
        * hgv.off('geneSearch', geneSearchListener);
        */
       off(event, listenerId, viewId) {
@@ -763,15 +797,22 @@ const createApi = function api(context, pubSub) {
        *
        * **Event types**
        *
-       * ``click``: Returns clicked objects. (Currently only clicks on 1D annotations are captured.)
+       * ``click``: Returns a list of objects for each track that is below the click event.
        *
        * .. code-block:: javascript
        *
-       *     {
-       *       type: 'annotation',
-       *       event: { ... },
-       *       payload: [230000000, 561000000]
-       *     }
+       *     [
+       *      {
+       *       event: {
+       *          type: 'annotation',
+       *          event: { ... },
+       *          payload: [230000000, 561000000]
+       *        },
+       *       trackType: '1d-annotation',
+       *       trackUid: 'xyz',
+       *       viewUid: 'abc'
+       *      }
+       *     ]
        *
        * ``cursorLocation:`` Returns an object describing the location under the cursor
        *

@@ -10,14 +10,12 @@ $unit: 24px;
   align-items: stretch;
   height: 100%;
   margin-bottom: 0px;
-  font-size: $unit / 1.75;
-  transition: box-shadow $fast $ease,
-              font-size $fast $ease;
+  font-size: calc($unit / 1.75);
+  transition: box-shadow $fast $ease, font-size $fast $ease;
 }
 
 .genome-position-search-focus {
-  box-shadow: 0 0 0 1px $active,
-              0 0 3px 1px $active;
+  box-shadow: 0 0 0 1px $active, 0 0 3px 1px $active;
 }
 
 .genome-position-search-bar {
@@ -25,12 +23,12 @@ $unit: 24px;
   box-sizing: border-box;
   width: 100%;
   height: 100%;
-  padding: $unit / 8;
+  padding: calc($unit / 8);
   color: #666;
   font-size: inherit;
   line-height: $unit;
   border: 0;
-  border-radius: $unit / 8 0 0 $unit / 8;
+  border-radius: calc($unit / 8) 0 0 calc($unit / 8);
   background: transparent;
 
   &:focus {
@@ -39,20 +37,21 @@ $unit: 24px;
   }
 }
 .genome-position-search-dark .genome-position-search-bar {
-  &:focus { color: $gray-lighter; }
+  &:focus {
+    color: $gray-lighter;
+  }
 }
 
 .genome-position-search-bar-button,
 .genome-position-search-bar-button-focus {
   display: block;
   height: 100%;
-  padding: 0 $unit / 3 !important;
+  padding: 0 calc($unit / 3) !important;
   color: $gray;
   border: 0 !important;
   border-radius: 0 !important;
   background: transparent;
-  transition: background $fast $ease,
-              color $fast $ease;
+  transition: background $fast $ease, color $fast $ease;
 
   &:active,
   &:focus,
@@ -74,7 +73,7 @@ $unit: 24px;
   transition: color $fast $ease;
 
   &:first-child {
-    margin-left: $unit / 4;
+    margin-left: calc($unit / 4);
     margin-right: 2px;
   }
 
@@ -91,8 +90,7 @@ $unit: 24px;
 .genome-position-search-bar-suggestions {
   position: fixed;
   border-radius: 3px;
-  box-shadow: 0 0 3px 0 $gray-lighter-rgba,
-              0 1px 5px 0 $gray-lightest-rgba;
+  box-shadow: 0 0 3px 0 $gray-lighter-rgba, 0 1px 5px 0 $gray-lightest-rgba;
   background-color: rgba(255, 255, 255, 0.95);
   border: 1px solid $gray-lighter-rgba;
   padding: 2px 0;
@@ -104,7 +102,7 @@ $unit: 24px;
 .btn {
   display: inline-block;
   margin-bottom: 0;
-  font-size: $unit / 1.75;
+  font-size: calc($unit / 1.75);
   font-weight: 400;
   line-height: 1.42857143;
   text-align: center;

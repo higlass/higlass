@@ -1,10 +1,12 @@
+// @ts-nocheck
 import boxIntersect from 'box-intersect';
 import { median, range } from 'd3-array';
 import { scaleBand, scaleLinear } from 'd3-scale';
-import classifyPoint from 'robust-point-in-polygon';
 import { zoomIdentity } from 'd3-zoom';
+import classifyPoint from 'robust-point-in-polygon';
 
 import HorizontalTiled1DPixiTrack from './HorizontalTiled1DPixiTrack';
+import trackUtils from './track-utils';
 
 // Services
 import { tileProxy } from './services';
@@ -13,7 +15,6 @@ import {
   colorDomainToRgbaArray,
   colorToHex,
   segmentsToRows,
-  trackUtils,
   valueToColor,
 } from './utils';
 
@@ -83,7 +84,7 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
     let plusStrandRows = [];
     let minusStrandRows = [];
 
-    if (tile.tileData && tile.tileData.length) {
+    if (tile.tileData?.length) {
       tile.tileData.sort((a, b) => b.importance - a.importance);
       // tile.tileData = tile.tileData.slice(0, MAX_TILE_ENTRIES);
 
@@ -163,9 +164,9 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
     tile.rectGraphics.clear();
     tile.rendered = false;
 
-    if (tile.tileData && tile.tileData.length) {
+    if (tile.tileData?.length) {
       tile.tileData.forEach((td, i) => {
-        if (this.drawnRects[zoomLevel] && this.drawnRects[zoomLevel][td.uid]) {
+        if (this.drawnRects[zoomLevel]?.[td.uid]) {
           if (this.drawnRects[zoomLevel][td.uid][2] === tile.tileId) {
             // this was the tile that drew that rectangle
             delete this.drawnRects[zoomLevel][td.uid];
@@ -195,7 +196,7 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
   }
 
   drawTile(tile) {
-    if (this.options && this.options.valueColumn) {
+    if (this.options?.valueColumn) {
       // there might no be a value scale if no valueColumn was specified
       if (this.valueScale) this.drawAxis(this.valueScale);
     }
@@ -403,7 +404,7 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
   setValueScale() {
     this.valueScale = null;
 
-    if (this.options && this.options.valueColumn) {
+    if (this.options?.valueColumn) {
       /**
        * These intervals come with some y-value that we want to plot
        */
@@ -430,8 +431,7 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
     this.colorValueScale = null;
 
     if (
-      this.options &&
-      this.options.colorEncoding &&
+      this.options?.colorEncoding &&
       this.options.colorEncoding !== 'itemRgb'
     ) {
       const min = this.options.colorEncodingRange
@@ -654,7 +654,7 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
     // this.options.colorEncoding is set
     this.setColorValueScale();
 
-    if (tile.tileData && tile.tileData.length) {
+    if (tile.tileData?.length) {
       const fill =
         this.options.plusStrandColor || this.options.fillColor || 'blue';
       const minusStrandFill =
@@ -720,7 +720,7 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
       null,
       visibleAndFetchedIds
         .map((x) => this.fetchedTiles[x])
-        .filter((x) => x.tileData && x.tileData.length)
+        .filter((x) => x.tileData?.length)
         .map((x) =>
           Math.min.apply(
             null,
@@ -752,7 +752,7 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
       null,
       visibleAndFetchedIds
         .map((x) => this.fetchedTiles[x])
-        .filter((x) => x.tileData && x.tileData.length)
+        .filter((x) => x.tileData?.length)
         .map((x) =>
           Math.max.apply(
             null,
@@ -788,7 +788,7 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
       .concat(
         ...visibleAndFetchedIds
           .map((x) => this.fetchedTiles[x])
-          .filter((x) => x.tileData && x.tileData.length)
+          .filter((x) => x.tileData?.length)
           .map((x) =>
             x.tileData
               .sort((a, b) => b.importance - a.importance)
@@ -832,7 +832,7 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
         continue;
       }
 
-      if (tile.tileData && tile.tileData.length) {
+      if (tile.tileData?.length) {
         tile.tileData.forEach((td) => {
           if (!tile.texts) {
             // tile probably hasn't been initialized yet

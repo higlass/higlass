@@ -4,8 +4,9 @@ const XMLNS = 'http://www.w3.org/2000/svg';
 
 /**
  * Method to add a class name to an HTML or SVG element.
- * @param  {object}  el  HTML or SVG element to add a class to.
- * @param  {string}  className  The class name to be added.
+ * @param {Element} el - HTML or SVG element to add a class to.
+ * @param {string} className - The class name to be added.
+ * @returns {void}
  */
 const addClass = (el, className) => {
   if (el.namespaceURI === XMLNS) {
