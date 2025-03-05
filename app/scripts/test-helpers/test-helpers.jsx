@@ -55,6 +55,53 @@ export const areTransitionsActive = (hgc) => {
 };
 
 /**
+ * Waits for multiple elements to appear in the DOM and executes a callback when all are found.
+ *
+ * @param {HTMLElement} parent - The parent element to search within.
+ * @param {string[]} selectors - An array of CSS selectors for the elements to wait for.
+ * @param {(elements: HTMLElement[]) => void} callback - A function that is called when all elements are found.
+ * The callback receives an array of the found elements.
+ */
+export const waitForElements = (parent, selectors, callback) => {
+  const foundElements = new Map();
+
+  const observer = new MutationObserver((mutations, obs) => {
+    selectors.forEach((selector) => {
+      if (!foundElements.has(selector)) {
+        const element = parent.querySelector(selector);
+        if (element) {
+          foundElements.set(selector, element);
+        }
+      }
+    });
+
+    // If all elements are found, trigger the callback and disconnect
+    if (foundElements.size === selectors.length) {
+      callback([...foundElements.values()]); // Pass all elements to the callback
+      obs.disconnect();
+    }
+  });
+
+  observer.observe(parent, {
+    childList: true,
+    subtree: true,
+  });
+
+  // Initial check in case elements are already present
+  selectors.forEach((selector) => {
+    const element = parent.querySelector(selector);
+    if (element) {
+      foundElements.set(selector, element);
+    }
+  });
+
+  if (foundElements.size === selectors.length) {
+    callback([...foundElements.values()]);
+    observer.disconnect();
+  }
+};
+
+/**
  * Wait until all transitions have finished before
  * calling the callback
  *

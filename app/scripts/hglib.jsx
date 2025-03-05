@@ -40,7 +40,7 @@ export { getTrackObjectFromHGC } from './utils';
 
 export { version } from '../../package.json';
 
-const launch = (element, config, options) => {
+const launch = async (element, config, options) => {
   /**
    * The instance's public API will be passed into the callback
    *
@@ -56,11 +56,18 @@ const launch = (element, config, options) => {
    * @return  {Object} The instance's public API
    */
   const ref = React.createRef();
-  ReactDOM.render(
-    <HiGlassComponent ref={ref} options={options || {}} viewConfig={config} />,
-    element,
-  );
-  return ref.current;
+
+  return new Promise((resolve) => {
+    ReactDOM.render(
+      <HiGlassComponent
+        ref={ref}
+        options={options || {}}
+        viewConfig={config}
+      />,
+      element,
+      () => resolve(ref.current),
+    );
+  });
 };
 
 /**
@@ -120,8 +127,13 @@ export const viewer = async (element, viewConfig, options) => {
     viewConfig = await fetch(viewConfig).then((response) => response.json());
   }
 
-  const hg = launch(element, viewConfig, options);
-  return hg.api;
+  const hg = await launch(element, viewConfig, options);
+
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve(hg.api);
+    }, 0);
+  });
 };
 
 export * as hggos from './gosling-exports';
