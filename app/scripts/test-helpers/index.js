@@ -1,6 +1,7 @@
 // @ts-nocheck
 export {
   changeOptions,
+  waitForElements,
   waitForJsonComplete,
   waitForTilesLoaded,
   waitForTransitionsFinished,
