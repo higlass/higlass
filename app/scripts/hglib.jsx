@@ -129,11 +129,7 @@ export const viewer = async (element, viewConfig, options) => {
 
   const hg = await launch(element, viewConfig, options);
 
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve(hg.api);
-    }, 0);
-  });
+  return hg.api;
 };
 
 export * as hggos from './gosling-exports';
