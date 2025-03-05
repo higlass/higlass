@@ -127,6 +127,8 @@ export const isWaitingOnTiles = (hgc) => {
       (track.track.data && track.track.data.type === 'divided') ||
       (track.track.server && track.track.tilesetUid)
     ) {
+      if (!trackObj) return true;
+
       if (trackObj.originalTrack) {
         trackObj = trackObj.originalTrack;
       }
