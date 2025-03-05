@@ -24,7 +24,8 @@ function findDefaultTrackType(datatype, position) {
   return DEFAULT_TRACKS_FOR_DATATYPE[datatype] !== undefined
     ? // @ts-expect-error - ok with undefined check
       DEFAULT_TRACKS_FOR_DATATYPE[datatype][position]
-    : undefined;
+    : // @ts-expect-error - ok with undefined check
+      undefined;
 }
 
 /**
