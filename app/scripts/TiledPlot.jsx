@@ -2313,12 +2313,13 @@ export class TiledPlot extends React.Component {
     const verticalPadding = this.props.paddingTop + this.props.paddingBottom;
     const horizontalPadding = this.props.paddingLeft + this.props.paddingRight;
 
+    // Maintain at least 1 minimum center width to avoid degenerate (range: [0,0]) scales
     this.centerHeight = Math.max(
-      0,
+      1,
       this.state.height - this.topHeight - this.bottomHeight - verticalPadding,
     );
     this.centerWidth = Math.max(
-      0,
+      1,
       this.state.width - this.leftWidth - this.rightWidth - horizontalPadding,
     );
 

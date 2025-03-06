@@ -9,6 +9,7 @@ import { requestsInFlight } from '../services';
 import { getTrackObjectFromHGC, getTrackRenderer } from '../utils';
 
 import HiGlassComponent from '../HiGlassComponent';
+import { element } from 'prop-types';
 
 const TILE_LOADING_CHECK_INTERVAL = 100;
 
@@ -351,6 +352,24 @@ export const waitForSizeStabilization = async (
     // Wait until the next check
     await new Promise((r) => setTimeout(r, timeInterval));
   }
+};
+
+/**
+ * Wait for a HiGlassComponet to be ready at the given element.
+ *
+ * By ready we mean that a track-renderer-div is present and that its
+ * size is not changing any more.
+ *
+ * @param {HTMLElement} div
+ */
+export const waitForComponentReady = async (div) => {
+  const elementQueries = ['.track-renderer-div'];
+  await new Promise((r) => waitForElements(div, elementQueries, r));
+
+  await waitForSizeStabilization(
+    // Check for size changes every 20 ms for 2000 seconds
+    elementQueries.map((x) => div.querySelector(x), 20, 2000),
+  );
 };
 
 export const removeHGComponent = (div) => {

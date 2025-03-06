@@ -444,6 +444,7 @@ export class TrackRenderer extends React.Component {
       throw new Error('Component did not mount, this.element is not defined.');
     }
     this.elementPos = this.element.getBoundingClientRect();
+
     this.elementSelection = select(this.element);
 
     /** @type {import('pixi.js').Graphics} */
