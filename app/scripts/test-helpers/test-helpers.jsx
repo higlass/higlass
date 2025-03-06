@@ -290,6 +290,69 @@ export const mountHGComponent = (
   return /** @type {const} */ ([div, hgc]);
 };
 
+/**
+ * Wait for a set of elements to stabilize in size.
+ *
+ * Returns when none of the elements have resized.
+ *
+ * @param {HTMLElement[]} elements - The elements to monitor for size changes.
+ * @param {number} [timeInterval] - The interval (in milliseconds) between size checks.
+ * @param {number} [maxTime] - The maximum time (in milliseconds) to wait for stabilization.
+ */
+export const waitForSizeStabilization = async (
+  elements,
+  timeInterval,
+  maxTime,
+) => {
+  if (!timeInterval) {
+    // The time between each size check
+    timeInterval = 20;
+  }
+
+  if (!maxTime) {
+    // The maximum time to wait until elements have
+    // stopped changing sizes
+    maxTime = 1000;
+  }
+
+  // Initialize to empty elements
+  const prevSizes = elements.map((element) => ({
+    width: 0,
+    height: 0,
+  }));
+
+  for (let i = 0; i < maxTime; i += timeInterval) {
+    // Every time interval, get their new size
+    const newSizes = elements.map((element) => ({
+      width: element.getBoundingClientRect().width,
+      height: element.getBoundingClientRect().height,
+    }));
+
+    let different = false;
+
+    // And check if any have changed size
+    for (let j = 0; j < newSizes.length; j++) {
+      if (
+        newSizes[j].width !== prevSizes[j].width ||
+        newSizes[j].height !== prevSizes[j].height
+      ) {
+        // Something has changed size, make a note of it
+        // and store the new sizes to compare in the next
+        // iteration
+        different = true;
+        prevSizes[j].width = newSizes[j].width;
+        prevSizes[j].height = newSizes[j].height;
+      }
+    }
+
+    // If nothing has changed, we're done
+    if (!different) return;
+
+    // Wait until the next check
+    await new Promise((r) => setTimeout(r, timeInterval));
+  }
+};
+
 export const removeHGComponent = (div) => {
   if (!div) return;
 
