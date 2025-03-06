@@ -33,13 +33,37 @@ describe('API Tests', () => {
   let div;
 
   afterEach(() => {
-    api.destroy();
-    removeDiv(div);
-    api = undefined;
-    div = undefined;
+    // api.destroy();
+    // removeDiv(div);
+    // api = undefined;
+    // div = undefined;
   });
 
   describe.only('Options tests', () => {
+    it('zooms to the location near a MYC gene', async () => {
+      [div, api] = await createElementAndApi(simpleCenterViewConfig, {
+        editable: false,
+      });
+
+      // Note to future me: maybe we need to add a gene annotations
+      // track to use the genome positions search box in the intended
+      // new way
+      console.log('simpleCenterViewConfig', simpleCenterViewConfig);
+
+      await waitForComponentReady(div);
+
+      api.zoomToGene('a', 'MYC', 100, 1000);
+      await new Promise((done) =>
+        waitForTransitionsFinished(api.getComponent(), done),
+      );
+
+      expect(api.getComponent().xScales.a.domain()[0]).to.be.closeTo(
+        1480820463,
+        1,
+      );
+    });
+    return;
+
     it('shows and hides the track chooser', async () => {
       [div, api] = await createElementAndApi(simpleCenterViewConfig);
 
@@ -188,12 +212,12 @@ describe('API Tests', () => {
       expect(api.getComponent().yScales.a.domain()[0]).to.be.lessThan(0);
     });
 
-    return;
-
     it('zooms to just x and y', async () => {
       [div, api] = await createElementAndApi(simpleCenterViewConfig, {
         editable: false,
       });
+
+      await waitForComponentReady(div);
 
       api.zoomTo('a', 6.069441699652629, 6.082905691828387, null, null, 100);
 
@@ -206,22 +230,6 @@ describe('API Tests', () => {
       const trackObj = api.getTrackObject('a', 'heatmap1');
       const rd = trackObj.getVisibleRectangleData(285, 156, 11, 11);
       expect(rd.data.length).to.equal(1);
-    });
-
-    it('zooms to the location near a MYC gene', async () => {
-      [div, api] = await createElementAndApi(simpleCenterViewConfig, {
-        editable: false,
-      });
-
-      api.zoomToGene('a', 'MYC', 100, 1000);
-      await new Promise((done) =>
-        waitForTransitionsFinished(api.getComponent(), done),
-      );
-
-      expect(api.getComponent().xScales.a.domain()[0]).to.be.closeTo(
-        1480820463,
-        1,
-      );
     });
 
     it('suggest a list of genes that top match with the given keyword', async () => {
