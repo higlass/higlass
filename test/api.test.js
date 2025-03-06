@@ -9,6 +9,7 @@ import {
   waitForTransitionsFinished,
   waitForElements,
   waitForSizeStabilization,
+  waitForComponentReady,
 } from '../app/scripts/test-helpers';
 
 import {
@@ -64,25 +65,11 @@ describe('API Tests', () => {
 
       [div, api] = await createElementAndApi(adjustViewSpacingConf, options);
 
-      await new Promise((resolve) => {
-        waitForElements(
-          div,
-          ['.tiled-plot-div', '.track-renderer-div', '.top-track-container'],
-          resolve,
-        );
-      });
+      await waitForComponentReady(div);
 
       const tiledPlotEl = div.querySelector('.tiled-plot-div');
       const trackRendererEl = div.querySelector('.track-renderer-div');
       const topTrackEl = div.querySelector('.top-track-container');
-
-      // Wait until these elements have stopped changing their size.
-      // Check every 20ms for up to 2 seconds
-      await waitForSizeStabilization(
-        [tiledPlotEl.parentNode, trackRendererEl, topTrackEl],
-        20,
-        2000,
-      );
 
       // We need to get the parent of tiledPlotDiv because margin is apparently
       // not included in the BBox width and height.
@@ -118,8 +105,6 @@ describe('API Tests', () => {
           options.viewMarginRight,
       );
     });
-
-    return;
 
     it('creates a track with default options', async () => {
       [div, api] = await createElementAndApi(simpleCenterViewConfig, {
@@ -186,7 +171,7 @@ describe('API Tests', () => {
         editable: false,
       });
 
-      console.log('simpleCenterViewConfig', simpleCenterViewConfig);
+      await waitForComponentReady(div);
 
       api.zoomTo(
         'a',
