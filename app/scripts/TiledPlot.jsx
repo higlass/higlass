@@ -1675,6 +1675,16 @@ export class TiledPlot extends React.Component {
     for (const uid in this.trackRenderer.trackDefObjects) {
       const trackObj = this.trackRenderer.trackDefObjects[uid].trackObject;
 
+      console.log(
+        x,
+        y,
+        trackObj.id,
+        'trackObj pos',
+        trackObj.position,
+        'trackObj dim',
+        trackObj.dimensions,
+      );
+
       if (trackObj.respondsToPosition(x, y)) {
         // check if this track wishes to respond to events at position x,y
         // by default, this is true
@@ -1709,6 +1719,8 @@ export class TiledPlot extends React.Component {
         }
       }
     }
+
+    console.log('trackObjectsAtPosition', trackObjectsAtPosition);
 
     return trackObjectsAtPosition;
   }

@@ -6,6 +6,7 @@ export {
   waitForTilesLoaded,
   waitForTransitionsFinished,
   waitForSizeStabilization,
+  waitForScalesStabilized,
   waitForComponentReady,
   mountHGComponent,
   mountHGComponentAsync,

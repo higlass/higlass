@@ -307,7 +307,7 @@ export const waitForSizeStabilization = async (
 ) => {
   if (!timeInterval) {
     // The time between each size check
-    timeInterval = 20;
+    timeInterval = 50;
   }
 
   if (!maxTime) {
@@ -354,6 +354,51 @@ export const waitForSizeStabilization = async (
   }
 };
 
+/** Wait for scales to stop changing.
+ *
+ * @param {HiGlassComponent} hgc
+ * @param {string} viewUid
+ * @param {number} [timeInterval] - The interval (in milliseconds) between size checks.
+ * @param {number} [maxTime] - The maximum time (in milliseconds) to wait for stabilization.
+ * @returns
+ */
+export const waitForScalesStabilized = async (
+  hgc,
+  viewUid,
+  timeInterval = 50,
+  maxTime = 2000,
+) => {
+  const xScaleDomain = [0, 0];
+  const yScaleDomain = [0, 0];
+
+  for (let i = 0; i < maxTime; i += timeInterval) {
+    const xScale = hgc.xScales[viewUid];
+    const yScale = hgc.yScales[viewUid];
+
+    console.log(
+      'xScale.domain()',
+      xScale.domain(),
+      'yScale.domain()',
+      yScale.domain(),
+    );
+    if (
+      xScaleDomain[0] !== xScale.domain()[0] ||
+      xScaleDomain[1] !== xScale.domain()[1] ||
+      yScaleDomain[0] !== yScale.domain()[0] ||
+      yScaleDomain[1] !== yScale.domain()[1]
+    ) {
+      xScaleDomain[0] = xScale.domain()[0];
+      xScaleDomain[1] = xScale.domain()[1];
+      yScaleDomain[0] = yScale.domain()[0];
+      yScaleDomain[1] = yScale.domain()[1];
+    } else {
+      return;
+    }
+
+    await new Promise((r) => setTimeout(r, timeInterval));
+  }
+};
+
 /**
  * Wait for a HiGlassComponet to be ready at the given element.
  *
@@ -368,7 +413,7 @@ export const waitForComponentReady = async (div) => {
 
   await waitForSizeStabilization(
     // Check for size changes every 20 ms for 2000 seconds
-    elementQueries.map((x) => div.querySelector(x), 20, 2000),
+    elementQueries.map((x) => div.querySelector(x), 20, 3000),
   );
 };
 
