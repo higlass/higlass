@@ -171,8 +171,6 @@ class HorizontalTiled1DPixiTrack extends Tiled1DPixiTrack {
   }
 
   mouseMoveZoomHandler(absX = this.mouseX, absY = this.mouseY) {
-    console.log('abx', absX, absY);
-
     if (
       typeof absX === 'undefined' ||
       !this.areAllVisibleTilesLoaded() ||
@@ -198,11 +196,8 @@ class HorizontalTiled1DPixiTrack extends Tiled1DPixiTrack {
     const dataX = this._xScale.invert(dataPosX);
     const dataY = this._yScale.invert(dataPosY);
 
-    console.log('mouseMoveZoomHandler', dataX, dataY);
     const data = this.getDataAtPos(dataPosX);
-    console.log('data', data);
     if (!data) return;
-    console.log('d1');
 
     this.onMouseMoveZoom({
       trackId: this.id,

@@ -48,9 +48,9 @@ describe('API Tests', () => {
         { editable: false, bounded: true },
       );
 
-      // await waitForComponentReady(div);
-      // await waitForScalesStabilized(api.getComponent(), 'a');
-      // await new Promise((done) => waitForTilesLoaded(api.getComponent(), done));
+      await waitForComponentReady(div);
+      await waitForScalesStabilized(api.getComponent(), 'a');
+      await new Promise((done) => waitForTilesLoaded(api.getComponent(), done));
 
       return;
       const createMouseEvent = (type, x, y) =>
