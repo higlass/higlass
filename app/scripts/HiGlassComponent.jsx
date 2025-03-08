@@ -4461,8 +4461,6 @@ class HiGlassComponent extends React.Component {
           .map((track) => track.originalTrack || track)
       : [];
 
-    console.log('hoveredTracks', hoveredTracks);
-
     const hoveredTrack = hoveredTracks.find(
       (track) => !track.isAugmentationTrack,
     );
@@ -4505,7 +4503,6 @@ class HiGlassComponent extends React.Component {
       noHoveredTracks: hoveredTracks.length === 0,
     };
 
-    console.log('evt', evt);
     this.pubSub.publish('app.mouseMove', evt);
 
     if (this.isBroadcastMousePositionGlobally) {
