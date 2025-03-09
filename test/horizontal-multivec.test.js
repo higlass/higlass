@@ -102,7 +102,7 @@ describe('Horizontal multivecs', () => {
     hgc.instance().setState({ views });
   });
 
-  it('Test horizontal multivec with null zero value color option', async () => {
+  it.only('Test horizontal multivec with null zero value color option', async () => {
     [div, hgc] = await mountHGComponentAsync(
       div,
       hgc,
