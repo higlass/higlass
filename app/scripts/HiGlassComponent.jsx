@@ -126,7 +126,9 @@ class HiGlassComponent extends React.Component {
     this.genomePositionSearchBoxes = {};
 
     // keep track of the xScales of each Track Renderer
+    /** @type {Record<string, import('./TrackRenderer').Scale>} */
     this.xScales = {};
+    /** @type {Record<string, import('./TrackRenderer').Scale>} */
     this.yScales = {};
     this.projectionXDomains = {};
     this.projectionYDomains = {};
@@ -1112,6 +1114,7 @@ class HiGlassComponent extends React.Component {
    * Iterate over all the tracks in this component.
    */
   iterateOverTracks() {
+    /** @type {Array<{ viewId: string, trackId: string, track: import('./types').UnknownTrackConfig }>}*/
     const allTracks = [];
     for (const viewId in this.state.views) {
       const { tracks } = this.state.views[viewId];

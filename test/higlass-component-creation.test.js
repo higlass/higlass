@@ -1,7 +1,6 @@
 import { afterAll, describe, expect, it } from 'vitest';
 
 import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
-// @ts-expect-error - we don't have types for enzyme
 import Enzyme from 'enzyme';
 
 // Utils
