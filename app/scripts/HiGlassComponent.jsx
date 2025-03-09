@@ -966,6 +966,8 @@ class HiGlassComponent extends React.Component {
   measureSize() {
     const [width, height] = getElementDim(this.element);
 
+    console.log('width', width, 'height', height);
+
     if (width > 0 && height > 0) {
       this.setState({
         sizeMeasured: true,
@@ -1576,6 +1578,8 @@ class HiGlassComponent extends React.Component {
   handleScalesChanged(uid, xScale, yScale, notify = true) {
     this.xScales[uid] = xScale;
     this.yScales[uid] = yScale;
+
+    // console.trace('hsc', xScale.domain(), xScale.range());
 
     if (notify) {
       if (uid in this.scalesChangedListeners) {
@@ -5336,6 +5340,8 @@ class HiGlassComponent extends React.Component {
         ? +this.props.options.containerPaddingY
         : defaultContainerPaddingY;
 
+    console.log('React.version', React.version);
+    console.log('rgl width', this.state.width, this.mounted);
     const gridLayout = (
       <ReactGridLayout
         // Reserved props
