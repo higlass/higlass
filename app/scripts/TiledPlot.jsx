@@ -880,12 +880,6 @@ export class TiledPlot extends React.Component {
 
   measureSize() {
     if (this.element.clientWidth > 0 && this.element.clientHeight > 0) {
-      console.log(
-        'this.element',
-        this.element.clientWidth,
-        this.element.clientHeight,
-      );
-
       this.setState({
         sizeMeasured: true,
         width: this.element.clientWidth,

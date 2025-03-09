@@ -35,10 +35,10 @@ describe('API Tests', () => {
   let div;
 
   afterEach(() => {
-    // api.destroy();
-    // removeDiv(div);
-    // api = undefined;
-    // div = undefined;
+    api.destroy();
+    removeDiv(div);
+    api = undefined;
+    div = undefined;
   });
 
   describe.only('Options tests', () => {
@@ -48,11 +48,9 @@ describe('API Tests', () => {
         { editable: false, bounded: true },
       );
 
-      // await waitForComponentReady(div);
-      // await waitForScalesStabilized(api.getComponent(), 'a');
-      // await new Promise((done) => waitForTilesLoaded(api.getComponent(), done));
+      await waitForComponentReady(div);
+      await new Promise((done) => waitForTilesLoaded(api.getComponent(), done));
 
-      return;
       const createMouseEvent = (type, x, y) =>
         new MouseEvent(type, {
           view: window,
@@ -86,13 +84,12 @@ describe('API Tests', () => {
       expect(moved.heatmap).to.equal(true);
     });
 
-    return;
-
     it('global mouse position broadcasting', async () => {
       [div, api] = await createElementAndApi(
         simple1dHorizontalVerticalAnd2dDataTrack,
         { editable: false, bounded: true },
       );
+      await waitForComponentReady(div);
 
       api.setBroadcastMousePositionGlobally(true);
 
@@ -193,8 +190,6 @@ describe('API Tests', () => {
 
       expect(clicked).to.equal(2);
     });
-
-    return;
 
     it('retrieves a track', async () => {
       [div, api] = await createElementAndApi(simpleCenterViewConfig, {
