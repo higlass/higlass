@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
 import * as utils from '../app/scripts/utils';
+import decodeGzip from '../app/scripts/utils/decode-gzip';
 import { IntervalTree } from '../app/scripts/utils/interval-tree';
 import positionedTracksToAllTracks from '../app/scripts/utils/positioned-tracks-to-all-tracks';
 import selectedItemsToCumWeights from '../app/scripts/utils/selected-items-to-cum-weights';
@@ -361,5 +362,21 @@ describe('positionedTracksToAllTracks', () => {
       { type: 'combined', contents: [{ type: 'heatmap' }], position: 'center' },
       // No separate entry for 'heatmap'
     ]);
+  });
+});
+
+describe('decodeGzip', () => {
+  it('decodes compressed bytes', async () => {
+    const compressed = new Uint8Array([
+      0x1f, 0x8b, 0x08, 0x00, 0x1e, 0xc0, 0x7e, 0x67, 0x00, 0x03, 0xf3, 0x48,
+      0xcd, 0xc9, 0xc9, 0xd7, 0x51, 0x28, 0xcf, 0x2f, 0xca, 0x49, 0x51, 0x04,
+      0x00, 0xe6, 0xc6, 0xe6, 0xeb, 0x0d, 0x00, 0x00, 0x00,
+    ]);
+
+    const uncompressed = await decodeGzip(new Response(compressed), {
+      format: 'gzip',
+    });
+
+    expect(new TextDecoder().decode(uncompressed)).toBe('Hello, world!');
   });
 });

@@ -1,10 +1,9 @@
-// @ts-nocheck
-import { describe, expect, it } from 'vitest';
+import { assert, describe, expect, it } from 'vitest';
 
 import GBKDataFetcher from '../app/scripts/data-fetchers/genbank-fetcher';
 
 describe('Genbank tests (callback)', () => {
-  describe('Genbank data fetcher', () => {
+  describe('Genbank data fetcher', async () => {
     const df = new GBKDataFetcher({
       url: 'https://pkerp.s3.amazonaws.com/public/GCA_000010365.1_ASM1036v1_genomic.gbff.gz',
     });
@@ -12,6 +11,7 @@ describe('Genbank tests (callback)', () => {
     it('should fetch the tileset info', async () => {
       await new Promise((done) => {
         df.tilesetInfo((tsInfo) => {
+          assert(tsInfo && !('error' in tsInfo));
           expect(tsInfo.tile_size).to.eql(1024);
           expect(tsInfo.max_zoom).to.eql(8);
           done(null);
@@ -59,6 +59,7 @@ describe('Genbank tests (callback)', () => {
     it('should fetch the tileset info', async () => {
       await new Promise((done) => {
         df.tilesetInfo((tsInfo) => {
+          assert(tsInfo && !('error' in tsInfo));
           expect(tsInfo.tile_size).to.eql(1024);
           expect(tsInfo.max_zoom).to.eql(8);
           done(null);
@@ -89,6 +90,7 @@ describe('Genbank tests (async)', () => {
 
     it('should fetch the tileset info', async () => {
       const tsInfo = await df.tilesetInfo();
+      assert(tsInfo && !('error' in tsInfo));
       expect(tsInfo.tile_size).to.eql(1024);
       expect(tsInfo.max_zoom).to.eql(8);
     });
@@ -114,6 +116,7 @@ describe('Genbank tests (async)', () => {
 
     it('should fetch the tileset info', async () => {
       const tsInfo = await df.tilesetInfo();
+      assert(tsInfo && !('error' in tsInfo));
       expect(tsInfo.tile_size).to.eql(1024);
       expect(tsInfo.max_zoom).to.eql(8);
     });
