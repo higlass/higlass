@@ -13,8 +13,16 @@
     },
     "./dist/*": "./dist/*"
   },
-  "files": ["app", "dist"],
-  "keywords": ["hi-c", "genomics", "matrix", "tracks"],
+  "files": [
+    "app",
+    "dist"
+  ],
+  "keywords": [
+    "hi-c",
+    "genomics",
+    "matrix",
+    "tracks"
+  ],
   "scripts": {
     "start": "vite",
     "build": "node ./scripts/build.mjs",
@@ -36,6 +44,7 @@
     "ajv": "^6.10.0",
     "box-intersect": "^1.0.1",
     "buffer": "^6.0.3",
+    "cheerio": "1.0.0-rc.10",
     "clsx": "^1.2.1",
     "css-element-queries": "^1.2.3",
     "d3-array": "^2.7.1",
@@ -52,7 +61,6 @@
     "d3-selection": "^2.0.0",
     "d3-transition": "^3.0.1",
     "d3-zoom": "^3.0.0",
-    "cheerio": "1.0.0-rc.10",
     "dom-scroll-into-view": "^1.2.1",
     "genbank-parser": "^1.0.0",
     "ndarray": "^1.0.18",
@@ -62,8 +70,8 @@
     "pub-sub-es": "^2.0.1",
     "react-checkbox-tree": "^1.7.3",
     "react-color": "^2.13.8",
-    "react-grid-layout": "^1.3.0",
-    "react-resizable": "^1.8.0",
+    "react-grid-layout": "1.3.4",
+    "react-resizable": "^3.0.5",
     "react-simple-code-editor": "^0.13.0",
     "react-sortable-hoc": "^2.0.0",
     "reactcss": "^1.2.3",
@@ -82,6 +90,8 @@
     "@babel/plugin-transform-classes": "^7.23.3",
     "@babel/preset-react": "^7.23.3",
     "@biomejs/biome": "^1.9.4",
+    "@testing-library/dom": "^10.4.0",
+    "@testing-library/user-event": "^14.6.1",
     "@types/d3-array": "^2.7.1",
     "@types/d3-axis": "^2.0.0",
     "@types/d3-brush": "^2.1.0",
