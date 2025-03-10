@@ -5,11 +5,11 @@ import { create, select } from 'd3-selection';
 import { globalPubSub } from 'pub-sub-es';
 
 import {
+  waitForComponentReady,
+  waitForElements,
+  waitForScalesStabilized,
   waitForTilesLoaded,
   waitForTransitionsFinished,
-  waitForElements,
-  waitForComponentReady,
-  waitForScalesStabilized,
 } from '../app/scripts/test-helpers';
 
 import {
