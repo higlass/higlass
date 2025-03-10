@@ -1,9 +1,7 @@
 // @ts-nocheck
 
-import scrollIntoView from 'dom-scroll-into-view';
 import PropTypes from 'prop-types';
 import React from 'react';
-import { findDOMNode } from 'react-dom';
 
 const _debugStates = [];
 
@@ -142,13 +140,7 @@ class Autocomplete extends React.Component {
   maybeScrollItemIntoView() {
     if (this.state.isOpen === true && this.state.highlightedIndex !== null) {
       const itemNode = this.refs[`item-${this.state.highlightedIndex}`];
-
-      const menuNode = this.refs.menu;
-      if (itemNode) {
-        scrollIntoView(findDOMNode(itemNode), findDOMNode(menuNode), {
-          onlyScrollIfNeeded: true,
-        });
-      }
+      itemNode?.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
     }
   }
 

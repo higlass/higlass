@@ -260,13 +260,11 @@
       }
     };
 
-    const hgApi = window.hgApi = hglib.viewer(
+    const hgApi = window.hgApi = await hglib.viewer(
       document.getElementById('demo'),
       viewConfig,
       { bounded: true },
     );
-
-    hgApi.setBroadcastMousePositionGlobally(true);
 
     hgApi.on('viewConfig', () => {
       console.log('View Config changed');
