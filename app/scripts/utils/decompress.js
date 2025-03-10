@@ -21,9 +21,7 @@ import assert from './assert.js';
  * @param {AbortSignal=} options.signal
  * @returns {Response} A new response for decompressed data.
  *
- * @copyright Trevor Manz 2025
- * @license MIT
- * @see {@link https://github.com/manzt/manzt/blob/1380bb/utils/decompress.js}
+ * @see {@link https://github.com/manzt/manzt/blob/1380bb/utils/decompress.js source}
  */
 export default function decompress(data, options) {
   const { format, signal } = options;

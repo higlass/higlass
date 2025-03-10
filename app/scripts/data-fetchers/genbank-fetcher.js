@@ -232,13 +232,13 @@ class GBKDataFetcher {
         mode: 'cors',
         redirect: 'follow',
         method: 'GET',
-      })
-        .then((originalResponse) =>
+      }).then((originalResponse) => {
+        const normalizedResponse =
           extension === '.gz'
             ? decompress(originalResponse, { format: 'gzip' })
-            : originalResponse,
-        )
-        .then((response) => response.text());
+            : originalResponse;
+        return normalizedResponse.text();
+      });
     } else if (dataConfig.text) {
       textPromise = Promise.resolve(dataConfig.text);
     } else {
