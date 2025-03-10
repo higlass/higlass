@@ -256,13 +256,19 @@ describe('API Tests', () => {
       const newXDomain = [1000000000, 2000000000];
 
       api.zoomTo('a', ...newXDomain, null, null, 100);
-      await waitForScalesStabilized(api.getComponent(), 'a', 300, 3000);
+      await waitForScalesStabilized(api.getComponent(), 'a', {
+        timeInterval: 300,
+        maxTime: 3000,
+      });
 
       expect(Math.round(hgc.xScales.a.domain()[0])).to.equal(newXDomain[0]);
       expect(Math.round(hgc.xScales.a.domain()[1])).to.equal(newXDomain[1]);
 
       api.resetViewport('a');
-      await waitForScalesStabilized(hgc, 'a', 300, 3000);
+      await waitForScalesStabilized(hgc, 'a', {
+        timeInterval: 300,
+        maxTime: 3000,
+      });
 
       expect(Math.round(hgc.xScales.a.domain()[0])).to.equal(
         simpleHeatmapViewConf.views[0].initialXDomain[0],
@@ -305,7 +311,10 @@ describe('API Tests', () => {
 
       api.zoomToGene('aa', 'MYC', 100, 500);
 
-      await waitForScalesStabilized(api.getComponent(), 'aa', 300, 5000);
+      await waitForScalesStabilized(api.getComponent(), 'aa', {
+        timeInterval: 300,
+        maxTime: 3000,
+      });
 
       expect(api.getComponent().xScales.aa.domain()[0]).to.be.closeTo(
         1521543903,

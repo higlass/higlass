@@ -299,16 +299,17 @@ export const mountHGComponent = (
  * @param {number} [maxTime] - The maximum time (in milliseconds) to wait for stabilization.
  * @returns
  */
-export const waitForScalesStabilized = async (
-  hgc,
-  viewUid,
-  timeInterval = 50,
-  maxTime = 2000,
-) => {
+export const waitForScalesStabilized = async (hgc, viewUid, options) => {
+  // set default options
+  const newOptions = {
+    timeInterval: 100,
+    maxTime: 3000,
+    ...options,
+  };
   const xScaleDomain = [0, 0];
   const yScaleDomain = [0, 0];
 
-  for (let i = 0; i < maxTime; i += timeInterval) {
+  for (let i = 0; i < newOptions.maxTime; i += newOptions.timeInterval) {
     const xScale = hgc.xScales[viewUid];
     const yScale = hgc.yScales[viewUid];
 
