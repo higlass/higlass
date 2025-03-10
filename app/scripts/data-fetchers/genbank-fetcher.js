@@ -1,6 +1,7 @@
 import genbankParser from 'genbank-parser';
-import pako from 'pako';
 import slugid from 'slugid';
+
+import decompress from '../utils/decompress';
 
 /** @import { AbstractDataFetcher } from '../types' */
 /** @typedef {{ start: number, end: number, type: 'filler', strand: "+" | "-" }} FillerSegment */
@@ -202,18 +203,6 @@ function gbToJsonAndFeatures(gbText) {
 }
 
 /**
- * Extract the response from a fetch request
- * @param {Response} response
- * @param {{ gzipped: boolean }} options
- * @returns {Promise<string>}
- */
-async function extractResponse(response, { gzipped }) {
-  if (!gzipped) return response.text();
-  const buffer = await response.arrayBuffer();
-  return pako.inflate(buffer, { to: 'string' });
-}
-
-/**
  * @typedef GenbankDataConfig
  * @prop {string=} url
  * @prop {string=} text
@@ -243,7 +232,13 @@ class GBKDataFetcher {
         mode: 'cors',
         redirect: 'follow',
         method: 'GET',
-      }).then((r) => extractResponse(r, { gzipped: extension === '.gz' }));
+      }).then((originalResponse) => {
+        const normalizedResponse =
+          extension === '.gz'
+            ? decompress(originalResponse, { format: 'gzip' })
+            : originalResponse;
+        return normalizedResponse.text();
+      });
     } else if (dataConfig.text) {
       textPromise = Promise.resolve(dataConfig.text);
     } else {
