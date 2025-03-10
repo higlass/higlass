@@ -5,7 +5,6 @@ export {
   waitForJsonComplete,
   waitForTilesLoaded,
   waitForTransitionsFinished,
-  waitForSizeStabilization,
   waitForScalesStabilized,
   waitForComponentReady,
   mountHGComponent,
