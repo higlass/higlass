@@ -7,13 +7,10 @@
  * In this file you will find:
  *
  * 1.) A Vite build that generates the UMD and ESM builds
- * 2.) A babel transform that transpiles the UMD and ESM builds to ES5 classes. This is
- *   necessary for HiGlass plugins to work (see: https://github.com/higlass/higlass/pull/1141#issue-1561403774)
  * 3.) A esbuild transform that minifies the UMD build (for hglib.min.js)
  * 4.) A custom HTML templates that shows usage of the UMD and ESM builds
  *
- * If we end up moving towards a more modern build (i.e., ESM only with ES6 classes), then
- * this file can be removed.
+ * If we end up moving towards a more modern build (i.e., ESM only) then this file can be removed.
  */
 import * as fs from 'node:fs';
 import * as path from 'node:path';
@@ -21,7 +18,6 @@ import * as url from 'node:url';
 
 import * as esbuild from 'esbuild';
 import * as vite from 'vite';
-import babel from 'vite-plugin-babel';
 import injectCssByJs from 'vite-plugin-css-injected-by-js';
 
 import * as PIXI from 'pixi.js';
@@ -90,21 +86,7 @@ async function build() {
         },
       },
     },
-    plugins: [
-      // TODO(2023-11-28): Need to transpile all classes to ES5 for plugins.
-      // Can remove (i.e., upgrade to native ES6) when we decide to make a
-      // upgrade to ES6 classes (requiring plugins to do the same).
-      // See PR: https://github.com/higlass/higlass/pull/1141
-      babel({
-        babelConfig: {
-          babelrc: false,
-          configFile: false,
-          presets: ['@babel/preset-react'],
-          plugins: ['@babel/plugin-transform-classes'],
-        },
-      }),
-      injectCssByJs(),
-    ],
+    plugins: [injectCssByJs()],
   });
 
   const expected = collectExpectedViteBuildOutputs(viteBuildResult, [
