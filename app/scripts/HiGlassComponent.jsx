@@ -3436,16 +3436,11 @@ class HiGlassComponent extends React.Component {
 
       visitPositionedTracks(newView.tracks, (track) => {
         if (track.server) {
-          const url = parse(track.server, {});
-
-          if (!url.hostname.length) {
-            // no hostname specified in the track source servers so we'll add
-            // the current URL's
-            const hostString = window.location.host;
-            const { protocol } = window.location;
-            const newUrl = `${protocol}//${hostString}${url.pathname}`;
-
-            track.server = newUrl;
+          if (!URL.canParse(track.server)) {
+            // Not a valid URL, so we'll extend the current one
+            const url = new URL(window.location);
+            url.pathname = track.server;
+            track.server = url.href;
           }
         }
 
@@ -3459,6 +3454,7 @@ class HiGlassComponent extends React.Component {
           // so the `projectionXDomain` field must be used.
           track.projectionXDomain = this.projectionXDomains[k.uid][track.uid];
         }
+
         if (
           (track.type === 'viewport-projection-center' ||
             track.type === 'viewport-projection-vertical') &&

@@ -69,7 +69,6 @@
     "reactcss": "^1.2.3",
     "robust-point-in-polygon": "^1.0.3",
     "slugid": "^3.2.0",
-    "url-parse": "^1.4.3",
     "vkbeautify": "^0.99.3"
   },
   "peerDependencies": {
