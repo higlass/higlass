@@ -203,17 +203,6 @@ function gbToJsonAndFeatures(gbText) {
 }
 
 /**
- * Extract the response from a fetch request
- * @param {Response} response
- * @param {{ gzipped: boolean }} options
- * @returns {Promise<string>}
- */
-async function extractResponse(response, { gzipped }) {
-  if (!gzipped) return response.text();
-  return decompress(response, { format: 'gzip' }).text();
-}
-
-/**
  * @typedef GenbankDataConfig
  * @prop {string=} url
  * @prop {string=} text
@@ -243,7 +232,13 @@ class GBKDataFetcher {
         mode: 'cors',
         redirect: 'follow',
         method: 'GET',
-      }).then((r) => extractResponse(r, { gzipped: extension === '.gz' }));
+      })
+        .then((originalResponse) =>
+          extension === '.gz'
+            ? decompress(originalResponse, { format: 'gzip' })
+            : originalResponse,
+        )
+        .then((response) => response.text());
     } else if (dataConfig.text) {
       textPromise = Promise.resolve(dataConfig.text);
     } else {
