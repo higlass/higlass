@@ -410,11 +410,6 @@ export const waitForScalesStabilized = async (
 export const waitForComponentReady = async (div) => {
   const elementQueries = ['.track-renderer-div'];
   await new Promise((r) => waitForElements(div, elementQueries, r));
-
-  await waitForSizeStabilization(
-    // Check for size changes every 20 ms for 2000 seconds
-    elementQueries.map((x) => div.querySelector(x), 20, 3000),
-  );
 };
 
 export const removeHGComponent = (div) => {
