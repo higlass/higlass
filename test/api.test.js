@@ -40,7 +40,7 @@ describe('API Tests', () => {
     div = undefined;
   });
 
-  describe.only('Options tests', () => {
+  describe('Options tests', () => {
     it('mousemove and zoom events work for 1D and 2D tracks', async () => {
       [div, api] = await createElementAndApi(
         simple1dHorizontalVerticalAnd2dDataTrack,

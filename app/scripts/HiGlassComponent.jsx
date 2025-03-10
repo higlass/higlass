@@ -4281,7 +4281,6 @@ class HiGlassComponent extends React.Component {
 
         if (exactMatch) {
           const { chr, txStart, txEnd } = exactMatch;
-          console.log('chr', chr, txStart, txEnd);
 
           // extract absolute positions
           ChromosomeInfo(
@@ -4291,8 +4290,6 @@ class HiGlassComponent extends React.Component {
               const startAbs =
                 loadedChromInfo.chrToAbs([chr, txStart]) - padding;
               const endAbs = loadedChromInfo.chrToAbs([chr, txEnd]) + padding;
-
-              console.log('startAbs', startAbs, endAbs);
 
               const [centerX, centerY, k] = scalesCenterAndK(
                 this.xScales[viewUid].copy().domain([startAbs, endAbs]),

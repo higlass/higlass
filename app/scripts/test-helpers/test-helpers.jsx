@@ -312,12 +312,6 @@ export const waitForScalesStabilized = async (
     const xScale = hgc.xScales[viewUid];
     const yScale = hgc.yScales[viewUid];
 
-    console.log(
-      'xScale.domain()',
-      xScale.domain(),
-      'yScale.domain()',
-      yScale.domain(),
-    );
     if (
       xScaleDomain[0] !== xScale.domain()[0] ||
       xScaleDomain[1] !== xScale.domain()[1] ||
