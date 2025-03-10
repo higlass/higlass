@@ -10,8 +10,8 @@ import {
   mountHGComponentAsync,
   removeHGComponent,
 } from '../app/scripts/test-helpers';
-import { getTrackObjectFromHGC } from '../app/scripts/utils';
 import { waitForComponentReady } from '../app/scripts/test-helpers';
+import { getTrackObjectFromHGC } from '../app/scripts/utils';
 
 Enzyme.configure({ adapter: new Adapter() });
 
