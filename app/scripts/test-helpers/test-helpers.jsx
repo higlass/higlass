@@ -54,11 +54,12 @@ export const areTransitionsActive = (hgc) => {
  *
  * @param {HTMLElement} parent - The parent element to search within.
  * @param {string[]} selectors - An array of CSS selectors for the elements to wait for.
- * @param {(elements: HTMLElement[]) => void} callback - A function that is called when all elements are found.
- * The callback receives an array of the found elements.
+ * @returns {Promise<Array<HTMLElement>>}
  */
-const waitForElements = (parent, selectors, callback) => {
+const waitForElements = (parent, selectors) => {
   const foundElements = new Map();
+  /** @type {PromiseWithResolvers<Array<HTMLElement>>} */
+  const { promise, resolve } = Promise.withResolvers();
 
   const observer = new MutationObserver((mutations, obs) => {
     selectors.forEach((selector) => {
@@ -72,7 +73,7 @@ const waitForElements = (parent, selectors, callback) => {
 
     // If all elements are found, trigger the callback and disconnect
     if (foundElements.size === selectors.length) {
-      callback([...foundElements.values()]); // Pass all elements to the callback
+      resolve([...foundElements.values()]); // Pass all elements to the callback
       obs.disconnect();
     }
   });
@@ -91,9 +92,11 @@ const waitForElements = (parent, selectors, callback) => {
   });
 
   if (foundElements.size === selectors.length) {
-    callback([...foundElements.values()]);
+    resolve([...foundElements.values()]);
     observer.disconnect();
   }
+
+  return promise;
 };
 
 /**
@@ -308,8 +311,7 @@ export const waitForScalesStabilized = async (hgc, viewUid, options) => {
  * @returns {Promise<void>}
  */
 export const waitForComponentReady = async (div) => {
-  const elementQueries = ['.track-renderer-div'];
-  await new Promise((r) => waitForElements(div, elementQueries, r));
+  await waitForElements(div, ['.track-renderer-div']);
 };
 
 /**
