@@ -8,7 +8,6 @@ import {
   waitForTilesLoaded,
   waitForTransitionsFinished,
   waitForElements,
-  waitForSizeStabilization,
   waitForComponentReady,
   waitForScalesStabilized,
 } from '../app/scripts/test-helpers';
