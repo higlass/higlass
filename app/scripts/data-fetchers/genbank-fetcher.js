@@ -1,7 +1,7 @@
 import genbankParser from 'genbank-parser';
 import slugid from 'slugid';
 
-import decodeGzip from '../utils/decode-gzip';
+import decompress from '../utils/decompress';
 
 /** @import { AbstractDataFetcher } from '../types' */
 /** @typedef {{ start: number, end: number, type: 'filler', strand: "+" | "-" }} FillerSegment */
@@ -210,8 +210,7 @@ function gbToJsonAndFeatures(gbText) {
  */
 async function extractResponse(response, { gzipped }) {
   if (!gzipped) return response.text();
-  const buffer = await decodeGzip(response, { format: 'gzip' });
-  return new TextDecoder().decode(buffer);
+  return decompress(response, { format: 'gzip' }).text();
 }
 
 /**
