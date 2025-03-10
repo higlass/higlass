@@ -327,7 +327,7 @@ export const waitForScalesStabilized = async (hgc, viewUid, options) => {
       return;
     }
 
-    await new Promise((r) => setTimeout(r, timeInterval));
+    await new Promise((r) => setTimeout(r, newOptions.timeInterval));
   }
 };
 
