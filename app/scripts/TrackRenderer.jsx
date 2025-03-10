@@ -1315,7 +1315,6 @@ export class TrackRenderer extends React.Component {
     xScale = this.xScale,
     yScale = this.yScale,
   ) {
-    console.log('setCenter', xScale.range());
     const refK = this.xScale.invert(1) - this.xScale.invert(0);
 
     const k = refK / sourceK;
