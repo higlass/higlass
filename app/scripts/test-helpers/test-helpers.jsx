@@ -50,7 +50,7 @@ export const areTransitionsActive = (hgc) => {
 };
 
 /**
- * Waits for multiple elements to appear in the DOM and executes a callback when all are found.
+ * Waits for multiple elements to appear in the DOM.
  *
  * @param {HTMLElement} parent - The parent element to search within.
  * @param {string[]} selectors - An array of CSS selectors for the elements to wait for.
