@@ -270,14 +270,17 @@ export const mountHGComponent = (
  * @param {HiGlassComponent} hgc
  * @param {string} viewUid
  * @param {Object} options
+ * @param {number} [options.initialWait] - The interval (in milliseconds) that is waited before the first size check.
  * @param {number} [options.timeInterval] - The interval (in milliseconds) between size checks.
  * @param {number} [options.maxTime] - The maximum time (in milliseconds) to wait for stabilization.
  * @returns {Promise<void>}
  */
 export const waitForScalesStabilized = async (hgc, viewUid, options) => {
-  const { timeInterval = 100, maxTime = 3000 } = options;
+  const { initialWait = 500, timeInterval = 100, maxTime = 3000 } = options;
   const xScaleDomain = [0, 0];
   const yScaleDomain = [0, 0];
+
+  await new Promise((r) => setTimeout(r, initialWait));
 
   for (let i = 0; i < maxTime; i += timeInterval) {
     const xScale = hgc.xScales[viewUid];

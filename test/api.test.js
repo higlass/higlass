@@ -311,6 +311,7 @@ describe('API Tests', () => {
       api.zoomToGene('aa', 'MYC', 100, 500);
 
       await waitForScalesStabilized(api.getComponent(), 'aa', {
+        initialWait: 1000,
         timeInterval: 500,
         maxTime: 5000,
       });
