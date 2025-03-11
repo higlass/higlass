@@ -6,7 +6,6 @@ import { globalPubSub } from 'pub-sub-es';
 
 import {
   waitForComponentReady,
-  waitForElements,
   waitForScalesStabilized,
   waitForTilesLoaded,
   waitForTransitionsFinished,
