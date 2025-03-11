@@ -147,12 +147,7 @@ describe('Horizontal multivecs', () => {
       Math.floor((zeroCellCoords[1] / track.dimensions[1]) * canvas.height),
     ];
     // Obtain the color at this pixel on the canvas.
-    const pixel = ctx.getImageData(
-      scaledCoord[0],
-      scaledCoord[1],
-      canvas.width,
-      canvas.height,
-    ).data;
+    const pixel = ctx.getImageData(scaledCoord[0], scaledCoord[1], 1, 1).data;
 
     // Pixel should be slightly yellow.
     expect(pixel[0]).to.equal(255); // r
@@ -209,12 +204,7 @@ describe('Horizontal multivecs', () => {
       Math.floor((zeroCellCoords[1] / track.dimensions[1]) * canvas.height),
     ];
     // Obtain the color at this pixel on the canvas.
-    const pixel = ctx.getImageData(
-      scaledCoord[0],
-      scaledCoord[1],
-      canvas.width,
-      canvas.height,
-    ).data;
+    const pixel = ctx.getImageData(scaledCoord[0], scaledCoord[1], 1, 1).data;
 
     // Pixel should be blue.
     expect(pixel[0]).to.equal(0); // r

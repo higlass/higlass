@@ -7,6 +7,8 @@ import removeDiv from './utils/remove-div';
 import overlayAnnotations1d2dViewConf from './view-configs/overlay-annotations-1d-2d.json';
 import overlayChromGridViewConf from './view-configs/overlay-chrom-grid.json';
 
+import { waitForComponentReady } from '../app/scripts/test-helpers';
+
 describe('Overlay Track:', () => {
   let hgc = null;
   let api = null;
@@ -18,6 +20,7 @@ describe('Overlay Track:', () => {
       viewConf = overlayAnnotations1d2dViewConf;
 
       [div, api] = await createElementAndApi(viewConf, { bound: true });
+      await waitForComponentReady(div);
 
       hgc = api.getComponent();
 

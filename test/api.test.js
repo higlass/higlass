@@ -5,6 +5,8 @@ import { create, select } from 'd3-selection';
 import { globalPubSub } from 'pub-sub-es';
 
 import {
+  waitForComponentReady,
+  waitForScalesStabilized,
   waitForTilesLoaded,
   waitForTransitionsFinished,
 } from '../app/scripts/test-helpers';
@@ -22,6 +24,7 @@ import simpleHeatmapViewConf from './view-configs/simple-heatmap.json';
 import createElementAndApi from './utils/create-element-and-api';
 import removeDiv from './utils/remove-div';
 // import drag from './utils/drag';
+import { chromInfoTrack, geneAnnotationsOnly1 } from './view-configs';
 
 import { version as VERSION } from '../package.json';
 
@@ -37,297 +40,14 @@ describe('API Tests', () => {
   });
 
   describe('Options tests', () => {
-    it('shows and hides the track chooser', async () => {
-      [div, api] = await createElementAndApi(simpleCenterViewConfig);
-
-      api.showTrackChooser();
-
-      api.hideTrackChooser();
-    });
-
-    it('adjust view spacing', async () => {
-      const options = {
-        pixelPreciseMarginPadding: true,
-        containingPaddingX: 0,
-        containingPaddingY: 0,
-        viewMarginTop: 32,
-        viewMarginBottom: 6,
-        viewMarginLeft: 32,
-        viewMarginRight: 6,
-        viewPaddingTop: 32,
-        viewPaddingBottom: 6,
-        viewPaddingLeft: 32,
-        viewPaddingRight: 6,
-      };
-
-      [div, api] = await createElementAndApi(adjustViewSpacingConf, options);
-
-      const tiledPlotEl = div.querySelector('.tiled-plot-div');
-      const trackRendererEl = div.querySelector('.track-renderer-div');
-      const topTrackEl = div.querySelector('.top-track-container');
-
-      // We need to get the parent of tiledPlotDiv because margin is apparently
-      // not included in the BBox width and height.
-      const tiledPlotBBox = tiledPlotEl.parentNode.getBoundingClientRect();
-      const trackRendererBBox = trackRendererEl.getBoundingClientRect();
-      const topTrackBBox = topTrackEl.getBoundingClientRect();
-
-      const totalViewHeight = adjustViewSpacingConf.views[0].tracks.top.reduce(
-        (height, track) => height + track.height,
-        0,
-      );
-
-      expect(topTrackBBox.height).to.equal(totalViewHeight);
-      expect(trackRendererBBox.height).to.equal(
-        totalViewHeight + options.viewPaddingTop + options.viewPaddingBottom,
-      );
-      expect(tiledPlotBBox.height).to.equal(
-        totalViewHeight +
-          options.viewPaddingTop +
-          options.viewPaddingBottom +
-          options.viewMarginTop +
-          options.viewMarginBottom,
-      );
-      expect(trackRendererBBox.width).to.equal(
-        topTrackBBox.width + options.viewPaddingLeft + options.viewPaddingRight,
-      );
-      expect(tiledPlotBBox.width).to.equal(
-        topTrackBBox.width +
-          options.viewPaddingLeft +
-          options.viewPaddingRight +
-          options.viewMarginLeft +
-          options.viewMarginRight,
-      );
-    });
-
-    it('creates a track with default options', async () => {
-      [div, api] = await createElementAndApi(simpleCenterViewConfig, {
-        defaultTrackOptions: {
-          all: {
-            showTooltip: true,
-          },
-        },
-      });
-
-      const newTrack = {
-        filetype: 'hitile',
-        datatype: 'vector',
-        name: 'wgEncodeLicrHistoneLiverH3k27acMAdult8wksC57bl6StdSig.hitile',
-        coordSystem: 'mm9',
-        server: 'http://higlass.io/api/v1',
-        tilesetUid: 'DLtSFl7jRI6m4eqbU7sCQg',
-        type: 'horizontal-line',
-      };
-
-      const component = api.getComponent();
-      component.handleTrackAdded('a', newTrack, 'top');
-
-      const viewconf = component.getViewsAsJson();
-      const trackConf = viewconf.views[0].tracks.top[0];
-
-      expect(trackConf.options.showTooltip).to.equal(true);
-      // expect(Object.keys(component.viewHeaders).length).to.be.greaterThan(0);
-    });
-
-    it('creates a track without default options', async () => {
-      [div, api] = await createElementAndApi(simpleCenterViewConfig);
-
-      const newTrack = {
-        filetype: 'hitile',
-        datatype: 'vector',
-        name: 'wgEncodeLicrHistoneLiverH3k27acMAdult8wksC57bl6StdSig.hitile',
-        coordSystem: 'mm9',
-        server: 'http://higlass.io/api/v1',
-        tilesetUid: 'DLtSFl7jRI6m4eqbU7sCQg',
-        type: 'horizontal-line',
-      };
-
-      const component = api.getComponent();
-      component.handleTrackAdded('a', newTrack, 'top');
-
-      const viewconf = component.getViewsAsJson();
-      const trackConf = viewconf.views[0].tracks.top[0];
-
-      expect(trackConf.options.showTooltip).to.equal(false);
-      // expect(Object.keys(component.viewHeaders).length).to.be.greaterThan(0);
-    });
-
-    it('creates an editable component', async () => {
-      [div, api] = await createElementAndApi(simpleCenterViewConfig);
-
-      const component = api.getComponent();
-
-      expect(Object.keys(component.viewHeaders).length).to.be.greaterThan(0);
-    });
-
-    it('zooms to negative domain', async () => {
-      [div, api] = await createElementAndApi(simpleCenterViewConfig, {
-        editable: false,
-      });
-
-      api.zoomTo(
-        'a',
-        6.069441699652629,
-        6.082905691828387,
-        -23.27906532393644,
-        -23.274695776773807,
-        100,
-      );
-
-      await new Promise((done) =>
-        waitForTransitionsFinished(api.getComponent(), done),
-      );
-      expect(api.getComponent().yScales.a.domain()[0]).to.be.lessThan(0);
-    });
-
-    it('zooms to just x and y', async () => {
-      [div, api] = await createElementAndApi(simpleCenterViewConfig, {
-        editable: false,
-      });
-
-      api.zoomTo('a', 6.069441699652629, 6.082905691828387, null, null, 100);
-
-      await new Promise((done) =>
-        waitForTransitionsFinished(api.getComponent(), done),
-      );
-      await new Promise((done) => waitForTilesLoaded(api.getComponent(), done));
-
-      expect(api.getComponent().yScales.a.domain()[0]).to.be.greaterThan(2);
-      const trackObj = api.getTrackObject('a', 'heatmap1');
-      const rd = trackObj.getVisibleRectangleData(285, 156, 11, 11);
-      expect(rd.data.length).to.equal(1);
-    });
-
-    it('zooms to the location near a MYC gene', async () => {
-      [div, api] = await createElementAndApi(simpleCenterViewConfig, {
-        editable: false,
-      });
-
-      api.zoomToGene('a', 'MYC', 100, 1000);
-      await new Promise((done) =>
-        waitForTransitionsFinished(api.getComponent(), done),
-      );
-
-      expect(api.getComponent().xScales.a.domain()[0]).to.be.closeTo(
-        1480820463,
-        1,
-      );
-    });
-
-    it('suggest a list of genes that top match with the given keyword', async () => {
-      [div, api] = await createElementAndApi(simpleCenterViewConfig, {
-        editable: false,
-      });
-
-      await new Promise((done) => {
-        api.suggestGene('a', 'MY', (suggestions) => {
-          expect(
-            suggestions.find(
-              (d) => d.geneName.toLowerCase() === 'MYC'.toLowerCase(),
-            ),
-          ).to.not.equal(undefined);
-          done(null);
-        });
-      });
-    });
-
-    it('reset viewport after zoom', async () => {
-      [div, api] = await createElementAndApi(simpleHeatmapViewConf, {
-        editable: false,
-      });
-
-      const hgc = api.getComponent();
-
-      await new Promise((done) => waitForTilesLoaded(hgc, done));
-      const initialXDomain = hgc.xScales.a.domain();
-
-      const newXDomain = [1000000000, 2000000000];
-
-      api.zoomTo('a', ...newXDomain, null, null, 100);
-
-      await new Promise((done) => waitForTransitionsFinished(hgc, done));
-      expect(Math.round(hgc.xScales.a.domain()[0])).to.equal(newXDomain[0]);
-      expect(Math.round(hgc.xScales.a.domain()[1])).to.equal(newXDomain[1]);
-
-      api.resetViewport('a');
-
-      expect(Math.round(hgc.xScales.a.domain()[0])).to.equal(initialXDomain[0]);
-      expect(Math.round(hgc.xScales.a.domain()[1])).to.equal(initialXDomain[1]);
-    });
-
-    it('zoom to a nonexistent view', async () => {
-      // complete me, should throw an error rather than complaining
-      // "Cannot read property 'copy' of undefined thrown"
-      [div, api] = await createElementAndApi(simpleCenterViewConfig, {
-        editable: false,
-      });
-
-      expect(() =>
-        api.zoomTo(
-          'nonexistent',
-          6.069441699652629,
-          6.082905691828387,
-          -23.274695776773807,
-          -23.27906532393644,
-        ),
-      ).to.throw('Invalid viewUid. Current uuids: a');
-    });
-
-    it('creates a non editable component', async () => {
-      [div, api] = await createElementAndApi(simpleCenterViewConfig, {
-        editable: false,
-      });
-
-      const component = api.getComponent();
-
-      expect(Object.keys(component.viewHeaders).length).to.equal(0);
-    });
-
-    it('retrieves a track', async () => {
-      [div, api] = await createElementAndApi(simpleCenterViewConfig, {
-        editable: false,
-      });
-
-      const viewconf = api.getViewConfig();
-      const trackObj = api.getTrackObject(
-        viewconf.views[0].tracks.center[0].uid,
-      );
-
-      expect(trackObj).to.exist;
-    });
-
-    it('zooms to a negative location', async () => {
-      [div, api] = await createElementAndApi(simpleCenterViewConfig, {
-        editable: false,
-        bounded: true,
-      });
-      api.zoomTo('a', -10000000, 10000000);
-      await new Promise((done) =>
-        waitForTransitionsFinished(api.getComponent(), done),
-      );
-      await new Promise((done) => waitForTilesLoaded(api.getComponent(), done));
-    });
-
-    it('has option getter', async () => {
-      [div, api] = await createElementAndApi(simpleCenterViewConfig, {
-        editable: false,
-        sizeMode: 'bounded',
-      });
-
-      expect(api.option('editable')).to.equal(false);
-      expect(api.option('sizeMode')).to.equal('bounded');
-    });
-
-    it('has version', async () => {
-      [div, api] = await createElementAndApi(emptyConf, { editable: false });
-      expect(api.version).to.equal(VERSION);
-    });
-
     it('mousemove and zoom events work for 1D and 2D tracks', async () => {
       [div, api] = await createElementAndApi(
         simple1dHorizontalVerticalAnd2dDataTrack,
         { editable: false, bounded: true },
       );
+
+      await waitForComponentReady(div);
+      await new Promise((done) => waitForTilesLoaded(api.getComponent(), done));
 
       const createMouseEvent = (type, x, y) =>
         new MouseEvent(type, {
@@ -349,8 +69,6 @@ describe('API Tests', () => {
         moved[event.trackId] = true;
       });
 
-      await new Promise((done) => waitForTilesLoaded(api.getComponent(), done));
-
       const tiledPlotDiv = div.querySelector('.tiled-plot-div');
 
       tiledPlotDiv.dispatchEvent(createMouseEvent('mousemove', 100, 45));
@@ -369,6 +87,7 @@ describe('API Tests', () => {
         simple1dHorizontalVerticalAnd2dDataTrack,
         { editable: false, bounded: true },
       );
+      await waitForComponentReady(div);
 
       api.setBroadcastMousePositionGlobally(true);
 
@@ -468,6 +187,332 @@ describe('API Tests', () => {
       await new Promise((done) => setTimeout(done, 0));
 
       expect(clicked).to.equal(2);
+    });
+
+    it('retrieves a track', async () => {
+      [div, api] = await createElementAndApi(simpleCenterViewConfig, {
+        editable: false,
+      });
+
+      await waitForComponentReady(div);
+
+      const viewconf = api.getViewConfig();
+      const trackObj = api.getTrackObject(
+        viewconf.views[0].tracks.center[0].uid,
+      );
+
+      expect(trackObj).to.exist;
+    });
+
+    it('zooms to a negative location', async () => {
+      [div, api] = await createElementAndApi(simpleCenterViewConfig, {
+        editable: false,
+        bounded: true,
+      });
+      await waitForComponentReady(div);
+
+      api.zoomTo('a', -10000000, 10000000);
+      await new Promise((done) =>
+        waitForTransitionsFinished(api.getComponent(), done),
+      );
+      await new Promise((done) => waitForTilesLoaded(api.getComponent(), done));
+    });
+
+    it('suggest a list of genes that top match with the given keyword', async () => {
+      const viewconf = JSON.parse(JSON.stringify(geneAnnotationsOnly1));
+      viewconf.trackSourceServers = [];
+      viewconf.views[0].tracks.top.push(chromInfoTrack);
+
+      [div, api] = await createElementAndApi(viewconf, {
+        editable: false,
+      });
+      await waitForComponentReady(div);
+
+      await new Promise((done) => {
+        api.suggestGene('aa', 'MY', (suggestions) => {
+          expect(
+            suggestions.find(
+              (d) => d.geneName.toLowerCase() === 'MYC'.toLowerCase(),
+            ),
+          ).to.not.equal(undefined);
+          done(null);
+        });
+      });
+    });
+
+    it('reset viewport after zoom', async () => {
+      [div, api] = await createElementAndApi(simpleHeatmapViewConf, {
+        editable: false,
+      });
+
+      await waitForComponentReady(div);
+
+      const hgc = api.getComponent();
+
+      await new Promise((done) => waitForTilesLoaded(hgc, done));
+      const initialXDomain = hgc.xScales.a.domain();
+
+      const newXDomain = [1000000000, 2000000000];
+
+      api.zoomTo('a', ...newXDomain, null, null, 100);
+      await waitForScalesStabilized(api.getComponent(), 'a', {
+        timeInterval: 300,
+        maxTime: 3000,
+      });
+
+      expect(Math.round(hgc.xScales.a.domain()[0])).to.equal(newXDomain[0]);
+      expect(Math.round(hgc.xScales.a.domain()[1])).to.equal(newXDomain[1]);
+
+      api.resetViewport('a');
+      await waitForScalesStabilized(hgc, 'a', {
+        timeInterval: 300,
+        maxTime: 3000,
+      });
+
+      expect(Math.round(hgc.xScales.a.domain()[0])).to.equal(
+        simpleHeatmapViewConf.views[0].initialXDomain[0],
+      );
+      expect(Math.round(hgc.xScales.a.domain()[1])).to.equal(
+        simpleHeatmapViewConf.views[0].initialXDomain[1],
+      );
+    });
+
+    it('zoom to a nonexistent view', async () => {
+      // complete me, should throw an error rather than complaining
+      // "Cannot read property 'copy' of undefined thrown"
+      [div, api] = await createElementAndApi(simpleCenterViewConfig, {
+        editable: false,
+      });
+
+      await waitForComponentReady(div);
+
+      expect(() =>
+        api.zoomTo(
+          'nonexistent',
+          6.069441699652629,
+          6.082905691828387,
+          -23.274695776773807,
+          -23.27906532393644,
+        ),
+      ).to.throw('Invalid viewUid. Current uuids: a');
+    });
+
+    it('zooms to the location near a MYC gene', async () => {
+      const viewconf = JSON.parse(JSON.stringify(geneAnnotationsOnly1));
+      viewconf.trackSourceServers = [];
+      viewconf.views[0].tracks.top.push(chromInfoTrack);
+
+      [div, api] = await createElementAndApi(viewconf, {
+        editable: false,
+      });
+
+      await waitForComponentReady(div);
+
+      api.zoomToGene('aa', 'MYC', 100, 500);
+
+      await waitForScalesStabilized(api.getComponent(), 'aa', {
+        initialWait: 1000,
+        timeInterval: 500,
+        maxTime: 5000,
+      });
+
+      expect(api.getComponent().xScales.aa.domain()[0]).to.be.closeTo(
+        1521543903,
+        1,
+      );
+    });
+
+    it('shows and hides the track chooser', async () => {
+      [div, api] = await createElementAndApi(simpleCenterViewConfig);
+
+      api.showTrackChooser();
+
+      api.hideTrackChooser();
+    });
+
+    it('adjust view spacing', async () => {
+      const options = {
+        pixelPreciseMarginPadding: true,
+        containingPaddingX: 0,
+        containingPaddingY: 0,
+        viewMarginTop: 32,
+        viewMarginBottom: 6,
+        viewMarginLeft: 32,
+        viewMarginRight: 6,
+        viewPaddingTop: 32,
+        viewPaddingBottom: 6,
+        viewPaddingLeft: 32,
+        viewPaddingRight: 6,
+      };
+
+      [div, api] = await createElementAndApi(adjustViewSpacingConf, options);
+
+      await waitForComponentReady(div);
+
+      const tiledPlotEl = div.querySelector('.tiled-plot-div');
+      const trackRendererEl = div.querySelector('.track-renderer-div');
+      const topTrackEl = div.querySelector('.top-track-container');
+
+      // We need to get the parent of tiledPlotDiv because margin is apparently
+      // not included in the BBox width and height.
+      const tiledPlotBBox = tiledPlotEl.parentNode.getBoundingClientRect();
+      const trackRendererBBox = trackRendererEl.getBoundingClientRect();
+      const topTrackBBox = topTrackEl.getBoundingClientRect();
+
+      const totalViewHeight = adjustViewSpacingConf.views[0].tracks.top.reduce(
+        (height, track) => height + track.height,
+        0,
+      );
+
+      expect(topTrackBBox.height).to.equal(totalViewHeight);
+      expect(trackRendererBBox.height).to.equal(
+        totalViewHeight + options.viewPaddingTop + options.viewPaddingBottom,
+      );
+      expect(tiledPlotBBox.height).to.equal(
+        totalViewHeight +
+          options.viewPaddingTop +
+          options.viewPaddingBottom +
+          options.viewMarginTop +
+          options.viewMarginBottom,
+      );
+      expect(trackRendererBBox.width).to.equal(
+        topTrackBBox.width + options.viewPaddingLeft + options.viewPaddingRight,
+      );
+
+      expect(Math.round(tiledPlotBBox.width)).to.equal(
+        topTrackBBox.width +
+          options.viewPaddingLeft +
+          options.viewPaddingRight +
+          options.viewMarginLeft +
+          options.viewMarginRight,
+      );
+    });
+
+    it('creates a track with default options', async () => {
+      [div, api] = await createElementAndApi(simpleCenterViewConfig, {
+        defaultTrackOptions: {
+          all: {
+            showTooltip: true,
+          },
+        },
+      });
+
+      const newTrack = {
+        filetype: 'hitile',
+        datatype: 'vector',
+        name: 'wgEncodeLicrHistoneLiverH3k27acMAdult8wksC57bl6StdSig.hitile',
+        coordSystem: 'mm9',
+        server: 'http://higlass.io/api/v1',
+        tilesetUid: 'DLtSFl7jRI6m4eqbU7sCQg',
+        type: 'horizontal-line',
+      };
+
+      const component = api.getComponent();
+      component.handleTrackAdded('a', newTrack, 'top');
+
+      const viewconf = component.getViewsAsJson();
+      const trackConf = viewconf.views[0].tracks.top[0];
+
+      expect(trackConf.options.showTooltip).to.equal(true);
+      // expect(Object.keys(component.viewHeaders).length).to.be.greaterThan(0);
+    });
+
+    it('creates a track without default options', async () => {
+      [div, api] = await createElementAndApi(simpleCenterViewConfig);
+
+      const newTrack = {
+        filetype: 'hitile',
+        datatype: 'vector',
+        name: 'wgEncodeLicrHistoneLiverH3k27acMAdult8wksC57bl6StdSig.hitile',
+        coordSystem: 'mm9',
+        server: 'http://higlass.io/api/v1',
+        tilesetUid: 'DLtSFl7jRI6m4eqbU7sCQg',
+        type: 'horizontal-line',
+      };
+
+      const component = api.getComponent();
+      component.handleTrackAdded('a', newTrack, 'top');
+
+      const viewconf = component.getViewsAsJson();
+      const trackConf = viewconf.views[0].tracks.top[0];
+
+      expect(trackConf.options.showTooltip).to.equal(false);
+      // expect(Object.keys(component.viewHeaders).length).to.be.greaterThan(0);
+    });
+
+    it('creates an editable component', async () => {
+      [div, api] = await createElementAndApi(simpleCenterViewConfig);
+
+      const component = api.getComponent();
+
+      expect(Object.keys(component.viewHeaders).length).to.be.greaterThan(0);
+    });
+
+    it('zooms to negative domain', async () => {
+      [div, api] = await createElementAndApi(simpleCenterViewConfig, {
+        editable: false,
+      });
+
+      await waitForComponentReady(div);
+
+      api.zoomTo(
+        'a',
+        6.069441699652629,
+        6.082905691828387,
+        -23.27906532393644,
+        -23.274695776773807,
+        100,
+      );
+
+      await new Promise((done) =>
+        waitForTransitionsFinished(api.getComponent(), done),
+      );
+      expect(api.getComponent().yScales.a.domain()[0]).to.be.lessThan(0);
+    });
+
+    it('zooms to just x and y', async () => {
+      [div, api] = await createElementAndApi(simpleCenterViewConfig, {
+        editable: false,
+      });
+
+      await waitForComponentReady(div);
+
+      api.zoomTo('a', 6.069441699652629, 6.082905691828387, null, null, 100);
+
+      await new Promise((done) =>
+        waitForTransitionsFinished(api.getComponent(), done),
+      );
+      await new Promise((done) => waitForTilesLoaded(api.getComponent(), done));
+
+      expect(api.getComponent().yScales.a.domain()[0]).to.be.greaterThan(2);
+      const trackObj = api.getTrackObject('a', 'heatmap1');
+      const rd = trackObj.getVisibleRectangleData(285, 156, 11, 11);
+      expect(rd.data.length).to.equal(1);
+    });
+
+    it('creates a non editable component', async () => {
+      [div, api] = await createElementAndApi(simpleCenterViewConfig, {
+        editable: false,
+      });
+
+      const component = api.getComponent();
+
+      expect(Object.keys(component.viewHeaders).length).to.equal(0);
+    });
+
+    it('has option getter', async () => {
+      [div, api] = await createElementAndApi(simpleCenterViewConfig, {
+        editable: false,
+        sizeMode: 'bounded',
+      });
+
+      expect(api.option('editable')).to.equal(false);
+      expect(api.option('sizeMode')).to.equal('bounded');
+    });
+
+    it('has version', async () => {
+      [div, api] = await createElementAndApi(emptyConf, { editable: false });
+      expect(api.version).to.equal(VERSION);
     });
 
     it('has location getter', async () => {
