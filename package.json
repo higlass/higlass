@@ -9,6 +9,7 @@
   "css": "dist/hglib.css",
   "exports": {
     ".": {
+      "types": "./dist/app/scripts/hglib.d.ts",
       "import": "./dist/higlass.mjs"
     },
     "./dist/*": "./dist/*"
@@ -17,7 +18,7 @@
   "keywords": ["hi-c", "genomics", "matrix", "tracks"],
   "scripts": {
     "start": "vite",
-    "build": "node ./scripts/build.mjs",
+    "build": "tsc -p tsconfig.emit.json && node ./scripts/build.mjs",
     "compile": "npm run build && zip -r dist.zip dist",
     "typecheck": "tsc",
     "format": "biome format --write",

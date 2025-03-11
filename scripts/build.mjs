@@ -101,6 +101,7 @@ async function build() {
           configFile: false,
           presets: ['@babel/preset-react'],
           plugins: ['@babel/plugin-transform-classes'],
+          generatorOpts: { importAttributesKeyword: 'with' },
         },
       }),
       injectCssByJs(),
@@ -193,6 +194,15 @@ async function main({ outDir }) {
       globalThis.hglib = hglib;
     </script>
   `),
+    ),
+    // for the types output
+    fs.promises.copyFile(
+      path.resolve(__dirname, '../package.json'),
+      path.resolve(outDir, 'package.json'),
+    ),
+    fs.promises.copyFile(
+      path.resolve(__dirname, '../app/schema.json'),
+      path.resolve(outDir, 'app/schema.json'),
     ),
   ]);
 }

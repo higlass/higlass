@@ -20,7 +20,8 @@ export const tracks = {
   HorizontalGeneAnnotationsTrack,
 };
 
-export { default as schema } from '../schema.json';
+export { default as schema } from '../schema.json' with { type: 'json' };
+export { version } from '../../package.json' with { type: 'json' };
 
 /** @import * as api from './api' */
 /** @import * as types from './types' */
@@ -38,8 +39,6 @@ export {
 } from './test-helpers';
 
 export { getTrackObjectFromHGC } from './utils';
-
-export { version } from '../../package.json';
 
 /**
  * Create a `HiGlassComponent` instance.
