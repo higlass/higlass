@@ -91,6 +91,9 @@ export interface TrackObject {
   remove(): void;
   movedY(extent: number): void;
   zoomedY(yPosition: number, wheelDelta: number): void;
+  fetching?: Set<unknown>;
+  tilesetInfo?: TilesetInfo;
+  chromInfo?: unknown; // TODO
 }
 
 export type Theme = typeof THEME_DARK | typeof THEME_LIGHT;
