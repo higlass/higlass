@@ -7,6 +7,7 @@
   "unpkg": "dist/hglib.min.js",
   "jsdelivr": "dist/hglib.min.js",
   "css": "dist/hglib.css",
+  "types": "dist/app/scripts/hglib.d.ts",
   "exports": {
     ".": {
       "types": "./dist/app/scripts/hglib.d.ts",

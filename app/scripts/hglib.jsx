@@ -49,7 +49,7 @@ export { getTrackObjectFromHGC } from './utils';
  *
  * @returns {Promise<HiGlassComponent>}
  */
-const launch = async (element, config, options) => {
+const launch = async (element, config, options = {}) => {
   return new Promise((resolve) => {
     ReactDOM.render(
       <HiGlassComponent
@@ -57,7 +57,7 @@ const launch = async (element, config, options) => {
           // Wait to resolve until React gives us a ref
           ref && resolve(ref);
         }}
-        options={options || {}}
+        options={options}
         viewConfig={config}
       />,
       element,
@@ -70,7 +70,7 @@ const launch = async (element, config, options) => {
  *
  * @param {HTMLElement} element - DOM element to render the HiGlass component.
  * @param {HiGlassViewConfig | string} viewConfig - The view config to load.
- * @param {HiGlassOptions} options - Additional options for how the HiGlass component is drawn and behaves
+ * @param {HiGlassOptions} [options] - Additional options for how the HiGlass component is drawn and behaves
  * @returns  {Promise<HiGlassApi>}  Newly created HiGlass component.
  *
  * Note: If `viewConfig` is a string, it will be interpreted as a url from which to retrieve the viewconf.
@@ -88,7 +88,7 @@ const launch = async (element, config, options) => {
  * });
  * ```
  */
-export const viewer = async (element, viewConfig, options) => {
+export const viewer = async (element, viewConfig, options = {}) => {
   const hg = await launch(
     element,
     typeof viewConfig === 'string'
