@@ -1,11 +1,9 @@
-// @ts-nocheck
 import React from 'react';
 import ReactDOM from 'react-dom';
 import HiGlassComponent from './HiGlassComponent';
 
 import HorizontalGeneAnnotationsTrack from './HorizontalGeneAnnotationsTrack';
-// these exports can be used to create new tracks in outside
-// environments (e.g. Observable)
+// these exports can be used to create new tracks in outside environments (e.g. Observable)
 import SVGTrack from './SVGTrack';
 import TiledPixiTrack from './TiledPixiTrack';
 
@@ -24,9 +22,12 @@ export const tracks = {
 
 export { default as schema } from '../schema.json';
 
-/** @import { HiGlassApi as Api } from './api' */
+/** @import * as api from './api' */
+/** @import * as types from './types' */
 
-/** @typedef {Api["public"]} HiGlassApi */
+/** @typedef {api.HiGlassApi["public"]} HiGlassApi */
+/** @typedef {types.HiGlassOptions} HiGlassOptions */
+/** @typedef {types.HiGlassViewConfig} HiGlassViewConfig */
 
 // export functions that are useful for testing
 export {
@@ -40,32 +41,27 @@ export { getTrackObjectFromHGC } from './utils';
 
 export { version } from '../../package.json';
 
+/**
+ * Create a `HiGlassComponent` instance.
+ *
+ * @param {HTMLElement} element - The element to attach the HiGlassComponent.
+ * @param {HiGlassViewConfig} config - The view configuration.
+ * @param {HiGlassOptions} [options] - How the component is drawn and and behaves.
+ *
+ * @returns {Promise<HiGlassComponent>}
+ */
 const launch = async (element, config, options) => {
-  /**
-   * The instance's public API will be passed into the callback
-   *
-   * @param {DOMElement} element The element to attach the HiGlass component to
-   *  E.g. ``document.getElementById('two-heatmaps')``
-   *
-   * @param {Object} config The viewconfig to load. If this parameter is a string
-   * it will be interpreted as a url from which to retrieve the viewconf.
-   *
-   * @param {Object} options Options that affect how the component is drawn and
-   * and behaves.
-   *
-   * @return  {Object} The instance's public API
-   */
-  const ref = React.createRef();
-
   return new Promise((resolve) => {
     ReactDOM.render(
       <HiGlassComponent
-        ref={ref}
+        ref={(/** @type {HiGlassComponent | null} */ ref) => {
+          // Wait to resolve until React gives us a ref
+          ref && resolve(ref);
+        }}
         options={options || {}}
         viewConfig={config}
       />,
       element,
-      () => resolve(ref.current),
     );
   });
 };
@@ -73,62 +69,34 @@ const launch = async (element, config, options) => {
 /**
  * Create a HiGlass component.
  *
- * In addition to the parameters below, a number of extra options can be passed
- * using the **options** parameter:
+ * @param {HTMLElement} element - DOM element to render the HiGlass component.
+ * @param {HiGlassViewConfig | string} viewConfig - The view config to load.
+ * @param {HiGlassOptions} options - Additional options for how the HiGlass component is drawn and behaves
+ * @returns  {Promise<HiGlassApi>}  Newly created HiGlass component.
  *
- * * **authToken** *(string)* - An auth token to be included with every tile request
-  (e.g. ``JWT xyz``)
- * * **bounded** *(bool)* - A boolean specifying whether the component should be sized
-  to fit within the enclosing div [default=false]. If it is false, then the component
-  will grow as needed to fit the tracks within it.
- * * **editable** *(bool)* - Can the layout be changed? If false, the view headers will
-  be hidden. This can also be specified in the viewconfig using the ``editable`` option.
-  The value passed here overrides the value in the viewconf. [default=true]
- * * **defaultTrackOptions** *(dict)* - Specify a set of default options that will be used for
- *  newly added tracks. These can be broken down into two types: `all` - affecting all
- *  all track types and `trackSpecific` which will affect only some track types. See the
- *  example below for a concrete demonstration.
- * @param  {Object}  element  DOM element the HiGlass component should be
- *   attached to.
- * @param  {Object|String}  viewConfig  The viewconfig to load. If this parameter is a string
- * it will be interpreted as a url from which to retrieve the viewconf. If it is a dictionary
- * it will be loaded as is.
- * @param  {Object}  options  Dictionary of public options. See the description above for a list
-   of available values.
+ * Note: If `viewConfig` is a string, it will be interpreted as a url from which to retrieve the viewconf.
+ *
  * @example
- *
- * const hgv = hglib.viewer(
- *  document.getElementById('development-demo'),
- *  testViewConfig,
- *  { bounded: true,
+ * ```js
+ * const hgv = hglib.viewer(document.querySelector('#app'), viewconf, {
+ *   bounded: true,
  *   defaultTrackOptions: {
- *     all: {
- *       showTooltip: true,
- *     },
+ *     all: { showTooltip: true },
  *     trackSpecific: {
- *      'heatmap': {
- *        showTooltip: false,
- *      }
+ *       heatmap: { showTooltip: false }
  *     }
  *   }
  * });
- *
- * @return  {Promise<HiGlassApi>}  Newly created HiGlass component.
+ * ```
  */
 export const viewer = async (element, viewConfig, options) => {
-  /**
-   * Available options:
-   *
-   *  bounded: [true/false]
-   *      Fit the container to the bounds of the element
-   */
-  if (typeof viewConfig === 'string') {
-    // fetch the config if provided
-    viewConfig = await fetch(viewConfig).then((response) => response.json());
-  }
-
-  const hg = await launch(element, viewConfig, options);
-
+  const hg = await launch(
+    element,
+    typeof viewConfig === 'string'
+      ? await fetch(viewConfig).then((response) => response.json())
+      : viewConfig,
+    options,
+  );
   return hg.api;
 };
 
