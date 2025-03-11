@@ -1580,8 +1580,6 @@ class HiGlassComponent extends React.Component {
     this.xScales[uid] = xScale;
     this.yScales[uid] = yScale;
 
-    // console.trace('hsc', xScale.domain(), xScale.range());
-
     if (notify) {
       if (uid in this.scalesChangedListeners) {
         dictValues(this.scalesChangedListeners[uid]).forEach((x) => {
