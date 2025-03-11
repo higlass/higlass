@@ -1,5 +1,67 @@
-import type { THEME_DARK, THEME_LIGHT } from './configs';
+import type * as configs from './configs';
 import type { ChromsizeRow } from './utils/parse-chromsizes-rows';
+
+export type Theme = typeof configs.THEME_DARK | typeof configs.THEME_LIGHT;
+export type SizeMode =
+  | typeof configs.SIZE_MODE_DEFAULT
+  | typeof configs.SIZE_MODE_BOUNDED
+  | typeof configs.SIZE_MODE_OVERFLOW
+  | typeof configs.SIZE_MODE_BOUNDED_OVERFLOW
+  | typeof configs.SIZE_MODE_SCROLL;
+
+// TODO: Generate from 'schema.json'
+export type HiGlassViewConfig = Record<string, unknown>;
+
+/** Additional options for how the {@link HiGlassComponent} is drawn and behaves */
+export interface HiGlassOptions {
+  /** An auth token to be included with every tile request. */
+  authToken?: string;
+  /**
+   * Whether the component should be sized to fit within the enclosing div.
+   *
+   * If `false`, the component will grow as needed to fit the tracks within it.
+   */
+  bounded?: boolean;
+  /**
+   * Whether the layout be changed.
+   *
+   * If `false`, the view headers will be hidden. Overrides the `editable` value in the viewconf if specified.
+   */
+  editable?: boolean;
+  /** A set of default options that will be used for newly added tracks. */
+  defaultTrackOptions?: {
+    /** Options for all tracks types. */
+    all?: Record<string, unknown>;
+    /** Options for specific tracks types. */
+    trackSpecific?: Record<string, Record<string, unknown>>;
+  };
+  viewMarginTop?: number;
+  viewMarginBottom?: number;
+  viewMarginLeft?: number;
+  viewMarginRight?: number;
+  viewPaddingTop?: number;
+  viewPaddingBottom?: number;
+  viewPaddingLeft?: number;
+  viewPaddingRight?: number;
+  theme?: 'dark' | 'light';
+  isDarkTheme?: boolean;
+  moustTool?: 'select' | 'track-select';
+  pluginTracks?: Record<string, unknown>;
+  pluginDataFetchers?: Record<string, unknown>;
+  pixelPreciseMarginPadding?: boolean;
+  sizeMode?: SizeMode;
+  renderer?: 'canvas';
+  onViewConfLoaded?: () => void;
+  cheatCodesEnabled?: boolean;
+  rangeSelectionOnAlt?: boolean;
+  tracksEditable?: boolean;
+  zoomFixed?: boolean;
+  containerPaddingX?: number;
+  containerPaddingY?: number;
+  broadcastMousePositionGlobally?: boolean;
+  showGlobalMousePosition?: boolean;
+  globalMousePosition?: boolean;
+}
 
 export type Scale = import('d3-scale').ScaleContinuousNumeric<number, number>;
 
@@ -95,8 +157,6 @@ export interface TrackObject {
   tilesetInfo?: TilesetInfo;
   chromInfo?: unknown; // TODO
 }
-
-export type Theme = typeof THEME_DARK | typeof THEME_LIGHT;
 
 /** Minimum information describing a tileset. */
 export type TilesetInfoShared = {
