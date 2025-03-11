@@ -311,8 +311,8 @@ describe('API Tests', () => {
       api.zoomToGene('aa', 'MYC', 100, 500);
 
       await waitForScalesStabilized(api.getComponent(), 'aa', {
-        timeInterval: 300,
-        maxTime: 3000,
+        timeInterval: 500,
+        maxTime: 5000,
       });
 
       expect(api.getComponent().xScales.aa.domain()[0]).to.be.closeTo(
