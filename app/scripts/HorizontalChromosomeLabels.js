@@ -4,7 +4,7 @@ import { format, formatPrefix, precisionPrefix } from 'd3-format';
 import { scaleLinear } from 'd3-scale';
 
 import ChromosomeInfo from './ChromosomeInfo';
-import PixiTrack from './PixiTrack';
+import TiledPixiTrack from './TiledPixiTrack';
 import SearchField from './SearchField';
 
 import {
@@ -22,7 +22,7 @@ const TICK_HEIGHT = 6;
 const TICK_TEXT_SEPARATION = 2;
 const TICK_COLOR = 0x777777;
 
-class HorizontalChromosomeLabels extends PixiTrack {
+class HorizontalChromosomeLabels extends TiledPixiTrack {
   constructor(context, options) {
     super(context, options);
     const { dataConfig, animate, chromInfoPath, isShowGlobalMousePosition } =
@@ -80,25 +80,33 @@ class HorizontalChromosomeLabels extends PixiTrack {
       );
     }
 
-    let chromSizesPath = chromInfoPath;
+    /** The previous chromInfoPath approach to loading chromosome size.
+     *
+     * This is superseded by loading chromosome sizes directly from the
+     * tileset info object
+     */
+    if (chromInfoPath) {
+      ChromosomeInfo(
+        chromInfoPath,
+        (newChromInfo) => {
+          this.chromInfo = newChromInfo;
 
-    if (!chromSizesPath) {
-      chromSizesPath = `${dataConfig.server}/chrom-sizes/?id=${dataConfig.tilesetUid}`;
+          this.tilesetInfoReceived();
+        },
+        this.pubSub,
+      );
     }
+  }
 
-    ChromosomeInfo(
-      chromSizesPath,
-      (newChromInfo) => {
-        this.chromInfo = newChromInfo;
+  tilesetInfoReceived() {
+    this.rerender(this.options, true);
+    this.draw();
+    this.animate();
+  }
 
-        this.searchField = new SearchField(this.chromInfo);
-
-        this.rerender(this.options, true);
-        this.draw();
-        this.animate();
-      },
-      this.pubSub,
-    );
+  calculateVisibleTiles() {
+    /** This track does not use tiles so return an empty set */
+    return [];
   }
 
   initBoundsTicks() {
@@ -432,7 +440,7 @@ class HorizontalChromosomeLabels extends PixiTrack {
   draw() {
     this.allTexts = [];
 
-    if (!this.texts || !this.searchField) return;
+    if (!this.texts) return;
 
     const x1 = absToChr(this._xScale.domain()[0], this.chromInfo);
     const x2 = absToChr(this._xScale.domain()[1], this.chromInfo);

@@ -1,14 +1,13 @@
 // @ts-nocheck
 import ChromosomeInfo from './ChromosomeInfo';
-import PixiTrack from './PixiTrack';
-import SearchField from './SearchField';
+import TiledPixiTrack from './TiledPixiTrack';
 
 import { colorToHex } from './utils';
 
 // Configs
 import { GLOBALS } from './configs';
 
-class ChromosomeGrid extends PixiTrack {
+class ChromosomeGrid extends TiledPixiTrack {
   constructor(context, options) {
     super(context, options);
     const {
@@ -20,47 +19,59 @@ class ChromosomeGrid extends PixiTrack {
       isOverlay = false,
     } = context;
 
-    this.searchField = null;
     this.chromInfo = null;
     this.animate = animate;
     this.orientation = orientation;
     this.isOverlay = isOverlay;
 
-    let chromSizesPath = chromInfoPath;
+    /** The previous chromInfoPath approach to loading chromosome size.
+     *
+     * This is superseded by loading chromosome sizes directly from the
+     * tileset info object
+     */
+    if (chromInfoPath) {
+      ChromosomeInfo(
+        chromInfoPath,
+        (newChromInfo) => {
+          this.chromInfo = newChromInfo;
 
-    if (!chromSizesPath) {
-      chromSizesPath = `${dataConfig.server}/chrom-sizes/?id=${dataConfig.tilesetUid}`;
+          this.tilesetInfoReceived();
+        },
+        this.pubSub,
+      );
     }
+  }
 
-    ChromosomeInfo(
-      chromSizesPath,
-      (newChromInfo) => {
-        this.chromInfo = newChromInfo;
+  /** We got tileset info which (presumably) has chromsizes.
+   *
+   * Set up all the graphics objects necessary for rendering
+   * the chromosome grid.
+   */
+  tilesetInfoReceived() {
+    this.texts = [];
+    this.lineGraphics = new GLOBALS.PIXI.Graphics();
+    this.lineGraphics1dH = new GLOBALS.PIXI.Graphics();
+    this.lineGraphics1dV = new GLOBALS.PIXI.Graphics();
+    this.lineGraphics2d = new GLOBALS.PIXI.Graphics();
+    this.mask1dH = new GLOBALS.PIXI.Graphics();
+    this.mask1dV = new GLOBALS.PIXI.Graphics();
+    this.mask2d = new GLOBALS.PIXI.Graphics();
 
-        this.searchField = new SearchField(this.chromInfo);
+    this.lineGraphics.addChild(this.lineGraphics1dH);
+    this.lineGraphics1dH.addChild(this.mask1dH);
+    this.lineGraphics.addChild(this.lineGraphics1dV);
+    this.lineGraphics1dV.addChild(this.mask1dV);
+    this.lineGraphics.addChild(this.lineGraphics2d);
+    this.lineGraphics2d.addChild(this.mask2d);
+    this.pMain.addChild(this.lineGraphics);
 
-        this.texts = [];
-        this.lineGraphics = new GLOBALS.PIXI.Graphics();
-        this.lineGraphics1dH = new GLOBALS.PIXI.Graphics();
-        this.lineGraphics1dV = new GLOBALS.PIXI.Graphics();
-        this.lineGraphics2d = new GLOBALS.PIXI.Graphics();
-        this.mask1dH = new GLOBALS.PIXI.Graphics();
-        this.mask1dV = new GLOBALS.PIXI.Graphics();
-        this.mask2d = new GLOBALS.PIXI.Graphics();
+    this.draw();
+    this.animate();
+  }
 
-        this.lineGraphics.addChild(this.lineGraphics1dH);
-        this.lineGraphics1dH.addChild(this.mask1dH);
-        this.lineGraphics.addChild(this.lineGraphics1dV);
-        this.lineGraphics1dV.addChild(this.mask1dV);
-        this.lineGraphics.addChild(this.lineGraphics2d);
-        this.lineGraphics2d.addChild(this.mask2d);
-        this.pMain.addChild(this.lineGraphics);
-
-        this.draw();
-        this.animate();
-      },
-      pubSub,
-    );
+  calculateVisibleTiles() {
+    /** This track does not use tiles so return an empty set */
+    return [];
   }
 
   drawLines(orientation = this.orientation, left = 0, top = 0) {
@@ -100,9 +111,11 @@ class ChromosomeGrid extends PixiTrack {
       graphics.lineTo(this.dimensions[0] + left, this._yScale(0) + top);
     }
 
-    for (let i = 0; i < this.chromInfo.cumPositions.length; i++) {
-      const chrPos = this.chromInfo.cumPositions[i];
-      const chrEnd = chrPos.pos + +this.chromInfo.chromLengths[chrPos.chr] + 1;
+    let currPos = 0;
+
+    for (let i = 0; i < this.tilesetInfo.chromsizes.length; i++) {
+      const chrPos = currPos;
+      const chrEnd = currPos + this.tilesetInfo.chromsizes[i][1] + 1;
 
       // Vertical lines
       if (orientation === '2d' || orientation === '1d-horizontal') {
@@ -115,6 +128,7 @@ class ChromosomeGrid extends PixiTrack {
         graphics.moveTo(left, this._yScale(chrEnd) + top);
         graphics.lineTo(this.dimensions[0] + left, this._yScale(chrEnd) + top);
       }
+      currPos += this.tilesetInfo.chromsizes[i][1];
     }
   }
 
@@ -123,7 +137,7 @@ class ChromosomeGrid extends PixiTrack {
       return;
     }
 
-    if (!this.searchField) {
+    if (!this.tilesetInfo) {
       return;
     }
 
