@@ -3,6 +3,7 @@
 - Add missing initializer value to `utils.reduce`
 - Fix `api.hideTrackChooser`
 - Added buttons to the add track position pop-up for selecting upper-right and lower-left extents with the center position.
+- Allow chromosome tracks to reach chrominfo objects from tileset info
 
 ## v1.13.5
 
@@ -609,7 +610,7 @@ _[Detailed changes since v1.4.2](https://github.com/higlass/higlass/compare/v1.4
 
 - Add 1D heatmap track (#303): Alternative visual representation of 1D bigwig tracks. See https://github.com/higlass/higlass/pull/303 and https://github.com/higlass/higlass/blob/develop/docs/examples/1d-heatmap-track.html for an example.
 
-![1D Heatmap Track](https://user-images.githubusercontent.com/932103/43858298-a7463ece-9b1b-11e8-9da4-a6fccdde2406.png '1D Heatmap Track')
+![1D Heatmap Track](https://user-images.githubusercontent.com/932103/43858298-a7463ece-9b1b-11e8-9da4-a6fccdde2406.png "1D Heatmap Track")
 
 - Add fixing y-scale of 1D data tracks (#297). See https://github.com/higlass/higlass/pull/297 and https://github.com/higlass/higlass/blob/develop/docs/examples/api-set-track-value-scale-limits.html for an example.
 - Add JS-API for resetting the viewport back to the initial x and y domains in the viewconfig (#289)
@@ -618,15 +619,15 @@ _[Detailed changes since v1.4.2](https://github.com/higlass/higlass/compare/v1.4
 - Enhance bed track (#278): support value encoding as the `y` offset or `color`. See https://github.com/higlass/higlass/pull/278 for an example.
 - Enhance gene annotation track (#314): See https://github.com/higlass/higlass/pull/314 and https://github.com/higlass/higlass/blob/develop/docs/examples/gene-annotations.html for an example.
 
-![Enhanced Gene Annotation Track](https://user-images.githubusercontent.com/932103/44225400-70b7f500-a15b-11e8-9656-d2ba161bccf7.png 'Enhanced Gene Annotation Track')
+![Enhanced Gene Annotation Track](https://user-images.githubusercontent.com/932103/44225400-70b7f500-a15b-11e8-9656-d2ba161bccf7.png "Enhanced Gene Annotation Track")
 
 - Enhance chrom label track (#305): add support for adjusting the font size, font alignment, and font outline to use space more economically. See https://github.com/higlass/higlass/pull/305 and https://github.com/higlass/higlass/blob/develop/docs/examples/chromosome-labels.html for an example.
 
-![Enhanced Chrom Label Track](https://user-images.githubusercontent.com/932103/43924834-9baaf4c8-9bf3-11e8-8167-1ce1dce70849.png 'Enhanced Chrom Label Track')
+![Enhanced Chrom Label Track](https://user-images.githubusercontent.com/932103/43924834-9baaf4c8-9bf3-11e8-8167-1ce1dce70849.png "Enhanced Chrom Label Track")
 
 - Enhance bar track (#304): add color and gradient encoding plus diverging tracks. See https://github.com/higlass/higlass/pull/304 and https://github.com/higlass/higlass/blob/develop/docs/examples/bar-track-color-range.html for an example.
 
-![Enhanced Bar Track](https://user-images.githubusercontent.com/932103/43865156-c00aa53a-9b2f-11e8-9213-bfd0af04f491.png 'Enhanced Bar Track')
+![Enhanced Bar Track](https://user-images.githubusercontent.com/932103/43865156-c00aa53a-9b2f-11e8-9213-bfd0af04f491.png "Enhanced Bar Track")
 
 - Expose `absToChr` and `chrToAbs` API on `ChromInfo` (#283 and #307)
 - Upgrade to React `v16.5`

@@ -24,7 +24,8 @@
     "typecheck": "tsc",
     "format": "biome format --write",
     "lint": "biome ci",
-    "test": "vitest run"
+    "test": "vitest run",
+    "test-watch": "vitest watch --browser.headless=false"
   },
   "repository": {
     "type": "git",

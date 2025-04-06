@@ -238,8 +238,14 @@ class TiledPixiTrack extends PixiTrack {
     this.dataFetcher.tilesetInfo((tilesetInfoResult, tilesetUid) => {
       if (!tilesetInfoResult) return;
 
-      if (isTilesetInfo(tilesetInfoResult)) {
-        this.tilesetInfo = tilesetInfoResult;
+      if (isTilesetInfo(tilesetInfo)) {
+        this.tilesetInfo = tilesetInfo;
+
+        if (this.tilesetInfo.chromsizes) {
+          // We got chromosome info from the tileset info so let's parse it
+          // into an object we can use
+          this.chromInfo = parseChromsizesRows(this.tilesetInfo.chromsizes);
+        }
       } else {
         // no tileset info for this track
         console.warn(
@@ -285,10 +291,18 @@ class TiledPixiTrack extends PixiTrack {
 
       this.refreshTiles();
 
-      handleTilesetInfoReceived?.(this.tilesetInfo);
+      <<<<<<< HEAD
+      handleTilesetInfoReceived?.(this.tilesetInfo)
+      =======
+      // Let this track know that tileset info was received
+      this.tilesetInfoReceived()
+
+      // Let external listeners know that tileset info was received
+      if (handleTilesetInfoReceived) handleTilesetInfoReceived(tilesetInfo);
+      >>>>>>> ac05fb91 (feat: Support loading chromsizes from tileset info (#1263))
 
       // @ts-expect-error This should never happen since options is set in Track
-      this.options ??= {};
+      this.options ??=
       this.options.name = this.options.name || this.tilesetInfo.name;
 
       this.checkValueScaleLimits();
@@ -401,6 +415,13 @@ class TiledPixiTrack extends PixiTrack {
       }
     }
   }
+
+  /** Called when tileset info is received. The actual tileset info
+   * can be found in this.tilesetInfo.
+   *
+   * Child tracks can implement this method.
+   */
+  tilesetInfoReceived() {}
 
   /**
    * Return the set of ids of all tiles which are both visible and fetched.
