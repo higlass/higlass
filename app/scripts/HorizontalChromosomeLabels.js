@@ -5,7 +5,6 @@ import { scaleLinear } from 'd3-scale';
 
 import ChromosomeInfo from './ChromosomeInfo';
 import TiledPixiTrack from './TiledPixiTrack';
-import SearchField from './SearchField';
 
 import {
   absToChr,
@@ -28,7 +27,6 @@ class HorizontalChromosomeLabels extends TiledPixiTrack {
     const { dataConfig, animate, chromInfoPath, isShowGlobalMousePosition } =
       context;
 
-    this.searchField = null;
     this.chromInfo = null;
     this.dataConfig = dataConfig;
 
