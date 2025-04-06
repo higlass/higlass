@@ -111,8 +111,6 @@ class ChromosomeGrid extends TiledPixiTrack {
       graphics.lineTo(this.dimensions[0] + left, this._yScale(0) + top);
     }
 
-    let currPos = 0;
-
     for (let i = 0; i < this.chromInfo.cumPositions.length; i++) {
       const chrPos = this.chromInfo.cumPositions[i];
       const chrEnd = chrPos.pos + +this.chromInfo.chromLengths[chrPos.chr] + 1;
