@@ -113,9 +113,9 @@ class ChromosomeGrid extends TiledPixiTrack {
 
     let currPos = 0;
 
-    for (let i = 0; i < this.tilesetInfo.chromsizes.length; i++) {
-      const chrPos = currPos;
-      const chrEnd = currPos + this.tilesetInfo.chromsizes[i][1] + 1;
+    for (let i = 0; i < this.chromInfo.cumPositions.length; i++) {
+      const chrPos = this.chromInfo.cumPositions[i];
+      const chrEnd = chrPos.pos + +this.chromInfo.chromLengths[chrPos.chr] + 1;
 
       // Vertical lines
       if (orientation === '2d' || orientation === '1d-horizontal') {
