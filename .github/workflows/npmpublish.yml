@@ -12,10 +12,10 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
-          node-version: 16
+          node-version: '22.x'
       - run: sudo apt-get install xvfb
       - run: npm ci --legacy-peer-deps
       - run: npm run build --if-present
@@ -24,10 +24,10 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
-          node-version: 16
+          node-version: '22.x'
           registry-url: https://registry.npmjs.org/
       - run: npm ci --legacy-peer-deps
       - run: npm run compile
