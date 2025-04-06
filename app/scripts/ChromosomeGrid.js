@@ -126,7 +126,6 @@ class ChromosomeGrid extends TiledPixiTrack {
         graphics.moveTo(left, this._yScale(chrEnd) + top);
         graphics.lineTo(this.dimensions[0] + left, this._yScale(chrEnd) + top);
       }
-      currPos += this.tilesetInfo.chromsizes[i][1];
     }
   }
 
