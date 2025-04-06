@@ -3,6 +3,7 @@
 - Fix: Add missing initializer value to `utils.reduce`
 - Fix `api.hideTrackChooser`
 - Use bins_per_dimension or tile_size when calculating 1D visible tiles
+- Allow chromosome tracks to reach chrominfo objects from tileset info
 
 ## v1.13.5
 

@@ -1201,6 +1201,9 @@ class HiGlassComponent extends React.Component {
       )
       // filter out stale locks with non-existant tracks
       .filter((track) => track)
+      // Filter out tracks that don't have values scales (e.g. chromosome tracks).
+      // The .originalTrack check covers LeftTrackModifier style tracks.
+      .filter((track) => track.valueScale || track.originalTrack?.valueScale)
       // if the track is a LeftTrackModifier we want the originalTrack
       .map((track) =>
         track.originalTrack === undefined ? track : track.originalTrack,
