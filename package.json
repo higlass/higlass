@@ -15,8 +15,16 @@
     },
     "./dist/*": "./dist/*"
   },
-  "files": ["app", "dist"],
-  "keywords": ["hi-c", "genomics", "matrix", "tracks"],
+  "files": [
+    "app",
+    "dist"
+  ],
+  "keywords": [
+    "hi-c",
+    "genomics",
+    "matrix",
+    "tracks"
+  ],
   "scripts": {
     "start": "vite",
     "build": "tsc -p tsconfig.emit.json && node ./scripts/build.mjs",
@@ -97,7 +105,7 @@
     "@types/d3-selection": "^2.0.0",
     "@types/d3-transition": "^3.0.1",
     "@types/d3-zoom": "^3.0.0",
-    "@types/enzyme": "^3.10.18",
+    "@types/enzyme": "^3.10.19",
     "@types/ndarray": "^1.0.13",
     "@types/node": "^22.10.7",
     "@types/prop-types": "^15.7.3",

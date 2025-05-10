@@ -235,8 +235,8 @@ class TiledPixiTrack extends PixiTrack {
       ZOOM_DEBOUNCE,
     );
 
-    this.dataFetcher.tilesetInfo((tilesetInfoResult, tilesetUid) => {
-      if (!tilesetInfoResult) return;
+    this.dataFetcher.tilesetInfo((tilesetInfo, tilesetUid) => {
+      if (!tilesetInfo) return;
 
       if (isTilesetInfo(tilesetInfo)) {
         this.tilesetInfo = tilesetInfo;
@@ -251,10 +251,12 @@ class TiledPixiTrack extends PixiTrack {
         console.warn(
           'Error retrieving tilesetInfo:',
           dataConfig,
-          tilesetInfoResult.error,
+          tilesetInfo.error,
         );
 
-        this.setError(tilesetInfoResult.error, 'dataFetcher.tilesetInfo');
+        if (tilesetInfo.error) {
+          this.setError(tilesetInfo.error, 'dataFetcher.tilesetInfo');
+        }
         // Fritz: Not sure why it's reset
         // this.trackNotFoundText = '';
         this.tilesetInfo = undefined;
@@ -291,18 +293,14 @@ class TiledPixiTrack extends PixiTrack {
 
       this.refreshTiles();
 
-      <<<<<<< HEAD
-      handleTilesetInfoReceived?.(this.tilesetInfo)
-      =======
       // Let this track know that tileset info was received
       this.tilesetInfoReceived()
 
       // Let external listeners know that tileset info was received
-      if (handleTilesetInfoReceived) handleTilesetInfoReceived(tilesetInfo);
-      >>>>>>> ac05fb91 (feat: Support loading chromsizes from tileset info (#1263))
+      handleTilesetInfoReceived?.(this.tilesetInfo)
 
       // @ts-expect-error This should never happen since options is set in Track
-      this.options ??=
+      this.options ??= {};
       this.options.name = this.options.name || this.tilesetInfo.name;
 
       this.checkValueScaleLimits();
