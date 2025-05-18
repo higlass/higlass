@@ -10,8 +10,7 @@ import NestedContextMenu from './NestedContextMenu';
 // Styles
 import classes from '../styles/ContextMenu.module.scss';
 
-import { THEME_DARK } from './configs';
-import OPTIONS_INFO from './options-info';
+import { THEME_DARK, OPTIONS_INFO } from './configs';
 
 class ConfigViewMenu extends ContextMenuContainer {
   constructor(props) {
