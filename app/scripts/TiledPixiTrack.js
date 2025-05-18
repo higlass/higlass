@@ -94,6 +94,7 @@ export function getValueScale(
  * @property {Float32Array} dense
  * @property {number} minNonZero
  * @property {number} maxNonZero
+ * @property {Array<number>} [shape] - Optional 1D or 2D array dimensions
  */
 
 /**
@@ -235,20 +236,28 @@ class TiledPixiTrack extends PixiTrack {
       ZOOM_DEBOUNCE,
     );
 
-    this.dataFetcher.tilesetInfo((tilesetInfoResult, tilesetUid) => {
-      if (!tilesetInfoResult) return;
+    this.dataFetcher.tilesetInfo((tilesetInfo, tilesetUid) => {
+      if (!tilesetInfo) return;
 
-      if (isTilesetInfo(tilesetInfoResult)) {
-        this.tilesetInfo = tilesetInfoResult;
+      if (isTilesetInfo(tilesetInfo)) {
+        this.tilesetInfo = tilesetInfo;
+
+        if (this.tilesetInfo.chromsizes) {
+          // We got chromosome info from the tileset info so let's parse it
+          // into an object we can use
+          this.chromInfo = parseChromsizesRows(this.tilesetInfo.chromsizes);
+        }
       } else {
         // no tileset info for this track
         console.warn(
           'Error retrieving tilesetInfo:',
           dataConfig,
-          tilesetInfoResult.error,
+          tilesetInfo.error,
         );
 
-        this.setError(tilesetInfoResult.error, 'dataFetcher.tilesetInfo');
+        if (tilesetInfo.error) {
+          this.setError(tilesetInfo.error, 'dataFetcher.tilesetInfo');
+        }
         // Fritz: Not sure why it's reset
         // this.trackNotFoundText = '';
         this.tilesetInfo = undefined;
@@ -285,6 +294,10 @@ class TiledPixiTrack extends PixiTrack {
 
       this.refreshTiles();
 
+      // Let this track know that tileset info was received
+      this.tilesetInfoReceived();
+
+      // Let external listeners know that tileset info was received
       handleTilesetInfoReceived?.(this.tilesetInfo);
 
       // @ts-expect-error This should never happen since options is set in Track
@@ -401,6 +414,13 @@ class TiledPixiTrack extends PixiTrack {
       }
     }
   }
+
+  /** Called when tileset info is received. The actual tileset info
+   * can be found in this.tilesetInfo.
+   *
+   * Child tracks can implement this method.
+   */
+  tilesetInfoReceived() {}
 
   /**
    * Return the set of ids of all tiles which are both visible and fetched.
@@ -590,7 +610,7 @@ class TiledPixiTrack extends PixiTrack {
    */
   allTilesLoaded() {}
 
-  /** @param {number} _ */
+  /** @param {number} [_] - Optional value to set */
   minValue(_) {
     if (_) {
       this.scale.minValue = _;
@@ -601,7 +621,7 @@ class TiledPixiTrack extends PixiTrack {
       : this.scale.minValue;
   }
 
-  /** @param {number} _ */
+  /** @param {number} [_] - Optional value to set */
   maxValue(_) {
     if (_) {
       this.scale.maxValue = _;
@@ -1026,7 +1046,7 @@ class TiledPixiTrack extends PixiTrack {
    * @param {number} minValue The minimum value of the data
    * @param {number} medianValue The median value of the data. Potentially used for adding a pseudocount
    * @param {number} maxValue The maximum value of the data
-   * @param {number} inMargin A number of pixels to be left free on the top and bottom
+   * @param {number} [inMargin] A number of pixels to be left free on the top and bottom
    *    of the track. For example if the glyphs have a certain
    *    width and we want all of them to fit into the space
    * @returns {[t.Scale | ScaleQuantile, number]}
