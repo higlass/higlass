@@ -295,10 +295,10 @@ class TiledPixiTrack extends PixiTrack {
       this.refreshTiles();
 
       // Let this track know that tileset info was received
-      this.tilesetInfoReceived()
+      this.tilesetInfoReceived();
 
       // Let external listeners know that tileset info was received
-      handleTilesetInfoReceived?.(this.tilesetInfo)
+      handleTilesetInfoReceived?.(this.tilesetInfo);
 
       // @ts-expect-error This should never happen since options is set in Track
       this.options ??= {};
