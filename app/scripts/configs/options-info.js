@@ -3,7 +3,7 @@ import { formatPrefix, precisionPrefix } from 'd3-format';
 
 import HeatmapOptions from '../HeatmapOptions';
 
-const valueColumnOptions = track => {
+const valueColumnOptions = (track) => {
   if (!track.header) return [];
 
   const headerParts = track.header.split('\t');
@@ -134,7 +134,7 @@ export const OPTIONS_INFO = {
   },
   strokeSingleSeries: {
     name: 'Draw single series',
-    generateOptions: track => {
+    generateOptions: (track) => {
       const inlineOptions = [];
 
       if (track.row_infos) {
@@ -1313,7 +1313,7 @@ export const OPTIONS_INFO = {
       default: { name: 'Default', value: 'default' },
       None: { name: 'None', value: 'None' },
     },
-    generateOptions: track => {
+    generateOptions: (track) => {
       const inlineOptions = [];
 
       if (track.transforms) {
@@ -1332,7 +1332,7 @@ export const OPTIONS_INFO = {
   aggregationMode: {
     name: 'Aggregation Mode',
     inlineOptions: {},
-    generateOptions: track => {
+    generateOptions: (track) => {
       const inlineOptions = [];
 
       if (track.aggregationModes) {
@@ -1358,7 +1358,7 @@ export const OPTIONS_INFO = {
     inlineOptions: {
       none: { name: 'None', value: null },
     },
-    generateOptions: track => {
+    generateOptions: (track) => {
       if (track.maxZoom) {
         const inlineOptions = [];
 
@@ -1370,7 +1370,7 @@ export const OPTIONS_INFO = {
 
           if (track.resolutions) {
             const sortedResolutions = track.resolutions
-              .map(x => +x)
+              .map((x) => +x)
               .sort((a, b) => b - a);
             [maxResolutionSize] = sortedResolutions;
             resolution = sortedResolutions[i];

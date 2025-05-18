@@ -101,7 +101,6 @@ import * as utils from '../utils';
 // Configs
 import * as _configs from '../configs';
 
-
 const configs = {
   ..._configs,
   IS_TRACK_RANGE_SELECTABLE: utils.IS_TRACK_RANGE_SELECTABLE,
