@@ -101,12 +101,10 @@ import * as utils from '../utils';
 // Configs
 import * as _configs from '../configs';
 
-import OPTIONS_INFO from '../options-info';
 
 const configs = {
   ..._configs,
   IS_TRACK_RANGE_SELECTABLE: utils.IS_TRACK_RANGE_SELECTABLE,
-  OPTIONS_INFO,
 };
 
 const libraries = {

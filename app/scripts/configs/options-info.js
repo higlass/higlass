@@ -1,13 +1,9 @@
 // @ts-nocheck
-// A better position of this file would be under \configs,
-// but this file imports HeatmapOptions that contains React
-// components, so having this file near track implementations
-
 import { formatPrefix, precisionPrefix } from 'd3-format';
 
-import HeatmapOptions from './HeatmapOptions';
+import HeatmapOptions from '../HeatmapOptions';
 
-const valueColumnOptions = (track) => {
+const valueColumnOptions = track => {
   if (!track.header) return [];
 
   const headerParts = track.header.split('\t');
@@ -52,7 +48,7 @@ const SPECIAL_COLORS = {
   use_stroke: { name: 'Glyph color', value: '[glyph-color]' },
 };
 
-const AVAILABLE_WIDTHS = sizesInPx([1, 2, 3, 5, 8, 13, 21]);
+const AVAILABLE_WIDTHS = sizesInPx([0, 1, 2, 3, 5, 8, 13, 21]);
 const AVAILABLE_WIDTHS_AND_NONE = Object.assign(AVAILABLE_WIDTHS, {
   none: { name: 'none', value: 'none' },
 });
@@ -64,7 +60,7 @@ const OPACITY_OPTIONS_NO_ZERO = sizesInPx([0.2, 0.4, 0.6, 0.8, 1.0], '%', 100);
 
 // these values define the options that are visible in the track config
 // menu
-const OPTIONS_INFO = {
+export const OPTIONS_INFO = {
   axisLabelFormatting: {
     name: 'Axis Label Formatting',
     inlineOptions: {
@@ -136,9 +132,34 @@ const OPTIONS_INFO = {
     name: 'Stroke Width',
     inlineOptions: AVAILABLE_WIDTHS,
   },
-  strokeWidth: {
+  strokeSingleSeries: {
+    name: 'Draw single series',
+    generateOptions: track => {
+      const inlineOptions = [];
+
+      if (track.row_infos) {
+        for (let i = 0; i < track.row_infos.length; i++) {
+          inlineOptions.push({
+            name: i + 1,
+            value: i + 1,
+          });
+        }
+      }
+
+      inlineOptions.push({
+        name: 'All',
+        value: 'all',
+      });
+      inlineOptions.push({
+        name: 'None',
+        value: 'none',
+      });
+      return inlineOptions;
+    },
+  },
+  strokeWidthAndNone: {
     name: 'Stroke Width',
-    inlineOptions: AVAILABLE_WIDTHS,
+    inlineOptions: AVAILABLE_WIDTHS_AND_NONE,
   },
   trackBorderWidth: {
     name: 'Track Border Width',
@@ -286,6 +307,10 @@ const OPTIONS_INFO = {
     name: 'Bar opacity',
     inlineOptions: OPACITY_OPTIONS,
   },
+  viewNameOpacity: {
+    name: 'View name opacity',
+    inlineOptions: OPACITY_OPTIONS,
+  },
   zeroLineVisible: {
     name: 'Zero line visible',
     inlineOptions: YES_NO,
@@ -418,7 +443,10 @@ const OPTIONS_INFO = {
     name: 'Show Tooltip',
     inlineOptions: YES_NO,
   },
-
+  nanAsZero: {
+    name: 'NaN as Zero',
+    inlineOptions: YES_NO,
+  },
   fontSize: {
     name: 'Font Size',
     inlineOptions: sizesInPx([8, 9, 10, 11, 12, 14, 16, 18, 24], 'px'),
@@ -542,8 +570,12 @@ const OPTIONS_INFO = {
   labelPosition: {
     name: 'Label Position',
     inlineOptions: {
+      l: { name: 'Left', value: 'left' },
+      r: { name: 'Right', value: 'right' },
       ol: { name: 'Outer left', value: 'outerLeft' },
       or: { name: 'Outer right', value: 'outerRight' },
+      t: { name: 'Top', value: 'top' },
+      b: { name: 'Bottom', value: 'bottom' },
       ot: { name: 'Outer top', value: 'outerTop' },
       ob: { name: 'Outer bottom', value: 'outerBottom' },
       tl: { name: 'Top left', value: 'topLeft' },
@@ -1281,7 +1313,7 @@ const OPTIONS_INFO = {
       default: { name: 'Default', value: 'default' },
       None: { name: 'None', value: 'None' },
     },
-    generateOptions: (track) => {
+    generateOptions: track => {
       const inlineOptions = [];
 
       if (track.transforms) {
@@ -1300,15 +1332,21 @@ const OPTIONS_INFO = {
   aggregationMode: {
     name: 'Aggregation Mode',
     inlineOptions: {},
-    generateOptions: (track) => {
+    generateOptions: track => {
       const inlineOptions = [];
 
       if (track.aggregationModes) {
         Object.values(track.aggregationModes).forEach(({ name, value }) => {
-          inlineOptions.push({ name, value });
+          inlineOptions.push({
+            name,
+            value,
+          });
         });
       } else {
-        inlineOptions.push({ name: 'Default', value: 'default' });
+        inlineOptions.push({
+          name: 'Default',
+          value: 'default',
+        });
       }
 
       return inlineOptions;
@@ -1320,7 +1358,7 @@ const OPTIONS_INFO = {
     inlineOptions: {
       none: { name: 'None', value: null },
     },
-    generateOptions: (track) => {
+    generateOptions: track => {
       if (track.maxZoom) {
         const inlineOptions = [];
 
@@ -1332,7 +1370,7 @@ const OPTIONS_INFO = {
 
           if (track.resolutions) {
             const sortedResolutions = track.resolutions
-              .map((x) => +x)
+              .map(x => +x)
               .sort((a, b) => b - a);
             [maxResolutionSize] = sortedResolutions;
             resolution = sortedResolutions[i];
