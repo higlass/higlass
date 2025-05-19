@@ -38,7 +38,12 @@ export {
   mountHGComponent,
 } from './test-helpers';
 
-export { getTrackObjectFromHGC } from './utils';
+export {
+  debounce,
+  getDefaultTracksForDatatype,
+  getTrackByUid,
+  getTrackObjectFromHGC,
+} from './utils';
 
 export { TRACKS_INFO_BY_TYPE, OPTIONS_INFO } from './configs';
 
