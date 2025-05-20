@@ -3,8 +3,8 @@
 import boxIntersect from 'box-intersect';
 import { median, range } from 'd3-array';
 import { scaleBand, scaleLinear } from 'd3-scale';
-import classifyPoint from 'robust-point-in-polygon';
 import { zoomIdentity } from 'd3-zoom';
+import classifyPoint from 'robust-point-in-polygon';
 
 import HorizontalTiled1DPixiTrack from './HorizontalTiled1DPixiTrack';
 
@@ -400,7 +400,7 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
   }
 
   drawTile(tile) {
-    if (this.options && this.options.valueColumn) {
+    if (this.options?.valueColumn) {
       // there might no be a value scale if no valueColumn was specified
       if (this.valueScale) this.drawAxis(this.valueScale);
     }
@@ -603,7 +603,7 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
   setValueScale() {
     this.valueScale = null;
 
-    if (this.options && this.options.valueColumn) {
+    if (this.options?.valueColumn) {
       /**
        * These intervals come with some y-value that we want to plot
        */
@@ -630,8 +630,7 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
     this.colorValueScale = null;
 
     if (
-      this.options &&
-      this.options.colorEncoding &&
+      this.options?.colorEncoding &&
       this.options.colorEncoding !== 'itemRgb'
     ) {
       const min = this.options.colorEncodingRange
@@ -876,7 +875,7 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
       null,
       visibleAndFetchedIds
         .map((x) => this.fetchedTiles[x])
-        .filter((x) => x.tileData && x.tileData.length)
+        .filter((x) => x.tileData?.length)
         .map((x) =>
           Math.min.apply(
             null,
@@ -908,7 +907,7 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
       null,
       visibleAndFetchedIds
         .map((x) => this.fetchedTiles[x])
-        .filter((x) => x.tileData && x.tileData.length)
+        .filter((x) => x.tileData?.length)
         .map((x) =>
           Math.max.apply(
             null,
@@ -944,7 +943,7 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
       .concat(
         ...visibleAndFetchedIds
           .map((x) => this.fetchedTiles[x])
-          .filter((x) => x.tileData && x.tileData.length)
+          .filter((x) => x.tileData?.length)
           .map((x) =>
             x.tileData
               .sort((a, b) => b.importance - a.importance)
@@ -977,7 +976,7 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
     scaleScalableGraphics(this.rectGraphics, this._xScale, this.drawnAtScale);
     // scaleScalableGraphics(this.textGraphics, this._xScale, this.drawnAtScale);
 
-    if (this.uniqueSegments && this.uniqueSegments.length) {
+    if (this.uniqueSegments?.length) {
       this.uniqueSegments.forEach((td) => {
         const geneInfo = td.fields;
         const geneName = geneInfo[3];
