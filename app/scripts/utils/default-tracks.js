@@ -9,7 +9,7 @@ export default function getDefaultTracksForDatatype(
 ) {
   if (window.higlassTracksByType) {
     // Extend `TRACKS_INFO_BY_TYPE` with the configs of plugin tracks.
-    Object.keys(window.higlassTracksByType).forEach(pluginTrackType => {
+    Object.keys(window.higlassTracksByType).forEach((pluginTrackType) => {
       TRACKS_INFO_BY_TYPE[pluginTrackType] =
         window.higlassTracksByType[pluginTrackType].config;
     });

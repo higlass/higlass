@@ -136,12 +136,12 @@ class Annotations2dTrack extends TiledPixiTrack {
    * tile positions.
    */
   setVisibleTiles(tilePositions) {
-    this.visibleTiles = tilePositions.map(x => ({
+    this.visibleTiles = tilePositions.map((x) => ({
       tileId: this.tileToLocalId(x),
       remoteId: this.tileToRemoteId(x),
     }));
 
-    this.visibleTileIds = new Set(this.visibleTiles.map(x => x.tileId));
+    this.visibleTileIds = new Set(this.visibleTiles.map((x) => x.tileId));
   }
 
   calculateVisibleTiles() {
@@ -206,8 +206,8 @@ class Annotations2dTrack extends TiledPixiTrack {
     if (!tile.tileData.length) return;
 
     tile.tileData
-      .filter(td => !(td.uid in this.drawnAnnotations) || force)
-      .forEach(td => {
+      .filter((td) => !(td.uid in this.drawnAnnotations) || force)
+      .forEach((td) => {
         const [startX, startY] = this.projection([td.xStart, td.yStart]);
         const [endX, endY] = this.projection([td.xEnd, td.yEnd]);
 
@@ -316,7 +316,7 @@ class Annotations2dTrack extends TiledPixiTrack {
     rectGfx.mouseout = () => this.blur(rectGfx, viewPos, uid);
 
     rectGfx.mousedown = () => this.mouseDown();
-    rectGfx.mouseup = event =>
+    rectGfx.mouseup = (event) =>
       this.mouseUp(rectGfx, viewPos, uid, event, payload);
 
     if (!silent) {
@@ -373,7 +373,7 @@ class Annotations2dTrack extends TiledPixiTrack {
   }
 
   context(graphics, viewPos, uid) {
-    return proc => proc(graphics, viewPos, uid);
+    return (proc) => proc(graphics, viewPos, uid);
   }
 
   click(graphics, viewPos, uid, event, payload) {
@@ -472,8 +472,8 @@ class Annotations2dTrack extends TiledPixiTrack {
     track.appendChild(output);
 
     this.visibleAndFetchedTiles()
-      .filter(tile => tile.tileData && tile.tileData.length)
-      .map(tile => ({
+      .filter((tile) => tile.tileData && tile.tileData.length)
+      .map((tile) => ({
         graphics: tile.graphics,
         td: tile.tileData,
       }))
