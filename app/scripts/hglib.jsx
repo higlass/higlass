@@ -45,8 +45,8 @@ export {
   getTrackObjectFromHGC,
 } from './utils';
 
-export { TRACKS_INFO_BY_TYPE, OPTIONS_INFO } from './configs';
-
+export { TRACKS_INFO_BY_TYPE } from './configs';
+export { OPTIONS_INFO } from './options-info';
 /**
  * Create a `HiGlassComponent` instance.
  *
