@@ -30,30 +30,33 @@ describe('BedLikeTrack |', () => {
 
       const ys = new Set();
 
-      for (const drawnRect of Object.values(trackObj.drawnRects[16])) {
+      // Get the y positions of all drawn annotations
+      for (const drawnRect of Object.values(trackObj.drawnRects)) {
         ys.add(drawnRect[0][1]);
       }
 
       // make sure that annotations are at different y positions
       expect(ys.size).to.eql(2);
 
+      // Disable separation by strand
       ys.clear();
       hgc.instance().state.views.aa.tracks.top[0].options.separatePlusMinusStrands = false;
       hgc.setState(hgc.instance().state);
       hgc.update();
 
-      for (const drawnRect of Object.values(trackObj.drawnRects[16])) {
+      // Get the y positions of all drawn annotations
+      for (const drawnRect of Object.values(trackObj.drawnRects)) {
         ys.add(drawnRect[0][1]);
       }
-
+      
       // make sure that annotations are at the same y position
       expect(ys.size).to.eql(1);
     });
 
     afterAll(() => {
-      // removeHGComponent(div);
-      // div = null;
-      // hgc = null;
+      removeHGComponent(div);
+      div = null;
+      hgc = null;
     });
   });
 

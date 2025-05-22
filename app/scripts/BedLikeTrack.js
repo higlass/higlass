@@ -301,14 +301,18 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
     let plusStrandRows = [];
     let minusStrandRows = [];
 
+
     if (errors.length > 0) {
       this.draw();
       return;
     }
 
+    // Object.values(this.fetchedTiles
+
     this.uniqueSegments = uniqueify(
-      Object.values(this.fetchedTiles).flatMap((x) => x.tileData),
+      Object.values(this.fetchedTiles).filter(x => x.tileData.length).flatMap((x) => x.tileData),
     );
+
 
     this.uniqueSegments.forEach((td) => {
       // A random importance helps with selective hiding
@@ -317,6 +321,7 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
         td.importance = hashFunc(td.uid.toString());
       }
     });
+
 
     this.uniqueSegments.sort((a, b) => b.importance - a.importance);
 
@@ -794,6 +799,7 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
   }
 
   render() {
+    console.log('render');
     const maxPlusRows = this.plusStrandRows ? this.plusStrandRows.length : 1;
     const maxMinusRows = this.minusStrandRows ? this.minusStrandRows.length : 1;
 
@@ -958,6 +964,8 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
 
   draw() {
     super.draw();
+
+    // console.log('textManager', this.textManager);
 
     this.textManager.startDraw();
 
