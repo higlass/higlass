@@ -1031,6 +1031,7 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
     let track = null;
     let base = null;
 
+
     if (super.exportSVG) {
       [base, track] = super.exportSVG();
     } else {
@@ -1083,6 +1084,7 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
 
         gTile.appendChild(r);
 
+        console.log('texts', this.textManager.texts)
         if (this.textManager.texts[td.uid]) {
           const text = this.textManager.texts[td.uid];
 
@@ -1100,6 +1102,7 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
             `translate(${text.x},${text.y})scale(${text.scale.x},1)`,
           );
 
+          console.log('fontSize', this.options.fontSize);
           t.setAttribute('text-anchor', 'middle');
           t.setAttribute('font-family', TEXT_STYLE.fontFamily);
           t.setAttribute(

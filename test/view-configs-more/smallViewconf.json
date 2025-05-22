@@ -131,7 +131,7 @@
               "trackBorderColor": "black",
               "valueColumn": null,
               "colorEncoding": "itemRgb",
-              "showTexts": false,
+              "showTexts": true,
               "colorRange": [
                 "#000000",
                 "#652537",

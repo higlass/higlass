@@ -81,7 +81,7 @@ describe('BedLikeTrack |', () => {
 
   describe('Options', () => {
     beforeAll(async () => {
-      [div, hgc] = await mountHGComponentAsync(div, hgc, viewConf1);
+      [div, hgc] = await mountHGComponentAsync(div, hgc, smallViewconf);
     });
 
     it('Changes text color independent of fill', () => {
@@ -93,7 +93,7 @@ describe('BedLikeTrack |', () => {
       let otherIx = svg.indexOf('fill="0"');
       expect(otherIx).to.be.below(0);
 
-      hgc.instance().state.views.aa.tracks.top[1].options.fontColor = 'black';
+      hgc.instance().state.views.aa.tracks.top[0].options.fontColor = 'black';
       hgc.setState(hgc.instance().state);
       hgc.update();
 
@@ -114,7 +114,7 @@ describe('BedLikeTrack |', () => {
       let changedIx = svg.indexOf('font-size="20"');
       expect(changedIx).to.be.below(0);
 
-      hgc.instance().state.views.aa.tracks.top[1].options.fontSize = 20;
+      hgc.instance().state.views.aa.tracks.top[0].options.fontSize = 20;
       hgc.setState(hgc.instance().state);
       hgc.update();
 
@@ -128,9 +128,9 @@ describe('BedLikeTrack |', () => {
     });
 
     afterAll(() => {
-      removeHGComponent(div);
-      div = null;
-      hgc = null;
+      // removeHGComponent(div);
+      // div = null;
+      // hgc = null;
     });
   });
 
