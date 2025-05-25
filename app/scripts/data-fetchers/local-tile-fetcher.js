@@ -28,7 +28,10 @@ class LocalTileDataFetcher {
   /** @param {import('../types').HandleTilesetInfoFinished} callback */
   async tilesetInfo(callback) {
     this.tilesetInfoLoading = false;
-    callback(this.tilesetInfoData);
+    await new Promise((resolve) => setTimeout(() => {
+      callback(this.tilesetInfoData);
+      resolve(true);
+    }, 0));
     return this.tilesetInfoData;
   }
 
@@ -57,6 +60,7 @@ class LocalTileDataFetcher {
 
     for (const tileId of tileIds) {
       ret[tileId] = this.tilesData[`localtile.${tileId}`];
+      ret[tileId].tilePositionId = tileId
     }
     receivedTiles(ret);
     return ret;

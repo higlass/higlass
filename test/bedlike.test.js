@@ -128,15 +128,16 @@ describe('BedLikeTrack |', () => {
     });
 
     afterAll(() => {
-      // removeHGComponent(div);
-      // div = null;
-      // hgc = null;
+      removeHGComponent(div);
+      div = null;
+      hgc = null;
     });
   });
 
   describe('vertical scaling', () => {
     beforeAll(async () => {
       [div, hgc] = await mountHGComponentAsync(div, hgc, viewConf1);
+      // [div, hgc] = await mountHGComponentAsync(div, hgc, smallViewconf);
     });
 
     it('Zooms vertically', async () => {
@@ -151,7 +152,7 @@ describe('BedLikeTrack |', () => {
       await new Promise((done) => {
         waitForTilesLoaded(hgc.instance(), () => {
           trackObj.zoomedY(100, 0.8);
-          expect(trackObj.fetchedTiles['0.0'].rectGraphics.scale.y).to.eql(
+          expect(trackObj.rectGraphics.scale.y).to.eql(
             1.25,
           );
           done(null);
@@ -160,9 +161,9 @@ describe('BedLikeTrack |', () => {
     });
 
     afterAll(() => {
-      removeHGComponent(div);
-      div = null;
-      hgc = null;
+      // removeHGComponent(div);
+      // div = null;
+      // hgc = null;
     });
   });
 
@@ -182,7 +183,7 @@ describe('BedLikeTrack |', () => {
       expect(Object.keys(trackObj.drawnRects).length).to.be.above(0);
     });
 
-    it('Checks that + and - strand entries are at different heights', () => {
+    it.only('Checks that + and - strand entries are at different heights', () => {
       const trackObj = getTrackObjectFromHGC(
         hgc.instance(),
         viewConf.views[0].uid,
@@ -190,12 +191,10 @@ describe('BedLikeTrack |', () => {
       );
 
       const rectHeights = new Set();
-      for (const tileId of Object.keys(trackObj.drawnRects)) {
-        for (const uid of Object.keys(trackObj.drawnRects[tileId])) {
-          const rect = trackObj.drawnRects[tileId][uid];
+      for (const uid of Object.keys(trackObj.drawnRects)) {
+        const rect = trackObj.drawnRects[uid];
 
-          rectHeights.add(rect[0][3]);
-        }
+        rectHeights.add(rect[0][3]);
       }
 
       expect(rectHeights.size).to.eql(2);
@@ -1566,7 +1565,7 @@ const viewConf1 = {
             data: {
               type: 'local-tiles',
               tilesetInfo: {
-                'x.0.0': {
+                'x': {
                   max_width: 31960,
                   max_zoom: 0,
                   min_pos: [0],

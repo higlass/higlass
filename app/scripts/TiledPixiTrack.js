@@ -790,8 +790,12 @@ class TiledPixiTrack extends PixiTrack {
   receivedTiles(loadedTiles) {
     for (let i = 0; i < this.visibleTiles.length; i++) {
       const { tileId } = this.visibleTiles[i];
+      
+      console.log('tileId', tileId);
 
       if (!loadedTiles[this.visibleTiles[i].remoteId]) continue;
+
+      console.log('rtt');
 
       if (this.visibleTiles[i].remoteId in loadedTiles) {
         if (!(tileId in this.fetchedTiles)) {
@@ -834,10 +838,16 @@ class TiledPixiTrack extends PixiTrack {
 
     // const fetchedTileIDs = new Set(Object.keys(this.fetchedTiles));
 
+    console.log('here2', loadedTiles);
+    
     for (const key in loadedTiles) {
       if (loadedTiles[key]) {
+        console.log('here3', key)
+
         const tileId = loadedTiles[key].tilePositionId;
 
+        console.log('tileId', tileId);
+        
         if (this.fetching.has(tileId)) {
           this.fetching.delete(tileId);
         }
