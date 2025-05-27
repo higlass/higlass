@@ -101,6 +101,10 @@ export class TextManager {
 
     this.textGraphics = new GLOBALS.PIXI.Graphics();
     this.track.pMain.addChild(this.textGraphics);
+
+    // Some default font size that will get overwriten when
+    // this.textWidths and this.textHeights are set
+    this.fontSize = 9;
   }
 
   hideOverlaps() {
@@ -162,10 +166,18 @@ export class TextManager {
         ? colorToHex(this.track.options.fontColor)
         : 'black';
 
+    const newFontSize = +this.track.options.fontSize || TEXT_STYLE.fontSize;
+    if (newFontSize !== this.fontSize) {
+      // New font size means different text widths and heights
+      this.fontSize = newFontSize;
+      this.textWidths = {};
+      this.textHeights = {};
+    }
+
     text.style = {
       ...TEXT_STYLE,
       fill: fontColor,
-      fontSize: +this.track.options.fontSize || TEXT_STYLE.fontSize,
+      fontSize: this.fontSize,
     };
     text.text = textText;
 
@@ -301,7 +313,6 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
     let plusStrandRows = [];
     let minusStrandRows = [];
 
-
     if (errors.length > 0) {
       this.draw();
       return;
@@ -310,7 +321,9 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
     // Object.values(this.fetchedTiles
 
     this.uniqueSegments = uniqueify(
-      Object.values(this.fetchedTiles).filter(x => x.tileData.length).flatMap((x) => x.tileData),
+      Object.values(this.fetchedTiles)
+        .filter((x) => x.tileData.length)
+        .flatMap((x) => x.tileData),
     );
 
     this.uniqueSegments.forEach((td) => {
@@ -320,7 +333,6 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
         td.importance = hashFunc(td.uid.toString());
       }
     });
-
 
     this.uniqueSegments.sort((a, b) => b.importance - a.importance);
 
@@ -798,7 +810,6 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
   }
 
   render() {
-    console.log('render');
     const maxPlusRows = this.plusStrandRows ? this.plusStrandRows.length : 1;
     const maxMinusRows = this.minusStrandRows ? this.minusStrandRows.length : 1;
 
@@ -1027,7 +1038,6 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
   exportSVG() {
     let track = null;
     let base = null;
-
 
     if (super.exportSVG) {
       [base, track] = super.exportSVG();

@@ -48,7 +48,7 @@ describe('BedLikeTrack |', () => {
       for (const drawnRect of Object.values(trackObj.drawnRects)) {
         ys.add(drawnRect[0][1]);
       }
-      
+
       // make sure that annotations are at the same y position
       expect(ys.size).to.eql(1);
     });
@@ -152,9 +152,7 @@ describe('BedLikeTrack |', () => {
       await new Promise((done) => {
         waitForTilesLoaded(hgc.instance(), () => {
           trackObj.zoomedY(100, 0.8);
-          expect(trackObj.rectGraphics.scale.y).to.eql(
-            1.25,
-          );
+          expect(trackObj.rectGraphics.scale.y).to.eql(1.25);
           done(null);
         });
       });
@@ -183,7 +181,7 @@ describe('BedLikeTrack |', () => {
       expect(Object.keys(trackObj.drawnRects).length).to.be.above(0);
     });
 
-    it.only('Checks that + and - strand entries are at different heights', () => {
+    it('Checks that + and - strand entries are at different heights', () => {
       const trackObj = getTrackObjectFromHGC(
         hgc.instance(),
         viewConf.views[0].uid,
@@ -236,13 +234,11 @@ describe('BedLikeTrack |', () => {
         viewConf.views[0].tracks.top[0].uid,
       );
 
-      for (const tileId of Object.keys(trackObj.drawnRects)) {
-        for (const uid of Object.keys(trackObj.drawnRects[tileId])) {
-          const rect = trackObj.drawnRects[tileId][uid];
+      for (const uid of Object.keys(trackObj.drawnRects)) {
+        const rect = trackObj.drawnRects[uid];
 
-          // the segment polygons have 12 vertices
-          expect(rect[0].length).to.eql(24);
-        }
+        // the segment polygons have 12 vertices
+        expect(rect[0].length).to.eql(24);
       }
     });
 
@@ -254,7 +250,7 @@ describe('BedLikeTrack |', () => {
         viewConf.views[0].tracks.top[0].uid,
       );
 
-      let drawnRects = Object.values(trackObj.drawnRects[13])[0][0];
+      let drawnRects = Object.values(trackObj.drawnRects)[0][0];
       const prevHeight = drawnRects[5] - drawnRects[3];
 
       // switch to scaled height
@@ -264,7 +260,7 @@ describe('BedLikeTrack |', () => {
       hgc.setState(hgc.instance().state);
       hgc.update();
 
-      drawnRects = Object.values(trackObj.drawnRects[13])[0][0];
+      drawnRects = Object.values(trackObj.drawnRects)[0][0];
       const nextHeight = drawnRects[5] - drawnRects[3];
 
       // make sure the height of the drawn rects actually changed
@@ -276,7 +272,7 @@ describe('BedLikeTrack |', () => {
       hgc.setState(hgc.instance().state);
       hgc.update();
 
-      drawnRects = Object.values(trackObj.drawnRects[13])[0][0];
+      drawnRects = Object.values(trackObj.drawnRects)[0][0];
       const finalHeight = drawnRects[5] - drawnRects[3];
 
       expect(finalHeight).to.eql(prevHeight);
@@ -290,7 +286,7 @@ describe('BedLikeTrack |', () => {
       hgc.setState(hgc.instance().state);
       hgc.update();
 
-      drawnRects = Object.values(trackObj.drawnRects[13])[0][0];
+      drawnRects = Object.values(trackObj.drawnRects)[0][0];
       const finalestHeight = drawnRects[5] - drawnRects[3];
 
       expect(finalestHeight).to.eql(prevHeight);
@@ -303,15 +299,13 @@ describe('BedLikeTrack |', () => {
         viewConf.views[0].tracks.top[0].uid,
       );
 
-      const prevHeight = Object.values(trackObj.fetchedTiles)[0].textHeights
-        .CTCF_known1;
+      const prevHeight = Object.values(trackObj.textManager.textHeights)[0];
       hgc.instance().state.views.aa.tracks.top[0].options.fontSize = 20;
 
       hgc.setState(hgc.instance().state);
       hgc.update();
 
-      const newHeight = Object.values(trackObj.fetchedTiles)[0].textHeights
-        .CTCF_known1;
+      const newHeight = Object.values(trackObj.textManager.textHeights)[0];
 
       expect(newHeight).to.be.above(prevHeight);
     });
@@ -335,9 +329,8 @@ describe('BedLikeTrack |', () => {
         viewConf.views[0].tracks.top[0].uid,
       );
 
-      const tile = Object.values(trackObj.fetchedTiles)[0];
       const scaleWidth =
-        tile.drawnAtScale.domain()[1] - tile.drawnAtScale.domain()[0];
+        trackObj.drawnAtScale.domain()[1] - trackObj.drawnAtScale.domain()[0];
 
       trackRenderer.zoomToDataPos(
         1585200000,
@@ -348,15 +341,15 @@ describe('BedLikeTrack |', () => {
       );
       // We have to rerender the tile due to synchronous tile loading.
       // tile.drawnAtScale is not up to date otherwise.
-      trackObj.renderTile(tile);
+      trackObj.render();
       const newScaleWidth =
-        tile.drawnAtScale.domain()[1] - tile.drawnAtScale.domain()[0];
+        trackObj.drawnAtScale.domain()[1] - trackObj.drawnAtScale.domain()[0];
 
       expect(newScaleWidth).to.be.below(scaleWidth);
     });
 
     afterAll(() => {
-      removeHGComponent(div);
+      // removeHGComponent(div);
     });
   });
 
@@ -1565,7 +1558,7 @@ const viewConf1 = {
             data: {
               type: 'local-tiles',
               tilesetInfo: {
-                'x': {
+                x: {
                   max_width: 31960,
                   max_zoom: 0,
                   min_pos: [0],

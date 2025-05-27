@@ -106,7 +106,7 @@ import OPTIONS_INFO from '../options-info';
 const configs = {
   ..._configs,
   IS_TRACK_RANGE_SELECTABLE: utils.IS_TRACK_RANGE_SELECTABLE,
-  OPTIONS_INFO
+  OPTIONS_INFO,
 };
 
 const libraries = {
