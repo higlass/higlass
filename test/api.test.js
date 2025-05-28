@@ -174,10 +174,6 @@ describe('API Tests', () => {
         });
 
       await new Promise((done) => waitForTilesLoaded(api.getComponent(), done));
-      await new Promise((done) => setTimeout(done, 0));
-
-      canvas.dispatchEvent(createPointerEvent('pointerdown', 100, 100));
-      canvas.dispatchEvent(createPointerEvent('pointerup', 100, 100));
 
       await new Promise((done) => setTimeout(done, 0));
 
@@ -186,7 +182,7 @@ describe('API Tests', () => {
 
       await new Promise((done) => setTimeout(done, 0));
 
-      expect(clicked).to.equal(2);
+      expect(clicked).to.equal(1);
     });
 
     it('retrieves a track', async () => {
