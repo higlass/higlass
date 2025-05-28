@@ -349,7 +349,7 @@ describe('BedLikeTrack |', () => {
     });
 
     afterAll(() => {
-      // removeHGComponent(div);
+      removeHGComponent(div);
     });
   });
 
