@@ -381,6 +381,7 @@ function uint16ArrayToFloat32Array(uint16array) {
 /**
  * @typedef TileResponse
  * @property {string} [dense] - a base64 encoded string
+ * @property {string} [tilePositionId] - The position of the tile
  */
 
 /**

@@ -3,7 +3,7 @@ import { tileResponseToData } from '../services';
 /** @import { AbstractDataFetcher, TilesetInfo } from '../types' */
 
 // TODO: Add type for LocalTile
-/** @typedef {{}} LocalTile */
+/** @typedef {{tilePositionId?: string}} LocalTile */
 
 /**
  * @typedef LocalTileDataConfig
