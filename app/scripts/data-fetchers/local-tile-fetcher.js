@@ -3,7 +3,7 @@ import { tileResponseToData } from '../services';
 /** @import { AbstractDataFetcher, TilesetInfo } from '../types' */
 
 // TODO: Add type for LocalTile
-/** @typedef {{}} LocalTile */
+/** @typedef {{tilePositionId?: string}} LocalTile */
 
 /**
  * @typedef LocalTileDataConfig
@@ -28,7 +28,12 @@ class LocalTileDataFetcher {
   /** @param {import('../types').HandleTilesetInfoFinished} callback */
   async tilesetInfo(callback) {
     this.tilesetInfoLoading = false;
-    callback(this.tilesetInfoData);
+    await new Promise((resolve) =>
+      setTimeout(() => {
+        callback(this.tilesetInfoData);
+        resolve(true);
+      }, 0),
+    );
     return this.tilesetInfoData;
   }
 
@@ -57,6 +62,7 @@ class LocalTileDataFetcher {
 
     for (const tileId of tileIds) {
       ret[tileId] = this.tilesData[`localtile.${tileId}`];
+      ret[tileId].tilePositionId = tileId;
     }
     receivedTiles(ret);
     return ret;

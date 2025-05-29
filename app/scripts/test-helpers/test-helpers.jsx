@@ -147,13 +147,15 @@ export const isWaitingOnTiles = (hgc) => {
     if (
       !track.track.server &&
       !track.track.tilesetUid &&
-      !(track.track.data && track.track.data.type === 'divided')
+      !(track.track.data && track.track.data.type === 'divided') &&
+      !(track.track.data && track.track.data.type === 'local-tiles')
     ) {
       continue;
     }
     if (
       (track.track.data && track.track.data.type === 'divided') ||
-      (track.track.server && track.track.tilesetUid)
+      (track.track.server && track.track.tilesetUid) ||
+      (track.track.data && track.track.data.type === 'local-tiles')
     ) {
       if (!trackObj) return true;
 
@@ -162,9 +164,6 @@ export const isWaitingOnTiles = (hgc) => {
       }
 
       if (!(trackObj.tilesetInfo || trackObj.chromInfo)) {
-        // console.warn(
-        //   `Track uuid:${trackObj.uuid} has no tileset or chromosome info`
-        // );
         return true;
       }
 

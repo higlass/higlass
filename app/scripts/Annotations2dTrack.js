@@ -1,4 +1,5 @@
 // @ts-nocheck
+
 import createPubSub from 'pub-sub-es';
 
 import TiledPixiTrack from './TiledPixiTrack';
@@ -418,7 +419,10 @@ class Annotations2dTrack extends TiledPixiTrack {
       prevUid = this.selectedAnno.uid;
     }
 
-    this.selectedAnno = { graphics, uid };
+    this.selectedAnno = {
+      graphics,
+      uid,
+    };
     this.focus(graphics, viewPos, uid);
 
     if (this.options.onSelect && !silent) {
@@ -467,7 +471,10 @@ class Annotations2dTrack extends TiledPixiTrack {
 
     this.visibleAndFetchedTiles()
       .filter((tile) => tile.tileData?.length)
-      .map((tile) => ({ graphics: tile.graphics, td: tile.tileData }))
+      .map((tile) => ({
+        graphics: tile.graphics,
+        td: tile.tileData,
+      }))
       .forEach(({ td, graphics }) => {
         const gTile = document.createElement('g');
 

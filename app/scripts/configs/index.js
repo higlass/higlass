@@ -11,7 +11,6 @@ export { THEME_LIGHT, THEME_DARK, THEME_DEFAULT } from './themes';
 export { default as GLOBALS } from './globals';
 export { default as DATATYPE_TO_TRACK_TYPE } from './datatype-to-track-type';
 export { default as HEATED_OBJECT_MAP } from './colormaps';
-export { default as OPTIONS_INFO } from './options-info';
 export { default as TRACKS_INFO } from './tracks-info';
 export { default as TRACKS_INFO_BY_TYPE } from './tracks-info-by-type';
 export { default as POSITIONS_BY_DATATYPE } from './positions-by-datatype';

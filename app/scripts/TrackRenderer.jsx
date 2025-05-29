@@ -1962,9 +1962,8 @@ export class TrackRenderer extends React.Component {
       case 'arrowhead-domains':
         return new ArrowheadDomainsTrack(context, track.options);
 
+      case '1d-annotations':
       case 'horizontal-1d-annotations':
-        return new Annotations1dTrack(context, track.options);
-
       case 'vertical-1d-annotations':
         // Fix this: LeftTrackModifier is doing a whole bunch of things not
         // needed by this track but the current setup is not consistent.

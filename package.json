@@ -37,6 +37,7 @@
   },
   "dependencies": {
     "ajv": "^6.10.0",
+    "area-polygon": "^1.0.1",
     "box-intersect": "^1.0.1",
     "buffer": "^6.0.3",
     "cheerio": "1.0.0-rc.10",

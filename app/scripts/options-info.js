@@ -1,7 +1,7 @@
 // @ts-nocheck
 import { formatPrefix, precisionPrefix } from 'd3-format';
 
-import HeatmapOptions from '../HeatmapOptions';
+import HeatmapOptions from './HeatmapOptions';
 
 const valueColumnOptions = (track) => {
   if (!track.header) return [];

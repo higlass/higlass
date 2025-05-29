@@ -68,6 +68,7 @@ describe('Plugin track tests', () => {
       'genomicRangeToChromosomeChunks',
       'getAggregationFunction',
       'getDefaultTrackForDatatype',
+      'getDefaultTracksForDatatype',
       'getElementDim',
       'getTiledPlot',
       'getTrackByUid',

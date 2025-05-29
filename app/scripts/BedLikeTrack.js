@@ -1,4 +1,5 @@
 // @ts-nocheck
+
 import boxIntersect from 'box-intersect';
 import { median, range } from 'd3-array';
 import { scaleBand, scaleLinear } from 'd3-scale';
@@ -6,7 +7,6 @@ import { zoomIdentity } from 'd3-zoom';
 import classifyPoint from 'robust-point-in-polygon';
 
 import HorizontalTiled1DPixiTrack from './HorizontalTiled1DPixiTrack';
-import trackUtils from './track-utils';
 
 // Services
 import { tileProxy } from './services';
@@ -15,6 +15,7 @@ import {
   colorDomainToRgbaArray,
   colorToHex,
   segmentsToRows,
+  trackUtils,
   valueToColor,
 } from './utils';
 
@@ -29,6 +30,7 @@ const FONT_SIZE = 14;
 // the label text should have a white outline so that it's more
 // visible against a similar colored background
 const TEXT_STYLE = {
+  align: 'center',
   fontSize: `${FONT_SIZE}px`,
   fontFamily: 'Arial',
   stroke: 'white',
@@ -40,11 +42,245 @@ const TEXT_STYLE = {
   dropShadowBlur: 2,
 };
 
+/** Scale a polygon * */
+export const polyToPoly = (poly, kx, px, ky, py) => {
+  const newArr = [];
+
+  while (poly.length) {
+    const [x, y] = poly.splice(0, 2);
+    newArr.push([x * kx + px, y * ky + py]);
+  }
+
+  return newArr;
+};
+
+const hashFunc = (s) => {
+  let hash = 0;
+  if (s.length === 0) {
+    return hash;
+  }
+  for (let i = 0; i < s.length; i++) {
+    const char = s.charCodeAt(i);
+    hash = (hash << 5) - hash + char;
+    hash &= hash; // Convert to 32bit integer
+  }
+  return hash;
+};
+
+const scaleScalableGraphics = (graphics, xScale, drawnAtScale) => {
+  const tileK =
+    (drawnAtScale.domain()[1] - drawnAtScale.domain()[0]) /
+    (xScale.domain()[1] - xScale.domain()[0]);
+  const newRange = xScale.domain().map(drawnAtScale);
+
+  const posOffset = newRange[0];
+  graphics.scale.x = tileK;
+  graphics.position.x = -posOffset * tileK;
+};
+
+export const uniqueify = (elements) => {
+  const byUid = {};
+  for (let i = 0; i < elements.length; i++) {
+    byUid[elements[i].uid] = elements[i];
+  }
+
+  return Object.values(byUid);
+};
+
+export class TextManager {
+  constructor(track) {
+    this.track = track;
+    this.texts = {};
+
+    // store a list of already created texts so that we don't
+    // have to recreate new ones each time
+    this.textsList = [];
+
+    this.textWidths = {};
+    this.textHeights = {};
+
+    this.textGraphics = new GLOBALS.PIXI.Graphics();
+    this.track.pMain.addChild(this.textGraphics);
+
+    // Some default font size that will get overwriten when
+    // this.textWidths and this.textHeights are set
+    this.fontSize = 9;
+  }
+
+  hideOverlaps() {
+    const [allBoxes, allTexts] = [this.allBoxes, this.allTexts];
+    // Calculate overlaps from the bounding boxes of the texts
+
+    boxIntersect(allBoxes, (i, j) => {
+      if (allTexts[i].importance > allTexts[j].importance) {
+        if (allTexts[i].text.visible) {
+          allTexts[j].text.visible = false;
+        }
+      } else if (allTexts[j].text.visible) {
+        allTexts[i].text.visible = false;
+      }
+    });
+  }
+
+  startDraw() {
+    this.allBoxes = [];
+    this.allTexts = [];
+  }
+
+  lightUpdateSingleText(td, xMiddle, yMiddle, textInfo) {
+    if (!this.texts[td.uid]) return;
+    if (!this.track.options.showTexts) return;
+
+    const text = this.texts[td.uid];
+
+    const TEXT_MARGIN = 3;
+
+    text.position.x = xMiddle;
+    text.position.y = yMiddle;
+
+    text.visible = true;
+    this.allBoxes.push([
+      text.position.x - TEXT_MARGIN,
+      text.position.y - this.textHeights[td.uid] / 2,
+      text.position.x + this.textWidths[td.uid] + TEXT_MARGIN,
+      text.position.y + this.textHeights[td.uid] / 2,
+    ]);
+
+    this.allTexts.push({
+      text,
+      ...textInfo,
+    });
+  }
+
+  updateSingleText(td, xMiddle, yMiddle, textText) {
+    if (!this.texts[td.uid]) return;
+
+    const text = this.texts[td.uid];
+
+    text.position.x = xMiddle;
+    text.position.y = yMiddle;
+    text.nominalY = yMiddle;
+
+    const fontColor =
+      this.track.options.fontColor !== undefined
+        ? colorToHex(this.track.options.fontColor)
+        : 'black';
+
+    const newFontSize = +this.track.options.fontSize || TEXT_STYLE.fontSize;
+    if (newFontSize !== this.fontSize) {
+      // New font size means different text widths and heights
+      this.fontSize = newFontSize;
+      this.textWidths = {};
+      this.textHeights = {};
+    }
+
+    text.style = {
+      ...TEXT_STYLE,
+      fill: fontColor,
+      fontSize: this.fontSize,
+    };
+    text.text = textText;
+
+    if (!(td.uid in this.textWidths)) {
+      text.updateTransform();
+      const textWidth = text.getBounds().width;
+      const textHeight = text.getBounds().height;
+
+      // the text size adjustment compensates for the extra
+      // size that the show gives it
+      const TEXT_SIZE_ADJUSTMENT = 5;
+
+      this.textWidths[td.uid] = textWidth;
+      this.textHeights[td.uid] = textHeight - TEXT_SIZE_ADJUSTMENT;
+    }
+  }
+
+  updateTexts() {
+    if (this.track.options.showTexts) {
+      this.texts = {};
+
+      let yRange = [
+        (0 - this.track.vertY) / (this.track.vertK * this.track.prevK),
+        (this.track.dimensions[1] - this.track.vertY) /
+          (this.track.vertK * this.track.prevK),
+      ];
+
+      const yRangeWidth = yRange[1] - yRange[0];
+      yRange = [yRange[0] - yRangeWidth * 0.8, yRange[1] + yRangeWidth * 0.8];
+
+      const relevantSegments = this.track.uniqueSegments.filter(
+        (x) => !x.yMiddle || (x.yMiddle > yRange[0] && x.yMiddle < yRange[1]),
+      );
+
+      relevantSegments.forEach((td, i) => {
+        // don't draw too many texts so they don't bog down the frame rate
+        if (i >= (+this.track.options.maxTexts || MAX_TEXTS)) {
+          return;
+        }
+
+        let text = this.textsList[i];
+
+        if (!text) {
+          text = new GLOBALS.PIXI.Text();
+          this.textsList.push(text);
+          this.textGraphics.addChild(text);
+        }
+
+        text.style = {
+          ...TEXT_STYLE,
+          fontSize: +this.track.options.fontSize || TEXT_STYLE.fontSize,
+        };
+
+        // geneInfo[3] is the gene symbol
+
+        if (this.track.isLeftModified) {
+          text.scale.x = -1;
+        }
+
+        text.anchor.x = 0.5;
+        text.anchor.y = 0.5;
+
+        this.texts[td.uid] = text;
+      });
+
+      while (
+        this.textsList.length >
+        Math.min(
+          relevantSegments.length,
+          +this.track.options.maxTexts || MAX_TEXTS,
+        )
+      ) {
+        const text = this.textsList.pop();
+        this.textGraphics.removeChild(text);
+      }
+    }
+  }
+}
+
 class BedLikeTrack extends HorizontalTiled1DPixiTrack {
   constructor(context, options) {
     super(context, options);
 
     this.valueScaleTransform = zoomIdentity;
+
+    this.textManager = new TextManager(this);
+
+    this.vertY = 1;
+    this.vertK = 0;
+    this.prevY = 0;
+    this.prevK = 1;
+
+    // we're setting these functions to null so that value scale
+    // locking doesn't try to get values from them
+    this.minRawValue = null;
+    this.maxRawValue = null;
+
+    this.rectGraphics = new GLOBALS.PIXI.Graphics();
+    this.pMain.addChild(this.rectGraphics);
+
+    this.selectedRect = null;
+
+    this.uniqueSegments = [];
   }
 
   /** Factor out some initialization code for the track. This is
@@ -71,118 +307,102 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
     this.initialized = true;
   }
 
-  initTile(tile) {
-    // create texts
-    tile.texts = {};
-
-    tile.rectGraphics = new GLOBALS.PIXI.Graphics();
-    tile.textGraphics = new GLOBALS.PIXI.Graphics();
-
-    tile.graphics.addChild(tile.rectGraphics);
-    tile.graphics.addChild(tile.textGraphics);
+  updateExistingGraphics() {
+    const errors = this._checkForErrors();
 
     let plusStrandRows = [];
     let minusStrandRows = [];
 
-    if (tile.tileData?.length) {
-      tile.tileData.sort((a, b) => b.importance - a.importance);
-      // tile.tileData = tile.tileData.slice(0, MAX_TILE_ENTRIES);
-
-      if (!this.options || !this.options.valueColumn) {
-        // no value column so we can break entries up into separate
-        // plus and minus strand segments
-        const segments = tile.tileData.map((x) => {
-          const chrOffset = +x.chrOffset;
-
-          return {
-            from: +x.fields[1] + chrOffset,
-            to: +x.fields[2] + chrOffset,
-            value: x,
-            text: x.fields[3],
-            strand: x.fields.length >= 6 && x.fields[5] === '-' ? '-' : '+',
-          };
-        });
-
-        plusStrandRows = segmentsToRows(
-          segments.filter((x) => x.strand === '+'),
-        );
-        minusStrandRows = segmentsToRows(
-          segments.filter((x) => x.strand === '-'),
-        );
-      } else {
-        plusStrandRows = [tile.tileData.map((x) => ({ value: x }))];
-      }
-
-      tile.plusStrandRows = plusStrandRows;
-      tile.minusStrandRows = minusStrandRows;
-
-      if (this.options.showTexts) {
-        tile.tileData.forEach((td, i) => {
-          const geneInfo = td.fields;
-
-          // A random importance helps with selective hiding
-          // of overlapping texts
-          if (!td.importance) {
-            td.importance = Math.random();
-          }
-          tile.textWidths = {};
-          tile.textHeights = {};
-
-          // don't draw too many texts so they don't bog down the frame rate
-          if (i >= (+this.options.maxTexts || MAX_TEXTS)) {
-            return;
-          }
-
-          // geneInfo[3] is the gene symbol
-          const text = new GLOBALS.PIXI.Text(geneInfo[3], {
-            ...TEXT_STYLE,
-            fontSize: +this.options.fontSize || TEXT_STYLE.fontSize,
-          });
-          if (this.flipText) {
-            text.scale.x = -1;
-          }
-
-          text.anchor.x = 0.5;
-          text.anchor.y = 0.5;
-
-          tile.texts[td.uid] = text; // index by geneName
-
-          tile.textGraphics.addChild(text);
-        });
-      }
+    if (errors.length > 0) {
+      this.draw();
+      return;
     }
 
-    tile.initialized = true;
+    // Object.values(this.fetchedTiles
+
+    this.uniqueSegments = uniqueify(
+      Object.values(this.fetchedTiles)
+        .filter((x) => x.tileData.length)
+        .flatMap((x) => x.tileData),
+    );
+
+    this.uniqueSegments.forEach((td) => {
+      // A random importance helps with selective hiding
+      // of overlapping texts
+      if (!td.importance) {
+        td.importance = hashFunc(td.uid.toString());
+      }
+    });
+
+    this.uniqueSegments.sort((a, b) => b.importance - a.importance);
+
+    if (!this.options || !this.options.valueColumn) {
+      // no value column so we can break entries up into separate
+      // plus and minus strand segments
+      const segments = this.uniqueSegments.map((x) => {
+        const chrOffset = +x.chrOffset;
+
+        return {
+          from: +x.fields[1] + chrOffset,
+          to: +x.fields[2] + chrOffset,
+          value: x,
+          text: x.fields[3],
+          strand: x.fields.length >= 6 && x.fields[5] === '-' ? '-' : '+',
+        };
+      });
+
+      plusStrandRows = segmentsToRows(segments.filter((x) => x.strand === '+'));
+      minusStrandRows = segmentsToRows(
+        segments.filter((x) => x.strand === '-'),
+      );
+    } else {
+      plusStrandRows = [this.uniqueSegments.map((x) => ({ value: x }))];
+    }
+
+    this.plusStrandRows = plusStrandRows;
+    this.minusStrandRows = minusStrandRows;
+
+    this.textManager.updateTexts();
+    this.render();
   }
+
+  selectRect(uid) {
+    this.selectedRect = uid;
+
+    this.render();
+    this.animate();
+  }
+
+  /** There was a click outside the track so unselect the
+   * the current selection */
+  clickOutside() {
+    this.selectRect(null);
+  }
+
+  initTile(tile) {}
 
   /**
    * Remove the tile's rectangles from the list of drawnRects so that they
    * can be drawn again.
    */
-  removeTileRects(tile) {
-    const zoomLevel = +tile.tileId.split('.')[0];
-    tile.rectGraphics.clear();
-    tile.rendered = false;
+  // removeTileRects(tile) {
+  //   const zoomLevel = +tile.tileId.split('.')[0];
+  //   tile.rectGraphics.clear();
+  //   tile.rendered = false;
 
-    if (tile.tileData?.length) {
-      tile.tileData.forEach((td, i) => {
-        if (this.drawnRects[zoomLevel]?.[td.uid]) {
-          if (this.drawnRects[zoomLevel][td.uid][2] === tile.tileId) {
-            // this was the tile that drew that rectangle
-            delete this.drawnRects[zoomLevel][td.uid];
-          }
-        }
-      });
-    }
-  }
+  //   if (tile.tileData && tile.tileData.length) {
+  //     tile.tileData.forEach((td, i) => {
+  //       if (this.drawnRects[zoomLevel] && this.drawnRects[zoomLevel][td.uid]) {
+  //         if (this.drawnRects[zoomLevel][td.uid][2] === tile.tileId) {
+  //           // this was the tile that drew that rectangle
+  //           delete this.drawnRects[zoomLevel][td.uid];
+  //         }
+  //       }
+  //     });
+  //   }
+  // }
 
-  destroyTile(tile) {
-    // remove texts
-    this.removeTileRects(tile);
-
-    tile.graphics.removeChild(tile.textGraphics);
-    tile.graphics.removeChild(tile.rectGraphics);
-  }
+  destroyTile(tile) {}
 
   removeTiles(toRemoveIds) {
     super.removeTiles(toRemoveIds);
@@ -215,20 +435,16 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
       this.colorScale = HEATED_OBJECT_MAP;
     }
 
-    for (const tile of this.visibleAndFetchedTiles()) {
-      this.destroyTile(tile);
-      this.initTile(tile);
-      this.renderTile(tile);
-    }
+    this.updateExistingGraphics();
   }
 
   updateTile(tile) {
     // this.destroyTile(tile);
-    if (this.areAllVisibleTilesLoaded()) {
-      // this.destroyTile(tile);
-      // this.initTile(tile);
-      this.renderTile(tile);
-    }
+    // if (this.areAllVisibleTilesLoaded()) {
+    //   this.destroyTile(tile);
+    //   this.initTile(tile);
+    //   this.renderTile(tile);
+    // }
   }
 
   /**
@@ -276,7 +492,7 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
     return allRects;
   }
 
-  drawSegmentStyle(tile, xStartPos, xEndPos, rectY, rectHeight, strand) {
+  drawSegmentStyle(xStartPos, xEndPos, rectY, rectHeight, strand) {
     const hw = 0.1; // half width of the line
 
     const centerY = rectY + rectHeight / 2;
@@ -308,16 +524,15 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
       rectY + rectHeight,
     ];
 
-    tile.rectGraphics.drawPolygon(poly);
+    this.rectGraphics.drawPolygon(poly);
     return poly;
   }
 
-  drawPoly(tile, xStartPos, xEndPos, rectY, rectHeight, strand) {
+  drawPoly(xStartPos, xEndPos, rectY, rectHeight, strand) {
     let drawnPoly = null;
 
     if (this.options.annotationStyle === 'segment') {
       return this.drawSegmentStyle(
-        tile,
         xStartPos,
         xEndPos,
         rectY,
@@ -341,7 +556,7 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
       ];
 
       if (strand === '+') {
-        tile.rectGraphics.drawPolygon(drawnPoly);
+        this.rectGraphics.drawPolygon(drawnPoly);
       } else {
         drawnPoly = [
           xEndPos,
@@ -351,7 +566,7 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
           xEndPos,
           rectY + rectHeight, // bottom
         ];
-        tile.rectGraphics.drawPolygon(drawnPoly);
+        this.rectGraphics.drawPolygon(drawnPoly);
       }
     } else {
       if (strand === '+') {
@@ -393,7 +608,7 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
         ];
       }
 
-      tile.rectGraphics.drawPolygon(drawnPoly);
+      this.rectGraphics.drawPolygon(drawnPoly);
     }
 
     return drawnPoly;
@@ -445,16 +660,14 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
     }
   }
 
-  renderRows(tile, rows, maxRows, startY, endY, fill) {
-    const zoomLevel = +tile.tileId.split('.')[0];
+  renderRows(rows, maxRows, startY, endY, fill) {
     let maxValue = Number.MIN_SAFE_INTEGER;
 
     this.initialize();
 
-    const rowScale = scaleBand()
-      .domain(range(maxRows))
-      .range([startY, endY])
-      .paddingInner(0.3);
+    const rowScale = scaleBand().domain(range(maxRows)).range([startY, endY]);
+    // .paddingOuter(0.2);
+    // .paddingInner(0.3)
 
     this.allVisibleRects();
     let allRects = null;
@@ -469,15 +682,12 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
         const td = rows[j][i].value;
         const geneInfo = td.fields;
 
-        // the returned positions are chromosome-based and they need to
-        // be converted to genome-based
-        const chrOffset = +td.chrOffset;
-        const txStart = +geneInfo[1] + chrOffset;
-        const txEnd = +geneInfo[2] + chrOffset;
+        const txStart = +td.xStart;
+        const txEnd = +td.xEnd;
         const txMiddle = (txStart + txEnd) / 2;
-        let yMiddle = rowScale(j) + rowScale.step() / 2;
+        let yMiddle = rowScale(j) + rowScale.bandwidth() / 2;
 
-        let rectHeight = this.options.annotationHeight || GENE_RECT_HEIGHT;
+        let rectHeight = this.options.annotationHeight || 'scaled';
 
         if (rectHeight === 'scaled') {
           rectHeight = rowScale.bandwidth();
@@ -495,7 +705,12 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
           this.options.colorEncoding === 'itemRgb' &&
           td.fields[8]
         ) {
-          const parts = td.fields[8].split(',');
+          let parts = [];
+
+          try {
+            parts = td.fields[8].split(',');
+            // eslint-disable-next-line
+          } catch {}
 
           if (parts.length === 3) {
             const color = `rgb(${td.fields[8]})`;
@@ -510,6 +725,18 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
             -Number.MIN_VALUE,
           )(+geneInfo[+this.options.colorEncoding - 1]);
           fill = `rgba(${rgb.join(',')})`;
+        } else if (
+          this.options &&
+          this.options.colorEncoding === 'itemRgb' &&
+          td.fields[8]
+        ) {
+          const parts = td.fields[8].split(',');
+
+          if (parts.length === 3) {
+            const color = `rgb(${td.fields[8]})`;
+
+            fill = color;
+          }
         }
 
         if (this.valueScale) {
@@ -517,13 +744,18 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
           if (value > maxValue) {
             maxValue = value;
           }
-
           yMiddle = this.valueScale(value);
         }
 
         const opacity = this.options.fillOpacity || 0.3;
-        tile.rectGraphics.lineStyle(1, colorToHex(fill), opacity);
-        tile.rectGraphics.beginFill(colorToHex(fill), opacity);
+
+        if (this.selectedRect === td.uid) {
+          this.rectGraphics.lineStyle(3, 0, 0.75);
+        } else {
+          this.rectGraphics.lineStyle(1, colorToHex(fill), opacity);
+        }
+
+        this.rectGraphics.beginFill(colorToHex(fill), opacity);
 
         let rectY = yMiddle - rectHeight / 2;
         const xStartPos = this._xScale(txStart);
@@ -538,114 +770,58 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
             rectY += STAGGERED_OFFSET / 2;
           }
         }
+        const drawnPoly = this.drawPoly(
+          xStartPos,
+          xEndPos,
+          rectY * this.prevK,
+          rectHeight * this.prevK,
+          geneInfo[5],
+        );
 
-        let alreadyDrawn = true;
+        this.drawnRects[td.uid] = [
+          drawnPoly,
+          {
+            start: txStart,
+            end: txEnd,
+            value: td,
+            fill,
+          },
+        ];
 
-        // don't draw anything that has already been drawn
-        if (
-          !(
-            zoomLevel in this.drawnRects && td.uid in this.drawnRects[zoomLevel]
-          )
-        ) {
-          alreadyDrawn = false;
+        td.yMiddle = yMiddle;
 
-          if (!this.drawnRects[zoomLevel]) this.drawnRects[zoomLevel] = {};
-
-          const drawnPoly = this.drawPoly(
-            tile,
-            xStartPos,
-            xEndPos,
-            rectY * this.prevK,
-            rectHeight * this.prevK,
-            geneInfo[5],
-          );
-
-          this.drawnRects[zoomLevel][td.uid] = [
-            drawnPoly,
-            {
-              start: txStart,
-              end: txEnd,
-              value: td,
-              tile,
-              fill,
-            },
-            tile.tileId,
-          ];
+        if (!this.options.showTexts) {
+          continue;
         }
-
-        if (!this.options.showTexts) continue;
-
-        // tile probably hasn't been initialized yet
-        if (!tile.texts) return;
 
         // don't draw too many texts so they don't bog down the frame rate
         if (i >= (+this.options.maxTexts || MAX_TEXTS)) continue;
 
-        if (!tile.texts[td.uid]) continue;
-
-        const text = tile.texts[td.uid];
-
-        text.position.x = this._xScale(txMiddle);
-        text.position.y = rectY + rectHeight / 2;
-        text.nominalY = rectY + rectHeight / 2;
-
-        if (alreadyDrawn) {
-          text.alreadyDrawn = true;
-        }
-
-        const fontColor =
-          this.options.fontColor !== undefined
-            ? colorToHex(this.options.fontColor)
-            : fill;
-
-        text.style = {
-          ...TEXT_STYLE,
-          fill: fontColor,
-          fontSize: +this.options.fontSize || TEXT_STYLE.fontSize,
-        };
-
-        if (!(geneInfo[3] in tile.textWidths)) {
-          text.updateTransform();
-          const textWidth = text.getBounds().width;
-          const textHeight = text.getBounds().height;
-
-          // the text size adjustment compensates for the extra
-          // size that the show gives it
-          const TEXT_SIZE_ADJUSTMENT = 5;
-
-          tile.textWidths[geneInfo[3]] = textWidth;
-          tile.textHeights[geneInfo[3]] = textHeight - TEXT_SIZE_ADJUSTMENT;
-        }
+        this.textManager.updateSingleText(
+          td,
+          this._xScale(txMiddle),
+          rectY + rectHeight / 2,
+          td.fields[3],
+        );
       }
     }
+
+    this.textManager.updateTexts();
   }
 
-  renderTile(tile) {
-    let maxPlusRows = tile.plusStrandRows ? tile.plusStrandRows.length : 1;
-    let maxMinusRows = tile.minusStrandRows ? tile.minusStrandRows.length : 1;
+  render() {
+    const maxPlusRows = this.plusStrandRows ? this.plusStrandRows.length : 1;
+    const maxMinusRows = this.minusStrandRows ? this.minusStrandRows.length : 1;
 
-    // const visibleAndFetchedTiles = this.visibleAndFetchedTiles();
+    this.prevVertY = this.vertY;
 
-    // if (!visibleAndFetchedTiles.length) return;
-
-    for (const otherTile of this.visibleAndFetchedTiles()) {
-      if (!otherTile.initialized) return;
-      if (!otherTile.plusStrandRows && !otherTile.minusStrandRows) continue;
-
-      maxPlusRows = Math.max(otherTile.plusStrandRows.length, maxPlusRows);
-      maxMinusRows = Math.max(otherTile.minusStrandRows.length, maxMinusRows);
-    }
+    const oldRectGraphics = this.rectGraphics;
+    this.rectGraphics = new GLOBALS.PIXI.Graphics();
 
     // store the scale at while the tile was drawn at so that
     // we only resize it when redrawing
 
-    if (tile.rendered) {
-      this.removeTileRects(tile);
-    }
-
-    tile.drawnAtScale = this._xScale.copy();
-    tile.rendered = true;
-
+    this.drawnAtScale = this._xScale.copy();
     // configure vertical positioning of annotations if
     // this.options.valueColumn is set
     this.setValueScale();
@@ -654,44 +830,39 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
     // this.options.colorEncoding is set
     this.setColorValueScale();
 
-    if (tile.tileData?.length) {
-      const fill =
-        this.options.plusStrandColor || this.options.fillColor || 'blue';
-      const minusStrandFill =
-        this.options.minusStrandColor || this.options.fillColor || 'purple';
+    const fill =
+      this.options.plusStrandColor || this.options.fillColor || 'blue';
+    const minusStrandFill =
+      this.options.minusStrandColor || this.options.fillColor || 'purple';
 
-      const MIDDLE_SPACE = 0;
-      let plusHeight = 0;
+    const MIDDLE_SPACE = 0;
+    let plusHeight = 0;
 
-      if (this.options.separatePlusMinusStrands) {
-        plusHeight =
-          (maxPlusRows * this.dimensions[1]) / (maxPlusRows + maxMinusRows) -
-          MIDDLE_SPACE / 2;
-      } else {
-        plusHeight = this.dimensions[1];
-      }
-
-      this.renderRows(
-        tile,
-        tile.plusStrandRows,
-        maxPlusRows,
-        0,
-        plusHeight,
-        fill,
-      );
-      this.renderRows(
-        tile,
-        tile.minusStrandRows,
-        maxMinusRows,
-        this.options.separatePlusMinusStrands
-          ? plusHeight + MIDDLE_SPACE / 2
-          : 0,
-        this.dimensions[1],
-        minusStrandFill,
-      );
+    if (this.options.separatePlusMinusStrands) {
+      plusHeight =
+        (maxPlusRows * this.dimensions[1]) / (maxPlusRows + maxMinusRows) -
+        MIDDLE_SPACE / 2;
+    } else {
+      plusHeight = this.dimensions[1];
     }
 
-    trackUtils.stretchRects(this, [(x) => x.rectGraphics]);
+    this.renderRows(this.plusStrandRows, maxPlusRows, 0, plusHeight, fill);
+    this.renderRows(
+      this.minusStrandRows,
+      maxMinusRows,
+      this.options.separatePlusMinusStrands ? plusHeight + MIDDLE_SPACE / 2 : 0,
+      this.dimensions[1],
+      minusStrandFill,
+    );
+
+    this.pMain.removeChild(oldRectGraphics);
+    // this.pMain.removeChild(oldTextGraphics);
+
+    this.pMain.addChild(this.rectGraphics);
+    // this.pMain.addChild(this.textGraphics);
+
+    scaleScalableGraphics(this.rectGraphics, this._xScale, this.drawnAtScale);
+    // scaleScalableGraphics(this.textGraphics, this._xScale, this.drawnAtScale);
   }
 
   calculateZoomLevel() {
@@ -804,97 +975,45 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
   draw() {
     super.draw();
 
-    this.allTexts = [];
-    this.allBoxes = [];
+    this.textManager.startDraw();
 
-    for (const fetchedTileId in this.fetchedTiles) {
-      const tile = this.fetchedTiles[fetchedTileId];
+    // these values control vertical scaling and they
+    // need to be set in the draw method otherwise when
+    // the window is resized, the zoomedY method won't
+    // be called
+    this.rectGraphics.scale.y = this.vertK;
+    this.rectGraphics.position.y = this.vertY;
 
-      // these values control vertical scaling and they
-      // need to be set in the draw method otherwise when
-      // the window is resized, the zoomedY method won't
-      // be called
-      tile.rectGraphics.scale.y = this.vertK;
-      tile.rectGraphics.position.y = this.vertY;
-
-      // hasn't been rendered yet
-      if (!tile.drawnAtScale) {
-        return;
-      }
-
-      trackUtils.stretchRects(this, [(x) => x.rectGraphics]);
-
-      // move the texts
-
-      const parentInFetched = this.parentInFetched(tile);
-
-      if (!tile.initialized) {
-        continue;
-      }
-
-      if (tile.tileData?.length) {
-        tile.tileData.forEach((td) => {
-          if (!tile.texts) {
-            // tile probably hasn't been initialized yet
-            return;
-          }
-
-          const geneInfo = td.fields;
-          const geneName = geneInfo[3];
-          const text = tile.texts[td.uid];
-
-          if (!text) {
-            return;
-          }
-
-          const chrOffset = +td.chrOffset;
-          const txStart = +geneInfo[1] + chrOffset;
-          const txEnd = +geneInfo[2] + chrOffset;
-          const txMiddle = (txStart + txEnd) / 2;
-
-          text.position.x = this._xScale(txMiddle);
-          text.position.y =
-            text.nominalY * (this.vertK * this.prevK) + this.vertY;
-
-          if (!parentInFetched && !text.alreadyDrawn) {
-            text.visible = true;
-            // TODO, change the line below to true if texts are desired in the future
-            // text.visible = false;
-            const TEXT_MARGIN = 3;
-            this.allBoxes.push([
-              text.position.x - TEXT_MARGIN,
-              text.position.y - tile.textHeights[geneInfo[3]] / 2,
-              text.position.x + tile.textWidths[geneInfo[3]] + TEXT_MARGIN,
-              text.position.y + tile.textHeights[geneInfo[3]] / 2,
-            ]);
-            this.allTexts.push({
-              importance: td.importance,
-              text,
-              caption: geneName,
-              strand: geneInfo[5],
-            });
-          } else {
-            text.visible = false;
-          }
-        });
-      }
+    // hasn't been rendered yet
+    if (!this.drawnAtScale) {
+      return;
     }
 
-    this.hideOverlaps(this.allBoxes, this.allTexts);
-  }
+    scaleScalableGraphics(this.rectGraphics, this._xScale, this.drawnAtScale);
+    // scaleScalableGraphics(this.textGraphics, this._xScale, this.drawnAtScale);
 
-  hideOverlaps(allBoxes, allTexts) {
-    // Calculate overlaps from the bounding boxes of the texts
+    if (this.uniqueSegments?.length) {
+      this.uniqueSegments.forEach((td) => {
+        const geneInfo = td.fields;
+        const geneName = geneInfo[3];
 
-    boxIntersect(allBoxes, (i, j) => {
-      if (allTexts[i].importance > allTexts[j].importance) {
-        if (allTexts[i].text.visible) {
-          allTexts[j].text.visible = false;
+        const xMiddle = this._xScale((td.xStart + td.xEnd) / 2);
+        if (this.textManager.texts[td.uid]) {
+          const yMiddle =
+            this.textManager.texts[td.uid].nominalY *
+              (this.vertK * this.prevK) +
+            this.vertY;
+
+          this.textManager.lightUpdateSingleText(td, xMiddle, yMiddle, {
+            importance: td.importance,
+            caption: geneName,
+            strand: geneInfo[5],
+          });
         }
-      } else if (allTexts[j].text.visible) {
-        allTexts[i].text.visible = false;
-      }
-    });
+      });
+    }
+
+    this.textManager.hideOverlaps();
   }
 
   setPosition(newPosition) {
@@ -939,101 +1058,93 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
     output.appendChild(rectOutput);
     output.appendChild(textOutput);
 
-    for (const tile of this.visibleAndFetchedTiles()) {
-      if (!tile.tileData.length) {
-        continue;
-      }
+    this.uniqueSegments.forEach((td) => {
+      const gTile = document.createElement('g');
+      gTile.setAttribute(
+        'transform',
+        `translate(${this.rectGraphics.position.x},${this.rectGraphics.position.y})scale(${this.rectGraphics.scale.x},${this.rectGraphics.scale.y})`,
+      );
+      rectOutput.appendChild(gTile);
 
-      tile.tileData.forEach((td) => {
-        const zoomLevel = +tile.tileId.split('.')[0];
+      if (this.drawnRects && td.uid in this.drawnRects) {
+        const rect = this.drawnRects[td.uid][0];
+        const r = document.createElement('path');
 
-        const gTile = document.createElement('g');
-        gTile.setAttribute(
-          'transform',
-          `translate(${tile.rectGraphics.position.x},${tile.rectGraphics.position.y})scale(${tile.rectGraphics.scale.x},${tile.rectGraphics.scale.y})`,
-        );
-        rectOutput.appendChild(gTile);
+        let d = `M ${rect[0]} ${rect[1]}`;
 
-        if (
-          this.drawnRects[zoomLevel] &&
-          td.uid in this.drawnRects[zoomLevel]
-        ) {
-          const rect = this.drawnRects[zoomLevel][td.uid][0];
-          const r = document.createElement('path');
-          let d = `M ${rect[0]} ${rect[1]}`;
-
-          for (let i = 2; i < rect.length; i += 2) {
-            d += ` L ${rect[i]} ${rect[i + 1]}`;
-          }
-
-          const fill = this.drawnRects[zoomLevel][td.uid][1].fill;
-          const fontColor =
-            this.options.fontColor !== undefined
-              ? colorToHex(this.options.fontColor)
-              : fill;
-
-          r.setAttribute('d', d);
-          r.setAttribute('fill', fill);
-          r.setAttribute('opacity', 0.3);
-
-          r.style.stroke = fill;
-          r.style.strokeWidth = '1px';
-
-          gTile.appendChild(r);
-
-          if (tile.texts[td.uid]) {
-            const text = tile.texts[td.uid];
-
-            if (!text.visible) {
-              return;
-            }
-
-            const g = document.createElement('g');
-            const t = document.createElement('text');
-
-            textOutput.appendChild(g);
-            g.appendChild(t);
-            g.setAttribute(
-              'transform',
-              `translate(${text.x},${text.y})scale(${text.scale.x},1)`,
-            );
-
-            t.setAttribute('text-anchor', 'middle');
-            t.setAttribute('font-family', TEXT_STYLE.fontFamily);
-            t.setAttribute(
-              'font-size',
-              +this.options.fontSize || TEXT_STYLE.fontSize,
-            );
-            t.setAttribute('font-weight', 'bold');
-            t.setAttribute('dy', '5px');
-            t.setAttribute('fill', fontColor);
-            t.setAttribute('stroke', TEXT_STYLE.stroke);
-            t.setAttribute('stroke-width', '0.4');
-            t.setAttribute('text-shadow', '0px 0px 2px grey');
-
-            t.innerHTML = text.text;
-          }
+        for (let i = 2; i < rect.length; i += 2) {
+          d += ` L ${rect[i]} ${rect[i + 1]}`;
         }
-      });
-    }
+
+        const fill = this.drawnRects[td.uid][1].fill;
+        const fontColor =
+          this.options.fontColor !== undefined
+            ? colorToHex(this.options.fontColor)
+            : fill;
+
+        r.setAttribute('d', d);
+        r.setAttribute('fill', fill);
+        r.setAttribute('opacity', 0.3);
+
+        r.style.stroke = fill;
+        r.style.strokeWidth = '1px';
+
+        gTile.appendChild(r);
+
+        if (this.textManager.texts[td.uid]) {
+          const text = this.textManager.texts[td.uid];
+
+          if (!text.visible) {
+            return;
+          }
+
+          const g = document.createElement('g');
+          const t = document.createElement('text');
+
+          textOutput.appendChild(g);
+          g.appendChild(t);
+          g.setAttribute(
+            'transform',
+            `translate(${text.x},${text.y})scale(${text.scale.x},1)`,
+          );
+
+          t.setAttribute('text-anchor', 'middle');
+          t.setAttribute('font-family', TEXT_STYLE.fontFamily);
+          t.setAttribute(
+            'font-size',
+            +this.options.fontSize || TEXT_STYLE.fontSize,
+          );
+          t.setAttribute('font-weight', 'bold');
+          t.setAttribute('dy', '5px');
+          t.setAttribute('fill', fontColor);
+          t.setAttribute('stroke', TEXT_STYLE.stroke);
+          t.setAttribute('stroke-width', '0.4');
+          t.setAttribute('text-shadow', '0px 0px 2px grey');
+
+          t.innerHTML = text.text;
+        }
+      }
+    });
 
     return [base, base];
   }
 
   /** Move event for the y-axis */
   movedY(dY) {
-    Object.values(this.fetchedTiles).forEach((tile) => {
-      const vst = this.valueScaleTransform;
-      const { y, k } = vst;
-      const height = this.dimensions[1];
-      // clamp at the bottom and top
-      if (y + dY / k > -(k - 1) * height && y + dY / k < 0) {
-        this.valueScaleTransform = vst.translate(0, dY / k);
-      }
-      tile.rectGraphics.position.y = this.valueScaleTransform.y;
-      this.vertY = this.valueScaleTransform.y;
-    });
+    const vst = this.valueScaleTransform;
+    const { y, k } = vst;
+    const height = this.dimensions[1];
+    // clamp at the bottom and top
+    if (y + dY / k > -(k - 1) * height && y + dY / k < 0) {
+      this.valueScaleTransform = vst.translate(0, dY / k);
+    }
+    this.rectGraphics.position.y = this.valueScaleTransform.y;
+    this.vertY = this.valueScaleTransform.y;
     this.animate();
+
+    if (this.vertY - this.prevVertY > this.dimensions[1] / 2) {
+      this.render();
+    }
   }
 
   /** Zoomed along the y-axis */
@@ -1065,13 +1176,14 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
     this.vertK = k1;
     this.vertY = t1;
 
-    Object.values(this.fetchedTiles).forEach((tile) => {
-      if (toStretch) this.renderTile(tile);
+    if (toStretch) {
+      this.render();
+    }
+    this.rectGraphics.scale.y = k1;
+    this.rectGraphics.position.y = t1;
 
-      tile.rectGraphics.scale.y = k1;
-      tile.rectGraphics.position.y = t1;
-    });
-
+    // this.textGraphics.scale.y = k1;
+    // this.textGraphics.position.y = t1;
     this.draw();
     this.animate();
   }
@@ -1081,40 +1193,36 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
       return '';
     }
 
-    const zoomLevel = this.calculateZoomLevel();
+    if (!this.drawnRects) {
+      return '';
+    }
+
+    const closestText = '';
     const point = [trackX, trackY];
 
-    if (this.drawnRects[zoomLevel]) {
-      const visibleRects = Object.values(this.drawnRects[zoomLevel]);
+    const visibleRects = Object.values(this.drawnRects);
 
-      for (let i = 0; i < visibleRects.length; i++) {
-        const rect = visibleRects[i][0].slice(0);
+    for (let i = 0; i < visibleRects.length; i++) {
+      const rect = visibleRects[i][0].slice(0);
 
-        // graphics have been scaled so we need to scale the points themselves
-        const tileKx = visibleRects[i][1].tile.rectGraphics.scale.x;
-        const tilePx = visibleRects[i][1].tile.rectGraphics.position.x;
+      const newArr = polyToPoly(
+        rect,
+        this.rectGraphics.scale.x,
+        this.rectGraphics.position.x,
+        this.rectGraphics.scale.y,
+        this.rectGraphics.position.y,
+      );
 
-        const tileKy = visibleRects[i][1].tile.rectGraphics.scale.y;
-        const tilePy = visibleRects[i][1].tile.rectGraphics.position.y;
+      const pc = classifyPoint(newArr, point);
 
-        const newArr = [];
+      if (pc === -1) {
+        const parts = visibleRects[i][1].value.fields;
 
-        while (rect.length) {
-          const [x, y] = rect.splice(0, 2);
-          newArr.push([x * tileKx + tilePx, y * tileKy + tilePy]);
-        }
-
-        const pc = classifyPoint(newArr, point);
-
-        if (pc === -1) {
-          const parts = visibleRects[i][1].value.fields;
-
-          return parts.join(' ');
-        }
+        return parts.join(' ');
       }
     }
 
-    return '';
+    return closestText;
   }
 }
 
