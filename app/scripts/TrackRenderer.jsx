@@ -20,8 +20,8 @@ import TopAxisTrack from './TopAxisTrack';
 
 import BarTrack from './BarTrack';
 import DivergentBarTrack from './DivergentBarTrack';
-import Horizontal1dHeatmapTrack from './Horizontal1dHeatmapTrack';
 import FilledLine from './FilledLine';
+import Horizontal1dHeatmapTrack from './Horizontal1dHeatmapTrack';
 import HorizontalLine1DPixiTrack from './HorizontalLine1DPixiTrack';
 import HorizontalMultivecTrack from './HorizontalMultivecTrack';
 import HorizontalPoint1DPixiTrack from './HorizontalPoint1DPixiTrack';
