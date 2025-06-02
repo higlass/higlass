@@ -169,7 +169,7 @@ export default class SeriesListMenu extends ContextMenuContainer {
 
             // is there a custom component available for picking this
             // option type value (e.g. 'custom' color scale)
-            if (track.type in inlineOption.componentPickers) {
+            if (inlineOption.componentPickers && track.type in inlineOption.componentPickers) {
               optionSelectorSettings.handler = () => {
                 this.props.onConfigureTrack(
                   track,
