@@ -1,5 +1,5 @@
-@import './colors';
-@import './transitions';
+@use './colors' as c;
+@use './transitions' as t;
 
 $buttonSize: 20px;
 
@@ -12,10 +12,10 @@ $buttonSize: 20px;
   right: calc($buttonSize / 10);
   top: calc($buttonSize / 10);
   border-radius: calc($buttonSize / 8);
-  box-shadow: 0 0 0 1px $gray-lightest-rgba, 0 0 3px 0 $gray-lighter-rgba;
+  box-shadow: 0 0 0 1px c.$gray-lightest-rgba, 0 0 3px 0 c.$gray-lighter-rgba;
   opacity: 0;
-  transition: opacity $fast $ease, background $fast $ease,
-    box-shadow $fast $ease;
+  transition: opacity t.$fast t.$ease, background t.$fast t.$ease,
+    box-shadow t.$fast t.$ease;
 }
 
 .track-control-dark,
@@ -63,11 +63,11 @@ $buttonSize: 20px;
   padding: calc($buttonSize / 5);
   cursor: pointer;
   opacity: 0.66;
-  transition: background $fast $ease, color $fast $ease, opacity $fast $ease;
+  transition: background t.$fast t.$ease, color t.$fast t.$ease, opacity t.$fast t.$ease;
 
   &:hover {
-    color: $white;
-    background: $active;
+    color: c.$white;
+    background: c.$active;
     opacity: 1;
   }
 
@@ -81,11 +81,11 @@ $buttonSize: 20px;
 }
 
 .track-control-dark .track-control-button {
-  color: $gray-light;
+  color: c.$gray-light;
 
   &:hover {
-    color: $white;
-    background: $active;
+    color: c.$white;
+    background: c.$active;
     opacity: 1;
   }
 }

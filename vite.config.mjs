@@ -11,6 +11,13 @@ export default ({ mode }) => ({
       lodash: 'lodash-es',
     },
   },
+  css: {
+    preprocessorOptions: {
+      scss: {
+        api: 'modern-compiler',
+      },
+    },
+  },
   define: {
     global: 'globalThis',
     XYLOPHON: JSON.stringify(version),
