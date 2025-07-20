@@ -244,15 +244,11 @@ export class TiledPlot extends React.Component {
       }
     }
 
-    // console.log('extent:', extent);
-
     const trackDatas = [];
 
     // get data
     for (const track of tracks) {
       if (track.type === 'heatmap') {
-        // console.log('trackDefObjs', this.trackRenderer.trackDefObjects);
-
         const trackObj = allTrackObjs.filter((x) => x.id === track.uid)[0];
 
         const x1 = trackObj._xScale(extent[0][0]);
