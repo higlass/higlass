@@ -63,3 +63,23 @@
 path.domain {
   stroke-width: 0px;
 }
+
+.tiled-plot-track-overlay-plain {
+  background: transparent;
+  z-index: 1;
+}
+
+.tiled-plot-track-overlay-animate {
+  background: yellow;
+  opacity: 0.3;
+  outline: 2px solid rgba(255, 0, 0, 0.8);
+  z-index: 1;
+  animation: appear 1s;
+}
+
+.tiled-plot-track-overlay-selected {
+  border: 5px solid black;
+  background: yellow;
+  opacity: 0.4;
+  z-index: 1;
+}
