@@ -1,5 +1,9 @@
 # Release notes
 
+## Next
+
+- Removed Sass warnings
+
 ## v2.0.1
 
 - Fixed styles for track chooser so that it's actually visible when selected
