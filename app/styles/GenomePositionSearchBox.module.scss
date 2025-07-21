@@ -1,5 +1,5 @@
-@import './colors';
-@import './transitions';
+@use './colors' as c;
+@use './transitions' as t;
 
 $unit: 24px;
 
@@ -11,11 +11,11 @@ $unit: 24px;
   height: 100%;
   margin-bottom: 0px;
   font-size: calc($unit / 1.75);
-  transition: box-shadow $fast $ease, font-size $fast $ease;
+  transition: box-shadow t.$fast t.$ease, font-size t.$fast t.$ease;
 }
 
 .genome-position-search-focus {
-  box-shadow: 0 0 0 1px $active, 0 0 3px 1px $active;
+  box-shadow: 0 0 0 1px c.$active, 0 0 3px 1px c.$active;
 }
 
 .genome-position-search-bar {
@@ -33,12 +33,12 @@ $unit: 24px;
 
   &:focus {
     outline: none;
-    color: $black;
+    color: c.$black;
   }
 }
 .genome-position-search-dark .genome-position-search-bar {
   &:focus {
-    color: $gray-lighter;
+    color: c.$gray-lighter;
   }
 }
 
@@ -47,30 +47,30 @@ $unit: 24px;
   display: block;
   height: 100%;
   padding: 0 calc($unit / 3) !important;
-  color: $gray;
+  color: c.$gray;
   border: 0 !important;
   border-radius: 0 !important;
   background: transparent;
-  transition: background $fast $ease, color $fast $ease;
+  transition: background t.$fast t.$ease, color t.$fast t.$ease;
 
   &:active,
   &:focus,
   &:hover {
-    color: $white;
-    background: $active;
+    color: c.$white;
+    background: c.$active;
   }
 }
 
 .genome-position-search-bar-button-focus {
-  color: $white;
-  background: $active;
+  color: c.$white;
+  background: c.$active;
 }
 
 .genome-position-search-bar-icon,
 .genome-position-search-bar-icon-focus {
   display: flex;
   align-items: center;
-  transition: color $fast $ease;
+  transition: color t.$fast t.$ease;
 
   &:first-child {
     margin-left: calc($unit / 4);
@@ -84,15 +84,15 @@ $unit: 24px;
 }
 
 .genome-position-search-bar-icon-focus {
-  color: $active;
+  color: c.$active;
 }
 
 .genome-position-search-bar-suggestions {
   position: fixed;
   border-radius: 3px;
-  box-shadow: 0 0 3px 0 $gray-lighter-rgba, 0 1px 5px 0 $gray-lightest-rgba;
+  box-shadow: 0 0 3px 0 c.$gray-lighter-rgba, 0 1px 5px 0 c.$gray-lightest-rgba;
   background-color: rgba(255, 255, 255, 0.95);
-  border: 1px solid $gray-lighter-rgba;
+  border: 1px solid c.$gray-lighter-rgba;
   padding: 2px 0;
   font-size: 90%;
   overflow: auto;

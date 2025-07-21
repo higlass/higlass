@@ -1,5 +1,5 @@
-@import './colors';
-@import './transitions';
+@use './colors' as c;
+@use './transitions' as t;
 
 .top-right-handle,
 .bottom-right-handle {
@@ -19,8 +19,8 @@
 .right-draggable-handle {
   position: absolute;
   opacity: 0;
-  transition: transform $fast $ease,
-              opacity $fast $ease;
+  transition: transform t.$fast t.$ease,
+              opacity t.$fast t.$ease;
 }
 
 .draggable-div {
@@ -81,8 +81,8 @@
   .bottom-draggable-handle-grabber,
   .left-draggable-handle-grabber,
   .right-draggable-handle-grabber {
-    box-shadow: 0 0 3px 1px $blue-lighter;
-    background: $blue-lighter;
+    box-shadow: 0 0 3px 1px c.$blue-lighter;
+    background: c.$blue-lighter;
   }
 }
 

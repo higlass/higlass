@@ -1,32 +1,32 @@
-@import './colors';
-@import './sizes';
-@import './transitions';
+@use './colors' as c;
+@use './sizes' as s;
+@use './transitions' as t;
 
 .button {
   display: flex;
   align-items: center;
   box-sizing: border-box;
   padding: 0.5em 0.5em;
-  color: $black;
+  color: c.$black;
   font-size: 1em;
   line-height: 1em;
   border: 0;
-  border-radius: (.25*$base)+px;
-  background: $white;
-  box-shadow: 0 0 0 1px $gray-light;
-  transition: transform $fast $ease,
-              box-shadow $fast $ease,
-              background $fast $ease;
+  border-radius: (.25*s.$base)+px;
+  background: c.$white;
+  box-shadow: 0 0 0 1px c.$gray-light;
+  transition: transform t.$fast t.$ease,
+              box-shadow t.$fast t.$ease,
+              background t.$fast t.$ease;
   -webkit-appearance: none;
 }
 
 .button:hover {
-  background: $gray-lightest;
-  box-shadow: 0 0 0 1px $gray-light;
+  background: c.$gray-lightest;
+  box-shadow: 0 0 0 1px c.$gray-light;
 }
 
 .button:focus {
-  box-shadow: 0 0 0 2px $blue-lighter;
+  box-shadow: 0 0 0 2px c.$blue-lighter;
 }
 
 .button:active {
@@ -39,8 +39,8 @@
 }
 
 .button-shortcut {
-  padding: 0.1em (.5*$base)+px;
-  color: $gray-medium;
+  padding: 0.1em (.5*s.$base)+px;
+  color: c.$gray-medium;
   font-size: 0.8em;
-  transition: color $fast $ease;
+  transition: color t.$fast t.$ease;
 }

@@ -1,14 +1,14 @@
-@import './colors';
-@import './transitions';
+@use './colors' as c;
+@use './transitions' as t;
 
 .add-track-position-table {
   border-collapse: collapse;
   margin: 5px;
-  color: $gray-dark;
+  color: c.$gray-dark;
 }
 
 .add-track-position-table-dark {
-  color: $gray-light;
+  color: c.$gray-light;
 }
 
 .add-track-position-other {
@@ -20,14 +20,14 @@
   min-height: 20px;
   text-align: center;
   outline: none;
-  border-top: 1px solid $gray;
-  border-left: 1px solid $gray;
-  border-right: 1px solid $gray;
+  border-top: 1px solid c.$gray;
+  border-left: 1px solid c.$gray;
+  border-right: 1px solid c.$gray;
   border-radius: 2px 2px 0 0;
 
   &:hover {
-    color: $white;
-    background-color: $active;
+    color: c.$white;
+    background-color: c.$active;
   }
 }
 
@@ -35,42 +35,42 @@
   min-width: 40px;
   text-align: center;
   outline: none;
-  border-top: 1px solid $gray;
-  border-left: 1px solid $gray;
-  border-bottom: 1px solid $gray;
+  border-top: 1px solid c.$gray;
+  border-left: 1px solid c.$gray;
+  border-bottom: 1px solid c.$gray;
   border-radius: 2px 0 0 2px;
 }
 
 .add-track-position-middle-left:hover {
-  background-color: $active;
-  color: $white;
+  background-color: c.$active;
+  color: c.$white;
 }
 
 .add-track-position-middle-right {
   min-width: 40px;
   text-align: center;
   outline: none;
-  border-top: 1px solid $gray;
-  border-right: 1px solid $gray;
-  border-bottom: 1px solid $gray;
+  border-top: 1px solid c.$gray;
+  border-right: 1px solid c.$gray;
+  border-bottom: 1px solid c.$gray;
   border-radius: 0 2px 2px 0;
 }
 
 .add-track-position-middle-right:hover {
-  background-color: $active;
-  color: $white;
+  background-color: c.$active;
+  color: c.$white;
 }
 
 .add-track-position-middle-middle {
   text-align: center;
   outline: none;
-  border: 1px solid $gray;
+  border: 1px solid c.$gray;
   position: relative;
 }
 
 .add-track-position-middle-middle:hover {
-  background-color: $active;
-  color: $white;
+  background-color: c.$active;
+  color: c.$white;
 }
 
 .add-track-position-middle-middle-full {
@@ -84,7 +84,7 @@
 .add-track-position-middle-middle-upper-right {
   width: 0;
   height: 0;
-  border-top: 30px solid $gray;
+  border-top: 30px solid c.$gray;
   border-left: 30px solid transparent;
   position: absolute;
   top: 0;
@@ -92,13 +92,13 @@
 }
 
 .add-track-position-middle-middle-upper-right:hover {
-  border-top: 30px solid $active;
+  border-top: 30px solid c.$active;
 }
 
 .add-track-position-middle-middle-lower-left {
   width: 0;
   height: 0;
-  border-bottom: 30px solid $gray;
+  border-bottom: 30px solid c.$gray;
   border-right: 30px solid transparent;
   position: absolute;
   bottom: 0;
@@ -106,22 +106,22 @@
 }
 
 .add-track-position-middle-middle-lower-left:hover {
-  border-bottom: 30px solid $active;
+  border-bottom: 30px solid c.$active;
 }
 
 .add-track-position-bottom-middle {
   min-height: 20px;
   text-align: center;
   outline: none;
-  border-left: 1px solid $gray;
-  border-right: 1px solid $gray;
-  border-bottom: 1px solid $gray;
+  border-left: 1px solid c.$gray;
+  border-right: 1px solid c.$gray;
+  border-bottom: 1px solid c.$gray;
   border-radius: 0 0 2px 2px;
 }
 
 .add-track-position-bottom-middle:hover {
-  background-color: $active;
-  color: $white;
+  background-color: c.$active;
+  color: c.$white;
 }
 
 .add-track-position-span {

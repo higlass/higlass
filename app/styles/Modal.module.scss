@@ -1,6 +1,6 @@
-@import './colors';
-@import './sizes';
-@import './transitions';
+@use './colors' as c;
+@use './sizes' as s;
+@use './transitions' as t;
 
 .modal-background {
   position: absolute;
@@ -10,8 +10,8 @@
   bottom: 0;
   left: 0;
   background: rgba(0, 0, 0, 0.666);
-  animation: fade-in $normal $ease 1;
-  transition: opacity $normal $ease;
+  animation: fade-in t.$normal t.$ease 1;
+  transition: opacity t.$normal t.$ease;
 }
 
 .modal-hide {
@@ -20,23 +20,23 @@
 
 .modal-wrap {
   position: absolute;
-  top: (2*$base)+px;
-  right: (2*$base)+px;
-  bottom: (2*$base)+px;
-  left: (2*$base)+px;
+  top: (2*s.$base)+px;
+  right: (2*s.$base)+px;
+  bottom: (2*s.$base)+px;
+  left: (2*s.$base)+px;
 }
 
 .modal-window {
   position: relative;
   width: 100%;
-  max-width: (64*$base)+px;
+  max-width: (64*s.$base)+px;
   max-height: 100%;
   margin-left: auto;
   margin-right: auto;
-  color: $black;
-  border-radius: (0.5*$base)+px;
-  background: $white;
-  animation: fade-scale-in $normal $ease 1;
+  color: c.$black;
+  border-radius: (0.5*s.$base)+px;
+  background: c.$white;
+  animation: fade-scale-in t.$normal t.$ease 1;
 }
 
 .modal-window-max-height {
@@ -44,7 +44,7 @@
 }
 
 .modal-content {
-  padding: $base+px;
+  padding: s.$base+px;
 }
 
 @keyframes fade-in {

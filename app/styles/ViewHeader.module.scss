@@ -1,5 +1,5 @@
-@import './colors';
-@import './transitions';
+@use './colors' as c;
+@use './transitions' as t;
 
 $unit: 24px;
 
@@ -12,18 +12,18 @@ $unit: 24px;
   height: $unit;
   margin-top: calc($unit / 6);
   margin-bottom: calc($unit / 6);
-  color: $gray;
+  color: c.$gray;
   font-size: calc($unit / 2);
   line-height: $unit;
   vertical-align: middle;
   border: 0;
   border-radius: calc($unit / 8);
-  background: $gray-lighter;
-  transition: height $fast $ease, margin $fast $ease;
+  background: c.$gray-lighter;
+  transition: height t.$fast t.$ease, margin t.$fast t.$ease;
 }
 
 .multitrack-header-dark {
-  background: $gray-darkest;
+  background: c.$gray-darkest;
 }
 
 .multitrack-header-focus {
@@ -56,13 +56,13 @@ $unit: 24px;
   height: 100%;
   cursor: move;
   border-radius: calc($unit / 8) 0 0 calc($unit / 8);
-  transition: background $fast $ease;
+  transition: background t.$fast t.$ease;
 
   &:hover {
-    background: $gray;
+    background: c.$gray;
 
     div {
-      background: $white;
+      background: c.$white;
     }
   }
 
@@ -70,14 +70,14 @@ $unit: 24px;
     width: 1px;
     height: 50%;
     margin: 1px;
-    background: $gray;
-    transition: background $fast $ease;
+    background: c.$gray;
+    transition: background t.$fast t.$ease;
   }
 }
 
 .multitrack-header-dark .multitrack-header-grabber {
   div {
-    background: $gray-dark;
+    background: c.$gray-dark;
   }
 }
 
@@ -100,13 +100,13 @@ $unit: 24px;
     content: '';
     width: 1px;
     margin: 0 calc($unit / 4);
-    background: $gray-light;
+    background: c.$gray-light;
   }
 }
 
 .multitrack-header-dark .multitrack-header-search {
   &:after {
-    background: $gray-dark;
+    background: c.$gray-dark;
   }
 }
 
@@ -122,19 +122,19 @@ $unit: 24px;
   width: $unit;
   height: 100%;
   padding: calc($unit / 4);
-  transition: background $fast $ease, color $fast $ease;
+  transition: background t.$fast t.$ease, color t.$fast t.$ease;
 
   g {
-    stroke: $gray;
+    stroke: c.$gray;
   }
 
   &:hover,
   &:active,
   &:focus {
-    color: $white;
-    background: $active;
+    color: c.$white;
+    background: c.$active;
     g {
-      stroke: $white;
+      stroke: c.$white;
     }
   }
 
@@ -146,11 +146,11 @@ $unit: 24px;
 .mouse-tool-selection {
   color: white;
   border-radius: calc($unit / 8) 0 0 calc($unit / 8);
-  background: $active;
+  background: c.$active;
 }
 
 .multitrack-header-icon-squeazed {
-  width: calc($unit / 1.2) 5;
+  width: calc($unit / 1.2);
   padding-left: calc($unit / 8);
   padding-right: calc($unit / 8);
 }
