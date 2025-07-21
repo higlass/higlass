@@ -1,5 +1,21 @@
 # Release notes
 
+## Next
+
+- Removed Sass warnings
+
+## v2.0.1
+
+- Fixed styles for track chooser so that it's actually visible when selected
+
+## v2.0.0
+
+- Feature parity with [Resgen flavored higlass (resglass)](https://github.com/reservoirgenomics/resglass/tree/main)
+- Genome position search box is now powered by whatever chromsizes and gene annotation tracks are present
+- Added view and track choosers so that a user can select a view or track to add to
+
+Minor or prior
+
 - Add missing initializer value to `utils.reduce`
 - Fix `api.hideTrackChooser`
 - Added buttons to the add track position pop-up for selecting upper-right and lower-left extents with the center position.
