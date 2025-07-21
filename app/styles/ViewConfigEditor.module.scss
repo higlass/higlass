@@ -1,24 +1,24 @@
-@import './colors';
-@import './sizes';
-@import './transitions';
+@use './colors' as c;
+@use './sizes' as s;
+@use './transitions' as t;
 
 .view-config-editor-header {
-  margin: (-1 * $base) + px (-1 * $base) + px 0 (-1 * $base) + px;
-  padding: $base + px;
+  margin: (-1 * s.$base) + px (-1 * s.$base) + px 0 (-1 * s.$base) + px;
+  padding: s.$base + px;
   display: flex;
   justify-content: space-between;
-  background: $gray-lightest;
+  background: c.$gray-lightest;
 
   button {
     display: flex;
     align-items: center;
-    font-size: (1.4 * $base) + px;
-    background: $gray-lightest;
+    font-size: (1.4 * s.$base) + px;
+    background: c.$gray-lightest;
 
     &:hover {
-      background: $gray-lighter;
+      background: c.$gray-lighter;
       span {
-        color: $gray-dark;
+        color: c.$gray-dark;
       }
     }
   }
@@ -26,15 +26,15 @@
 
 .view-config-editor {
   position: absolute;
-  top: (5 * $base) + px;
+  top: (5 * s.$base) + px;
   right: 0;
   bottom: 0;
   left: 0;
   margin: 1px 0 0 0;
   padding: 0;
   overflow: auto;
-  font-size: (1.25 * $base) + px;
-  height: calc(100% - #{(8 * $base)+px});
+  font-size: (1.25 * s.$base) + px;
+  height: calc(100% - #{(8 * s.$base)+px});
 }
 
 .view-config-log {
@@ -44,17 +44,17 @@
   left: 0;
   margin: 1px 0 0 0;
   padding: 0;
-  min-height: (3 * $base) + px;
-  background: $gray-lightest;
-  transition: height $fast $ease;
+  min-height: (3 * s.$base) + px;
+  background: c.$gray-lightest;
+  transition: height t.$fast t.$ease;
 }
 
 .view-config-log-header {
-  background: $gray-lightest;
-  border-top: 1px solid $gray-light;
-  border-bottom: 1px solid $gray-light;
-  padding-left: $base + px;
-  height: (3 * $base) + px;
+  background: c.$gray-lightest;
+  border-top: 1px solid c.$gray-light;
+  border-bottom: 1px solid c.$gray-light;
+  padding-left: s.$base + px;
+  height: (3 * s.$base) + px;
   display: flex;
   align-items: center;
   cursor: pointer;
@@ -64,9 +64,9 @@
 }
 
 .view-config-log-msg {
-  background: $gray-lightest;
+  background: c.$gray-lightest;
   overflow: auto;
-  height: calc(100% - #{(3 * $base)+px});
+  height: calc(100% - #{(3 * s.$base)+px});
 
   tr,
   td {

@@ -1,20 +1,20 @@
-@import './colors';
-@import './transitions';
+@use './colors' as c;
+@use './transitions' as t;
 
 .context-menu {
   position: fixed;
   background-color: rgba(255, 255, 255, 0.95);
-  border: 1px solid $gray-lighter-rgba;
+  border: 1px solid c.$gray-lighter-rgba;
   border-radius: 3px;
   font-size: 12px;
   cursor: default;
   padding: 3px;
-  box-shadow: 0 0 3px 0 $gray-lighter-rgba,
-              0 1px 5px 0 $gray-lightest-rgba;
+  box-shadow: 0 0 3px 0 c.$gray-lighter-rgba,
+              0 1px 5px 0 c.$gray-lightest-rgba;
 }
 
 .context-menu-dark {
-  color: $gray-light;
+  color: c.$gray-light;
   background-color: rgba(68, 68, 68, 0.97);
 }
 
@@ -32,12 +32,12 @@
   padding: 2px;
   white-space: nowrap;
   border-radius: 2px;
-  transition: background $fast $ease,
-              color $fast $ease;
+  transition: background t.$fast t.$ease,
+              color t.$fast t.$ease;
 
   &:hover {
-    background: $active;
-    color: $white;
+    background: c.$active;
+    color: c.$white;
   }
 }
 
@@ -45,7 +45,7 @@
   margin-top: 5px;
   margin-bottom: 5px;
   border: 0;
-  border-top: 1px solid $gray-lighter-rgba;
+  border-top: 1px solid c.$gray-lighter-rgba;
 }
 
 .play-icon {
