@@ -63,6 +63,8 @@ class ListWrapper extends React.Component {
       onSortMove: this.onSortMove.bind(this),
     };
 
+    console.log('oct4', this.props.onCollapseTrack);
+
     return (
       <Component
         {...this.props}
@@ -90,6 +92,8 @@ ListWrapper.propTypes = {
   items: PropTypes.array,
   onAddSeries: PropTypes.func,
   onCloseTrack: PropTypes.func,
+  onCollapseTrack: PropTypes.func,
+  onExpandTrack: PropTypes.func,
   onCloseTrackMenuOpened: PropTypes.func,
   onConfigTrackMenuOpened: PropTypes.func,
   onSortEnd: PropTypes.func,

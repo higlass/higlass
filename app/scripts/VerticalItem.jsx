@@ -14,6 +14,8 @@ const VerticalItem = SortableElement((props) => (
     height={props.height}
     item={props.item}
     onAddSeries={props.onAddSeries}
+    onCollapseTrack={props.onCollapseTrack}
+    onExpandTrack={props.onExpandTrack}
     onCloseTrack={props.onCloseTrack}
     onCloseTrackMenuOpened={props.onCloseTrackMenuOpened}
     onConfigTrackMenuOpened={props.onConfigTrackMenuOpened}

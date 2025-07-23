@@ -237,6 +237,8 @@ class VerticalTiledPlot extends React.Component {
           }))}
           onAddSeries={this.props.onAddSeries}
           onCloseTrack={this.props.onCloseTrack}
+          onCollapseTrack={this.props.onCollapseTrack}
+          onExpandTrack={this.props.onExpandTrack}
           onCloseTrackMenuOpened={this.props.onCloseTrackMenuOpened}
           onConfigTrackMenuOpened={this.props.onConfigTrackMenuOpened}
           onSortEnd={this.props.handleSortEnd}
@@ -261,6 +263,8 @@ VerticalTiledPlot.propTypes = {
   height: PropTypes.number,
   onAddSeries: PropTypes.func,
   onCloseTrack: PropTypes.func,
+  onCollapseTrack: PropTypes.func,
+  onExpandTrack: PropTypes.func,
   onCloseTrackMenuOpened: PropTypes.func,
   onConfigTrackMenuOpened: PropTypes.func,
   onRangeSelection: PropTypes.func,

@@ -179,7 +179,7 @@ class HorizontalTiledPlot extends React.Component {
 
   render() {
     const height = this.props.tracks.map((x) => x.height).reduce(sum, 0);
-
+    
     const isBrushable = this.props.tracks
       .map((track) => IS_TRACK_RANGE_SELECTABLE(track))
       .reduce(or, false);
@@ -228,6 +228,8 @@ class HorizontalTiledPlot extends React.Component {
           onAddSeries={this.props.onAddSeries}
           onCloseTrack={this.props.onCloseTrack}
           onCloseTrackMenuOpened={this.props.onCloseTrackMenuOpened}
+          onCollapseTrack={this.props.onCollapseTrack}
+          onExpandTrack={this.props.onExpandTrack}
           onConfigTrackMenuOpened={this.props.onConfigTrackMenuOpened}
           onSortEnd={this.props.handleSortEnd}
           referenceAncestor={this.props.referenceAncestor}
@@ -250,6 +252,8 @@ HorizontalTiledPlot.propTypes = {
   isRangeSelectionActive: PropTypes.bool,
   onAddSeries: PropTypes.func,
   onCloseTrack: PropTypes.func,
+  onCollapseTrack: PropTypes.func,
+  onExpandTrack: PropTypes.func,
   onCloseTrackMenuOpened: PropTypes.func,
   onConfigTrackMenuOpened: PropTypes.func,
   onRangeSelection: PropTypes.func,
