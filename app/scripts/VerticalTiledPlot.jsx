@@ -11,6 +11,8 @@ import ListWrapper from './ListWrapper';
 import SortableList from './SortableList';
 import VerticalItem from './VerticalItem';
 
+import { trackHeight, trackWidth } from './utils';
+
 // Utils
 import { IS_TRACK_RANGE_SELECTABLE, or, resetD3BrushStyle, sum } from './utils';
 
@@ -232,7 +234,8 @@ class VerticalTiledPlot extends React.Component {
             configMenuVisible: d.uid === this.props.configTrackMenuId,
             uid: d.uid || slugid.nice(),
             height: this.props.height,
-            width: d.width,
+            width: trackWidth(d),
+            isCollapsed: d.options.collapsed,
             value: d.value,
           }))}
           onAddSeries={this.props.onAddSeries}

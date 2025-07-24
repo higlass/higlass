@@ -84,6 +84,7 @@ export { default as getAggregationFunction } from './get-aggregation-function';
 export { default as selectedItemsToSize } from './selected-items-to-size';
 export { default as IS_TRACK_RANGE_SELECTABLE } from './is-track-range-selectable';
 export { default as getDefaultTracksForDatatype } from './default-tracks';
+export { trackHeight, trackWidth } from './track-utils';
 
 export {
   getTrackObjectFromHGC,

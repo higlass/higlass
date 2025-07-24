@@ -59,7 +59,7 @@ function TrackControl(props) {
     <div className={getClassName(props)}>
       {props.isMoveable && <DragHandle />}
 
-      {props.isMoveable && (!props.isCollapsed) && <svg
+      {!props.isCollapsed && <svg
         ref={(c) => {
           imgConfig = c;
         }}
@@ -77,6 +77,26 @@ function TrackControl(props) {
       >
         <title>Collapse track</title>
         <use xlinkHref="#collapse" />
+      </svg>}
+
+      {props.isCollapsed && <svg
+        ref={(c) => {
+          imgConfig = c;
+        }}
+        className={getButtonClassName(props)}
+        onClick={() => {
+          props.onExpandTrack(
+            props.uid
+          );
+        }}
+        style={{
+          height: '20px',
+          width: '20px',
+          ...props.imgStyleSettings,
+        }}
+      >
+        <title>Expand track</title>
+        <use xlinkHref="#expand" />
       </svg>}
 
       <svg
@@ -148,6 +168,8 @@ TrackControl.propTypes = {
   isMoveable: PropTypes.bool,
   isVertical: PropTypes.bool,
   isVisible: PropTypes.bool,
+  onCollapseTrack: PropTypes.func,
+  onExpandTrack: PropTypes.func,
   onConfigTrackMenuOpened: PropTypes.func,
   onCloseTrackMenuOpened: PropTypes.func,
   onAddSeries: PropTypes.func,

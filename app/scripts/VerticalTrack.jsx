@@ -17,6 +17,7 @@ class VerticalTrack extends MoveableTrack {
         imgStyleMove={STYLES}
         imgStyleSettings={STYLES}
         isAlignLeft={this.props.controlAlignLeft}
+        isCollapsed={this.props.isCollapsed}
         isMoveable={this.moveable}
         isVertical={true}
         isVisible={isVisible}

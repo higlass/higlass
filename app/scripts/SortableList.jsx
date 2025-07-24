@@ -36,6 +36,7 @@ const SortableList = SortableContainer(
         uid: item.uid,
         height: item.height,
         width: item.width,
+        isCollapsed: item.isCollapsed,
         item,
         useDragHandle,
         onCloseTrack,

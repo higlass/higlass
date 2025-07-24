@@ -63,8 +63,6 @@ class ListWrapper extends React.Component {
       onSortMove: this.onSortMove.bind(this),
     };
 
-    console.log('oct4', this.props.onCollapseTrack);
-
     return (
       <Component
         {...this.props}

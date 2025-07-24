@@ -38,6 +38,8 @@ import {
   isWithin,
   sum,
   visitPositionedTracks,
+  trackHeight,
+  trackWidth
 } from './utils';
 import getDefaultTracksForDataType from './utils/get-default-tracks-for-datatype';
 
@@ -53,17 +55,7 @@ import stylesCenterTrack from '../styles/CenterTrack.module.scss';
 // Styles
 import styles from '../styles/TiledPlot.module.scss';
 
-const COLLAPSED_HEIGHT = 10;
 
-const trackHeight = (track) => {
-  if (track.options.collapsed) return COLLAPSED_HEIGHT;
-  return track.height;
-}
-
-const trackWidth = (track) => {
-  if (track.options.collapsed) return COLLAPSED_HEIGHT;
-  return track.width;
-}
 
 export class TiledPlot extends React.Component {
   constructor(props) {
@@ -351,8 +343,6 @@ export class TiledPlot extends React.Component {
       const selection = this.brushSelectionRaw;
 
       const track = this.brushTrack;
-
-      console.log('track', track);
 
       if (this.brushType === '2d') {
         if (
@@ -906,11 +896,11 @@ export class TiledPlot extends React.Component {
   }
 
   handleCollapseTrack(trackUid) {
-    console.log('collapse track', trackUid)
+    this.handleTrackOptionsChanged(trackUid, {"collapsed": true})
   }
 
   handleExpandTrack(trackUid) {
-    console.log('expand track', trackUid)
+    this.handleTrackOptionsChanged(trackUid, {"collapsed": false})
   }
 
   handleScalesChanged(x, y) {
@@ -1341,7 +1331,7 @@ export class TiledPlot extends React.Component {
     let left = this.props.paddingLeft;
     let right = this.props.paddingRight;
     let width = this.centerWidth;
-    let height = track.height;
+    let height = trackHeight(track);
     let offsetX = 0;
     let offsetY = 0;
 
@@ -1353,7 +1343,7 @@ export class TiledPlot extends React.Component {
           if (this.state.tracks.top[i].uid === track.uid) {
             break;
           }
-          top += this.state.tracks.top[i].height;
+          top += trackHeight(this.state.tracks.top[i]);
         }
 
         break;
@@ -1366,21 +1356,21 @@ export class TiledPlot extends React.Component {
           if (this.state.tracks.bottom[i].uid === track.uid) {
             break;
           }
-          top += this.state.tracks.bottom[i].height;
+          top += trackHeight(this.state.tracks.bottom[i]);
         }
 
         break;
 
       case 'left':
         top += this.topHeight;
-        width = track.width;
+        width = trackWidth(track);
         height = this.centerHeight;
 
         for (let i = 0; i < this.state.tracks.left.length; i++) {
           if (this.state.tracks.left[i].uid === track.uid) {
             break;
           }
-          left += this.state.tracks.left[i].width;
+          left += trackWidth(this.state.tracks.left[i]);
         }
 
         break;
@@ -1388,14 +1378,14 @@ export class TiledPlot extends React.Component {
       case 'right':
         left += this.leftWidth + this.centerWidth + this.galleryDim;
         top += this.topHeight;
-        width = track.width;
+        width = trackWidth(track);
         height = this.centerHeight;
 
         for (let i = 0; i < this.state.tracks.right.length; i++) {
           if (this.state.tracks.right[i].uid === track.uid) {
             break;
           }
-          left += this.state.tracks.right[i].width;
+          left += trackWidth(this.state.tracks.right[i]);
         }
 
         break;
@@ -1625,8 +1615,6 @@ export class TiledPlot extends React.Component {
     const tracksAndLocations = this.createTracksAndLocations().map(
       ({ track, location }) => this.calculateTrackPosition(track, location),
     );
-
-    console.log('tracksAndLocations', tracksAndLocations)
 
     return tracksAndLocations;
   }
