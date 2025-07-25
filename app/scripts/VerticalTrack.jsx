@@ -22,8 +22,8 @@ class VerticalTrack extends MoveableTrack {
         isVertical={true}
         isVisible={isVisible}
         onAddSeries={this.props.onAddSeries}
-        onCollapseTrack={props.onCollapseTrack}
-        onExpandTrack={props.onExpandTrack}
+        onCollapseTrack={this.props.onCollapseTrack}
+        onExpandTrack={this.props.onExpandTrack}
         onCloseTrackMenuOpened={this.props.onCloseTrackMenuOpened}
         onConfigTrackMenuOpened={this.props.onConfigTrackMenuOpened}
         uid={this.props.uid}

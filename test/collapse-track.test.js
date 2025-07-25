@@ -30,9 +30,9 @@ describe('Track addition and removal', () => {
     // to the left
   });
 
-  // afterAll(() => {
-  //   removeHGComponent(div);
-  // });
+  afterAll(() => {
+    removeHGComponent(div);
+  });
 
   it('Check that collapsing the track ', async () => {
     hgc.instance().tiledPlots.aa.handleCollapseTrack('line1');
