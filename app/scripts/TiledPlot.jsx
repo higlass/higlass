@@ -39,7 +39,7 @@ import {
   sum,
   visitPositionedTracks,
   trackHeight,
-  trackWidth
+  trackWidth,
 } from './utils';
 import getDefaultTracksForDataType from './utils/get-default-tracks-for-datatype';
 
@@ -54,8 +54,6 @@ import {
 import stylesCenterTrack from '../styles/CenterTrack.module.scss';
 // Styles
 import styles from '../styles/TiledPlot.module.scss';
-
-
 
 export class TiledPlot extends React.Component {
   constructor(props) {
@@ -586,7 +584,10 @@ export class TiledPlot extends React.Component {
       myBrush.keyModifiers(false);
       myBrush.extent([
         [track.left, track.top],
-        [track.left + trackWidth(track.track), track.top + trackHeight(track.track)],
+        [
+          track.left + trackWidth(track.track),
+          track.top + trackHeight(track.track),
+        ],
       ]);
 
       myBrush.on('start', function (event) {
@@ -896,11 +897,11 @@ export class TiledPlot extends React.Component {
   }
 
   handleCollapseTrack(trackUid) {
-    this.handleTrackOptionsChanged(trackUid, {"collapsed": true})
+    this.handleTrackOptionsChanged(trackUid, { collapsed: true });
   }
 
   handleExpandTrack(trackUid) {
-    this.handleTrackOptionsChanged(trackUid, {"collapsed": false})
+    this.handleTrackOptionsChanged(trackUid, { collapsed: false });
   }
 
   handleScalesChanged(x, y) {

@@ -59,45 +59,45 @@ function TrackControl(props) {
     <div className={getClassName(props)}>
       {props.isMoveable && <DragHandle />}
 
-      {!props.isCollapsed && <svg
-        ref={(c) => {
-          imgConfig = c;
-        }}
-        className={getButtonClassName(props)}
-        onClick={() => {
-          props.onCollapseTrack(
-            props.uid
-          );
-        }}
-        style={{
-          height: '20px',
-          width: '20px',
-          ...props.imgStyleSettings,
-        }}
-      >
-        <title>Collapse track</title>
-        <use xlinkHref="#collapse" />
-      </svg>}
+      {!props.isCollapsed && (
+        <svg
+          ref={(c) => {
+            imgConfig = c;
+          }}
+          className={getButtonClassName(props)}
+          onClick={() => {
+            props.onCollapseTrack(props.uid);
+          }}
+          style={{
+            height: '20px',
+            width: '20px',
+            ...props.imgStyleSettings,
+          }}
+        >
+          <title>Collapse track</title>
+          <use xlinkHref="#collapse" />
+        </svg>
+      )}
 
-      {props.isCollapsed && <svg
-        ref={(c) => {
-          imgConfig = c;
-        }}
-        className={getButtonClassName(props)}
-        onClick={() => {
-          props.onExpandTrack(
-            props.uid
-          );
-        }}
-        style={{
-          height: '20px',
-          width: '20px',
-          ...props.imgStyleSettings,
-        }}
-      >
-        <title>Expand track</title>
-        <use xlinkHref="#expand" />
-      </svg>}
+      {props.isCollapsed && (
+        <svg
+          ref={(c) => {
+            imgConfig = c;
+          }}
+          className={getButtonClassName(props)}
+          onClick={() => {
+            props.onExpandTrack(props.uid);
+          }}
+          style={{
+            height: '20px',
+            width: '20px',
+            ...props.imgStyleSettings,
+          }}
+        >
+          <title>Expand track</title>
+          <use xlinkHref="#expand" />
+        </svg>
+      )}
 
       <svg
         ref={(c) => {

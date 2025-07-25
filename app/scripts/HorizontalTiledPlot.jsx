@@ -181,7 +181,7 @@ class HorizontalTiledPlot extends React.Component {
 
   render() {
     const height = this.props.tracks.map((x) => x.height).reduce(sum, 0);
-    
+
     const isBrushable = this.props.tracks
       .map((track) => IS_TRACK_RANGE_SELECTABLE(track))
       .reduce(or, false);
