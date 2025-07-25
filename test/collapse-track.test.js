@@ -38,12 +38,10 @@ describe('Track addition and removal', () => {
     hgc.instance().tiledPlots.aa.handleCollapseTrack('line1');
     const trackRenderer = getTrackRenderer(hgc.instance(), 'aa');
 
-    expect(trackRenderer.trackDefObjects['line1'].trackDef.height).to.eql(10);
+    expect(trackRenderer.trackDefObjects.line1.trackDef.height).to.eql(10);
 
     hgc.instance().tiledPlots.aa.handleExpandTrack('line1');
-    expect(trackRenderer.trackDefObjects['line1'].trackDef.height).to.not.eql(
-      10,
-    );
+    expect(trackRenderer.trackDefObjects.line1.trackDef.height).to.not.eql(10);
 
     await new Promise((done) => waitForTilesLoaded(hgc.instance(), done));
   });

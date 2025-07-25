@@ -37,9 +37,9 @@ import {
   getTrackPositionByUid,
   isWithin,
   sum,
-  visitPositionedTracks,
   trackHeight,
   trackWidth,
+  visitPositionedTracks,
 } from './utils';
 import getDefaultTracksForDataType from './utils/get-default-tracks-for-datatype';
 
