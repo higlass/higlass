@@ -2,6 +2,7 @@
 
 ## Next
 
+- Added expand track icons and functionality
 - Removed Sass warnings
 
 ## v2.0.1
