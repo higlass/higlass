@@ -225,7 +225,7 @@ class HorizontalTiledPlot extends React.Component {
             uid: d.uid || slugid.nice(),
             width: this.props.width,
             height: trackHeight(d),
-            isCollapsed: d.options.collapsed,
+            isCollapsed: d.options?.collapsed,
             value: d.value,
           }))}
           onAddSeries={this.props.onAddSeries}

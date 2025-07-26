@@ -235,7 +235,7 @@ class VerticalTiledPlot extends React.Component {
             uid: d.uid || slugid.nice(),
             height: this.props.height,
             width: trackWidth(d),
-            isCollapsed: d.options.collapsed,
+            isCollapsed: d.options?.collapsed,
             value: d.value,
           }))}
           onAddSeries={this.props.onAddSeries}
