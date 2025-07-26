@@ -1,6 +1,6 @@
 # Release notes
 
-## Next
+## v2.1.0
 
 - Added expand track icons and functionality
 - Removed Sass warnings
