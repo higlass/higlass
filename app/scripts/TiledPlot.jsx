@@ -37,6 +37,8 @@ import {
   getTrackPositionByUid,
   isWithin,
   sum,
+  trackHeight,
+  trackWidth,
   visitPositionedTracks,
 } from './utils';
 import getDefaultTracksForDataType from './utils/get-default-tracks-for-datatype';
@@ -354,7 +356,7 @@ export class TiledPlot extends React.Component {
           pos[0] >= selection[0] &&
           pos[0] <= selection[1] &&
           pos[1] >= track.top &&
-          pos[1] <= track.top + track.height
+          pos[1] <= track.top + trackHeight(track.track)
         ) {
           inside = true;
         }
@@ -363,7 +365,7 @@ export class TiledPlot extends React.Component {
           pos[1] >= selection[0] &&
           pos[1] <= selection[1] &&
           pos[0] >= track.left &&
-          pos[0] <= track.left + track.width
+          pos[0] <= track.left + trackWidth(track.track)
         ) {
           inside = true;
         }
@@ -582,7 +584,10 @@ export class TiledPlot extends React.Component {
       myBrush.keyModifiers(false);
       myBrush.extent([
         [track.left, track.top],
-        [track.left + track.width, track.top + track.height],
+        [
+          track.left + trackWidth(track.track),
+          track.top + trackHeight(track.track),
+        ],
       ]);
 
       myBrush.on('start', function (event) {
@@ -889,6 +894,14 @@ export class TiledPlot extends React.Component {
      * The drawing options for a track have changed.
      */
     return this.props.onTrackOptionsChanged(trackUid, newOptions);
+  }
+
+  handleCollapseTrack(trackUid) {
+    this.handleTrackOptionsChanged(trackUid, { collapsed: true });
+  }
+
+  handleExpandTrack(trackUid) {
+    this.handleTrackOptionsChanged(trackUid, { collapsed: false });
   }
 
   handleScalesChanged(x, y) {
@@ -1319,7 +1332,7 @@ export class TiledPlot extends React.Component {
     let left = this.props.paddingLeft;
     let right = this.props.paddingRight;
     let width = this.centerWidth;
-    let height = track.height;
+    let height = trackHeight(track);
     let offsetX = 0;
     let offsetY = 0;
 
@@ -1331,7 +1344,7 @@ export class TiledPlot extends React.Component {
           if (this.state.tracks.top[i].uid === track.uid) {
             break;
           }
-          top += this.state.tracks.top[i].height;
+          top += trackHeight(this.state.tracks.top[i]);
         }
 
         break;
@@ -1344,21 +1357,21 @@ export class TiledPlot extends React.Component {
           if (this.state.tracks.bottom[i].uid === track.uid) {
             break;
           }
-          top += this.state.tracks.bottom[i].height;
+          top += trackHeight(this.state.tracks.bottom[i]);
         }
 
         break;
 
       case 'left':
         top += this.topHeight;
-        width = track.width;
+        width = trackWidth(track);
         height = this.centerHeight;
 
         for (let i = 0; i < this.state.tracks.left.length; i++) {
           if (this.state.tracks.left[i].uid === track.uid) {
             break;
           }
-          left += this.state.tracks.left[i].width;
+          left += trackWidth(this.state.tracks.left[i]);
         }
 
         break;
@@ -1366,14 +1379,14 @@ export class TiledPlot extends React.Component {
       case 'right':
         left += this.leftWidth + this.centerWidth + this.galleryDim;
         top += this.topHeight;
-        width = track.width;
+        width = trackWidth(track);
         height = this.centerHeight;
 
         for (let i = 0; i < this.state.tracks.right.length; i++) {
           if (this.state.tracks.right[i].uid === track.uid) {
             break;
           }
-          left += this.state.tracks.right[i].width;
+          left += trackWidth(this.state.tracks.right[i]);
         }
 
         break;
@@ -1625,8 +1638,8 @@ export class TiledPlot extends React.Component {
           style={{
             left: trackPosition.left,
             top: trackPosition.top,
-            width: trackPosition.width,
-            height: trackPosition.height,
+            width: trackWidth(trackPosition.track),
+            height: trackHeight(trackPosition.track),
             position: 'absolute',
           }}
         >
@@ -2281,28 +2294,28 @@ export class TiledPlot extends React.Component {
     // gallery goes around the central view it's dimension takes up twice the
     // space!
     this.galleryDim = this.props.tracks.gallery
-      ? this.props.tracks.gallery.map((x) => x.height).reduce(sum, 0)
+      ? this.props.tracks.gallery.map((x) => trackHeight(x)).reduce(sum, 0)
       : 0;
 
     // left, top, right, and bottom have fixed heights / widths
     // the center will vary to accomodate their dimensions
     this.topHeightNoGallery = this.props.tracks.top
-      .map((x) => x.height)
+      .map((x) => trackHeight(x))
       .reduce(sum, 0);
     this.topHeight = this.topHeightNoGallery + this.galleryDim;
 
     this.bottomHeightNoGallery = this.props.tracks.bottom
-      .map((x) => x.height)
+      .map((x) => trackHeight(x))
       .reduce(sum, 0);
     this.bottomHeight = this.bottomHeightNoGallery + this.galleryDim;
 
     this.leftWidthNoGallery = this.props.tracks.left
-      .map((x) => x.width)
+      .map((x) => trackWidth(x))
       .reduce(sum, 0);
     this.leftWidth = this.leftWidthNoGallery + this.galleryDim;
 
     this.rightWidthNoGallery = this.props.tracks.right
-      .map((x) => x.width)
+      .map((x) => trackWidth(x))
       .reduce(sum, 0);
     this.rightWidth = this.rightWidthNoGallery + this.galleryDim;
 
@@ -2344,6 +2357,8 @@ export class TiledPlot extends React.Component {
           onAddSeries={this.handleAddSeries.bind(this)}
           onCloseTrack={this.handleCloseTrack.bind(this)}
           onCloseTrackMenuOpened={this.handleCloseTrackMenuOpened.bind(this)}
+          onCollapseTrack={this.handleCollapseTrack.bind(this)}
+          onExpandTrack={this.handleExpandTrack.bind(this)}
           onConfigTrackMenuOpened={this.handleConfigTrackMenuOpened.bind(this)}
           onRangeSelection={this.rangeSelection1dHandler('x').bind(this)}
           onRangeSelectionEnd={this.rangeSelection1dEndHandler('x').bind(this)}
@@ -2383,6 +2398,8 @@ export class TiledPlot extends React.Component {
           onAddSeries={this.handleAddSeries.bind(this)}
           onCloseTrack={this.handleCloseTrack.bind(this)}
           onCloseTrackMenuOpened={this.handleCloseTrackMenuOpened.bind(this)}
+          onCollapseTrack={this.handleCollapseTrack.bind(this)}
+          onExpandTrack={this.handleExpandTrack.bind(this)}
           onConfigTrackMenuOpened={this.handleConfigTrackMenuOpened.bind(this)}
           onRangeSelection={this.rangeSelection1dHandler('y').bind(this)}
           onRangeSelectionEnd={this.rangeSelection1dEndHandler('y').bind(this)}
@@ -2421,6 +2438,8 @@ export class TiledPlot extends React.Component {
           onAddSeries={this.handleAddSeries.bind(this)}
           onCloseTrack={this.handleCloseTrack.bind(this)}
           onCloseTrackMenuOpened={this.handleCloseTrackMenuOpened.bind(this)}
+          onCollapseTrack={this.handleCollapseTrack.bind(this)}
+          onExpandTrack={this.handleExpandTrack.bind(this)}
           onConfigTrackMenuOpened={this.handleConfigTrackMenuOpened.bind(this)}
           onRangeSelection={this.rangeSelection1dHandler('y').bind(this)}
           onRangeSelectionEnd={this.rangeSelection1dEndHandler('y').bind(this)}
@@ -2459,6 +2478,8 @@ export class TiledPlot extends React.Component {
           onAddSeries={this.handleAddSeries.bind(this)}
           onCloseTrack={this.handleCloseTrack.bind(this)}
           onCloseTrackMenuOpened={this.handleCloseTrackMenuOpened.bind(this)}
+          onCollapseTrack={this.handleCollapseTrack.bind(this)}
+          onExpandTrack={this.handleExpandTrack.bind(this)}
           onConfigTrackMenuOpened={this.handleConfigTrackMenuOpened.bind(this)}
           onRangeSelection={this.rangeSelection1dHandler('x').bind(this)}
           onRangeSelectionEnd={this.rangeSelection1dEndHandler('x').bind(this)}
@@ -2743,8 +2764,8 @@ export class TiledPlot extends React.Component {
                 position: 'absolute',
                 left: pTrack.left,
                 top: pTrack.top,
-                width: pTrack.width,
-                height: pTrack.height,
+                width: trackWidth(pTrack.track),
+                height: trackHeight(pTrack.track),
                 zIndex: 1,
               }}
             />

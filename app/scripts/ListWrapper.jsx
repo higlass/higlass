@@ -90,6 +90,8 @@ ListWrapper.propTypes = {
   items: PropTypes.array,
   onAddSeries: PropTypes.func,
   onCloseTrack: PropTypes.func,
+  onCollapseTrack: PropTypes.func,
+  onExpandTrack: PropTypes.func,
   onCloseTrackMenuOpened: PropTypes.func,
   onConfigTrackMenuOpened: PropTypes.func,
   onSortEnd: PropTypes.func,

@@ -17,9 +17,12 @@ class HorizontalTrack extends MoveableTrack {
         imgStyleClose={STYLES}
         imgStyleMove={STYLES}
         imgStyleSettings={STYLES}
+        isCollapsed={this.props.isCollapsed}
         isMoveable={this.moveable}
         isVisible={isVisible}
         onAddSeries={this.props.onAddSeries}
+        onCollapseTrack={this.props.onCollapseTrack}
+        onExpandTrack={this.props.onExpandTrack}
         onCloseTrackMenuOpened={this.props.onCloseTrackMenuOpened}
         onConfigTrackMenuOpened={this.props.onConfigTrackMenuOpened}
         uid={this.props.uid}

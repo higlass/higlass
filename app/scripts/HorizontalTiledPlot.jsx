@@ -18,6 +18,8 @@ import styles from '../styles/HorizontalTiledPlot.module.scss';
 import stylesPlot from '../styles/TiledPlot.module.scss';
 import stylesTrack from '../styles/Track.module.scss';
 
+import { trackHeight, trackWidth } from './utils';
+
 function sourceEvent(event) {
   return event?.sourceEvent;
 }
@@ -222,12 +224,15 @@ class HorizontalTiledPlot extends React.Component {
             configMenuVisible: d.uid === this.props.configTrackMenuId,
             uid: d.uid || slugid.nice(),
             width: this.props.width,
-            height: d.height,
+            height: trackHeight(d),
+            isCollapsed: d.options?.collapsed,
             value: d.value,
           }))}
           onAddSeries={this.props.onAddSeries}
           onCloseTrack={this.props.onCloseTrack}
           onCloseTrackMenuOpened={this.props.onCloseTrackMenuOpened}
+          onCollapseTrack={this.props.onCollapseTrack}
+          onExpandTrack={this.props.onExpandTrack}
           onConfigTrackMenuOpened={this.props.onConfigTrackMenuOpened}
           onSortEnd={this.props.handleSortEnd}
           referenceAncestor={this.props.referenceAncestor}
@@ -250,6 +255,8 @@ HorizontalTiledPlot.propTypes = {
   isRangeSelectionActive: PropTypes.bool,
   onAddSeries: PropTypes.func,
   onCloseTrack: PropTypes.func,
+  onCollapseTrack: PropTypes.func,
+  onExpandTrack: PropTypes.func,
   onCloseTrackMenuOpened: PropTypes.func,
   onConfigTrackMenuOpened: PropTypes.func,
   onRangeSelection: PropTypes.func,
