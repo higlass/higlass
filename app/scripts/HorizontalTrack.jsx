@@ -12,6 +12,10 @@ class HorizontalTrack extends MoveableTrack {
   getControls(isVisible) {
     return (
       <TrackControl
+        // Whether the button to expand or collapse the track is available
+        // for use. Only available in horizontal and vertical tracks and not
+        // center.
+        expandCollapseAvailable={true}
         configMenuVisible={this.props.item.configMenuVisible}
         imgStyleAdd={STYLES}
         imgStyleClose={STYLES}
