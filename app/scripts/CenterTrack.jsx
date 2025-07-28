@@ -513,6 +513,10 @@ class CenterTrack extends React.Component {
           // show track controls if config menu is visible or
           // mouse is within the bounds of the track
           <TrackControl
+            // Whether the button to expand or collapse the track is available
+            // for use. Only available in horizontal and vertical tracks and not
+            // center.
+            expandCollapseAvailable={false}
             imgStyleAdd={STYLES}
             imgStyleClose={STYLES}
             imgStyleMove={STYLES}

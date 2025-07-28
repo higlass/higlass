@@ -1,5 +1,10 @@
 # Release notes
 
+## Next
+
+- Fixed bug where track controls were being displayed on top of each other
+- Fixed bug where expand / collapse buttons were visible on center track
+
 ## v2.1.0
 
 - Added expand track icons and functionality

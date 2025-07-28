@@ -28,17 +28,8 @@ class MoveableTrack extends TrackArea {
           this.el = r;
         }}
         className={this.props.className}
-        onMouseEnter={this.handleMouseEnter.bind(this)}
-        onMouseLeave={(/* e */) => {
-          // This let to https://github.com/higlass/higlass/issues/263
-          // Therefore I disabled it.
-          // if (checkMousePosVsEl(
-          //   e.nativeEvent.clientX, e.nativeEvent.clientY, this.el
-          // )) {
-          //   return;
-          // }
-          this.handleMouseLeave();
-        }}
+        onMouseEnter={this.props.item.handleMouseEnter}
+        onMouseLeave={this.props.item.handleMouseLeave}
         style={{
           height: this.props.height,
           width: this.props.width,
@@ -63,7 +54,8 @@ class MoveableTrack extends TrackArea {
         />
         {this.props.editable &&
           this.getControls(
-            this.state.controlsVisible || this.props.item.configMenuVisible,
+            this.props.item.trackControlsVisible ||
+              this.props.item.configMenuVisible,
           )}
       </div>
     );

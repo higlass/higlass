@@ -59,7 +59,8 @@ function TrackControl(props) {
     <div className={getClassName(props)}>
       {props.isMoveable && <DragHandle />}
 
-      {!props.isCollapsed && (
+      {/* Show collapse button */}
+      {props.expandCollapseAvailable && !props.isCollapsed && (
         <svg
           ref={(c) => {
             imgConfig = c;
@@ -79,7 +80,8 @@ function TrackControl(props) {
         </svg>
       )}
 
-      {props.isCollapsed && (
+      {/* Show expand button */}
+      {props.expandCollapseAvailable && props.isCollapsed && (
         <svg
           ref={(c) => {
             imgConfig = c;

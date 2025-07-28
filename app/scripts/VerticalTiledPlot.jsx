@@ -33,6 +33,11 @@ class VerticalTiledPlot extends React.Component {
       .on('start', this.brushStarted.bind(this))
       .on('brush', this.brushed.bind(this))
       .on('end', this.brushedEnded.bind(this));
+
+    this.state = {
+      // Track which track's controls are visible
+      trackControlsVisible: null,
+    };
   }
 
   /* -------------------------- Life Cycle Methods -------------------------- */
@@ -231,6 +236,13 @@ class VerticalTiledPlot extends React.Component {
           itemControlAlignLeft={this.props.tracksControlAlignLeft}
           itemReactClass={VerticalItem}
           items={this.props.tracks.map((d) => ({
+            handleMouseEnter: () => {
+              this.setState({ trackControlsVisible: d.uid });
+            },
+            handleMouseLeave: () => {
+              this.setState({ trackControlsVisible: null });
+            },
+            trackControlsVisible: d.uid === this.state.trackControlsVisible,
             configMenuVisible: d.uid === this.props.configTrackMenuId,
             uid: d.uid || slugid.nice(),
             height: this.props.height,
