@@ -4,6 +4,7 @@
 
 - Fixed bug where track controls were being displayed on top of each other
 - Fixed bug where expand / collapse buttons were visible on center track
+- Fixed bug where higlass would crash on empty tiles due to unitialized valueScale
 
 ## v2.1.0
 
