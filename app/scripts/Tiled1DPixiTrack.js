@@ -203,6 +203,10 @@ class Tiled1DPixiTrack extends TiledPixiTrack {
     const visible = this._xScale.range();
 
     if (!this.tilesetInfo) return [null, null];
+    if (!tile.tileData.dense) {
+      console.warn(`No dense data in tile: ${tile.tileData.tilePos}`);
+      return [null, null];
+    }
 
     const { tileX, tileWidth } = this.getTilePosAndDimensions(
       tile.tileData.zoomLevel,
@@ -241,6 +245,7 @@ class Tiled1DPixiTrack extends TiledPixiTrack {
 
     const minimumsPerTile = visibleAndFetchedIds
       .map((x) => this.fetchedTiles[x])
+      .filter((tile) => tile.tileData.dense)
       .map((tile) => {
         const ind = this.getIndicesOfVisibleDataInTile(tile);
         return tile.tileData.denseDataExtrema.getMinNonZeroInSubset(ind);
@@ -265,6 +270,7 @@ class Tiled1DPixiTrack extends TiledPixiTrack {
 
     const maximumsPerTile = visibleAndFetchedIds
       .map((x) => this.fetchedTiles[x])
+      .filter((tile) => tile.tileData.dense)
       .map((tile) => {
         const ind = this.getIndicesOfVisibleDataInTile(tile);
         return tile.tileData.denseDataExtrema.getMaxNonZeroInSubset(ind);
