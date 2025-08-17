@@ -61,7 +61,7 @@ describe('viewer', () => {
         "showTrackChooser": [Function],
         "suggestGene": [Function],
         "validateViewConfig": [Function],
-        "version": "2.1.0",
+        "version": "2.1.1",
         "zoomTo": [Function],
         "zoomToDataExtent": [Function],
         "zoomToGene": [Function],
