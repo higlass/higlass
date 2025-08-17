@@ -1,6 +1,10 @@
 # Release notes
 
-## Next
+## 2.1.2
+
+- Fixed another bug where higlass would crash on empty tiles due to unitialized valueScale
+
+## 2.1.1
 
 - Fixed bug where track controls were being displayed on top of each other
 - Fixed bug where expand / collapse buttons were visible on center track
