@@ -110,6 +110,8 @@ class BarTrack extends HorizontalLine1DPixiTrack {
       0,
     );
 
+    if (!valueScale) return;
+
     // Important when when using `options.valueScaleMin` or
     // `options.valueScaleMax` such that the y position later on doesn't become
     // negative
@@ -302,6 +304,8 @@ class BarTrack extends HorizontalLine1DPixiTrack {
     else this.zeroLine.clear();
 
     Object.values(this.fetchedTiles).forEach((tile) => {
+      if (!tile.drawnAtScale) return;
+
       const [graphicsXScale, graphicsXPos] = this.getXScaleAndOffset(
         tile.drawnAtScale,
       );
