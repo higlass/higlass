@@ -30,1511 +30,240 @@
 
   <script type="module">
     const viewConfig = {
-  "editable": true,
-  "trackSourceServers": [
-    "/api/v1",
-    "http://higlass.io/api/v1"
-  ],
-  "exportViewUrl": "/api/v1/viewconfs",
-  "views": [
-    {
-      "initialXDomain": [
-        1621598667.5482023,
-        1622938529.3114185
-      ],
-      "initialYDomain": [
-        1620683945.5919795,
-        1623741578.8464975
-      ],
-      "tracks": {
-        "top": [
-          {
-            "type": "horizontal-stacked-bar",
-            "uid": "PtVf0DYWTwCnGrGW9AkqWg",
-            "tilesetUid": "WmHBFc78TmOgTCIePEwawQ",
-            "server": "https://resgen.io/api/v1",
-            "options": {
-              "labelPosition": "topLeft",
-              "labelColor": "black",
-              "labelTextOpacity": 0.4,
-              "valueScaling": "exponential",
-              "trackBorderWidth": 0,
-              "trackBorderColor": "black",
-              "backgroundColor": "white",
-              "barBorder": true,
-              "sortLargestOnTop": true,
-              "selectRows": null,
-              "name": "Epilogos (mm10)",
-              "colorScale": [
-                "#0e6f37",
-                "#c7e4c0",
-                "#cdcdcd",
-                "#41ac5e",
-                "#f3eb1a",
-                "#f3eb1a",
-                "#faf8c8",
-                "#808080",
-                "#808080",
-                "#0454a3",
-                "#deecf7",
-                "#4290cf",
-                "#f48c8f",
-                "#fde2e5",
-                "#ffffff"
-              ]
-            },
-            "width": 468,
-            "height": 24
+      zoomFixed: false,
+      views: [
+        {
+          layout: {
+            w: 12,
+            h: 7,
+            x: 0,
+            y: 0
           },
-          {
-            "uid": "KgmNtAD8RM-FZPXiTGQuNw",
-            "type": "combined",
-            "contents": [
+          uid: 'aa',
+          initialYDomain: [
+            2534823997.9776945,
+            2547598956.834603
+          ],
+          initialXDomain: [
+            2521015726.4619913,
+            2558682921.8435397
+          ],
+          tracks: {
+            left: [],
+            top: [
               {
-                "type": "chromosome-labels",
-                "uid": "Lm1q786QQgixJMOm5sLjWA",
-                "tilesetUid": "O8tQOpn0RjiFrUBmrhph4A",
-                "server": "https://resgen.io/api/v1",
-                "options": {
-                  "color": "#808080",
-                  "stroke": "#ffffff",
-                  "fontSize": 12,
-                  "fontIsLeftAligned": false,
-                  "showMousePosition": false,
-                  "mousePositionColor": "#000000",
-                  "reverseOrientation": false,
-                  "name": "Chromosome Info (mm10)"
+                uid: 'genes',
+                tilesetUid: 'OHJakQICQD6gTD7skx4EWA',
+                server: 'http://higlass.io/api/v1',
+                type: 'horizontal-gene-annotations',
+                height: 48,
+                options: {
+                  labelColor: 'black',
+                  plusStrandColor: 'black',
+                  labelPosition: 'hidden',
+                  minusStrandColor: 'black',
+                  fontSize: 11,
+                  trackBorderWidth: 0,
+                  trackBorderColor: 'black',
+                  showMousePosition: true,
+                  mousePositionColor: '#000000',
+                  geneAnnotationHeight: 10,
+                  geneLabelPosition: 'outside',
+                  geneStrandSpacing: 4
                 },
-                "width": 468,
-                "height": 30
+              },
+              {
+                uid: 'line1',
+                tilesetUid: 'PjIJKXGbSNCalUZO21e_HQ',
+                height: 20,
+                server: 'http://higlass.io/api/v1',
+                type: 'horizontal-line',
+                options: {
+                  valueScaling: 'linear',
+                  lineStrokeWidth: 2,
+                  lineStrokeColor: '#4a35fc',
+                  labelPosition: 'topLeft',
+                  labelColor: 'black',
+                  axisPositionHorizontal: 'right',
+                  trackBorderWidth: 0,
+                  trackBorderColor: 'black',
+                  labelTextOpacity: 0.4,
+                  showMousePosition: true,
+                  mousePositionColor: '#000000',
+                  showTooltip: false
+                }
+              },
+              {
+                uid: 'line2',
+                tilesetUid: 'PdAaSdibTLK34hCw7ubqKA',
+                height: 20,
+                server: 'http://higlass.io/api/v1',
+                type: 'horizontal-line',
+                options: {
+                  valueScaling: 'linear',
+                  lineStrokeWidth: 2,
+                  lineStrokeColor: '#d104fa',
+                  labelPosition: 'topLeft',
+                  labelColor: 'black',
+                  axisPositionHorizontal: 'right',
+                  trackBorderWidth: 0,
+                  trackBorderColor: 'black',
+                  labelTextOpacity: 0.4,
+                  showMousePosition: true,
+                  mousePositionColor: '#000000',
+                  showTooltip: false
+                },
+              },
+              {
+                uid: 'line3',
+                tilesetUid: 'e0DYtZBSTqiMLHoaimsSpg',
+                height: 20,
+                server: 'http://higlass.io/api/v1',
+                type: 'horizontal-line',
+                options: {
+                  valueScaling: 'linear',
+                  lineStrokeWidth: 2,
+                  lineStrokeColor: '#ff0000',
+                  labelPosition: 'topLeft',
+                  labelColor: 'black',
+                  axisPositionHorizontal: 'right',
+                  trackBorderWidth: 0,
+                  trackBorderColor: 'black',
+                  labelTextOpacity: 0.4,
+                  showMousePosition: true,
+                  mousePositionColor: '#000000',
+                  showTooltip: false
+                },
+              },
+              {
+                uid: 'line4',
+                tilesetUid: 'cE0nGyd0Q_yVYSyBUe89Ww',
+                height: 20,
+                server: 'http://higlass.io/api/v1',
+                type: 'horizontal-line',
+                options: {
+                  valueScaling: 'linear',
+                  lineStrokeWidth: 2,
+                  lineStrokeColor: 'orange',
+                  labelPosition: 'topLeft',
+                  labelColor: 'black',
+                  axisPositionHorizontal: 'right',
+                  trackBorderWidth: 0,
+                  trackBorderColor: 'black',
+                  labelTextOpacity: 0.4,
+                  showMousePosition: true,
+                  mousePositionColor: '#000000',
+                  showTooltip: false
+                },
+              },
+              {
+                uid: 'chroms',
+                height: 18,
+                chromInfoPath: '//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv',
+                type: 'horizontal-chromosome-labels',
+                options: {
+                  color: '#777777',
+                  stroke: '#FFFFFF',
+                  fontSize: 11,
+                  fontIsLeftAligned: true,
+                  showMousePosition: true,
+                  mousePositionColor: '#000000'
+                },
               }
             ],
-            "height": 30,
-            "options": {},
-            "width": 468
-          },
-          {
-            "uid": "JePzgKgsSeS9tRGqCJDZ8Q",
-            "type": "combined",
-            "contents": [
+            right: [],
+            center: [
               {
-                "type": "horizontal-gene-annotations",
-                "uid": "cPxh3DfvS8mOWHPghMz2HQ",
-                "tilesetUid": "DVuS61VhTG6DxKhlsTssTQ",
-                "server": "https://resgen.io/api/v1",
-                "options": {
-                  "fontSize": 8,
-                  "labelColor": "black",
-                  "labelBackgroundColor": "#ffffff",
-                  "labelPosition": "hidden",
-                  "labelLeftMargin": 0,
-                  "labelRightMargin": 0,
-                  "labelTopMargin": 0,
-                  "labelBottomMargin": 0,
-                  "minHeight": 24,
-                  "plusStrandColor": "blue",
-                  "minusStrandColor": "red",
-                  "trackBorderWidth": 0,
-                  "trackBorderColor": "black",
-                  "showMousePosition": false,
-                  "mousePositionColor": "#000000",
-                  "geneAnnotationHeight": 8,
-                  "geneLabelPosition": "outside",
-                  "geneStrandSpacing": 4,
-                  "name": "Gene Annotations (mm10)"
-                },
-                "width": 468,
-                "height": 81
-              }
-            ],
-            "height": 81,
-            "options": {},
-            "width": 468
-          },
-          {
-            "uid": "Ic97pmWoT1uJcTJyBr-JQw",
-            "type": "combined",
-            "contents": [
-              {
-                "type": "bar",
-                "uid": "ZI5iCXp1Ryq5jw0AlaMGog",
-                "tilesetUid": "YeXV8q2TQ8-jSgsUa3d1HA",
-                "server": "https://resgen.io/api/v1",
-                "options": {
-                  "align": "bottom",
-                  "labelColor": "black",
-                  "labelPosition": "topLeft",
-                  "labelLeftMargin": 0,
-                  "labelRightMargin": 0,
-                  "labelTopMargin": 0,
-                  "labelBottomMargin": 0,
-                  "labelShowResolution": false,
-                  "labelShowAssembly": true,
-                  "axisLabelFormatting": "scientific",
-                  "axisPositionHorizontal": "right",
-                  "barFillColor": "gold",
-                  "valueScaling": "linear",
-                  "trackBorderWidth": 0,
-                  "trackBorderColor": "black",
-                  "labelTextOpacity": 1,
-                  "barOpacity": 1,
-                  "name": "H3K27ac"
-                },
-                "width": 468,
-                "height": 16
-              }
-            ],
-            "height": 16,
-            "options": {},
-            "width": 468
-          },
-          {
-            "uid": "CBBWnntcSAG8-dwJem0lxA",
-            "type": "combined",
-            "contents": [
-              {
-                "type": "bar",
-                "uid": "P7AFNDinSRSINtDM3qcN5A",
-                "tilesetUid": "KRgHcR7lQgumvyvtWzzPDA",
-                "server": "https://resgen.io/api/v1",
-                "options": {
-                  "align": "bottom",
-                  "labelColor": "black",
-                  "labelPosition": "topLeft",
-                  "labelLeftMargin": 0,
-                  "labelRightMargin": 0,
-                  "labelTopMargin": 0,
-                  "labelBottomMargin": 0,
-                  "labelShowResolution": false,
-                  "labelShowAssembly": true,
-                  "axisLabelFormatting": "scientific",
-                  "axisPositionHorizontal": "right",
-                  "barFillColor": "darkorange",
-                  "valueScaling": "linear",
-                  "trackBorderWidth": 0,
-                  "trackBorderColor": "black",
-                  "labelTextOpacity": 1,
-                  "barOpacity": 1,
-                  "name": "H3K4me1"
-                },
-                "width": 468,
-                "height": 20
-              }
-            ],
-            "height": 20,
-            "options": {},
-            "width": 468
-          },
-          {
-            "uid": "ZZ2m0InZSGClbk0-Q44cBQ",
-            "type": "combined",
-            "contents": [
-              {
-                "type": "bar",
-                "uid": "TrPsWIpWR8uevNwwu7dTCw",
-                "tilesetUid": "XJr9O1QQQQOtf5bir2B1EA",
-                "server": "https://resgen.io/api/v1",
-                "options": {
-                  "align": "bottom",
-                  "labelColor": "black",
-                  "labelPosition": "topLeft",
-                  "labelLeftMargin": 0,
-                  "labelRightMargin": 0,
-                  "labelTopMargin": 0,
-                  "labelBottomMargin": 0,
-                  "labelShowResolution": false,
-                  "labelShowAssembly": true,
-                  "axisLabelFormatting": "scientific",
-                  "axisPositionHorizontal": "right",
-                  "barFillColor": "darksalmon",
-                  "valueScaling": "linear",
-                  "trackBorderWidth": 0,
-                  "trackBorderColor": "black",
-                  "labelTextOpacity": 1,
-                  "barOpacity": 1,
-                  "name": "H3K4me3"
-                },
-                "width": 468,
-                "height": 20
-              }
-            ],
-            "height": 20,
-            "options": {},
-            "width": 468
-          },
-          {
-            "uid": "aN_anifTT5aij3XX8rsCVw",
-            "type": "combined",
-            "contents": [
-              {
-                "type": "bar",
-                "uid": "JKzKxBiyQBq1SaEPJ_M6Vw",
-                "tilesetUid": "c3OsZ874Tri9OpY15DT3ZA",
-                "server": "https://resgen.io/api/v1",
-                "options": {
-                  "align": "bottom",
-                  "labelColor": "black",
-                  "labelPosition": "topLeft",
-                  "labelLeftMargin": 0,
-                  "labelRightMargin": 0,
-                  "labelTopMargin": 0,
-                  "labelBottomMargin": 0,
-                  "labelShowResolution": false,
-                  "labelShowAssembly": true,
-                  "axisLabelFormatting": "scientific",
-                  "axisPositionHorizontal": "right",
-                  "barFillColor": "cornflowerblue",
-                  "valueScaling": "linear",
-                  "trackBorderWidth": 0,
-                  "trackBorderColor": "black",
-                  "labelTextOpacity": 1,
-                  "barOpacity": 1,
-                  "name": "H3K27me3"
-                },
-                "width": 468,
-                "height": 20
-              }
-            ],
-            "height": 20,
-            "options": {},
-            "width": 468
-          },
-          {
-            "uid": "XHnTQY3yS3WyKwZtTWr32Q",
-            "type": "combined",
-            "contents": [
-              {
-                "type": "bar",
-                "uid": "cE26C5opSrW7Uoix-0MHeg",
-                "tilesetUid": "WYyBM9EyR5CZ56N14sTTdQ",
-                "server": "https://resgen.io/api/v1",
-                "options": {
-                  "align": "bottom",
-                  "labelColor": "black",
-                  "labelPosition": "topLeft",
-                  "labelLeftMargin": 0,
-                  "labelRightMargin": 0,
-                  "labelTopMargin": 0,
-                  "labelBottomMargin": 0,
-                  "labelShowResolution": false,
-                  "labelShowAssembly": true,
-                  "axisLabelFormatting": "scientific",
-                  "axisPositionHorizontal": "right",
-                  "barFillColor": "#a31919",
-                  "valueScaling": "linear",
-                  "trackBorderWidth": 0,
-                  "trackBorderColor": "black",
-                  "labelTextOpacity": 1,
-                  "barOpacity": 1,
-                  "name": "Rad21 (dRad21+IAA)"
-                },
-                "width": 468,
-                "height": 20
-              }
-            ],
-            "height": 20,
-            "options": {},
-            "width": 468
-          },
-          {
-            "uid": "CD-8jw-jRgOs6tKupyvRyQ",
-            "type": "combined",
-            "contents": [
-              {
-                "type": "bar",
-                "uid": "O0FmvaldRf6u0j86ZEVFOw",
-                "tilesetUid": "IZRz45CxSkOYQQC4G9LdHA",
-                "server": "https://resgen.io/api/v1",
-                "options": {
-                  "align": "bottom",
-                  "labelColor": "black",
-                  "labelPosition": "topLeft",
-                  "labelLeftMargin": 0,
-                  "labelRightMargin": 0,
-                  "labelTopMargin": 0,
-                  "labelBottomMargin": 0,
-                  "labelShowResolution": false,
-                  "labelShowAssembly": true,
-                  "axisLabelFormatting": "scientific",
-                  "axisPositionHorizontal": "right",
-                  "barFillColor": "#a31919",
-                  "valueScaling": "linear",
-                  "trackBorderWidth": 0,
-                  "trackBorderColor": "black",
-                  "labelTextOpacity": 1,
-                  "barOpacity": 1,
-                  "name": "Smc1a (dRad21+IAA)"
-                },
-                "width": 468,
-                "height": 20
-              }
-            ],
-            "height": 20,
-            "options": {},
-            "width": 468
-          },
-          {
-            "uid": "T7CkjdJ0T_ayonnHe44hJw",
-            "type": "combined",
-            "contents": [
-              {
-                "type": "bar",
-                "uid": "MnWvyy0FR2GPNuz0EH7yqA",
-                "tilesetUid": "Re5dDo5zR86fEMhwkHd17A",
-                "server": "https://resgen.io/api/v1",
-                "options": {
-                  "align": "bottom",
-                  "labelColor": "black",
-                  "labelPosition": "topLeft",
-                  "labelLeftMargin": 0,
-                  "labelRightMargin": 0,
-                  "labelTopMargin": 0,
-                  "labelBottomMargin": 0,
-                  "labelShowResolution": false,
-                  "labelShowAssembly": true,
-                  "axisLabelFormatting": "scientific",
-                  "axisPositionHorizontal": "right",
-                  "barFillColor": "#a31919",
-                  "valueScaling": "linear",
-                  "trackBorderWidth": 0,
-                  "trackBorderColor": "black",
-                  "labelTextOpacity": 1,
-                  "barOpacity": 1,
-                  "name": "CTCF (dRad21+IAA)"
-                },
-                "width": 468,
-                "height": 25
-              }
-            ],
-            "height": 25,
-            "options": {},
-            "width": 468
-          }
-        ],
-        "left": [],
-        "center": [
-          {
-            "uid": "Ys3jHqpwQIWXTGeNsCSVtg",
-            "type": "combined",
-            "contents": [
-              {
-                "type": "heatmap",
-                "uid": "O1HVWyCLQ9qiUFzhuUxKZw",
-                "tilesetUid": "Yq2Fq5mbQ3qM9QWLWg_CVg",
-                "server": "https://resgen.io/api/v1",
-                "options": {
-                  "backgroundColor": "#eeeeee",
-                  "labelPosition": "topRight",
-                  "labelLeftMargin": 0,
-                  "labelRightMargin": 0,
-                  "labelTopMargin": 0,
-                  "labelBottomMargin": 0,
-                  "labelShowResolution": false,
-                  "labelShowAssembly": false,
-                  "colorRange": [
-                    "white",
-                    "rgba(245,166,35,1.0)",
-                    "rgba(208,2,27,1.0)",
-                    "black"
-                  ],
-                  "colorbarBackgroundColor": "#ffffff",
-                  "maxZoom": null,
-                  "minWidth": 100,
-                  "minHeight": 100,
-                  "colorbarPosition": "topRight",
-                  "trackBorderWidth": 0,
-                  "trackBorderColor": "black",
-                  "heatmapValueScaling": "log",
-                  "showMousePosition": true,
-                  "mousePositionColor": "#000000",
-                  "showTooltip": false,
-                  "extent": "full",
-                  "zeroValueColor": null,
-                  "name": "mESC dRAD21+IAA",
-                  "scaleStartPercent": "0.00000",
-                  "scaleEndPercent": "0.08590"
-                },
-                "width": 468,
-                "height": 584,
-                "transforms": [
+                uid: 'center',
+                type: 'combined',
+                contents: [
                   {
-                    "name": "ICE",
-                    "value": "weight"
+                    server: 'http://higlass.io/api/v1',
+                    tilesetUid: 'dVBREuC2SvO01uXYMUh2aQ',
+                    type: 'heatmap',
+                    uid: 'Yqetzqw6Qfy-hREAJhAXEA',
+                    options: {
+                      backgroundColor: '#eeeeee',
+                      labelPosition: 'topLeft',
+                      labelTextOpacity: 0.4,
+                      colorRange: [
+                        'white',
+                        'rgba(245,166,35,1.0)',
+                        'rgba(208,2,27,1.0)',
+                        'black'
+                      ],
+                      maxZoom: null,
+                      colorbarPosition: 'topRight',
+                      trackBorderWidth: 0,
+                      trackBorderColor: 'black',
+                      heatmapValueScaling: 'log',
+                      showMousePosition: true,
+                      mousePositionColor: '#000000',
+                      showTooltip: true,
+                      scaleStartPercent: '0.00000',
+                      scaleEndPercent: '1.00000',
+                      showMousePositionGlobally: true,
+                    },
                   }
-                ]
+                ],
               }
             ],
-            "height": 584,
-            "options": {},
-            "width": 468
+            bottom: [],
+            whole: [],
+            gallery: []
+          },
+          chromInfoPath: '//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv',
+          genomePositionSearchBox: {
+            visible: true,
+            chromInfoServer: 'http://higlass.io/api/v1',
+            chromInfoId: 'hg19',
+            autocompleteServer: 'http://higlass.io/api/v1',
+            autocompleteId: 'OHJakQICQD6gTD7skx4EWA'
           }
-        ],
-        "bottom": [],
-        "right": [],
-        "whole": [],
-        "gallery": []
-      },
-      "layout": {
-        "w": 4,
-        "h": 12,
-        "x": 4,
-        "y": 0
-      },
-      "uid": "MSHvIbiZRX27lXKMqY_OjA"
-    },
-    {
-      "initialXDomain": [
-        1621684556.122772,
-        1622852640.736849
+        }
       ],
-      "initialYDomain": [
-        1620658179.0196211,
-        1623767345.418856
+      editable: true,
+      viewEditable: true,
+      tracksEditable: true,
+      exportViewUrl: '/api/v1/viewconfs',
+      zoomLocks: {
+        locksByViewUid: {},
+        locksDict: {}
+      },
+      trackSourceServers: [
+        'http://higlass.io/api/v1'
       ],
-      "tracks": {
-        "top": [
-          {
-            "type": "horizontal-stacked-bar",
-            "uid": "ca7f5NdbSsGUF_ne36CFEA",
-            "tilesetUid": "WmHBFc78TmOgTCIePEwawQ",
-            "server": "https://resgen.io/api/v1",
-            "options": {
-              "labelPosition": "topLeft",
-              "labelColor": "black",
-              "labelTextOpacity": 0.4,
-              "valueScaling": "exponential",
-              "trackBorderWidth": 0,
-              "trackBorderColor": "black",
-              "backgroundColor": "white",
-              "barBorder": true,
-              "sortLargestOnTop": true,
-              "selectRows": null,
-              "name": "Epilogos (mm10)",
-              "colorScale": [
-                "#0e6f37",
-                "#c7e4c0",
-                "#cdcdcd",
-                "#41ac5e",
-                "#f3eb1a",
-                "#f3eb1a",
-                "#faf8c8",
-                "#808080",
-                "#808080",
-                "#0454a3",
-                "#deecf7",
-                "#4290cf",
-                "#f48c8f",
-                "#fde2e5",
-                "#ffffff"
-              ]
-            },
-            "width": 448,
-            "height": 20
-          },
-          {
-            "uid": "KgmNtAD8RM-FZPXiTGQuNw",
-            "type": "combined",
-            "contents": [
-              {
-                "type": "chromosome-labels",
-                "uid": "Lm1q786QQgixJMOm5sLjWA",
-                "tilesetUid": "O8tQOpn0RjiFrUBmrhph4A",
-                "server": "https://resgen.io/api/v1",
-                "options": {
-                  "color": "#808080",
-                  "stroke": "#ffffff",
-                  "fontSize": 12,
-                  "fontIsLeftAligned": false,
-                  "showMousePosition": false,
-                  "mousePositionColor": "#000000",
-                  "reverseOrientation": false,
-                  "name": "Chromosome Info (mm10)"
-                },
-                "width": 448,
-                "height": 30
-              }
+      locationLocks: {
+        locksByViewUid: {
+          aa: 'PkNgAl3mSIqttnSsCewngw',
+          ewZvJwlDSei_dbpIAkGMlg: 'PkNgAl3mSIqttnSsCewngw'
+        },
+        locksDict: {
+          PkNgAl3mSIqttnSsCewngw: {
+            aa: [
+              1550000000,
+              1550000000,
+              3380588.876772046
             ],
-            "height": 30,
-            "options": {},
-            "width": 448
-          },
-          {
-            "uid": "JePzgKgsSeS9tRGqCJDZ8Q",
-            "type": "combined",
-            "contents": [
-              {
-                "type": "horizontal-gene-annotations",
-                "uid": "cPxh3DfvS8mOWHPghMz2HQ",
-                "tilesetUid": "DVuS61VhTG6DxKhlsTssTQ",
-                "server": "https://resgen.io/api/v1",
-                "options": {
-                  "fontSize": 8,
-                  "labelColor": "black",
-                  "labelBackgroundColor": "#ffffff",
-                  "labelPosition": "hidden",
-                  "labelLeftMargin": 0,
-                  "labelRightMargin": 0,
-                  "labelTopMargin": 0,
-                  "labelBottomMargin": 0,
-                  "minHeight": 24,
-                  "plusStrandColor": "blue",
-                  "minusStrandColor": "red",
-                  "trackBorderWidth": 0,
-                  "trackBorderColor": "black",
-                  "showMousePosition": false,
-                  "mousePositionColor": "#000000",
-                  "geneAnnotationHeight": 8,
-                  "geneLabelPosition": "outside",
-                  "geneStrandSpacing": 4,
-                  "name": "Gene Annotations (mm10)"
-                },
-                "width": 448,
-                "height": 80
-              }
+            ewZvJwlDSei_dbpIAkGMlg: [
+              1550000000.0000002,
+              1549999999.9999993,
+              3380588.876772046
             ],
-            "height": 80,
-            "options": {},
-            "width": 448
-          },
-          {
-            "uid": "S53La_2GRvebvoSuSJXvww",
-            "type": "combined",
-            "contents": [
-              {
-                "type": "bar",
-                "uid": "WNHKWanuQIG7Oth3N-QQsA",
-                "tilesetUid": "YeXV8q2TQ8-jSgsUa3d1HA",
-                "server": "https://resgen.io/api/v1",
-                "options": {
-                  "align": "bottom",
-                  "labelColor": "black",
-                  "labelPosition": "topLeft",
-                  "labelLeftMargin": 0,
-                  "labelRightMargin": 0,
-                  "labelTopMargin": 0,
-                  "labelBottomMargin": 0,
-                  "labelShowResolution": false,
-                  "labelShowAssembly": true,
-                  "axisLabelFormatting": "scientific",
-                  "axisPositionHorizontal": "right",
-                  "barFillColor": "gold",
-                  "valueScaling": "linear",
-                  "trackBorderWidth": 0,
-                  "trackBorderColor": "black",
-                  "labelTextOpacity": 1,
-                  "barOpacity": 1,
-                  "name": "H3K27ac",
-                  "showMousePosition": true
-                },
-                "width": 448,
-                "height": 20
-              }
-            ],
-            "height": 20,
-            "options": {},
-            "width": 448
-          },
-          {
-            "uid": "Ig3676J3Tmm3LOjXCHrjGA",
-            "type": "combined",
-            "contents": [
-              {
-                "type": "bar",
-                "uid": "eGvJ3lU0R_CqO-LqTkltyA",
-                "tilesetUid": "KRgHcR7lQgumvyvtWzzPDA",
-                "server": "https://resgen.io/api/v1",
-                "options": {
-                  "align": "bottom",
-                  "labelColor": "black",
-                  "labelPosition": "topLeft",
-                  "labelLeftMargin": 0,
-                  "labelRightMargin": 0,
-                  "labelTopMargin": 0,
-                  "labelBottomMargin": 0,
-                  "labelShowResolution": false,
-                  "labelShowAssembly": true,
-                  "axisLabelFormatting": "scientific",
-                  "axisPositionHorizontal": "right",
-                  "barFillColor": "darkorange",
-                  "valueScaling": "linear",
-                  "trackBorderWidth": 0,
-                  "trackBorderColor": "black",
-                  "labelTextOpacity": 1,
-                  "barOpacity": 1,
-                  "name": "H3K4me1"
-                },
-                "width": 448,
-                "height": 20
-              }
-            ],
-            "height": 20,
-            "options": {},
-            "width": 448
-          },
-          {
-            "uid": "BFsh3Vc-RFSlE96nxlRj3w",
-            "type": "combined",
-            "contents": [
-              {
-                "type": "bar",
-                "uid": "Y0Wd3xEtQJWEcXNEQwnUXg",
-                "tilesetUid": "XJr9O1QQQQOtf5bir2B1EA",
-                "server": "https://resgen.io/api/v1",
-                "options": {
-                  "align": "bottom",
-                  "labelColor": "black",
-                  "labelPosition": "topLeft",
-                  "labelLeftMargin": 0,
-                  "labelRightMargin": 0,
-                  "labelTopMargin": 0,
-                  "labelBottomMargin": 0,
-                  "labelShowResolution": false,
-                  "labelShowAssembly": true,
-                  "axisLabelFormatting": "scientific",
-                  "axisPositionHorizontal": "right",
-                  "barFillColor": "darksalmon",
-                  "valueScaling": "linear",
-                  "trackBorderWidth": 0,
-                  "trackBorderColor": "black",
-                  "labelTextOpacity": 1,
-                  "barOpacity": 1,
-                  "name": "H3K4me3"
-                },
-                "width": 448,
-                "height": 20
-              }
-            ],
-            "height": 20,
-            "options": {},
-            "width": 448
-          },
-          {
-            "uid": "Hc_K1vNYS8yTyKWRhW7y_w",
-            "type": "combined",
-            "contents": [
-              {
-                "type": "bar",
-                "uid": "axFjLUKiRouDWqpmhUTkRw",
-                "tilesetUid": "c3OsZ874Tri9OpY15DT3ZA",
-                "server": "https://resgen.io/api/v1",
-                "options": {
-                  "align": "bottom",
-                  "labelColor": "black",
-                  "labelPosition": "topLeft",
-                  "labelLeftMargin": 0,
-                  "labelRightMargin": 0,
-                  "labelTopMargin": 0,
-                  "labelBottomMargin": 0,
-                  "labelShowResolution": false,
-                  "labelShowAssembly": true,
-                  "axisLabelFormatting": "scientific",
-                  "axisPositionHorizontal": "right",
-                  "barFillColor": "cornflowerblue",
-                  "valueScaling": "linear",
-                  "trackBorderWidth": 0,
-                  "trackBorderColor": "black",
-                  "labelTextOpacity": 1,
-                  "barOpacity": 1,
-                  "name": "H3K27me3"
-                },
-                "width": 448,
-                "height": 20
-              }
-            ],
-            "height": 20,
-            "options": {},
-            "width": 448
-          },
-          {
-            "uid": "La7nXwcKTF6kjmUco2hcZg",
-            "type": "combined",
-            "contents": [
-              {
-                "type": "bar",
-                "uid": "UGW7WF1hSMGyXwVSeKH1yQ",
-                "tilesetUid": "AmOK9PA2TPCW2ufS00-_qQ",
-                "server": "https://resgen.io/api/v1",
-                "options": {
-                  "labelColor": "black",
-                  "labelPosition": "topLeft",
-                  "labelLeftMargin": 0,
-                  "labelRightMargin": 0,
-                  "labelTopMargin": 0,
-                  "labelBottomMargin": 0,
-                  "labelBackgroundColor": "white",
-                  "labelShowResolution": false,
-                  "labelShowAssembly": true,
-                  "axisLabelFormatting": "scientific",
-                  "axisPositionHorizontal": "right",
-                  "lineStrokeColor": "blue",
-                  "lineStrokeWidth": 1,
-                  "valueScaling": "linear",
-                  "trackBorderWidth": 0,
-                  "trackBorderColor": "black",
-                  "labelTextOpacity": 1,
-                  "showMousePosition": false,
-                  "minHeight": 20,
-                  "mousePositionColor": "#000000",
-                  "showTooltip": false,
-                  "name": "Rad21",
-                  "align": "bottom",
-                  "barFillColor": "#a31919",
-                  "barOpacity": 1
-                },
-                "width": 448,
-                "height": 20
-              }
-            ],
-            "height": 20,
-            "options": {},
-            "width": 448
-          },
-          {
-            "uid": "Md3xya1uTvaE0xLwH-4d6Q",
-            "type": "combined",
-            "contents": [
-              {
-                "type": "bar",
-                "uid": "DWQAQTOnRomhtwts4P_joA",
-                "tilesetUid": "d4XbaEjyS3uhGfZpjBuHbQ",
-                "server": "https://resgen.io/api/v1",
-                "options": {
-                  "align": "bottom",
-                  "labelColor": "black",
-                  "labelPosition": "topLeft",
-                  "labelLeftMargin": 0,
-                  "labelRightMargin": 0,
-                  "labelTopMargin": 0,
-                  "labelBottomMargin": 0,
-                  "labelShowResolution": false,
-                  "labelShowAssembly": true,
-                  "axisLabelFormatting": "scientific",
-                  "axisPositionHorizontal": "right",
-                  "barFillColor": "#a31919",
-                  "valueScaling": "linear",
-                  "trackBorderWidth": 0,
-                  "trackBorderColor": "black",
-                  "labelTextOpacity": 1,
-                  "barOpacity": 1,
-                  "name": "Smc1a"
-                },
-                "width": 448,
-                "height": 20
-              }
-            ],
-            "height": 20,
-            "options": {},
-            "width": 448
-          },
-          {
-            "uid": "Yg08_90lShuHzdZjuB4-nw",
-            "type": "combined",
-            "contents": [
-              {
-                "type": "bar",
-                "uid": "TjGrBftdRNqz_jUyZX4fMA",
-                "tilesetUid": "C7wIL827QzCgNx0A6Y63uQ",
-                "server": "https://resgen.io/api/v1",
-                "options": {
-                  "align": "bottom",
-                  "labelColor": "black",
-                  "labelPosition": "topLeft",
-                  "labelLeftMargin": 0,
-                  "labelRightMargin": 0,
-                  "labelTopMargin": 0,
-                  "labelBottomMargin": 0,
-                  "labelShowResolution": false,
-                  "labelShowAssembly": true,
-                  "axisLabelFormatting": "scientific",
-                  "axisPositionHorizontal": "right",
-                  "barFillColor": "#a31919",
-                  "valueScaling": "linear",
-                  "trackBorderWidth": 0,
-                  "trackBorderColor": "black",
-                  "labelTextOpacity": 1,
-                  "barOpacity": 1,
-                  "name": "CTCF"
-                },
-                "width": 448,
-                "height": 20
-              }
-            ],
-            "height": 20,
-            "options": {},
-            "width": 448
+            uid: 'PkNgAl3mSIqttnSsCewngw'
           }
-        ],
-        "left": [
-          {
-            "uid": "VDjsCGikTN64QIF73E4LYg",
-            "type": "combined",
-            "contents": [
-              {
-                "type": "bar",
-                "uid": "FLhIOofFR1qhLaABLdFLOg",
-                "tilesetUid": "c3OsZ874Tri9OpY15DT3ZA",
-                "server": "https://resgen.io/api/v1",
-                "options": {
-                  "align": "bottom",
-                  "labelColor": "black",
-                  "labelPosition": "bottomRight",
-                  "labelLeftMargin": 0,
-                  "labelRightMargin": 0,
-                  "labelTopMargin": 0,
-                  "labelBottomMargin": 0,
-                  "labelShowResolution": false,
-                  "labelShowAssembly": true,
-                  "axisLabelFormatting": "scientific",
-                  "axisPositionHorizontal": null,
-                  "barFillColor": "cornflowerblue",
-                  "valueScaling": "linear",
-                  "trackBorderWidth": 0,
-                  "trackBorderColor": "black",
-                  "labelTextOpacity": 1,
-                  "barOpacity": 1,
-                  "name": "H3K27me3"
-                },
-                "width": 20,
-                "height": 590
-              }
-            ],
-            "height": 590,
-            "width": 20,
-            "options": {}
-          }
-        ],
-        "center": [
-          {
-            "uid": "YT0VqFj3R3K4DCDqOI9zxg",
-            "type": "combined",
-            "contents": [
-              {
-                "type": "heatmap",
-                "uid": "MJDUIH6BTJ-BGNvVu2TqVA",
-                "tilesetUid": "Cj5GErm3SRaZOiBqHDuaqg",
-                "server": "https://resgen.io/api/v1",
-                "options": {
-                  "backgroundColor": "transparent",
-                  "labelPosition": "topRight",
-                  "labelLeftMargin": 0,
-                  "labelRightMargin": 0,
-                  "labelTopMargin": 0,
-                  "labelBottomMargin": 0,
-                  "labelShowResolution": false,
-                  "labelShowAssembly": false,
-                  "colorRange": [
-                    "white",
-                    "rgba(245,166,35,1.0)",
-                    "rgba(208,2,27,1.0)",
-                    "black"
-                  ],
-                  "colorbarBackgroundColor": "#ffffff",
-                  "maxZoom": null,
-                  "minWidth": 100,
-                  "minHeight": 100,
-                  "colorbarPosition": "topRight",
-                  "trackBorderWidth": 0,
-                  "trackBorderColor": "black",
-                  "heatmapValueScaling": "log",
-                  "showMousePosition": true,
-                  "mousePositionColor": "#000000",
-                  "showTooltip": false,
-                  "extent": "full",
-                  "zeroValueColor": null,
-                  "name": "mESC untreated merged",
-                  "scaleStartPercent": "0.00000",
-                  "scaleEndPercent": "0.13392"
-                },
-                "width": 448,
-                "height": 590,
-                "transforms": [
-                  {
-                    "name": "ICE",
-                    "value": "weight"
-                  }
-                ]
-              }
-            ],
-            "height": 590,
-            "options": {},
-            "width": 448
-          }
-        ],
-        "bottom": [],
-        "right": [],
-        "whole": [],
-        "gallery": []
+        }
       },
-      "layout": {
-        "w": 4,
-        "h": 12,
-        "x": 0,
-        "y": 0
-      },
-      "uid": "G6n1Y3-NRG6BkREOx5T75g"
-    },
-    {
-      "initialXDomain": [
-        1621598667.5480304,
-        1622938529.3115907
-      ],
-      "initialYDomain": [
-        1620653884.5904818,
-        1623771639.8479958
-      ],
-      "tracks": {
-        "top": [
-          {
-            "type": "horizontal-bar",
-            "uid": "CbYixs5pRJiDNgeAuaI3QA",
-            "tilesetUid": "Y3qhU9NoS0-wFse9POW9hQ",
-            "server": "https://resgen.io/api/v1",
-            "options": {
-              "align": "bottom",
-              "labelColor": "black",
-              "labelPosition": "topLeft",
-              "labelLeftMargin": 0,
-              "labelRightMargin": 0,
-              "labelTopMargin": 0,
-              "labelBottomMargin": 0,
-              "labelShowResolution": false,
-              "labelShowAssembly": true,
-              "axisLabelFormatting": "scientific",
-              "axisPositionHorizontal": "right",
-              "barFillColor": "#a31919",
-              "valueScaling": "linear",
-              "trackBorderWidth": 0,
-              "trackBorderColor": "black",
-              "labelTextOpacity": 1,
-              "barOpacity": 1,
-              "name": "Smc1a (dCTCF+IAA)"
-            },
-            "width": 327,
-            "height": 20
-          },
-          {
-            "type": "horizontal-stacked-bar",
-            "uid": "I_bGdIGyS2Wadku4L48Z_A",
-            "tilesetUid": "WmHBFc78TmOgTCIePEwawQ",
-            "server": "https://resgen.io/api/v1",
-            "options": {
-              "labelPosition": "topLeft",
-              "labelColor": "black",
-              "labelTextOpacity": 0.4,
-              "valueScaling": "exponential",
-              "trackBorderWidth": 0,
-              "trackBorderColor": "black",
-              "backgroundColor": "white",
-              "barBorder": true,
-              "sortLargestOnTop": true,
-              "selectRows": null,
-              "name": "Epilogos (mm10)",
-              "colorScale": [
-                "#0e6f37",
-                "#c7e4c0",
-                "#cdcdcd",
-                "#41ac5e",
-                "#f3eb1a",
-                "#f3eb1a",
-                "#faf8c8",
-                "#808080",
-                "#808080",
-                "#0454a3",
-                "#deecf7",
-                "#4290cf",
-                "#f48c8f",
-                "#fde2e5",
-                "#ffffff"
-              ]
-            },
-            "width": 327,
-            "height": 20
-          },
-          {
-            "uid": "KgmNtAD8RM-FZPXiTGQuNw",
-            "type": "combined",
-            "contents": [
-              {
-                "type": "chromosome-labels",
-                "uid": "Lm1q786QQgixJMOm5sLjWA",
-                "tilesetUid": "O8tQOpn0RjiFrUBmrhph4A",
-                "server": "https://resgen.io/api/v1",
-                "options": {
-                  "color": "#808080",
-                  "stroke": "#ffffff",
-                  "fontSize": 12,
-                  "fontIsLeftAligned": false,
-                  "showMousePosition": false,
-                  "mousePositionColor": "#000000",
-                  "reverseOrientation": false,
-                  "name": "Chromosome Info (mm10)"
-                },
-                "width": 327,
-                "height": 30
-              }
-            ],
-            "height": 30,
-            "options": {},
-            "width": 327
-          },
-          {
-            "uid": "JePzgKgsSeS9tRGqCJDZ8Q",
-            "type": "combined",
-            "contents": [
-              {
-                "type": "horizontal-gene-annotations",
-                "uid": "cPxh3DfvS8mOWHPghMz2HQ",
-                "tilesetUid": "DVuS61VhTG6DxKhlsTssTQ",
-                "server": "https://resgen.io/api/v1",
-                "options": {
-                  "fontSize": 8,
-                  "labelColor": "black",
-                  "labelBackgroundColor": "#ffffff",
-                  "labelPosition": "hidden",
-                  "labelLeftMargin": 0,
-                  "labelRightMargin": 0,
-                  "labelTopMargin": 0,
-                  "labelBottomMargin": 0,
-                  "minHeight": 24,
-                  "plusStrandColor": "blue",
-                  "minusStrandColor": "red",
-                  "trackBorderWidth": 0,
-                  "trackBorderColor": "black",
-                  "showMousePosition": false,
-                  "mousePositionColor": "#000000",
-                  "geneAnnotationHeight": 8,
-                  "geneLabelPosition": "outside",
-                  "geneStrandSpacing": 4,
-                  "name": "Gene Annotations (mm10)"
-                },
-                "width": 327,
-                "height": 79
-              }
-            ],
-            "height": 79,
-            "options": {},
-            "width": 327
-          },
-          {
-            "uid": "S53La_2GRvebvoSuSJXvww",
-            "type": "combined",
-            "contents": [
-              {
-                "type": "bar",
-                "uid": "WNHKWanuQIG7Oth3N-QQsA",
-                "tilesetUid": "YeXV8q2TQ8-jSgsUa3d1HA",
-                "server": "https://resgen.io/api/v1",
-                "options": {
-                  "align": "bottom",
-                  "labelColor": "black",
-                  "labelPosition": "topLeft",
-                  "labelLeftMargin": 0,
-                  "labelRightMargin": 0,
-                  "labelTopMargin": 0,
-                  "labelBottomMargin": 0,
-                  "labelShowResolution": false,
-                  "labelShowAssembly": true,
-                  "axisLabelFormatting": "scientific",
-                  "axisPositionHorizontal": "right",
-                  "barFillColor": "gold",
-                  "valueScaling": "linear",
-                  "trackBorderWidth": 0,
-                  "trackBorderColor": "black",
-                  "labelTextOpacity": 1,
-                  "barOpacity": 1,
-                  "name": "H3K27ac"
-                },
-                "width": 327,
-                "height": 20
-              }
-            ],
-            "height": 20,
-            "options": {},
-            "width": 327
-          },
-          {
-            "uid": "WyLqV4zHTmCqSGBumZKz4A",
-            "type": "combined",
-            "contents": [
-              {
-                "type": "bar",
-                "uid": "X7rAgFALSNCLgwAB2ktXiA",
-                "tilesetUid": "KRgHcR7lQgumvyvtWzzPDA",
-                "server": "https://resgen.io/api/v1",
-                "options": {
-                  "align": "bottom",
-                  "labelColor": "black",
-                  "labelPosition": "topLeft",
-                  "labelLeftMargin": 0,
-                  "labelRightMargin": 0,
-                  "labelTopMargin": 0,
-                  "labelBottomMargin": 0,
-                  "labelShowResolution": false,
-                  "labelShowAssembly": true,
-                  "axisLabelFormatting": "scientific",
-                  "axisPositionHorizontal": "right",
-                  "barFillColor": "darkorange",
-                  "valueScaling": "linear",
-                  "trackBorderWidth": 0,
-                  "trackBorderColor": "black",
-                  "labelTextOpacity": 1,
-                  "barOpacity": 1,
-                  "name": "H3K4me1"
-                },
-                "width": 327,
-                "height": 20
-              }
-            ],
-            "height": 20,
-            "options": {},
-            "width": 327
-          },
-          {
-            "uid": "GHhzuryhSriaiw-h5D0YQw",
-            "type": "combined",
-            "contents": [
-              {
-                "type": "bar",
-                "uid": "aVz6L9ReTvurjtB8O6i4qA",
-                "tilesetUid": "XJr9O1QQQQOtf5bir2B1EA",
-                "server": "https://resgen.io/api/v1",
-                "options": {
-                  "align": "bottom",
-                  "labelColor": "black",
-                  "labelPosition": "topLeft",
-                  "labelLeftMargin": 0,
-                  "labelRightMargin": 0,
-                  "labelTopMargin": 0,
-                  "labelBottomMargin": 0,
-                  "labelShowResolution": false,
-                  "labelShowAssembly": true,
-                  "axisLabelFormatting": "scientific",
-                  "axisPositionHorizontal": "right",
-                  "barFillColor": "darksalmon",
-                  "valueScaling": "linear",
-                  "trackBorderWidth": 0,
-                  "trackBorderColor": "black",
-                  "labelTextOpacity": 1,
-                  "barOpacity": 1,
-                  "name": "H3K4me3"
-                },
-                "width": 327,
-                "height": 20
-              }
-            ],
-            "height": 20,
-            "options": {},
-            "width": 327
-          },
-          {
-            "uid": "Hc_K1vNYS8yTyKWRhW7y_w",
-            "type": "combined",
-            "contents": [
-              {
-                "type": "bar",
-                "uid": "axFjLUKiRouDWqpmhUTkRw",
-                "tilesetUid": "c3OsZ874Tri9OpY15DT3ZA",
-                "server": "https://resgen.io/api/v1",
-                "options": {
-                  "align": "bottom",
-                  "labelColor": "black",
-                  "labelPosition": "topLeft",
-                  "labelLeftMargin": 0,
-                  "labelRightMargin": 0,
-                  "labelTopMargin": 0,
-                  "labelBottomMargin": 0,
-                  "labelShowResolution": false,
-                  "labelShowAssembly": true,
-                  "axisLabelFormatting": "scientific",
-                  "axisPositionHorizontal": "right",
-                  "barFillColor": "cornflowerblue",
-                  "valueScaling": "linear",
-                  "trackBorderWidth": 0,
-                  "trackBorderColor": "black",
-                  "labelTextOpacity": 1,
-                  "barOpacity": 1,
-                  "name": "H3K27me3"
-                },
-                "width": 327,
-                "height": 20
-              }
-            ],
-            "height": 20,
-            "options": {},
-            "width": 327
-          },
-          {
-            "uid": "eX7QXr7ZTzaplupeGnTl_w",
-            "type": "combined",
-            "contents": [
-              {
-                "type": "bar",
-                "uid": "blrwneC-Tv6OqMReqBBRsQ",
-                "tilesetUid": "Sqov3SnURXOaKqqnXjxB8Q",
-                "server": "https://resgen.io/api/v1",
-                "options": {
-                  "labelColor": "black",
-                  "labelPosition": "topLeft",
-                  "labelLeftMargin": 0,
-                  "labelRightMargin": 0,
-                  "labelTopMargin": 0,
-                  "labelBottomMargin": 0,
-                  "labelBackgroundColor": "white",
-                  "labelShowResolution": false,
-                  "labelShowAssembly": true,
-                  "axisLabelFormatting": "scientific",
-                  "axisPositionHorizontal": "right",
-                  "lineStrokeColor": "blue",
-                  "lineStrokeWidth": 1,
-                  "valueScaling": "linear",
-                  "trackBorderWidth": 0,
-                  "trackBorderColor": "black",
-                  "labelTextOpacity": 1,
-                  "showMousePosition": false,
-                  "minHeight": 20,
-                  "mousePositionColor": "#000000",
-                  "showTooltip": false,
-                  "name": "Rad21 (dCTCF+IAA)",
-                  "align": "bottom",
-                  "barFillColor": "#a31919",
-                  "barOpacity": 1
-                },
-                "width": 327,
-                "height": 20
-              }
-            ],
-            "height": 20,
-            "options": {},
-            "width": 327
-          },
-          {
-            "uid": "DYaasSCeTxyNjJ1NbYANFQ",
-            "type": "combined",
-            "contents": [
-              {
-                "type": "bar",
-                "uid": "Vdgf21fBRFWfDOkj2tXvIQ",
-                "tilesetUid": "KjN4v5lYQIOloGztRF-ciQ",
-                "server": "https://resgen.io/api/v1",
-                "options": {
-                  "align": "bottom",
-                  "labelColor": "black",
-                  "labelPosition": "topLeft",
-                  "labelLeftMargin": 0,
-                  "labelRightMargin": 0,
-                  "labelTopMargin": 0,
-                  "labelBottomMargin": 0,
-                  "labelShowResolution": false,
-                  "labelShowAssembly": true,
-                  "axisLabelFormatting": "scientific",
-                  "axisPositionHorizontal": "right",
-                  "barFillColor": "#a31919",
-                  "valueScaling": "linear",
-                  "trackBorderWidth": 0,
-                  "trackBorderColor": "black",
-                  "labelTextOpacity": 1,
-                  "barOpacity": 1,
-                  "name": "CTCF (dCTCF+IAA)"
-                },
-                "width": 327,
-                "height": 20
-              }
-            ],
-            "height": 20,
-            "options": {},
-            "width": 327
-          }
-        ],
-        "left": [],
-        "center": [
-          {
-            "uid": "HjzPk4paRqig94vWKjFyQg",
-            "type": "combined",
-            "contents": [
-              {
-                "type": "heatmap",
-                "uid": "DJKlZlqQTiGxrIyi9FPjBA",
-                "tilesetUid": "WPmAeHkiSM-rGgH2cp00FQ",
-                "server": "https://resgen.io/api/v1",
-                "options": {
-                  "backgroundColor": "#eeeeee",
-                  "labelPosition": "topRight",
-                  "labelLeftMargin": 0,
-                  "labelRightMargin": 0,
-                  "labelTopMargin": 0,
-                  "labelBottomMargin": 0,
-                  "labelShowResolution": true,
-                  "labelShowAssembly": true,
-                  "colorRange": [
-                    "white",
-                    "rgba(245,166,35,1.0)",
-                    "rgba(208,2,27,1.0)",
-                    "black"
-                  ],
-                  "colorbarBackgroundColor": "#ffffff",
-                  "maxZoom": null,
-                  "minWidth": 100,
-                  "minHeight": 100,
-                  "colorbarPosition": "topRight",
-                  "trackBorderWidth": 0,
-                  "trackBorderColor": "black",
-                  "heatmapValueScaling": "log",
-                  "showMousePosition": true,
-                  "mousePositionColor": "#000000",
-                  "showTooltip": false,
-                  "extent": "full",
-                  "zeroValueColor": null,
-                  "name": "mESC dCTCF+IAA",
-                  "scaleStartPercent": "0.00001",
-                  "scaleEndPercent": "0.08969"
-                },
-                "width": 327,
-                "height": 427,
-                "transforms": [
-                  {
-                    "name": "ICE",
-                    "value": "weight"
-                  }
-                ]
-              }
-            ],
-            "height": 427,
-            "options": {},
-            "width": 327
-          }
-        ],
-        "bottom": [],
-        "right": [],
-        "whole": [],
-        "gallery": []
-      },
-      "layout": {
-        "w": 4,
-        "h": 12,
-        "x": 8,
-        "y": 0
-      },
-      "uid": "fTAVxqWnRZiXjEhy4hnvmg"
-    }
-  ],
-  "zoomLocks": {
-    "locksByViewUid": {
-      "G6n1Y3-NRG6BkREOx5T75g": "R3TjGMtBQmaVhs0XPutj0g",
-      "MSHvIbiZRX27lXKMqY_OjA": "R3TjGMtBQmaVhs0XPutj0g",
-      "fTAVxqWnRZiXjEhy4hnvmg": "R3TjGMtBQmaVhs0XPutj0g"
-    },
-    "locksDict": {
-      "R3TjGMtBQmaVhs0XPutj0g": {
-        "fTAVxqWnRZiXjEhy4hnvmg": [
-          1620059744.3152335,
-          1619932526.735275,
-          2082.2107322216034
-        ],
-        "G6n1Y3-NRG6BkREOx5T75g": [
-          1620059744.3152335,
-          1619932526.7352748,
-          2082.2107317447662
-        ],
-        "MSHvIbiZRX27lXKMqY_OjA": [
-          1620059744.3152335,
-          1619932526.7352748,
-          2082.2107317447662
-        ],
-        "uid": "R3TjGMtBQmaVhs0XPutj0g"
+      valueScaleLocks: {
+        locksByViewUid: {},
+        locksDict: {}
       }
-    }
-  },
-  "locationLocks": {
-    "locksByViewUid": {
-      "G6n1Y3-NRG6BkREOx5T75g": "b3ReUHGUQLK5PV-R2SW63g",
-      "MSHvIbiZRX27lXKMqY_OjA": "b3ReUHGUQLK5PV-R2SW63g",
-      "fTAVxqWnRZiXjEhy4hnvmg": "b3ReUHGUQLK5PV-R2SW63g"
-    },
-    "locksDict": {
-      "b3ReUHGUQLK5PV-R2SW63g": {
-        "fTAVxqWnRZiXjEhy4hnvmg": [
-          1620059744.3152335,
-          1619932526.735275,
-          2082.2107322216034
-        ],
-        "G6n1Y3-NRG6BkREOx5T75g": [
-          1620059744.3152335,
-          1619932526.7352748,
-          2082.2107317447662
-        ],
-        "MSHvIbiZRX27lXKMqY_OjA": [
-          1620059744.3152335,
-          1619932526.7352748,
-          2082.2107317447662
-        ],
-        "uid": "b3ReUHGUQLK5PV-R2SW63g"
-      }
-    }
-  },
-  "valueScaleLocks": {
-    "locksByViewUid": {
-      "fTAVxqWnRZiXjEhy4hnvmg.Vdgf21fBRFWfDOkj2tXvIQ": "GRU-x59qTECOVv0RVpJEcQ",
-      "MSHvIbiZRX27lXKMqY_OjA.MnWvyy0FR2GPNuz0EH7yqA": "GRU-x59qTECOVv0RVpJEcQ",
-      "G6n1Y3-NRG6BkREOx5T75g.TjGrBftdRNqz_jUyZX4fMA": "GRU-x59qTECOVv0RVpJEcQ",
-      "fTAVxqWnRZiXjEhy4hnvmg.blrwneC-Tv6OqMReqBBRsQ": "IxrPdLIwSE-gegmrvFw1Lg",
-      "MSHvIbiZRX27lXKMqY_OjA.cE26C5opSrW7Uoix-0MHeg": "IxrPdLIwSE-gegmrvFw1Lg",
-      "G6n1Y3-NRG6BkREOx5T75g.UGW7WF1hSMGyXwVSeKH1yQ": "IxrPdLIwSE-gegmrvFw1Lg",
-      "MSHvIbiZRX27lXKMqY_OjA.O0FmvaldRf6u0j86ZEVFOw": "AEjwOXf_RJa4Ar3y7D7g_Q",
-      "G6n1Y3-NRG6BkREOx5T75g.DWQAQTOnRomhtwts4P_joA": "AEjwOXf_RJa4Ar3y7D7g_Q"
-    },
-    "locksDict": {
-      "GRU-x59qTECOVv0RVpJEcQ": {
-        "G6n1Y3-NRG6BkREOx5T75g.TjGrBftdRNqz_jUyZX4fMA": {
-          "view": "G6n1Y3-NRG6BkREOx5T75g",
-          "track": "TjGrBftdRNqz_jUyZX4fMA"
-        },
-        "fTAVxqWnRZiXjEhy4hnvmg.Vdgf21fBRFWfDOkj2tXvIQ": {
-          "view": "fTAVxqWnRZiXjEhy4hnvmg",
-          "track": "Vdgf21fBRFWfDOkj2tXvIQ"
-        },
-        "MSHvIbiZRX27lXKMqY_OjA.MnWvyy0FR2GPNuz0EH7yqA": {
-          "view": "MSHvIbiZRX27lXKMqY_OjA",
-          "track": "MnWvyy0FR2GPNuz0EH7yqA"
-        },
-        "uid": "GRU-x59qTECOVv0RVpJEcQ"
-      },
-      "IxrPdLIwSE-gegmrvFw1Lg": {
-        "G6n1Y3-NRG6BkREOx5T75g.UGW7WF1hSMGyXwVSeKH1yQ": {
-          "view": "G6n1Y3-NRG6BkREOx5T75g",
-          "track": "UGW7WF1hSMGyXwVSeKH1yQ"
-        },
-        "fTAVxqWnRZiXjEhy4hnvmg.blrwneC-Tv6OqMReqBBRsQ": {
-          "view": "fTAVxqWnRZiXjEhy4hnvmg",
-          "track": "blrwneC-Tv6OqMReqBBRsQ"
-        },
-        "MSHvIbiZRX27lXKMqY_OjA.cE26C5opSrW7Uoix-0MHeg": {
-          "view": "MSHvIbiZRX27lXKMqY_OjA",
-          "track": "cE26C5opSrW7Uoix-0MHeg"
-        },
-        "uid": "IxrPdLIwSE-gegmrvFw1Lg"
-      },
-      "AEjwOXf_RJa4Ar3y7D7g_Q": {
-        "MSHvIbiZRX27lXKMqY_OjA.O0FmvaldRf6u0j86ZEVFOw": {
-          "view": "MSHvIbiZRX27lXKMqY_OjA",
-          "track": "O0FmvaldRf6u0j86ZEVFOw"
-        },
-        "G6n1Y3-NRG6BkREOx5T75g.DWQAQTOnRomhtwts4P_joA": {
-          "view": "G6n1Y3-NRG6BkREOx5T75g",
-          "track": "DWQAQTOnRomhtwts4P_joA"
-        },
-        "uid": "AEjwOXf_RJa4Ar3y7D7g_Q"
-      }
-    }
-  }
-}
+    };
 
     const hgApi = window.hgApi = await hglib.viewer(
       document.getElementById('demo'),
       viewConfig,
-      { 
-        bounded: true,
-        authToken: 'Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6Ik0wUXpORUV6TWpoR1JVWXlOemhGTmpFM1FUSXpNRVpETWtSRlFqSTJRVEUxT1RWQk9FWkdRUSJ9.eyJodHRwczovL3Jlc2dlbi5pby91c2VybmFtZSI6InBldGUiLCJpc3MiOiJodHRwczovL2F1dGgucmVzZ2VuLmlvLyIsInN1YiI6ImF1dGgwfDVlNDg1MTk2YTFkOTlkMGU3MWIxYWNkNSIsImF1ZCI6WyJodHRwczovL3Jlc2dlbi5pbyIsImh0dHBzOi8vcmVzZ2VuLmF1dGgwLmNvbS91c2VyaW5mbyJdLCJpYXQiOjE3NTU0NTA0OTYsImV4cCI6MTc1NTUzNjg5Niwic2NvcGUiOiJvcGVuaWQgcHJvZmlsZSBlbWFpbCIsImF6cCI6IndXaDlFWndiWThWQUlKNFJleGxyTEx6NUM1bTR4dzZnIn0.V3pw-e6FHgkSsku0Ejgx_BssEM8GOVbHWsF_M36yJaTBYPd0KVy6x2LTNg8uOLuhZLGXvTufjuC6OwvZ15umIab8I_PdUpthBkKoLXptJVr8-DU56HCwdY3QTbta9J9eUyIe6ocOTl3V9ZADoB1tOqDkizCYbkijGvjf7SzZmzt36e8uWzfZXbiZRwvd9NM3u-Y97zoCvRfOq2RE8BU21s-AZd8lOp2oaFR4-28P-ub0ZxJPL48bdEKA7QYjXYWaaDfv7-wUUxaMpk4WYU3s33KYgYE40seg-GLU2c4zqrAgEOzP7dtPUmuHpgL9I5X1UlEKN19lvuObqjGs9LX8PA'
-      },
+      { bounded: true },
     );
 
     hgApi.on('viewConfig', () => {
