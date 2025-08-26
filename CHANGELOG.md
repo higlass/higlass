@@ -1,6 +1,6 @@
 # Release notes
 
-## Next
+## 2.1.3
 
 - Handle clicks on DragListeningDivs
 
