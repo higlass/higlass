@@ -1,5 +1,9 @@
 # Release notes
 
+## Next
+
+- Handle clicks on DragListeningDivs
+
 ## 2.1.2
 
 - Fixed another bug where higlass would crash on empty tiles due to unitialized valueScale
