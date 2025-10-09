@@ -431,7 +431,7 @@ export function tileResponseToData(inputData, server, theseTileIds) {
     data[key].tilePos = tilePos;
     data[key].tilesetUid = keyParts[0];
 
-    if ('dense' in data[key] && typeof data[key].dense == 'string') {
+    if ('dense' in data[key] && typeof data[key].dense === 'string') {
       /** @type {string} */
       // We are overriding the property on the input object, so TS is upset.
       const base64 = data[key].dense;
