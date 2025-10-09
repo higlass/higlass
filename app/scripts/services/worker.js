@@ -431,9 +431,8 @@ export function tileResponseToData(inputData, server, theseTileIds) {
     data[key].tilePos = tilePos;
     data[key].tilesetUid = keyParts[0];
 
-    if ('dense' in data[key]) {
+    if ('dense' in data[key] && typeof data[key].dense == 'string') {
       /** @type {string} */
-      // @ts-expect-error - The input of this function requires that dense is a string
       // We are overriding the property on the input object, so TS is upset.
       const base64 = data[key].dense;
       const arrayBuffer = base64ToArrayBuffer(base64);
