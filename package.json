@@ -1,6 +1,6 @@
 {
   "name": "higlass",
-  "version": "2.1.3",
+  "version": "2.1.4",
   "description": "HiGlass Hi-C / genomic / large data viewer",
   "author": "Peter Kerpedjiev <pkerpedjiev@gmail.com>",
   "main": "dist/hglib.js",
@@ -15,8 +15,16 @@
     },
     "./dist/*": "./dist/*"
   },
-  "files": ["app", "dist"],
-  "keywords": ["hi-c", "genomics", "matrix", "tracks"],
+  "files": [
+    "app",
+    "dist"
+  ],
+  "keywords": [
+    "hi-c",
+    "genomics",
+    "matrix",
+    "tracks"
+  ],
   "scripts": {
     "start": "vite",
     "build": "tsc -p tsconfig.emit.json && node ./scripts/build.mjs",
