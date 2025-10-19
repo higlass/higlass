@@ -1,5 +1,9 @@
 # Release notes
 
+## 2.1.5
+
+- Fix bug where the value scale lock overlay wasn't being displayed
+
 ## 2.1.4
 
 - Fix a bug when using local tiles that are translated from base64 to float array in one pass causing an error then next time they are loaded and the dense array is no longer a string.
