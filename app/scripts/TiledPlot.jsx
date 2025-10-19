@@ -2764,8 +2764,8 @@ export class TiledPlot extends React.Component {
                 position: 'absolute',
                 left: pTrack.left,
                 top: pTrack.top,
-                width: trackWidth(pTrack.track),
-                height: trackHeight(pTrack.track),
+                width: trackWidth(pTrack),
+                height: trackHeight(pTrack),
                 zIndex: 1,
               }}
             />
