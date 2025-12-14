@@ -257,7 +257,7 @@ export class TextManager {
   }
 }
 
-class BedLikeTrack extends HorizontalTiled1DPixiTrack {
+class GffGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
   constructor(context, options) {
     super(context, options);
 
@@ -319,18 +319,22 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
     }
 
     // Object.values(this.fetchedTiles
+    console.log('this.fetchedTiles', this.fetchedTiles);
 
     this.uniqueSegments = uniqueify(
       Object.values(this.fetchedTiles)
-        .filter((x) => x.tileData.length)
-        .flatMap((x) => x.tileData),
+        .filter((x) => x.tileData.genes)
+        .flatMap((x) => Object.values(x.tileData.genes)),
     );
+
+    console.log('this.uniqueSegments', this.uniqueSegments);
+    console.log('this.tilesetInfo', this.tilesetInfo);
 
     this.uniqueSegments.forEach((td) => {
       // A random importance helps with selective hiding
       // of overlapping texts
       if (!td.importance) {
-        td.importance = hashFunc(td.uid.toString());
+        td.importance = hashFunc(td.gene.id.toString());
       }
     });
 
@@ -1228,4 +1232,4 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
   }
 }
 
-export default BedLikeTrack;
+export default GffGeneAnnotationsTrack;

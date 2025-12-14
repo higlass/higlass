@@ -8,6 +8,8 @@ import { zoom, zoomIdentity } from 'd3-zoom';
 import slugid from 'slugid';
 
 import BedLikeTrack from './BedLikeTrack';
+import GffGeneAnnotationsTrack from './GffGeneAnnotationsTrack';
+
 import CombinedTrack from './CombinedTrack';
 import HeatmapTiledPixiTrack from './HeatmapTiledPixiTrack';
 import Id2DTiledPixiTrack from './Id2DTiledPixiTrack';
@@ -2038,6 +2040,9 @@ export class TrackRenderer extends React.Component {
       case 'bedlike':
       case 'vertical-bedlike': // legacy, included for backwards compatiblity
         return new BedLikeTrack(context, track.options);
+
+      case 'gff-gene-annotations':
+        return new GffGeneAnnotationsTrack(context, track.options);
 
       case 'overlay-track':
         return new OverlayTrack(context, track.options);
