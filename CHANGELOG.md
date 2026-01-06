@@ -1,5 +1,9 @@
 # Release notes
 
+## 2.1.6
+
+- Consider bins_per_dimension or tile_size when calculating visible tiles
+
 ## 2.1.5
 
 - Fix bug where the value scale lock overlay wasn't being displayed
