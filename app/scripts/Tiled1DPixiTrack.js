@@ -106,7 +106,7 @@ class Tiled1DPixiTrack extends TiledPixiTrack {
         this._xScale,
         this.tilesetInfo.min_pos[0],
         this.tilesetInfo.max_pos[0],
-        this.tilesetInfo.bins_per_dimension || this.tilesetInfo.tile_size
+        this.tilesetInfo.bins_per_dimension || this.tilesetInfo.tile_size,
       );
 
       const tiles = xTiles.map((x) => [this.zoomLevel, x]);

@@ -238,7 +238,7 @@ const calculate1DVisibleTiles = (tilesetInfo, scale) => {
       scale,
       tilesetInfo.min_pos[0],
       tilesetInfo.max_pos[0],
-      tilesetInfo.bins_per_dimension || tilesetInfo.tile_size
+      tilesetInfo.bins_per_dimension || tilesetInfo.tile_size,
     );
 
     const tiles = xTiles.map((x) => [zoomLevel, x]);
