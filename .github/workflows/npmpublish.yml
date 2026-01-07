@@ -36,5 +36,4 @@ jobs:
       - run: npm ci --legacy-peer-deps
       - run: npm run compile
       - run: env | grep NODE_AUTH_TOKEN || echo "Variable not found"
-      - run: npm whoami
       - run: npm publish --provenance
