@@ -1,6 +1,6 @@
 {
   "name": "higlass",
-  "version": "2.1.7",
+  "version": "2.1.8",
   "description": "HiGlass Hi-C / genomic / large data viewer",
   "author": "Peter Kerpedjiev <pkerpedjiev@gmail.com>",
   "main": "dist/hglib.js",
