@@ -1,6 +1,6 @@
 # Release notes
 
-## 2.1.6
+## 2.1.9
 
 - Consider bins_per_dimension or tile_size when calculating visible tiles
 
