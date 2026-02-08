@@ -4567,13 +4567,13 @@ class HiGlassComponent extends React.Component {
   }
 
   /*
-  * Someone has hovered over an item in sourceTrack so we need to inform
-  * any other track that has that item that it's been hovered over.
-  */
+   * Someone has hovered over an item in sourceTrack so we need to inform
+   * any other track that has that item that it's been hovered over.
+   */
   showHoverUids(evt) {
     const mouseOverUids = evt.track?.getMouseOverUids
-      ? evt.track.getMouseOverUids(evt.relTrackX, evt.relTrackY) : null;
-
+      ? evt.track.getMouseOverUids(evt.relTrackX, evt.relTrackY)
+      : null;
 
     for (const track of this.iterateOverTracks()) {
       const trackObj = getTrackObjById(
