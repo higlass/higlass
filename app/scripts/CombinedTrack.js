@@ -241,6 +241,29 @@ class CombinedTrack {
 
     return mouseOverHtml;
   }
+
+  /**
+   * Get the uids of any items that are below the mouse
+   * 
+   * @param {*} trackX 
+   * @param {*} trackY 
+   * @returns 
+   */
+  getMouseOverUids(trackX, trackY) {
+    const mouseOverUids = []
+
+    for (const childTrack of this.childTracks) {
+      if (childTrack.getMouseOverUids) {
+        const trackMouseOverUids = childTrack.getMouseOverUids(trackX, trackY);
+
+        if (trackMouseOverUids) {
+          mouseOverUids.push(...trackMouseOverUids)
+        }
+      }
+    }
+
+    return mouseOverUids;
+  }
 }
 
 export default CombinedTrack;

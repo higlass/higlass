@@ -4535,6 +4535,7 @@ class HiGlassComponent extends React.Component {
     });
 
     this.showHoverMenu(evt);
+    this.showHoverUids(evt);
   }
 
   getMinMaxValue(viewId, trackId, ignoreOffScreenValues, ignoreFixedScale) {
@@ -4563,6 +4564,28 @@ class HiGlassComponent extends React.Component {
       track.minVisibleValueInTiles(ignoreFixedScale),
       track.maxVisibleValueInTiles(ignoreFixedScale),
     ];
+  }
+
+  /*
+  * Someone has hovered over an item in sourceTrack so we need to inform
+  * any other track that has that item that it's been hovered over.
+  */
+  showHoverUids(evt) {
+    const mouseOverUids = evt.track?.getMouseOverUids
+      ? evt.track.getMouseOverUids(evt.relTrackX, evt.relTrackY) : null;
+
+
+    for (const track of this.iterateOverTracks()) {
+      const trackObj = getTrackObjById(
+        this.tiledPlots,
+        track.viewId,
+        track.trackId,
+      );
+
+      if (trackObj.itemsHovered) {
+        trackObj.itemsHovered(mouseOverUids);
+      }
+    }
   }
 
   /**
