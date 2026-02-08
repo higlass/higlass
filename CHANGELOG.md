@@ -1,5 +1,9 @@
 # Release notes
 
+## 2.2.2
+
+- Added a handler for fetching uids of items under the mouse and informing other tracks that the mouse is over them
+
 ## 2.1.9
 
 - Consider bins_per_dimension or tile_size when calculating visible tiles

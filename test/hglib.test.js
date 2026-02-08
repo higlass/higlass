@@ -21,8 +21,9 @@ describe('viewer', () => {
     );
     expect(promise).toBeInstanceOf(Promise);
     const api = await promise;
-    // Assert the top-level API
-    expect(api).toMatchInlineSnapshot(`
+    // Assert the top-level API (excluding version to avoid test updates on version bumps)
+    const { version, ...apiWithoutVersion } = api;
+    expect(apiWithoutVersion).toMatchInlineSnapshot(`
       {
         "activateTool": [Function],
         "destroy": [Function],
@@ -61,12 +62,12 @@ describe('viewer', () => {
         "showTrackChooser": [Function],
         "suggestGene": [Function],
         "validateViewConfig": [Function],
-        "version": "2.1.5",
         "zoomTo": [Function],
         "zoomToDataExtent": [Function],
         "zoomToGene": [Function],
       }
     `);
+    expect(typeof version).toBe('string');
     expect(Object.keys(api.getViewConfig())).toMatchInlineSnapshot(`
       [
         "editable",
