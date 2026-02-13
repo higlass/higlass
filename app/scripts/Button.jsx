@@ -4,30 +4,26 @@ import React from 'react';
 
 import classes from '../styles/Button.module.scss';
 
-const Button = React.forwardRef((props, ref) => (
-  <button
-    ref={ref}
-    className={classes[props.styleName] ?? classes.button}
-    disabled={props.disable}
-    onBlur={props.onBlur}
-    onClick={props.onClick}
-    onMouseDown={props.onMouseDown}
-    onMouseOut={props.onMouseOut}
-    onMouseUp={props.onMouseUp}
-    type="button"
-  >
-    {props.children}
-    {props.shortcut && (
-      <span className={classes['button-shortcut']}>{props.shortcut}</span>
-    )}
-  </button>
-));
-
-Button.defaultProps = {
-  onClick: () => {},
-  styleName: '',
-  type: 'button',
-};
+const Button = React.forwardRef(
+  ({ onClick = () => {}, styleName = '', children, ...props }, ref) => (
+    <button
+      ref={ref}
+      className={classes[styleName] ?? classes.button}
+      disabled={props.disable}
+      onBlur={props.onBlur}
+      onClick={onClick}
+      onMouseDown={props.onMouseDown}
+      onMouseOut={props.onMouseOut}
+      onMouseUp={props.onMouseUp}
+      type="button"
+    >
+      {children}
+      {props.shortcut && (
+        <span className={classes['button-shortcut']}>{props.shortcut}</span>
+      )}
+    </button>
+  ),
+);
 
 Button.propTypes = {
   children: PropTypes.any,

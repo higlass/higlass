@@ -1,6 +1,10 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
 import HiGlassComponent from './HiGlassComponent';
+import {
+  ensureReady,
+  renderToContainer,
+  unmountFromContainer,
+} from './utils/react-dom-compat';
 
 import HorizontalGeneAnnotationsTrack from './HorizontalGeneAnnotationsTrack';
 // these exports can be used to create new tracks in outside environments (e.g. Observable)
@@ -57,8 +61,10 @@ export { OPTIONS_INFO } from './options-info';
  * @returns {Promise<HiGlassComponent>}
  */
 const launch = async (element, config, options = {}) => {
+  await ensureReady();
   return new Promise((resolve) => {
-    ReactDOM.render(
+    renderToContainer(
+      element,
       <HiGlassComponent
         ref={(/** @type {HiGlassComponent | null} */ ref) => {
           // Wait to resolve until React gives us a ref
@@ -67,7 +73,6 @@ const launch = async (element, config, options = {}) => {
         options={options}
         viewConfig={config}
       />,
-      element,
     );
   });
 };

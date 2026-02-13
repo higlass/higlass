@@ -1,9 +1,9 @@
 // @ts-nocheck
 import Ajv from 'ajv';
 import createPubSub from 'pub-sub-es';
-import ReactDOM from 'react-dom';
-
 import schema from '../schema.json';
+
+import { unmountFromContainer } from './utils/react-dom-compat';
 
 import { getTileProxyAuthHeader, setTileProxyAuthHeader } from './services';
 
@@ -162,8 +162,9 @@ const createApi = function api(context, pubSub) {
        */
       destroy() {
         destroy();
-        if (self.topDivRef.current) {
-          ReactDOM.unmountComponentAtNode(self.topDivRef.current);
+        const container = self.topDivRef.current?.parentNode;
+        if (container) {
+          unmountFromContainer(container);
         }
       },
 

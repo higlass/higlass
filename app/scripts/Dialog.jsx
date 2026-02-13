@@ -10,67 +10,68 @@ import withModal from './hocs/with-modal';
 
 import classes from '../styles/Dialog.module.scss';
 
-function Dialog(props) {
+function Dialog({
+  cancelTitle = 'Cancel',
+  hide = false,
+  maxHeight = false,
+  okayOnly = false,
+  okayTitle = 'Ok',
+  modal,
+  onCancel,
+  onOkay,
+  title,
+  cancelShortcut,
+  okayShortcut,
+  children,
+}) {
   const handleCancel = () => {
-    props.modal.close();
-    if (props.onCancel) props.onCancel();
+    modal.close();
+    if (onCancel) onCancel();
   };
 
   const handleOkay = () => {
-    props.modal.close();
-    if (props.onOkay) props.onOkay();
+    modal.close();
+    if (onOkay) onOkay();
   };
 
   return (
-    <Modal closeButton={false} hide={props.hide} maxHeight={props.maxHeight}>
+    <Modal closeButton={false} hide={hide} maxHeight={maxHeight}>
       <>
         <header className={classes['dialog-header']}>
-          <h3>{props.title}</h3>
+          <h3>{title}</h3>
           <Button onClick={handleCancel}>
             <Cross />
           </Button>
         </header>
-        {props.maxHeight ? (
+        {maxHeight ? (
           <main
-            className={clsx(
-              props.maxHeight && classes['dialog-main-max-height'],
-            )}
+            className={clsx(maxHeight && classes['dialog-main-max-height'])}
           >
-            {props.children}
+            {children}
           </main>
         ) : (
-          <main>{props.children}</main>
+          <main>{children}</main>
         )}
         <footer
           className={
-            classes[
-              props.maxHeight ? 'dialog-footer-max-height' : 'dialog-footer'
-            ]
+            classes[maxHeight ? 'dialog-footer-max-height' : 'dialog-footer']
           }
         >
-          {props.okayOnly ? (
+          {okayOnly ? (
             <div />
           ) : (
-            <Button onClick={handleCancel} shortcut={props.cancelShortcut}>
-              {props.cancelTitle}
+            <Button onClick={handleCancel} shortcut={cancelShortcut}>
+              {cancelTitle}
             </Button>
           )}
-          <Button onClick={handleOkay} shortcut={props.okayShortcut}>
-            {props.okayTitle}
+          <Button onClick={handleOkay} shortcut={okayShortcut}>
+            {okayTitle}
           </Button>
         </footer>
       </>
     </Modal>
   );
 }
-
-Dialog.defaultProps = {
-  cancelTitle: 'Cancel',
-  hide: false,
-  maxHeight: false,
-  okayOnly: false,
-  okayTitle: 'Ok',
-};
 
 Dialog.propTypes = {
   cancelShortcut: PropTypes.string,
