@@ -1,5 +1,6 @@
 // @ts-nocheck
 import { axisLeft } from 'd3-axis';
+import { format } from 'd3-format';
 
 import SVGTrack from './SVGTrack';
 
@@ -25,6 +26,14 @@ class LeftAxisTrack extends SVGTrack {
 
   draw() {
     this.axis.scale(this._yScale);
+
+    if (this.options.reverseAxis == 'yes' || this.options.reverseAxis == true) {
+      const defaultFormat = format(',');
+      this.axis.tickFormat((d) => defaultFormat(-d));
+    } else {
+      this.axis.tickFormat(null);
+    }
+
     this.gAxis.call(this.axis);
 
     return this;
