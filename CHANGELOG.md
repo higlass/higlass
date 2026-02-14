@@ -1,10 +1,10 @@
 # Release notes
 
-## 2.2.3
+## 2.2.1
 
 - Add option to reverse the axis on the left axis track
 
-## 2.2.2
+## 2.2.0
 
 - Added a handler for fetching uids of items under the mouse and informing other tracks that the mouse is over them
 
