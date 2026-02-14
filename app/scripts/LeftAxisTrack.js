@@ -27,7 +27,7 @@ class LeftAxisTrack extends SVGTrack {
   draw() {
     this.axis.scale(this._yScale);
 
-    if (this.options.reverseAxis == 'yes' || this.options.reverseAxis == true) {
+    if (this.options.reverseAxis === 'yes' || this.options.reverseAxis === true) {
       const defaultFormat = format(',');
       this.axis.tickFormat((d) => defaultFormat(-d));
     } else {
