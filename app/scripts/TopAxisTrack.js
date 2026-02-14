@@ -26,7 +26,6 @@ class TopAxisTrack extends SVGTrack {
   }
 
   draw() {
-    console.log('top axis draw');
     this.axis.scale(this._xScale);
 
     this.gAxis.call(this.axis);
