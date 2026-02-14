@@ -106,6 +106,7 @@ the root-level metadata. The sections below will delve into views and tracks.
   editable: [true | false] (default: true)
   viewEditable: [true | false] (default: true)
   tracksEditable: [true | false] (default: true)
+  hideHeader: [true | false] (default: false)
 
 The property ``viewEditable`` specifies whether this viewconf will have a view
 header and the property ``viewEditable`` determines if tracks have a context
@@ -118,6 +119,9 @@ menu. ``editable`` will force both properties to either be ``true`` or
       "http://higlass.io/api/v1",
       "http://localhost:8989/api/v1"
     ],
+
+The ``hideHeader`` option hides the header but leaves the views editable so that
+track options can be changed from the track config menus.
 
 Where should the list of available tracks be pulled from? The field
 `trackSourceServers` at the root level of the viewconf tells higlass where it
