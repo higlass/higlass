@@ -521,6 +521,11 @@ export const OPTIONS_INFO = {
     inlineOptions: sizesInPx([0, 10, 20, 30, 40, 50, 100, 200, 400], 'px'),
   },
 
+  reverseAxis: {
+    name: 'Reverse Axis',
+    inlineOptions: YES_NO,
+  },
+
   colorbarPosition: {
     name: 'Colorbar Position',
     inlineOptions: {
