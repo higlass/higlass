@@ -1,5 +1,9 @@
 # Release notes
 
+## 2.3.0
+
+- Added support for React 19.
+
 ## 2.2.2
 
 - Added a handler for fetching uids of items under the mouse and informing other tracks that the mouse is over them
