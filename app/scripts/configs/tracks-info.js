@@ -108,9 +108,10 @@ export const TRACKS_INFO = [
     orientation: '1d-vertical',
     name: 'Left Axis',
     thumbnail: svgVertical1DAxisIcon,
-    availableOptions: ['minWidth'],
+    availableOptions: ['minWidth', 'reverseAxis'],
     defaultOptions: {
       minWidth: 100,
+      reverseAxis: false,
     },
   },
   {
