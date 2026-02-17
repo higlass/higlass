@@ -7,7 +7,7 @@ import * as PIXI from 'pixi.js';
 import PropTypes from 'prop-types';
 import createPubSub, { globalPubSub } from 'pub-sub-es';
 import React from 'react';
-import ReactGridLayout from 'react-grid-layout';
+import ReactGridLayout, { getCompactor } from 'react-grid-layout';
 import slugid from 'slugid';
 import parse from 'url-parse';
 import vkbeautify from 'vkbeautify';
@@ -290,7 +290,6 @@ class HiGlassComponent extends React.Component {
     this.pluginDataFetchers = pluginDataFetchers;
 
     this.state = {
-      currentBreakpoint: 'lg',
       width: 0,
       height: 0,
       rowHeight,
@@ -555,10 +554,18 @@ class HiGlassComponent extends React.Component {
     this.fitPixiToParentContainer();
 
     // keep track of the width and height of this element, because it
-    // needs to be reflected in the size of our drawing surface
+    // needs to be reflected in the size of our drawing surface.
+    // Also measure initial width so that ReactGridLayout renders grid items
+    // with valid dimensions on the first mounted render. Without this,
+    // width=0 causes react-grid-layout v2 to calculate negative column
+    // widths, and TiledPlot's ResizeSensor fails to detect the subsequent
+    // resize from zero to the actual size.
+    const [initialWidth, initialHeight] = getElementDim(this.element);
     this.setState({
       svgElement: this.svgElement,
       canvasElement: this.canvasElement,
+      ...(initialWidth > 0 ? { width: initialWidth } : {}),
+      ...(initialHeight > 0 ? { height: initialHeight } : {}),
     });
 
     this.waitForDOMAttachment(() => {
@@ -588,11 +595,11 @@ class HiGlassComponent extends React.Component {
   }
 
   getTrackObject(viewUid, trackUid) {
-    return this.tiledPlots[viewUid].trackRenderer.getTrackObject(trackUid);
+    return this.tiledPlots[viewUid]?.trackRenderer?.getTrackObject(trackUid);
   }
 
   getTrackRenderer(viewUid) {
-    return this.tiledPlots[viewUid].trackRenderer;
+    return this.tiledPlots[viewUid]?.trackRenderer;
   }
 
   UNSAFE_componentWillReceiveProps(newProps) {
@@ -983,12 +990,6 @@ class HiGlassComponent extends React.Component {
     this.fitPixiToParentContainer();
     this.refreshView(LONG_DRAG_TIMEOUT);
     this.resizeHandler();
-  }
-
-  onBreakpointChange(breakpoint) {
-    this.setState({
-      currentBreakpoint: breakpoint,
-    });
   }
 
   handleOverlayMouseEnter(uid) {
@@ -4196,6 +4197,7 @@ class HiGlassComponent extends React.Component {
   }
 
   triggerViewChange() {
+    if (!this.mounted) return;
     const viewsString = this.getViewsAsString();
     this.viewChangeListener.forEach((callback) => callback(viewsString));
   }
@@ -5317,8 +5319,29 @@ class HiGlassComponent extends React.Component {
             />
           ) : null;
 
+        // Constrain the grid item child to the expected pixel height
+        // derived from view.layout.h. react-grid-layout v2 syncs its
+        // internal layout state via useEffect (async), so after a layout
+        // change (e.g. track removal) the grid item's DOM dimensions can
+        // be stale (too large). maxHeight ensures TiledPlot.measureSize()
+        // reads the correct (new) height even before the grid re-syncs.
+        const marginY = this.isEditable() ? 10 : 0;
+        const expectedPixelHeight = view.layout
+          ? Math.round(
+              this.state.rowHeight * view.layout.h +
+                Math.max(0, view.layout.h - 1) * marginY,
+            )
+          : undefined;
+
         return (
-          <div key={view.uid}>
+          <div
+            key={view.uid}
+            style={
+              expectedPixelHeight !== undefined
+                ? { maxHeight: expectedPixelHeight, overflow: 'hidden' }
+                : undefined
+            }
+          >
             <div
               ref={(c) => {
                 this.tiledAreasDivs[view.uid] = c;
@@ -5360,34 +5383,30 @@ class HiGlassComponent extends React.Component {
 
     const gridLayout = (
       <ReactGridLayout
-        // Reserved props
-        ref={(c) => {
-          this.gridLayout = c;
+        gridConfig={{
+          cols: 12,
+          rowHeight: this.state.rowHeight,
+          // for some reason, this becomes 40 within the react-grid component
+          // (try resizing the component to see how much the height changes)
+          // Programming by coincidence FTW :-/
+          margin: this.isEditable() ? [10, 10] : [0, 0],
+          containerPadding: [containerPaddingX, containerPaddingY],
         }}
-        // Custom props
-        cols={12}
-        containerPadding={[containerPaddingX, containerPaddingY]}
-        draggableHandle={`.${stylesMTHeader['multitrack-header-grabber']}`}
-        isDraggable={this.isEditable()}
-        isResizable={this.isEditable()}
+        dragConfig={{
+          enabled: this.isEditable(),
+          handle: `.${stylesMTHeader['multitrack-header-grabber']}`,
+        }}
+        resizeConfig={{
+          enabled: this.isEditable(),
+        }}
+        compactor={getCompactor(
+          this.state.viewConfig.compactLayout === false ? null : "vertical"
+        )}
         layout={layouts}
-        margin={this.isEditable() ? [10, 10] : [0, 0]}
-        measureBeforeMount={false}
-        onBreakpointChange={this.onBreakpointChange.bind(this)}
         onDragStart={this.handleDragStart.bind(this)}
         onDragStop={this.handleDragStop.bind(this)}
         onLayoutChange={this.handleLayoutChange.bind(this)}
         onResize={this.resizeHandler.bind(this)}
-        rowHeight={this.state.rowHeight}
-        // for some reason, this becomes 40 within the react-grid component
-        // (try resizing the component to see how much the height changes)
-        // Programming by coincidence FTW :-/
-        // WidthProvider option
-        // I like to have it animate on mount. If you don't, delete
-        // `useCSSTransforms` (it's default `true`)
-        // and set `measureBeforeMount={true}`.
-        useCSSTransforms={this.mounted}
-        verticalCompact={this.state.viewConfig.compactLayout}
         width={this.state.width}
       >
         {this.tiledAreas}

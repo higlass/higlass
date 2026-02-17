@@ -62,7 +62,7 @@ export { OPTIONS_INFO } from './options-info';
  */
 const launch = async (element, config, options = {}) => {
   await ensureReady();
-  return new Promise((resolve) => {
+  const hgc = await new Promise((resolve) => {
     renderToContainer(
       element,
       <HiGlassComponent
@@ -75,6 +75,29 @@ const launch = async (element, config, options = {}) => {
       />,
     );
   });
+
+  // react-grid-layout v2 uses async useEffect for layout synchronization.
+  // Wait until TiledPlots are rendered (trackRenderer is populated) before
+  // returning, so the component is truly ready to use.
+  const viewUids = Object.keys(hgc.state.views);
+  if (viewUids.length > 0) {
+    await new Promise((resolve) => {
+      const start = performance.now();
+      const check = () => {
+        const allReady = viewUids.every(
+          (uid) => hgc.tiledPlots[uid]?.trackRenderer,
+        );
+        if (allReady || performance.now() - start > 5000) {
+          resolve();
+        } else {
+          setTimeout(check, 16);
+        }
+      };
+      check();
+    });
+  }
+
+  return hgc;
 };
 
 /**

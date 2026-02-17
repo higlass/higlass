@@ -67,7 +67,7 @@
     "pub-sub-es": "^2.0.1",
     "react-checkbox-tree": "^1.7.3",
     "react-color": "^2.13.8",
-    "react-grid-layout": "1.3.4",
+    "react-grid-layout": "^2.2.2",
     "react-simple-code-editor": "^0.13.0",
     "reactcss": "^1.2.3",
     "robust-point-in-polygon": "^1.0.3",
