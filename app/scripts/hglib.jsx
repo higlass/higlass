@@ -81,20 +81,22 @@ const launch = async (element, config, options = {}) => {
   // returning, so the component is truly ready to use.
   const viewUids = Object.keys(hgc.state.views);
   if (viewUids.length > 0) {
-    await /** @type {Promise<void>} */ (new Promise((resolve) => {
-      const start = performance.now();
-      const check = () => {
-        const allReady = viewUids.every(
-          (uid) => hgc.tiledPlots[uid]?.trackRenderer,
-        );
-        if (allReady || performance.now() - start > 5000) {
-          resolve();
-        } else {
-          setTimeout(check, 16);
-        }
-      };
-      check();
-    }));
+    await /** @type {Promise<void>} */ (
+      new Promise((resolve) => {
+        const start = performance.now();
+        const check = () => {
+          const allReady = viewUids.every(
+            (uid) => hgc.tiledPlots[uid]?.trackRenderer,
+          );
+          if (allReady || performance.now() - start > 5000) {
+            resolve();
+          } else {
+            setTimeout(check, 16);
+          }
+        };
+        check();
+      })
+    );
   }
 
   return hgc;
