@@ -5400,7 +5400,7 @@ class HiGlassComponent extends React.Component {
           enabled: this.isEditable(),
         }}
         compactor={getCompactor(
-          this.state.viewConfig.compactLayout === false ? null : "vertical"
+          this.state.viewConfig.compactLayout === false ? null : 'vertical',
         )}
         layout={layouts}
         onDragStart={this.handleDragStart.bind(this)}
