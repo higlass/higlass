@@ -35,14 +35,15 @@ class ListWrapper extends React.Component {
   onSortEnd({ oldIndex, newIndex }) {
     const { onSortEnd } = this.props;
     const { items } = this.state;
+    const sortedItems = arrayMove(items, oldIndex, newIndex);
 
     this.setState({
-      items: arrayMove(items, oldIndex, newIndex),
+      items: sortedItems,
       isSorting: false,
     });
 
     if (onSortEnd) {
-      onSortEnd(this.state.items);
+      onSortEnd(sortedItems);
     }
 
     this.sortingIndex = null;

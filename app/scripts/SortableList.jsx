@@ -2,8 +2,8 @@
 
 import {
   DndContext,
-  MouseSensor,
-  TouchSensor,
+  PointerSensor,
+  closestCenter,
   useSensor,
   useSensors,
 } from '@dnd-kit/core';
@@ -41,11 +41,8 @@ function SortableList({
   axis,
 }) {
   const sensors = useSensors(
-    useSensor(MouseSensor, {
+    useSensor(PointerSensor, {
       activationConstraint: { distance: 5 },
-    }),
-    useSensor(TouchSensor, {
-      activationConstraint: { delay: 250, tolerance: 5 },
     }),
   );
 
@@ -57,7 +54,7 @@ function SortableList({
     }
   };
 
-  const handleDragEnd = (event) => {
+  const handleDragOver = (event) => {
     const { active, over } = event;
     if (!over || active.id === over.id) return;
 
@@ -69,8 +66,10 @@ function SortableList({
     }
   };
 
-  const strategy =
-    axis === 'x' ? horizontalListSortingStrategy : verticalListSortingStrategy;
+  const isHorizontalAxis = axis === 'x';
+  const strategy = isHorizontalAxis
+    ? horizontalListSortingStrategy
+    : verticalListSortingStrategy;
 
   const itemIds = items.map((item) => item.uid);
 
@@ -103,8 +102,10 @@ function SortableList({
   return (
     <DndContext
       sensors={sensors}
+      collisionDetection={closestCenter}
       onDragStart={handleDragStart}
-      onDragEnd={handleDragEnd}
+      onDragOver={handleDragOver}
+      onDragEnd={() => {}}
     >
       <SortableContext items={itemIds} strategy={strategy}>
         <div

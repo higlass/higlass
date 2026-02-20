@@ -35,6 +35,7 @@ function TrackControl(props) {
       {props.isMoveable && (
         <svg
           className={getButtonClassName(props)}
+          draggable={false}
           style={{
             height: '20px',
             width: '20px',

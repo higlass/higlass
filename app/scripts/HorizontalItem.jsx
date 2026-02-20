@@ -7,12 +7,22 @@ import React from 'react';
 import HorizontalTrack from './HorizontalTrack';
 
 function HorizontalItem(props) {
-  const { attributes, listeners, setNodeRef, transform, transition } =
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } =
     useSortable({ id: props.uid });
 
+  const adjustedTransform = transform ? { ...transform, x: 0 } : transform;
+
   const style = {
-    transform: CSS.Transform.toString(transform),
+    transform: CSS.Transform.toString(adjustedTransform),
     transition,
+    ...(isDragging
+      ? {
+          zIndex: 10,
+          background: 'rgba(0, 0, 0, 0.1)',
+          border: '2px dashed rgba(0, 0, 0, 0.3)',
+          borderRadius: 4,
+        }
+      : {}),
   };
 
   return (
