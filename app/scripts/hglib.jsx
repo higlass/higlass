@@ -1,6 +1,10 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
 import HiGlassComponent from './HiGlassComponent';
+import {
+  ensureReady,
+  renderToContainer,
+  unmountFromContainer,
+} from './utils/react-dom-compat';
 
 import HorizontalGeneAnnotationsTrack from './HorizontalGeneAnnotationsTrack';
 // these exports can be used to create new tracks in outside environments (e.g. Observable)
@@ -57,8 +61,10 @@ export { OPTIONS_INFO } from './options-info';
  * @returns {Promise<HiGlassComponent>}
  */
 const launch = async (element, config, options = {}) => {
-  return new Promise((resolve) => {
-    ReactDOM.render(
+  await ensureReady();
+  const hgc = await new Promise((resolve) => {
+    renderToContainer(
+      element,
       <HiGlassComponent
         ref={(/** @type {HiGlassComponent | null} */ ref) => {
           // Wait to resolve until React gives us a ref
@@ -67,9 +73,33 @@ const launch = async (element, config, options = {}) => {
         options={options}
         viewConfig={config}
       />,
-      element,
     );
   });
+
+  // react-grid-layout v2 uses async useEffect for layout synchronization.
+  // Wait until TiledPlots are rendered (trackRenderer is populated) before
+  // returning, so the component is truly ready to use.
+  const viewUids = Object.keys(hgc.state.views);
+  if (viewUids.length > 0) {
+    await /** @type {Promise<void>} */ (
+      new Promise((resolve) => {
+        const start = performance.now();
+        const check = () => {
+          const allReady = viewUids.every(
+            (uid) => hgc.tiledPlots[uid]?.trackRenderer,
+          );
+          if (allReady || performance.now() - start > 5000) {
+            resolve();
+          } else {
+            setTimeout(check, 16);
+          }
+        };
+        check();
+      })
+    );
+  }
+
+  return hgc;
 };
 
 /**

@@ -80,11 +80,12 @@ async function build() {
         formats: ['umd', 'es'],
       },
       rollupOptions: {
-        external: ['react', 'react-dom', 'pixi.js'],
+        external: ['react', 'react-dom', 'react-dom/client', 'pixi.js'],
         output: {
           globals: {
             react: 'React',
             'react-dom': 'ReactDOM',
+            'react-dom/client': 'ReactDOM',
             'pixi.js': 'PIXI',
           },
         },

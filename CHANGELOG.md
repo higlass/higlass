@@ -1,5 +1,9 @@
 # Release notes
 
+## 2.3.0
+
+- Added support for React 19.
+
 ## 2.2.1
 
 - Add option to reverse the axis on the left axis track

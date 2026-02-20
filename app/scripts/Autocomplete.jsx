@@ -17,6 +17,9 @@ class Autocomplete extends React.Component {
       isOpen: false,
     };
 
+    this.itemRefs = {};
+    this.menuRef = null;
+
     this.keyDownHandlers = {
       ArrowDown(event) {
         event.preventDefault();
@@ -139,7 +142,7 @@ class Autocomplete extends React.Component {
 
   maybeScrollItemIntoView() {
     if (this.state.isOpen === true && this.state.highlightedIndex !== null) {
-      const itemNode = this.refs[`item-${this.state.highlightedIndex}`];
+      const itemNode = this.itemRefs[this.state.highlightedIndex];
       itemNode?.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
     }
   }
@@ -250,7 +253,9 @@ class Autocomplete extends React.Component {
         // Ignore blur to prevent menu from de-rendering before we can process click
         onMouseEnter: () => this.highlightItemFromMouse(index),
         onClick: () => this.selectItemFromMouse(item),
-        ref: `item-${index}`,
+        ref: (el) => {
+          this.itemRefs[index] = el;
+        },
       });
     });
     const style = {
@@ -260,7 +265,11 @@ class Autocomplete extends React.Component {
     };
     if (!items.length) return null;
     const menu = this.props.renderMenu(items, this.props.value, style);
-    return React.cloneElement(menu, { ref: 'menu' });
+    return React.cloneElement(menu, {
+      ref: (el) => {
+        this.menuRef = el;
+      },
+    });
   }
 
   handleInputBlur() {

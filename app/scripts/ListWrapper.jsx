@@ -1,8 +1,8 @@
 // @ts-nocheck
 
+import { arrayMove } from '@dnd-kit/sortable';
 import PropTypes from 'prop-types';
 import React from 'react';
-import { arrayMove } from 'react-sortable-hoc';
 
 class ListWrapper extends React.Component {
   constructor({ items }) {
@@ -19,8 +19,7 @@ class ListWrapper extends React.Component {
     });
   }
 
-  onSortStart({ node, index, collection }, e) {
-    e.stopImmediatePropagation();
+  onSortStart({ index }) {
     const { onSortStart } = this.props;
     this.setState({ isSorting: true });
 
@@ -29,9 +28,6 @@ class ListWrapper extends React.Component {
     }
 
     this.sortingIndex = index;
-
-    this.sortStartTop = e.offsetTop;
-    this.sortStartLeft = e.offsetLeft;
   }
 
   onSortMove() {}
@@ -39,14 +35,15 @@ class ListWrapper extends React.Component {
   onSortEnd({ oldIndex, newIndex }) {
     const { onSortEnd } = this.props;
     const { items } = this.state;
+    const sortedItems = arrayMove(items, oldIndex, newIndex);
 
     this.setState({
-      items: arrayMove(items, oldIndex, newIndex),
+      items: sortedItems,
       isSorting: false,
     });
 
     if (onSortEnd) {
-      onSortEnd(this.state.items);
+      onSortEnd(sortedItems);
     }
 
     this.sortingIndex = null;
@@ -63,15 +60,7 @@ class ListWrapper extends React.Component {
       onSortMove: this.onSortMove.bind(this),
     };
 
-    return (
-      <Component
-        {...this.props}
-        {...props}
-        ref={(element) => {
-          this.ref = element;
-        }}
-      />
-    );
+    return <Component {...this.props} {...props} />;
   }
 }
 

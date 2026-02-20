@@ -2,7 +2,6 @@
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
 import React from 'react';
-import { SortableHandle } from 'react-sortable-hoc';
 
 import { THEME_DARK } from './configs';
 import withTheme from './hocs/with-theme';
@@ -25,39 +24,29 @@ const getButtonClassName = (props) =>
     [classes['track-control-button-vertical']]: props.isVertical,
   });
 
-let oldProps = null;
-let DragHandle = null;
-
 function TrackControl(props) {
-  // Avoid constant recreating that button when the props didn't change.
-  // Damn React could be a little smarter here...
-  if (
-    !props ||
-    !oldProps ||
-    Object.keys(props).some((key) => oldProps[key] !== props[key])
-  ) {
-    oldProps = props;
-    DragHandle = SortableHandle(() => (
-      <svg
-        className={getButtonClassName(props)}
-        style={{
-          height: '20px',
-          width: '20px',
-          ...props.imgStyleMove,
-        }}
-      >
-        <title>Move track</title>
-        <use xlinkHref="#move" />
-      </svg>
-    ));
-  }
+  const { dragHandleProps } = props;
 
   let imgConfig;
   let imgClose;
 
   return (
     <div className={getClassName(props)}>
-      {props.isMoveable && <DragHandle />}
+      {props.isMoveable && (
+        <svg
+          className={getButtonClassName(props)}
+          draggable={false}
+          style={{
+            height: '20px',
+            width: '20px',
+            ...props.imgStyleMove,
+          }}
+          {...dragHandleProps}
+        >
+          <title>Move track</title>
+          <use xlinkHref="#move" />
+        </svg>
+      )}
 
       {/* Show collapse button */}
       {props.expandCollapseAvailable && !props.isCollapsed && (
