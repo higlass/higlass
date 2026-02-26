@@ -491,7 +491,7 @@ class HiGlassComponent extends React.Component {
 
     const thisElement = this.topDivRef.current;
 
-    if (thisElement && document.body.contains(thisElement)) {
+    if (thisElement && thisElement.getRootNode().contains(thisElement)) {
       callback();
     } else {
       requestAnimationFrame(() => this.waitForDOMAttachment(callback));
