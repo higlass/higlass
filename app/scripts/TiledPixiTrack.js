@@ -101,7 +101,7 @@ export function getValueScale(
  * @typedef TiledPixiTrackContextBase
  * @property {DataFetcher} dataFetcher
  * @property {t.DataConfig} dataConfig
- * @property {function} animate A function to redraw this track. Typically called when an
+ * @property {Function} animate A function to redraw this track. Typically called when an
  *  asynchronous event occurs (i.e. tiles loaded)
  * @property {() => void} onValueScaleChanged The range of values has changed so we need to inform
  *  the higher ups that the value scale has changed. Only occurs on tracks with ``dense`` data.
@@ -174,7 +174,7 @@ class TiledPixiTrack extends PixiTrack {
     this.fetchedTiles = {};
 
     // the graphics that have already been drawn for this track
-    /** @type {Object.<string, import('pixi.js').DisplayObject>} */
+    /** @type {Record<string, import('pixi.js').DisplayObject>} */
     this.tileGraphics = {};
 
     /** @type {number} */
@@ -359,7 +359,7 @@ class TiledPixiTrack extends PixiTrack {
    * event is ``dataChanged``.
    *
    * @param {string} event The event to listen for
-   * @param {function} callback The callback to call when the event occurs. The
+   * @param {Function} callback The callback to call when the event occurs. The
    *  parameters for the event depend on the event called.
    *
    * @example
@@ -378,7 +378,7 @@ class TiledPixiTrack extends PixiTrack {
 
   /**
    * @param {string} event The event to listen for
-   * @param {function} callback The callback to call when the event occurs. The
+   * @param {Function} callback The callback to call when the event occurs. The
    *  parameters for the event depend on the event called.
    */
   off(event, callback) {

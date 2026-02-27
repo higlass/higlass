@@ -15,8 +15,16 @@
     },
     "./dist/*": "./dist/*"
   },
-  "files": ["app", "dist"],
-  "keywords": ["hi-c", "genomics", "matrix", "tracks"],
+  "files": [
+    "app",
+    "dist"
+  ],
+  "keywords": [
+    "hi-c",
+    "genomics",
+    "matrix",
+    "tracks"
+  ],
   "scripts": {
     "start": "vite",
     "build": "tsc -p tsconfig.emit.json && node ./scripts/build.mjs",
@@ -117,7 +125,7 @@
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "sass": "^1.89.2",
-    "typescript": "^5.7.3",
+    "typescript": "^5.9.3",
     "vite": "^7.3.1",
     "vite-plugin-babel": "^1.5.1",
     "vitest": "^3.0.5"

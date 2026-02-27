@@ -78,7 +78,7 @@ async function build() {
         name: 'hglib',
         formats: ['umd', 'es'],
       },
-      rolldownOptions: {
+      rollupOptions: {
         external: ['react', 'react-dom', 'pixi.js'],
         output: {
           globals: {
