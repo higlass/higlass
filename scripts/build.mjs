@@ -22,7 +22,6 @@ import * as url from 'node:url';
 import * as esbuild from 'esbuild';
 import * as vite from 'vite';
 import babel from 'vite-plugin-babel';
-import injectCssByJs from 'vite-plugin-css-injected-by-js';
 
 import * as PIXI from 'pixi.js';
 import * as React from 'react';
@@ -104,7 +103,6 @@ async function build() {
           generatorOpts: { importAttributesKeyword: 'with' },
         },
       }),
-      injectCssByJs(),
     ],
   });
 
@@ -192,8 +190,257 @@ async function main({ outDir }) {
     <script type="module">
       import * as hglib from "./higlass.mjs";
       globalThis.hglib = hglib;
+      console.log("CSS length:", hglib.CSS?.length);
     </script>
   `),
+    ),
+    // Shadow DOM ESM demo (same viewConfig/importmap as esm.html)
+    fs.promises.writeFile(
+      path.resolve(outDir, 'shadow-dom.html'),
+      `\
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>HiGlass — Shadow DOM</title>
+    <script type="importmap">
+      {
+        "imports": {
+          "react": "https://esm.sh/react@${REACT_VERSION}",
+          "react-dom": "https://esm.sh/react-dom@${REACT_VERSION}",
+          "pixi.js": "https://esm.sh/pixi.js@${PIXI_VERSION}"
+        }
+      }
+    </script>
+    <style type="text/css">
+      #demo {
+        position: absolute;
+        left: 1rem;
+        top: 1rem;
+        bottom: 1rem;
+        right: 1rem;
+        overflow: hidden;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="demo"></div>
+  </body>
+
+  <script type="module">
+    import { viewer, CSS } from "./higlass.mjs";
+
+    // Set up shadow root on #demo
+    const demo = document.getElementById('demo');
+    const shadow = demo.attachShadow({ mode: 'open' });
+
+    const style = document.createElement('style');
+    style.textContent = CSS;
+    shadow.appendChild(style);
+
+    const container = document.createElement('div');
+    container.style.cssText = 'width:800px;height:600px';
+    shadow.appendChild(container);
+
+    const viewConfig = {
+      zoomFixed: false,
+      views: [
+        {
+          layout: { w: 12, h: 7, x: 0, y: 0 },
+          uid: 'aa',
+          initialYDomain: [2534823997.9776945, 2547598956.834603],
+          initialXDomain: [2521015726.4619913, 2558682921.8435397],
+          tracks: {
+            left: [],
+            top: [
+              {
+                uid: 'genes',
+                tilesetUid: 'OHJakQICQD6gTD7skx4EWA',
+                server: 'http://higlass.io/api/v1',
+                type: 'horizontal-gene-annotations',
+                height: 48,
+                options: {
+                  labelColor: 'black',
+                  plusStrandColor: 'black',
+                  labelPosition: 'hidden',
+                  minusStrandColor: 'black',
+                  fontSize: 11,
+                  trackBorderWidth: 0,
+                  trackBorderColor: 'black',
+                  showMousePosition: true,
+                  mousePositionColor: '#000000',
+                  geneAnnotationHeight: 10,
+                  geneLabelPosition: 'outside',
+                  geneStrandSpacing: 4
+                },
+              },
+              {
+                uid: 'line1',
+                tilesetUid: 'PjIJKXGbSNCalUZO21e_HQ',
+                height: 20,
+                server: 'http://higlass.io/api/v1',
+                type: 'horizontal-line',
+                options: {
+                  valueScaling: 'linear',
+                  lineStrokeWidth: 2,
+                  lineStrokeColor: '#4a35fc',
+                  labelPosition: 'topLeft',
+                  labelColor: 'black',
+                  axisPositionHorizontal: 'right',
+                  trackBorderWidth: 0,
+                  trackBorderColor: 'black',
+                  labelTextOpacity: 0.4,
+                  showMousePosition: true,
+                  mousePositionColor: '#000000',
+                  showTooltip: false
+                }
+              },
+              {
+                uid: 'line2',
+                tilesetUid: 'PdAaSdibTLK34hCw7ubqKA',
+                height: 20,
+                server: 'http://higlass.io/api/v1',
+                type: 'horizontal-line',
+                options: {
+                  valueScaling: 'linear',
+                  lineStrokeWidth: 2,
+                  lineStrokeColor: '#d104fa',
+                  labelPosition: 'topLeft',
+                  labelColor: 'black',
+                  axisPositionHorizontal: 'right',
+                  trackBorderWidth: 0,
+                  trackBorderColor: 'black',
+                  labelTextOpacity: 0.4,
+                  showMousePosition: true,
+                  mousePositionColor: '#000000',
+                  showTooltip: false
+                },
+              },
+              {
+                uid: 'line3',
+                tilesetUid: 'e0DYtZBSTqiMLHoaimsSpg',
+                height: 20,
+                server: 'http://higlass.io/api/v1',
+                type: 'horizontal-line',
+                options: {
+                  valueScaling: 'linear',
+                  lineStrokeWidth: 2,
+                  lineStrokeColor: '#ff0000',
+                  labelPosition: 'topLeft',
+                  labelColor: 'black',
+                  axisPositionHorizontal: 'right',
+                  trackBorderWidth: 0,
+                  trackBorderColor: 'black',
+                  labelTextOpacity: 0.4,
+                  showMousePosition: true,
+                  mousePositionColor: '#000000',
+                  showTooltip: false
+                },
+              },
+              {
+                uid: 'line4',
+                tilesetUid: 'cE0nGyd0Q_yVYSyBUe89Ww',
+                height: 20,
+                server: 'http://higlass.io/api/v1',
+                type: 'horizontal-line',
+                options: {
+                  valueScaling: 'linear',
+                  lineStrokeWidth: 2,
+                  lineStrokeColor: 'orange',
+                  labelPosition: 'topLeft',
+                  labelColor: 'black',
+                  axisPositionHorizontal: 'right',
+                  trackBorderWidth: 0,
+                  trackBorderColor: 'black',
+                  labelTextOpacity: 0.4,
+                  showMousePosition: true,
+                  mousePositionColor: '#000000',
+                  showTooltip: false
+                },
+              },
+              {
+                uid: 'chroms',
+                height: 18,
+                chromInfoPath: '//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv',
+                type: 'horizontal-chromosome-labels',
+                options: {
+                  color: '#777777',
+                  stroke: '#FFFFFF',
+                  fontSize: 11,
+                  fontIsLeftAligned: true,
+                  showMousePosition: true,
+                  mousePositionColor: '#000000'
+                },
+              }
+            ],
+            right: [],
+            center: [
+              {
+                uid: 'center',
+                type: 'combined',
+                contents: [
+                  {
+                    server: 'http://higlass.io/api/v1',
+                    tilesetUid: 'dVBREuC2SvO01uXYMUh2aQ',
+                    type: 'heatmap',
+                    uid: 'Yqetzqw6Qfy-hREAJhAXEA',
+                    options: {
+                      backgroundColor: '#eeeeee',
+                      labelPosition: 'topLeft',
+                      labelTextOpacity: 0.4,
+                      colorRange: [
+                        'white',
+                        'rgba(245,166,35,1.0)',
+                        'rgba(208,2,27,1.0)',
+                        'black'
+                      ],
+                      maxZoom: null,
+                      colorbarPosition: 'topRight',
+                      trackBorderWidth: 0,
+                      trackBorderColor: 'black',
+                      heatmapValueScaling: 'log',
+                      showMousePosition: true,
+                      mousePositionColor: '#000000',
+                      showTooltip: true,
+                      scaleStartPercent: '0.00000',
+                      scaleEndPercent: '1.00000',
+                      showMousePositionGlobally: true,
+                    },
+                  }
+                ],
+              }
+            ],
+            bottom: [],
+            whole: [],
+            gallery: []
+          },
+          chromInfoPath: '//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv',
+          genomePositionSearchBox: {
+            visible: true,
+            chromInfoServer: 'http://higlass.io/api/v1',
+            chromInfoId: 'hg19',
+            autocompleteServer: 'http://higlass.io/api/v1',
+            autocompleteId: 'OHJakQICQD6gTD7skx4EWA'
+          }
+        }
+      ],
+      editable: true,
+      viewEditable: true,
+      tracksEditable: true,
+      exportViewUrl: '/api/v1/viewconfs',
+      trackSourceServers: ['http://higlass.io/api/v1'],
+    };
+
+    const hgApi = window.hgApi = await viewer(
+      container,
+      viewConfig,
+      { bounded: true },
+    );
+  </script>
+</html>
+`,
     ),
     // for the types output
     fs.promises.copyFile(

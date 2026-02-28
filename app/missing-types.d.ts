@@ -22,3 +22,9 @@ declare module 'pub-sub-es' {
   export function createPubSub(): PubSub;
   export const globalPubSub: PubSub;
 }
+
+// see ../scripts/virtual-stylesheet-plugin.mjs
+declare module 'virtual:stylesheet' {
+  const styles: string;
+  export default styles;
+}
