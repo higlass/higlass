@@ -1,5 +1,9 @@
 # Release notes
 
+## 2.2.2
+
+- Shadow DOM support
+
 ## 2.2.1
 
 - Add option to reverse the axis on the left axis track
