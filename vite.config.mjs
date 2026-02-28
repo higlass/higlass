@@ -1,8 +1,8 @@
 import * as path from 'node:path';
 import react from '@vitejs/plugin-react';
 import { version } from './package.json';
-import { commands } from './scripts/vitest-browser-commands.mjs';
 import virtualStylesheetPlugin from './scripts/virtual-stylesheet-plugin.mjs';
+import { commands } from './scripts/vitest-browser-commands.mjs';
 
 /** @type {import("vite").UserConfigFnObject} */
 export default ({ mode }) => ({

@@ -188,7 +188,7 @@ export class TiledPlot extends React.Component {
 
     const thisElement = this.divTiledPlot;
 
-    if (thisElement && thisElement.getRootNode().contains(thisElement)) {
+    if (thisElement?.getRootNode().contains(thisElement)) {
       callback();
     } else {
       requestAnimationFrame(() => this.waitForDOMAttachment(callback));
