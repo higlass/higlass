@@ -7,7 +7,10 @@ import HorizontalGeneAnnotationsTrack from './HorizontalGeneAnnotationsTrack';
 import SVGTrack from './SVGTrack';
 import TiledPixiTrack from './TiledPixiTrack';
 
-import CSS from 'virtual:stylesheet';
+import _CSS from 'virtual:stylesheet';
+
+/** @type {string} */
+const CSS = _CSS;
 
 // Auto-inject styles into document.head for backwards compatibility.
 // Uses a data attribute to prevent duplicate injection.

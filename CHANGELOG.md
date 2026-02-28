@@ -1,5 +1,9 @@
 # Release notes
 
+## 2.2.3
+
+- Fix CSS type export for resolution by esm.sh
+
 ## 2.2.2
 
 - Shadow DOM support
