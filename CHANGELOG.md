@@ -4,6 +4,14 @@
 
 - Added support for React 19.
 
+## 2.2.3
+
+- Fix CSS type export for resolution by esm.sh
+
+## 2.2.2
+
+- Shadow DOM support
+
 ## 2.2.1
 
 - Add option to reverse the axis on the left axis track

@@ -1,6 +1,6 @@
 /**
  * Convert a 1D numerical array into a canvas image
- * @param {Uint8ClampedArray} pixData - 1D data array
+ * @param {Uint8ClampedArray<ArrayBuffer>} pixData - 1D data array
  * @param {number} w - Width
  * @param {number} h - Height
  * @return {object} Canvas object

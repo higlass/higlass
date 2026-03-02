@@ -11,6 +11,26 @@ import HorizontalGeneAnnotationsTrack from './HorizontalGeneAnnotationsTrack';
 import SVGTrack from './SVGTrack';
 import TiledPixiTrack from './TiledPixiTrack';
 
+import _CSS from 'virtual:stylesheet';
+
+/** @type {string} */
+const CSS = _CSS;
+
+// Auto-inject styles into document.head for backwards compatibility.
+// Uses a data attribute to prevent duplicate injection.
+if (
+  CSS &&
+  typeof document !== 'undefined' &&
+  !document.querySelector('[data-higlass-styles]')
+) {
+  const style = document.createElement('style');
+  style.setAttribute('data-higlass-styles', '');
+  style.textContent = CSS;
+  document.head.appendChild(style);
+}
+
+export { CSS };
+
 export { default as ChromosomeInfo } from './ChromosomeInfo';
 export { default as HiGlassComponent } from './HiGlassComponent';
 export {
