@@ -9,41 +9,42 @@ import withModal from './hocs/with-modal';
 
 import classes from '../styles/Modal.module.scss';
 
-function Modal(props) {
+function Modal({
+  closeButton = true,
+  hide = false,
+  maxHeight = false,
+  modal,
+  onClose,
+  children,
+}) {
   const handleClose = () => {
-    props.modal.close();
-    if (props.onClose) props.onClose();
+    modal.close();
+    if (onClose) onClose();
   };
 
   return (
     <div
       className={clsx(classes['modal-background'], {
-        [classes['modal-hide']]: props.hide,
+        [classes['modal-hide']]: hide,
       })}
     >
       <div className={classes['modal-wrap']}>
         <div
           className={clsx(classes['modal-window'], {
-            [classes['modal-window-max-height']]: props.maxHeight,
+            [classes['modal-window-max-height']]: maxHeight,
           })}
         >
-          {props.closeButton && (
+          {closeButton && (
             <Button onClick={handleClose}>
               <Cross />
             </Button>
           )}
-          <div className={classes['modal-content']}>{props.children}</div>
+          <div className={classes['modal-content']}>{children}</div>
         </div>
       </div>
     </div>
   );
 }
-
-Modal.defaultProps = {
-  closeButton: true,
-  hide: false,
-  maxHeight: false,
-};
 
 Modal.propTypes = {
   children: PropTypes.element.isRequired,

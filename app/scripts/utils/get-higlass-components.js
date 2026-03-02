@@ -24,7 +24,7 @@ export const getTrackObjectFromHGC = (hgc, viewUid, trackUid) => {
     newTrackUid = trackUid;
   }
 
-  return hgc.tiledPlots[newViewUid].trackRenderer?.getTrackObject(newTrackUid);
+  return hgc.tiledPlots[newViewUid]?.trackRenderer?.getTrackObject(newTrackUid);
 };
 
 /**
@@ -33,7 +33,7 @@ export const getTrackObjectFromHGC = (hgc, viewUid, trackUid) => {
  * @returns {TrackRenderer | null}
  */
 export const getTrackRenderer = (hgc, viewUid) =>
-  hgc.tiledPlots[viewUid].trackRenderer;
+  hgc.tiledPlots[viewUid]?.trackRenderer;
 
 /**
  * @param {HiGlassComponent} hgc

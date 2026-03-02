@@ -1,8 +1,6 @@
 // @ts-nocheck
 import PropTypes from 'prop-types';
 import React from 'react';
-import ReactDOM from 'react-dom';
-import { SortableHandle } from 'react-sortable-hoc';
 
 class TrackArea extends React.Component {
   constructor(props) {
@@ -36,24 +34,23 @@ class TrackArea extends React.Component {
   }
 
   getControls() {
-    let Handle = null;
+    const { dragHandleProps } = this.props;
 
-    if (this.moveable) {
-      Handle = SortableHandle(() => (
-        <svg
-          className="no-zoom"
-          height="10px"
-          onClick={() => {}}
-          style={this.getMoveImgStyle()}
-          width="10px"
-        >
-          <title>Move</title>
-          <use xlinkHref="#move" />
-        </svg>
-      ));
-    } else {
-      Handle = SortableHandle(() => <div />);
-    }
+    const handle = this.moveable ? (
+      <svg
+        className="no-zoom"
+        height="10px"
+        onClick={() => {}}
+        style={this.getMoveImgStyle()}
+        width="10px"
+        {...dragHandleProps}
+      >
+        <title>Move</title>
+        <use xlinkHref="#move" />
+      </svg>
+    ) : (
+      <div />
+    );
 
     return (
       <div
@@ -69,7 +66,7 @@ class TrackArea extends React.Component {
           border: '1px solid #dddddd',
         }}
       >
-        <Handle />
+        {handle}
 
         <svg
           ref={(c) => {
@@ -78,8 +75,7 @@ class TrackArea extends React.Component {
           className="no-zoom"
           height="10px"
           onClick={() => {
-            const imgDom = ReactDOM.findDOMNode(this.imgConfig);
-            const bbox = imgDom.getBoundingClientRect();
+            const bbox = this.imgConfig.getBoundingClientRect();
             this.props.onConfigTrackMenuOpened(this.props.uid, bbox);
           }}
           style={this.getSettingsImgStyle()}
@@ -110,8 +106,7 @@ class TrackArea extends React.Component {
           className="no-zoom"
           height="10px"
           onClick={() => {
-            const imgDom = ReactDOM.findDOMNode(this.imgClose);
-            const bbox = imgDom.getBoundingClientRect();
+            const bbox = this.imgClose.getBoundingClientRect();
             this.props.onCloseTrackMenuOpened(this.props.uid, bbox);
           }}
           style={this.getCloseImgStyle()}

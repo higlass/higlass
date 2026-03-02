@@ -16,6 +16,7 @@ class VerticalTrack extends MoveableTrack {
         // for use. Only available in horizontal and vertical tracks and not
         // center.
         expandCollapseAvailable={true}
+        dragHandleProps={this.props.dragHandleProps}
         imgStyleAdd={STYLES}
         imgStyleClose={STYLES}
         imgStyleMove={STYLES}

@@ -9,36 +9,35 @@ import classes from '../styles/ContextMenu.module.scss';
  * @typedef ContextMenuItemProps
  * @prop {string} [className]
  * @prop {(evt: React.MouseEvent) => void} onClick
- * @prop {(evt: React.MouseEvent) => void} onMouseEnter
- * @prop {(evt: React.MouseEvent) => void} onMouseLeave
+ * @prop {(evt: React.MouseEvent) => void} [onMouseEnter]
+ * @prop {(evt: React.MouseEvent) => void} [onMouseLeave]
  */
 
 /**
  * @param {React.PropsWithChildren<ContextMenuItemProps>} props
  */
-function ContextMenuItem(props) {
+function ContextMenuItem({
+  onMouseEnter = () => undefined,
+  onMouseLeave = () => undefined,
+  onClick,
+  className,
+  children,
+}) {
   return (
     <div
-      data-menu-item-for={
-        typeof props.children === 'string' ? props.children : null
-      }
-      className={clsx(classes['context-menu-item'], props.className)}
-      onClick={(e) => props.onClick(e)}
-      onMouseEnter={(e) => props.onMouseEnter(e)}
-      onMouseLeave={(e) => props.onMouseLeave(e)}
+      data-menu-item-for={typeof children === 'string' ? children : null}
+      className={clsx(classes['context-menu-item'], className)}
+      onClick={(e) => onClick(e)}
+      onMouseEnter={(e) => onMouseEnter(e)}
+      onMouseLeave={(e) => onMouseLeave(e)}
       // biome-ignore lint/a11y/useSemanticElements:
       role="button"
       tabIndex={0}
     >
-      <span className={classes['context-menu-span']}>{props.children}</span>
+      <span className={classes['context-menu-span']}>{children}</span>
     </div>
   );
 }
-
-ContextMenuItem.defaultProps = {
-  onMouseEnter: () => undefined,
-  onMouseLeave: () => undefined,
-};
 
 ContextMenuItem.propTypes = {
   children: PropTypes.node.isRequired,

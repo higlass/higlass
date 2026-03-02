@@ -9,6 +9,7 @@ class PopupMenu extends React.Component {
   constructor(props) {
     super(props);
 
+    this.popup = null;
     this.clickHandlerBound = this.clickHandler.bind(this);
     this.contextMenuHandlerBound = this.contextMenuHandler.bind(this);
     this.resizeHandlerBound = this.resizeHandler.bind(this);
@@ -30,11 +31,8 @@ class PopupMenu extends React.Component {
     );
     window.addEventListener('resize', this.resizeHandlerBound, true);
 
-    this._renderLayer();
-  }
-
-  componentDidUpdate() {
-    this._renderLayer();
+    // Re-render now that this.popup is ready for the portal
+    this.forceUpdate();
   }
 
   componentWillUnmount() {
@@ -45,12 +43,8 @@ class PopupMenu extends React.Component {
       true,
     );
     window.removeEventListener('resize', this.resizeHandlerBound, true);
-    ReactDOM.unmountComponentAtNode(this.popup);
+    // React automatically cleans up the portal contents
     document.body.removeChild(this.popup);
-  }
-
-  _renderLayer() {
-    ReactDOM.render(this.props.children, this.popup);
   }
 
   clickHandler(event) {
@@ -70,8 +64,8 @@ class PopupMenu extends React.Component {
   }
 
   render() {
-    // Render a placeholder
-    return <div />;
+    if (!this.popup) return null;
+    return ReactDOM.createPortal(this.props.children, this.popup);
   }
 }
 

@@ -1,5 +1,9 @@
 # Release notes
 
+## 2.3.0
+
+- Added support for React 19.
+
 ## 2.2.3
 
 - Fix CSS type export for resolution by esm.sh
