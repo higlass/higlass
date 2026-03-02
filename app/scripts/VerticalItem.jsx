@@ -7,8 +7,14 @@ import React from 'react';
 import VerticalTrack from './VerticalTrack';
 
 function VerticalItem(props) {
-  const { attributes, listeners, setNodeRef, transform, transition, isDragging } =
-    useSortable({ id: props.uid });
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: props.uid });
 
   const adjustedTransform = transform ? { ...transform, y: 0 } : transform;
 

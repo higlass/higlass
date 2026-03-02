@@ -9,7 +9,6 @@ import createPubSub, { globalPubSub } from 'pub-sub-es';
 import React from 'react';
 import ReactGridLayout, { getCompactor } from 'react-grid-layout';
 import slugid from 'slugid';
-import parse from 'url-parse';
 import vkbeautify from 'vkbeautify';
 
 import ChromosomeInfo from './ChromosomeInfo';

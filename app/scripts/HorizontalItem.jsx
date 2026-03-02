@@ -7,8 +7,14 @@ import React from 'react';
 import HorizontalTrack from './HorizontalTrack';
 
 function HorizontalItem(props) {
-  const { attributes, listeners, setNodeRef, transform, transition, isDragging } =
-    useSortable({ id: props.uid });
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: props.uid });
 
   const adjustedTransform = transform ? { ...transform, x: 0 } : transform;
 
