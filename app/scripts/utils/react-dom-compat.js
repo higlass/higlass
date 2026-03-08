@@ -33,7 +33,7 @@ const _clientModuleId = 'react-dom' + '/client';
 /** @type {Promise<void>} */
 const _clientPromise = _resolved
   ? Promise.resolve()
-  : import(/* @vite-ignore */ _clientModuleId)
+  : import(/* @vite-ignore */ /* webpackIgnore: true */ _clientModuleId)
       .then((mod) => {
         if (typeof mod.createRoot === 'function') {
           _createRoot = mod.createRoot;
