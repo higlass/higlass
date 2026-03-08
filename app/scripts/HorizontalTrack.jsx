@@ -17,6 +17,7 @@ class HorizontalTrack extends MoveableTrack {
         // center.
         expandCollapseAvailable={true}
         configMenuVisible={this.props.item.configMenuVisible}
+        dragHandleProps={this.props.dragHandleProps}
         imgStyleAdd={STYLES}
         imgStyleClose={STYLES}
         imgStyleMove={STYLES}

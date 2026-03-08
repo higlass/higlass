@@ -1,9 +1,9 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
 
 import { mount } from 'enzyme';
 
 import { requestsInFlight } from '../services';
+import { unmountFromContainer } from '../utils/react-dom-compat';
 
 import { getTrackObjectFromHGC, getTrackRenderer } from '../utils';
 
@@ -323,7 +323,7 @@ export const waitForComponentReady = async (div) => {
 export const removeHGComponent = (div) => {
   if (!div) return;
 
-  ReactDOM.unmountComponentAtNode(div);
+  unmountFromContainer(div);
   document.body.removeChild(div);
 };
 

@@ -5,7 +5,6 @@ import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
 import Enzyme from 'enzyme';
 
 import { select } from 'd3-selection';
-import ReactDOM from 'react-dom';
 
 // Utils
 import {
@@ -90,7 +89,7 @@ describe('Horizontal multivecs', () => {
 
     hgc.instance().setState({ views });
 
-    const selection = select(ReactDOM.findDOMNode(hgc.instance())).selectAll(
+    const selection = select(hgc.instance().topDivRef.current).selectAll(
       '.selection',
     );
 

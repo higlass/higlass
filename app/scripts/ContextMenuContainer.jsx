@@ -2,7 +2,6 @@
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
 import React from 'react';
-import ReactDOM from 'react-dom';
 
 import { THEME_DARK } from './configs';
 
@@ -101,8 +100,7 @@ class ContextMenuContainer extends React.Component {
     if (this.adjusted) return;
 
     this.adjusted = true;
-    this.divDom = ReactDOM.findDOMNode(this.div);
-    const bbox = this.divDom.getBoundingClientRect();
+    const bbox = this.div.getBoundingClientRect();
 
     const parentBbox = this.props.parentBbox
       ? this.props.parentBbox
