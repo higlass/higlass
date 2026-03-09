@@ -1316,8 +1316,7 @@ class HiGlassComponent extends React.Component {
           ) > epsilon;
 
         const hasBrushMoved =
-          sourceTrack &&
-          sourceTrack.options &&
+          sourceTrack?.options &&
           lockedTrack.options &&
           typeof sourceTrack.options.scaleStartPercent !== 'undefined' &&
           typeof sourceTrack.options.scaleEndPercent !== 'undefined' &&
