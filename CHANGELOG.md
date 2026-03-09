@@ -3,6 +3,7 @@
 ## 2.3.0
 
 - Added support for React 19.
+- Fixed bug where using a dataset as a divisor for a value scale locked track fails
 
 ## 2.2.3
 
