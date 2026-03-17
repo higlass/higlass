@@ -5203,12 +5203,14 @@ class HiGlassComponent extends React.Component {
             }}
             // Custom props
             autocompleteId={
-              annotationTracks.length >= 1 && uniqueAnnotationTilesets.size === 1
+              annotationTracks.length >= 1 &&
+              uniqueAnnotationTilesets.size === 1
                 ? annotationTracks[0].tilesetUid
                 : null
             }
             autocompleteServer={
-              annotationTracks.length >= 1 && uniqueAnnotationTilesets.size === 1
+              annotationTracks.length >= 1 &&
+              uniqueAnnotationTilesets.size === 1
                 ? annotationTracks[0].server
                 : null
             }
