@@ -5187,6 +5187,12 @@ class HiGlassComponent extends React.Component {
             x.type === 'vertical-chromosome-labels' ||
             x.type === 'chromosome-labels',
         );
+        const uniqueAnnotationTilesets = new Set(
+          annotationTracks.map((x) => x.tilesetUid),
+        );
+        const uniqueChromSizesTilesets = new Set(
+          chromSizesTracks.map((x) => x.tilesetUid),
+        );
 
         const getGenomePositionSearchBox = (isFocused, onFocus) => (
           <GenomePositionSearchBox
@@ -5197,18 +5203,24 @@ class HiGlassComponent extends React.Component {
             }}
             // Custom props
             autocompleteId={
-              annotationTracks.length === 1
+              annotationTracks.length >= 1 && uniqueAnnotationTilesets.size === 1
                 ? annotationTracks[0].tilesetUid
                 : null
             }
             autocompleteServer={
-              annotationTracks.length === 1 ? annotationTracks[0].server : null
+              annotationTracks.length >= 1 && uniqueAnnotationTilesets.size === 1
+                ? annotationTracks[0].server
+                : null
             }
             chromInfoId={
-              chromSizesTracks.length ? chromSizesTracks[0].tilesetUid : null
+              (chromSizesTracks.length && chromSizesTracks[0].tilesetUid) ||
+              view.genomePositionSearchBox?.chromInfoId ||
+              null
             }
             chromInfoServer={
-              chromSizesTracks.length ? chromSizesTracks[0].server : null
+              (chromSizesTracks.length && chromSizesTracks[0].server) ||
+              view.genomePositionSearchBox?.chromInfoServer ||
+              null
             }
             isFocused={isFocused}
             // the chromInfoId is either specified in the viewconfig or guessed based on
@@ -5229,8 +5241,10 @@ class HiGlassComponent extends React.Component {
               (chromSizesTracks.length === 0 &&
                 'no chromosome track present') ||
               (chromSizesTracks.length >= 2 &&
+                uniqueChromSizesTilesets.size > 1 &&
                 'multiple chromosome tracks present') ||
               (annotationTracks.length >= 2 &&
+                uniqueAnnotationTilesets.size > 1 &&
                 'multiple annotation tracks present')
             }
           />
