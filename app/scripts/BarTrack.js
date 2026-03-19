@@ -90,6 +90,10 @@ class BarTrack extends HorizontalLine1DPixiTrack {
     }
 
     const { graphics } = tile;
+    const numBins =
+      this.tilesetInfo.tile_size ||
+      this.tilesetInfo.bins_per_dimension ||
+      tile.tileData.dense.length;
 
     // Reset svg data to avoid overplotting
     tile.svgData = undefined;
@@ -97,7 +101,7 @@ class BarTrack extends HorizontalLine1DPixiTrack {
     const { tileX, tileWidth } = this.getTilePosAndDimensions(
       tile.tileData.zoomLevel,
       tile.tileData.tilePos,
-      this.tilesetInfo.bins_per_dimension || this.tilesetInfo.tile_size,
+      numBins,
     );
     const tileValues = tile.tileData.dense;
 
@@ -142,10 +146,7 @@ class BarTrack extends HorizontalLine1DPixiTrack {
     // this scale should go from an index in the data array to
     // a position in the genome coordinates
     const tileXScale = scaleLinear()
-      .domain([
-        0,
-        this.tilesetInfo.tile_size || this.tilesetInfo.bins_per_dimension,
-      ])
+      .domain([0, numBins])
       .range([tileX, tileX + tileWidth]);
 
     const strokeWidth = 0;
