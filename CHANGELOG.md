@@ -1,5 +1,9 @@
 # Release notes
 
+## 2.3.2
+
+- Fix horizontal cross sections on tilesets with resolutions
+
 ## 2.3.1
 
 - Fix two identical gene annotation tracks showing "multiple annotation tracks"

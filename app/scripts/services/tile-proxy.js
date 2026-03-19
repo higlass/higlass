@@ -483,7 +483,11 @@ export function calculateTileAndPosInTile(
     : 256;
 
   if (!isLegacyTilesetInfo(tilesetInfo)) {
-    tileWidth = tilesetInfo.resolutions[zoomLevel] * pixelsPerTile;
+    const sortedResolutions = tilesetInfo.resolutions
+      .map((x) => +x)
+      .sort((a, b) => b - a);
+
+    tileWidth = sortedResolutions[zoomLevel] * pixelsPerTile;
   } else {
     tileWidth = maxDim / 2 ** zoomLevel;
   }
