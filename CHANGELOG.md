@@ -1,5 +1,14 @@
 # Release notes
 
+## 2.3.2
+
+- Fix horizontal cross sections on tilesets with resolutions
+
+## 2.3.1
+
+- Fix two identical gene annotation tracks showing "multiple annotation tracks"
+- Fix chromsizes present yet showing "no chromsizes present"
+
 ## 2.3.0
 
 - Added support for React 19.

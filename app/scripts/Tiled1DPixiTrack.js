@@ -212,13 +212,17 @@ class Tiled1DPixiTrack extends TiledPixiTrack {
     const { tileX, tileWidth } = this.getTilePosAndDimensions(
       tile.tileData.zoomLevel,
       tile.tileData.tilePos,
-      this.tilesetInfo.bins_per_dimension || this.tilesetInfo.tile_size,
+      this.tilesetInfo.bins_per_dimension ||
+        this.tilesetInfo.tile_size ||
+        tile.tileData.dense.length,
     );
 
     const tileXScale = scaleLinear()
       .domain([
         0,
-        this.tilesetInfo.tile_size || this.tilesetInfo.bins_per_dimension,
+        this.tilesetInfo.tile_size ||
+          this.tilesetInfo.bins_per_dimension ||
+          tile.tileData.dense.length,
       ])
       .range([tileX, tileX + tileWidth]);
 
