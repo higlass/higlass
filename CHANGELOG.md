@@ -1,5 +1,9 @@
 # Release notes
 
+## 2.3.3
+- Externalize JSX runtime to ensure compatibility
+
+
 ## 2.3.2
 
 - Fix horizontal cross sections on tilesets with resolutions
