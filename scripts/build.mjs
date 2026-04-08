@@ -79,7 +79,14 @@ async function build() {
         formats: ['umd', 'es'],
       },
       rollupOptions: {
-        external: ['react', 'react-dom', 'react-dom/client', 'react/jsx-runtime', 'react/jsx-dev-runtime', 'pixi.js'],
+        external: [
+          'react',
+          'react-dom',
+          'react-dom/client',
+          'react/jsx-runtime',
+          'react/jsx-dev-runtime',
+          'pixi.js',
+        ],
         output: {
           globals: {
             react: 'React',
