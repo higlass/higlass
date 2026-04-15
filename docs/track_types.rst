@@ -411,7 +411,7 @@ Chromosome Labels
 .. image:: img/chromosome-labels-thumb.png
     :align: right
 
-track-type: ``chromosome-labes``
+track-type: ``chromosome-labels``
 datatype: ``chromsizes`` or ``cooler``
 filetypes: ``chromsizes-tsv``
 
