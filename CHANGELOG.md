@@ -1,5 +1,9 @@
 # Release notes
 
+## 2.3.3
+
+- Fix value-scale zoom (`zoomedY`) not firing with a mouse wheel by checking the shift key on the current source event and falling back to `deltaX` when `deltaY` is zero
+
 ## 2.3.2
 
 - Fix horizontal cross sections on tilesets with resolutions
