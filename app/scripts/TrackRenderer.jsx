@@ -1400,7 +1400,7 @@ export class TrackRenderer extends React.Component {
     if (!isWheelEvent(event.sourceEvent)) {
       return;
     }
-    const mdy = event.sourceEvent.deltaY;
+    const mdy = event.sourceEvent.deltaY || event.sourceEvent.deltaX;
     const mdm = event.sourceEvent.deltaMode;
 
     /**
@@ -1467,7 +1467,11 @@ export class TrackRenderer extends React.Component {
     if (trackOrientation && event.sourceEvent) {
       // if somebody is holding down the shift key and is zooming over
       // a 1d track, try to apply value scale zooming
-      if (event.shiftKey || this.valueScaleZooming) {
+      if (
+        event.shiftKey ||
+        this.valueScaleZooming ||
+        event.sourceEvent?.shiftKey
+      ) {
         if (event.sourceEvent.deltaY !== undefined) {
           this.valueScaleZoom(event, trackOrientation);
           return;
