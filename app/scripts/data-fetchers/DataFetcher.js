@@ -14,6 +14,9 @@ import tts from '../utils/trim-trailing-slash';
 import * as tileProxy from '../services/tile-proxy';
 import { isResolutionsTilesetInfo } from '../utils/type-guards';
 
+/** @type {number} */
+const MAX_FETCH_TILES = 15;
+
 /** @import { PubSub } from 'pub-sub-es' */
 /** @import { TilesetInfo, AbstractDataFetcher, TileSource, DataConfig, HandleTilesetInfoFinished } from '../types' */
 /** @import { CompletedTileData, TileResponse } from '../services/worker' */
@@ -54,10 +57,13 @@ function isTuple(x) {
  */
 function createDefaultTileSource(pubSub) {
   return {
+    // @ts-expect-error - TODO: Need to resolve these types together
     async fetchTiles(request) {
-      /** @type {Record<string, Tile>} */
-      // @ts-expect-error - TODO: Need to resolve these types together
-      const tileData = await tileProxy.fetchTilesDebounced(request, pubSub);
+      const tileData = await tileProxy.fetchTilesDebounced(request, {
+        pubSub,
+        // TODO: Get this from DataConfig or HiGlass API?
+        maxTilesPerServerRequest: MAX_FETCH_TILES,
+      });
       return tileData;
     },
     fetchTilesetInfo({ server, tilesetUid }) {

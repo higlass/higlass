@@ -17,9 +17,6 @@ import { TILE_FETCH_DEBOUNCE } from '../configs/primitives';
 /** @import { Scale, TilesetInfo, TilesRequest }  from '../types' */
 /** @import { CompletedTileData, TileResponse, SelectedRowsOptions } from './worker' */
 
-/** @type {number} */
-const MAX_FETCH_TILES = 15;
-
 /** @type {string} */
 const sessionId = import.meta.env.DEV ? 'dev' : slugid.nice();
 /** @type {number} */
@@ -285,13 +282,16 @@ export function bundleRequestsByServer(requests) {
  *
  * @template {TilesRequest} T
  * @param {Array<T>} requests - The list of requests to optimize.
- * @param {{ maxSize?: number }} [options] - Configuration options.
+ * @param {{ maxTilesPerServerRequest: number }} options - Configuration options.
  */
-function* optimizeRequests(requests, { maxSize = MAX_FETCH_TILES } = {}) {
+function* optimizeRequests(requests, { maxTilesPerServerRequest }) {
   const byRequestId = bundleRequestsById(requests);
   const byServer = bundleRequestsByServer(byRequestId);
   for (const request of byServer) {
-    for (const tileIds of chunkIterable(new Set(request.tileIds), maxSize)) {
+    for (const tileIds of chunkIterable(
+      new Set(request.tileIds),
+      maxTilesPerServerRequest,
+    )) {
       yield { ...request, tileIds };
     }
   }
@@ -341,18 +341,27 @@ function indexTiles(responses) {
 /**
  * Retrieve a set of tiles from the server.
  *
- * @type {(request: TilesRequest, pubSub: PubSub) => Promise<Record<string, TileData>>}
+ * @param {TilesRequest} request
+ * @param {Object} options
+ * @param {PubSub} options.pubSub
+ * @param {number} [options.maxTilesPerServerRequest]
+ * @returns {Promise<Record<string, TileData>>}
  */
 export const fetchTilesDebounced = createBatchedExecutor({
   /**
    * Fetch and process a batch of tile requests.
    *
    * @param {Array<WithResolvers<TilesRequest, Record<string, TileData>>>} requests
-   * @param {PubSub} pubSub
+   * @param {Object} options
+   * @param {PubSub} options.pubSub
+   * @param {number} options.maxTilesPerServerRequest
    */
-  processBatch: async (requests, pubSub) => {
+  processBatch: async (requests, { pubSub, maxTilesPerServerRequest }) => {
     const promises = Array.from(
-      optimizeRequests(requests.map((r) => r.value)),
+      optimizeRequests(
+        requests.map((r) => r.value),
+        { maxTilesPerServerRequest },
+      ),
       (request) => workerFetchTiles(request, { authHeader, sessionId, pubSub }),
     );
     const index = indexTiles(await Promise.all(promises));
