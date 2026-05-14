@@ -1,8 +1,12 @@
 # Release notes
 
-## 2.3.3
-- Externalize JSX runtime to ensure compatibility
+## 2.3.4
 
+- Externalize JSX runtime to ensure compatibility with React 19
+
+## 2.3.3
+
+- Fix value-scale zoom (`zoomedY`) not firing with a mouse wheel by checking the shift key on the current source event and falling back to `deltaX` when `deltaY` is zero
 
 ## 2.3.2
 
