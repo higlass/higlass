@@ -16,6 +16,9 @@ const colorToHex = (colorValue) => {
   // depending on the string input. We should probably use a different
   // the more strict `rgb` function instead?
   const c = color(colorValue);
+  if (!c) {
+    return 0x000000;
+  }
   const hex = GLOBALS.PIXI.utils.rgb2hex([
     c.r / 255.0,
     c.g / 255.0,

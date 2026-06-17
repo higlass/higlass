@@ -1,5 +1,9 @@
 # Release notes
 
+## 2.3.5
+
+- Fix crash in `BedLikeTrack` when `colorEncoding` is `itemRgb` and a BED field contains a gene name with commas, which was mistakenly interpreted as an RGB value
+
 ## 2.3.4
 
 - Externalize JSX runtime to ensure compatibility with React 19

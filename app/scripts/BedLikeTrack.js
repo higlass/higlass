@@ -708,12 +708,12 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
           let parts = [];
 
           try {
-            parts = td.fields[8].split(',');
+            parts = td.fields[8].trim().split(',');
             // eslint-disable-next-line
           } catch {}
 
-          if (parts.length === 3) {
-            const color = `rgb(${td.fields[8]})`;
+          if (parts.length === 3 && parts.every((p) => /^\d+$/.test(p.trim()))) {
+            const color = `rgb(${td.fields[8].trim()})`;
 
             fill = color;
           }
@@ -730,10 +730,10 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
           this.options.colorEncoding === 'itemRgb' &&
           td.fields[8]
         ) {
-          const parts = td.fields[8].split(',');
+          const parts = td.fields[8].trim().split(',');
 
-          if (parts.length === 3) {
-            const color = `rgb(${td.fields[8]})`;
+          if (parts.length === 3 && parts.every((p) => /^\d+$/.test(p.trim()))) {
+            const color = `rgb(${td.fields[8].trim()})`;
 
             fill = color;
           }
