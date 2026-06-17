@@ -44,7 +44,9 @@ class PopupMenu extends React.Component {
     );
     window.removeEventListener('resize', this.resizeHandlerBound, true);
     // React automatically cleans up the portal contents
-    document.body.removeChild(this.popup);
+    if (this.popup && this.popup.parentNode) {
+      this.popup.parentNode.removeChild(this.popup);
+    }
   }
 
   clickHandler(event) {
