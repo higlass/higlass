@@ -368,3 +368,49 @@ describe('bundleRequestsByServer', () => {
     expect(bundleRequestsByServer([])).toEqual([]);
   });
 });
+
+describe('calculateTilesFromResolution', () => {
+  const scale = (lo, hi) => ({ domain: () => [lo, hi] });
+
+  it('stops at max_pos when min_pos is 0', () => {
+    // 1000 positions, 256-wide tiles: tiles 0..3.
+    expect(
+      tileProxy.calculateTilesFromResolution(1, scale(-5000, 5000), 0, 1000),
+    ).to.eql([0, 1, 2, 3]);
+  });
+
+  it('stops at max_pos when min_pos is not 0', () => {
+    // A tileset placed at [10000, 11000) in a larger coordinate system has the
+    // same four tiles, however far the view extends past its end.
+    expect(
+      tileProxy.calculateTilesFromResolution(
+        1,
+        scale(-5000, 50000),
+        10000,
+        11000,
+      ),
+    ).to.eql([0, 1, 2, 3]);
+    expect(
+      tileProxy.calculateTilesFromResolution(
+        1,
+        scale(10600, 50000),
+        10000,
+        11000,
+      ),
+    ).to.eql([2, 3]);
+  });
+
+  it('has no tiles when the view is outside the tileset', () => {
+    expect(
+      tileProxy.calculateTilesFromResolution(1, scale(0, 9000), 10000, 11000),
+    ).to.eql([]);
+    expect(
+      tileProxy.calculateTilesFromResolution(
+        1,
+        scale(12000, 13000),
+        10000,
+        11000,
+      ),
+    ).to.eql([]);
+  });
+});

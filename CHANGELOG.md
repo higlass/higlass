@@ -1,5 +1,9 @@
 # Release notes
 
+## Unreleased
+
+- Fix `calculateTilesFromResolution` requesting tiles past `max_pos` for tilesets whose `min_pos` is not 0
+
 ## 2.3.5
 
 - Fix crash in `BedLikeTrack` when `colorEncoding` is `itemRgb` and a BED field contains a gene name with commas, which was mistakenly interpreted as an RGB value

@@ -591,8 +591,9 @@ export const calculateTilesFromResolution = (
     0,
     Math.floor((scale.domain()[0] - minX) / tileWidth),
   );
+  // maxX and the domain are both absolute positions; tiles count from minX.
   const upperBound = Math.ceil(
-    Math.min(maxX, scale.domain()[1] - minX - epsilon) / tileWidth,
+    (Math.min(maxX, scale.domain()[1]) - minX - epsilon) / tileWidth,
   );
   let tileRange = range(lowerBound, upperBound);
 
